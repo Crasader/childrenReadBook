@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="346.25dp"
+    android:layout_height="287.25dp"
+    android:background="@android:color/transparent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rela1"
+        android:layout_width="346.25dp"
+        android:layout_height="287.25dp"
+        android:background="@drawable/inviteregister_background" >
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/close"
+            android:layout_width="45.25dp"
+            android:layout_height="45.75dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/inviteregister_close" />
+
+        <Button
+            android:layout_width="293dp"
+            android:layout_height="11dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="160dp"
+            android:background="@drawable/inviteregister_description" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="26.5dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginRight="65dp"
+            android:layout_marginTop="194.25dp" >
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/weixin"
+                android:layout_width="26.5dp"
+                android:layout_height="26.5dp"
+                android:background="@drawable/inviteregister_shareweixin" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/penyouquan"
+                android:layout_width="26.5dp"
+                android:layout_height="26.5dp"
+                android:layout_marginLeft="35dp"
+                android:background="@drawable/inviteregister_sharefriends" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/qq"
+                android:layout_width="26.5dp"
+                android:layout_height="26.5dp"
+                android:layout_marginLeft="35dp"
+                android:background="@drawable/inviteregister_shareqq" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/qqzone"
+                android:layout_width="26.5dp"
+                android:layout_height="26.5dp"
+                android:layout_marginLeft="35dp"
+                android:background="@drawable/inviteregister_shareqqspace" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/detailedrules"
+            android:layout_width="70.5dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="56.5dp"
+            android:layout_marginTop="238dp"
+            android:background="@android:color/transparent" >
+
+            <com.ellabook.share.TileButton
+                android:layout_width="50.5dp"
+                android:layout_height="11dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/inviteregister_detailedrules" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/myinvitation"
+            android:layout_width="70.5dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="211.25dp"
+            android:layout_marginTop="238dp"
+            android:background="@android:color/transparent" >
+
+            <com.ellabook.share.TileButton
+                android:layout_width="50.5dp"
+                android:layout_height="11dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/inviteregister_myinvitation" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rela2"
+        android:layout_width="346.25dp"
+        android:layout_height="287.25dp"
+        android:background="@drawable/inviteregister_background2" >
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/back"
+            android:layout_width="21.75dp"
+            android:layout_height="24.5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="22.5dp"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/inviteregister_back" />
+
+        <com.ellabook.share.TileButton
+            android:layout_width="69.25dp"
+            android:layout_height="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="31dp"
+            android:background="@drawable/inviteregister_title" />
+
+        <com.ellabook.share.TileButton
+            android:layout_width="244.75dp"
+            android:layout_height="101.5dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/wenzi" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rela3"
+        android:layout_width="346.25dp"
+        android:layout_height="287.25dp"
+        android:background="@drawable/inviteregister_background2" >
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/back2"
+            android:layout_width="21.75dp"
+            android:layout_height="24.5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="22.5dp"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/inviteregister_back" />
+
+        <com.ellabook.share.TileButton
+            android:layout_width="69.25dp"
+            android:layout_height="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="31dp"
+            android:background="@drawable/inviteregister_title2" />
+
+        <RelativeLayout
+            android:layout_width="171.5dp"
+            android:layout_height="16.5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/inviteregister_blue" >
+
+            <TextView
+                android:id="@+id/tv_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="已成功邀请3人，累计红包30元"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+        </RelativeLayout>
+
+        <com.ellabook.share.PullToRefreshView
+            android:id="@+id/pull_to_refresh"
+            android:layout_width="296dp"
+            android:layout_height="152.5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="35dp"
+            android:layout_marginTop="89.25dp" >
+
+            <ListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp" />
+        </com.ellabook.share.PullToRefreshView>
+    </RelativeLayout>
+
+</LinearLayout>

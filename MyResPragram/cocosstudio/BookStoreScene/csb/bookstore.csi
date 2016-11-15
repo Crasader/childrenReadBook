@@ -1,0 +1,13 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="bookstore" Type="Plist" ID="8876ec38-32b8-4d47-982d-8cb1eba5ef36" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="1" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="BookStoreScene/res/Carriage_0001_wheel_l.png" />
+      <FilePathData Path="BookStoreScene/res/Carriage_0004_wheel_r@2x.png" />
+      <FilePathData Path="BookStoreScene/res/Carriage_0006_board.png" />
+      <FilePathData Path="BookStoreScene/res/Ellabook_new_736h.png" />
+      <FilePathData Path="BookStoreScene/res/Carriage_night_window_568h.png" />
+    </ImageFiles>
+    <MaxSize Width="512" Height="512" />
+  </Content>
+</PlistInfoProjectFile>

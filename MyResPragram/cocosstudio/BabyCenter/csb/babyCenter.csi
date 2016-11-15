@@ -1,0 +1,41 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="babyCenter" Type="Plist" ID="78e5ec41-3be5-40cb-8427-33124aea063e" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="2" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="BabyCenter/res/UserInfo_Album.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Album_Selected.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Determine.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Determine_Selected.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Not-selected_1.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Not-selected_2.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Photograph.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Photograph_Selected.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Selected_1.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Selected_2.png" />
+      <FilePathData Path="BabyCenter/res/Parents_Login_ipad@2x.png" />
+      <FilePathData Path="BabyCenter/res/Parents_Login_Selected_ipad@2x.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_input.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_input_name.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_interface_book.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Headportrait_head.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Title_2.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Title_1.png" />
+      <FilePathData Path="BabyCenter/res/Parents_centent_ipad@2x.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_border_big.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_head_big.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Headportrait_border.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Headportrait_photo.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_interface.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_interface_Selected.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_interface_time.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Photo_big.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Title_3.png" />
+      <FilePathData Path="BabyCenter/res/Parents_button_Complete.png" />
+      <FilePathData Path="BabyCenter/res/Parents_button_Complete_Selected.png" />
+      <FilePathData Path="BabyCenter/res/Parents_button_Edit.png" />
+      <FilePathData Path="BabyCenter/res/Parents_button_Edit_Selected.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_switchChild_ipad.png" />
+    </ImageFiles>
+    <MaxSize Width="2048" Height="1024" />
+  </Content>
+</PlistInfoProjectFile>

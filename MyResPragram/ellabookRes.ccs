@@ -1,0 +1,791 @@
+<Solution>
+  <PropertyGroup Name="ellabookRes" Version="3.10.0.0" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Folder Name="BabyCenter">
+          <Folder Name="csb">
+            <PlistInfo Name="babyCenter.csi" Type="Plist" />
+            <Project Name="centerMain.csd" Type="Layer" />
+            <Project Name="loginTip.csd" Type="Layer" />
+            <Project Name="photoShow.csd" Type="Layer" />
+            <Project Name="qiehuan.csd" Type="Layer" />
+            <Project Name="touxiang.csd" Type="Node" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="Parents_button_Complete.png" />
+            <Image Name="Parents_button_Complete_Selected.png" />
+            <Image Name="Parents_button_Edit.png" />
+            <Image Name="Parents_button_Edit_Selected.png" />
+            <Image Name="Parents_centent_ipad@2x.png" />
+            <Image Name="Parents_Login_ipad@2x.png" />
+            <Image Name="Parents_Login_Selected_ipad@2x.png" />
+            <Image Name="Userinfo_addchild_crown_ipad@2x.png" />
+            <Image Name="Userinfo_addchild_picture_ipad@2x.png" />
+            <Image Name="UserInfo_Album.png" />
+            <Image Name="UserInfo_Album_Selected.png" />
+            <Image Name="UserInfo_background.png" />
+            <Image Name="UserInfo_border_big.png" />
+            <Image Name="UserInfo_Determine.png" />
+            <Image Name="UserInfo_Determine_Selected.png" />
+            <Image Name="UserInfo_head_big.png" />
+            <Image Name="UserInfo_Headportrait_border.png" />
+            <Image Name="UserInfo_Headportrait_head.png" />
+            <Image Name="UserInfo_Headportrait_photo.png" />
+            <Image Name="UserInfo_input.png" />
+            <Image Name="UserInfo_input_name.png" />
+            <Image Name="UserInfo_interface.png" />
+            <Image Name="UserInfo_interface_book.png" />
+            <Image Name="UserInfo_interface_bottom.png" />
+            <Image Name="UserInfo_interface_Selected.png" />
+            <Image Name="UserInfo_interface_time.png" />
+            <Image Name="UserInfo_Not-selected_1.png" />
+            <Image Name="UserInfo_Not-selected_2.png" />
+            <Image Name="UserInfo_Photo_big.png" />
+            <Image Name="UserInfo_Photograph.png" />
+            <Image Name="UserInfo_Photograph_Selected.png" />
+            <Image Name="UserInfo_Selected_1.png" />
+            <Image Name="UserInfo_Selected_2.png" />
+            <Image Name="UserInfo_switchChild_ipad.png" />
+            <Image Name="UserInfo_Title_1.png" />
+            <Image Name="UserInfo_Title_2.png" />
+            <Image Name="UserInfo_Title_3.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="Book">
+          <Folder Name="csb">
+            <PlistInfo Name="backcover.csi" Type="Plist" />
+            <Project Name="BookEndPage.csd" Type="Layer" />
+            <Project Name="tryReadBookEndPage.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="Backcover_background_568h.png" />
+            <Image Name="Backcover_comments_736h.png" />
+            <Image Name="Backcover_comments_press_736h.png" />
+            <Image Name="Backcover_I-want-to-write-reviews_button_736h.png" />
+            <Image Name="Backcover_I-want-to-write-reviews_button_press_736h.png" />
+            <Image Name="Backcover_reading_book_736h.png" />
+            <Image Name="Backcover_try_background_568h.png" />
+            <Image Name="Backcover_try_buy_button_736h.png" />
+            <Image Name="Backcover_try_buy_button_press_736h.png" />
+            <Image Name="Backcover_try_good-comments_no-comment_736h.png" />
+            <Image Name="Backcover_try_Invitation-to-register_ipad@2x.png" />
+            <Image Name="Backcover_vip_button_736h.png" />
+            <Image Name="Backcover_vip_button_press_736h.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="BookCity">
+          <Folder Name="csb">
+            <Project Name="bigButtonLayer.csd" Type="Node" />
+            <PlistInfo Name="bookCity.csi" Type="Plist" />
+            <Project Name="bookCityScene.csd" Type="Layer" />
+            <Project Name="doubleButtonLayer.csd" Type="Node" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="BookStore_background_b.png" />
+            <Image Name="BookStore_background_t.png" />
+            <Image Name="border1.png" />
+            <Image Name="border2.png" />
+            <Image Name="border3.png" />
+            <Image Name="border4.png" />
+            <Image Name="Common_Return.png" />
+            <Image Name="Common_Return_Selected.png" />
+            <Image Name="img_937.png" />
+            <Image Name="jiazai.png" />
+            <Image Name="l.png" />
+            <Image Name="r.png" />
+            <Image Name="yilapaihang.png" />
+            <Image Name="yilatuijian.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="BookInfo">
+          <Folder Name="csb">
+            <Project Name="bookInfo.csd" Type="Layer" />
+            <PlistInfo Name="bookInfo.csi" Type="Plist" />
+            <Project Name="comment.csd" Type="Layer" />
+            <Project Name="hongbaodikou.csd" Type="Node" />
+            <Project Name="jianjie.csd" Type="Layer" />
+            <Project Name="pinglun.csd" Type="Layer" />
+            <Project Name="rentbook.csd" Type="Layer" />
+            <Project Name="sendcomment.csd" Type="Layer" />
+            <Project Name="voicecomment.csd" Type="Layer" />
+            <Project Name="youarenotvip.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="BookHome_0001_board_ipad@2x.png" />
+            <Image Name="BookInfo_abstract.png" />
+            <Image Name="BookInfo_abstract_s.png" />
+            <Image Name="BookInfo_background.png" />
+            <Image Name="BookInfo_book details_days-background_736h.png" />
+            <Image Name="BookInfo_btn_Comment.png" />
+            <Image Name="BookInfo_btn_Comment_push.png" />
+            <Image Name="BookInfo_btn_Previews.png" />
+            <Image Name="BookInfo_btn_Previews_Selected.png" />
+            <Image Name="BookInfo_btn_Read.png" />
+            <Image Name="BookInfo_btn_Read_Selected.png" />
+            <Image Name="BookInfo_Comment.png" />
+            <Image Name="BookInfo_Comment_s.png" />
+            <Image Name="BookInfo_Comment_star.png" />
+            <Image Name="BookInfo_Comment_star_s.png" />
+            <Image Name="BookInfo_Cover_bg.png" />
+            <Image Name="BookInfo_star.png" />
+            <Image Name="BookInfo_star_s.png" />
+            <Image Name="BookInfo_Time.png" />
+            <Image Name="BookInfo_top_bg_736h.png" />
+            <Image Name="Comment_Publish_Selected_ipad.png" />
+            <Image Name="Comment_Release_ipad.png" />
+            <Image Name="Comment_star_ipad.png" />
+            <Image Name="Comment_star_Selected_ipad.png" />
+            <Image Name="Common_Popup_Close_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
+            <Image Name="Common_Return.png" />
+            <Image Name="Common_Return_Selected.png" />
+            <Image Name="hand_736h.png" />
+            <Image Name="mupai_736h.png" />
+            <Image Name="parentsVerification_button_blue_ipad@2x.png" />
+            <Image Name="parentsVerification_button_red_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_blue_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_red_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_yellow_ipad@2x.png" />
+            <Image Name="parentsVerification_button_yellow_ipad@2x.png" />
+            <Image Name="Voicecomment_background_ipad@2x.png" />
+            <Image Name="Voicecomment_publish_button_ipad@2x.png" />
+            <Image Name="Voicecomment_publish_button_press_ipad@2x.png" />
+            <Image Name="Voicecomment_star.png" />
+            <Image Name="Voicecomment_star_press.png" />
+            <Image Name="Voicecomment_Voice button_ipad@2x.png" />
+            <Image Name="Voicecomment_Voice button_press_ipad@2x.png" />
+            <Image Name="yila_736h.png" />
+            <Image Name="yila2_736h.png" />
+            <Image Name="BookInfo_book-details_-Popover_title_667h.png" />
+            <Image Name="BookInfo_book details_ Popover_title_nowords_667h.png" />
+            <Image Name="BookInfo_book details_ Popover_background_667h.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="BookRoom">
+          <Folder Name="csb">
+            <Project Name="bookNode.csd" Type="Node" />
+            <Project Name="bookroom.csd" Type="Layer" />
+            <PlistInfo Name="bookRoom.csi" Type="Plist" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="BookHome_Delete.png" />
+            <Image Name="BookHome_Download.png" />
+            <Image Name="BookHome_Download_Background.png" />
+            <Image Name="BookHome_girl_0000.png" />
+            <Image Name="BookHome_girl_0001.png" />
+            <Image Name="BookHome_girl_0002.png" />
+            <Image Name="BookHome_girl_0003.png" />
+            <Image Name="BookHome_girl_0006.png" />
+            <Image Name="BookHome_girl_0007.png" />
+            <Image Name="BookHome_girl_0008.png" />
+            <Image Name="BookHome_girl_0009.png" />
+            <Image Name="BookHome_girl_0010.png" />
+            <Image Name="BookHome_girl_0017.png" />
+            <Image Name="BookHome_girl_0018.png" />
+            <Image Name="BookHome_girl_0022.png" />
+            <Image Name="BookHome_night_window_ipad.png" />
+            <Image Name="BookInfo_ studyr_button_allbook_736h.png" />
+            <Image Name="BookInfo_ studyr_button_allbook_press_736h.png" />
+            <Image Name="BookInfo_ studyr_button_downloaded_736h.png" />
+            <Image Name="BookInfo_ studyr_button_downloaded_press_736h.png" />
+            <Image Name="BookInfo_ studyr_button_reading_736h.png" />
+            <Image Name="BookInfo_ studyr_button_reading_press_736h.png" />
+            <Image Name="BookInfo_ studyr_button_vip book_736h.png" />
+            <Image Name="BookInfo_ studyr_button_vip book_press_736h.png" />
+            <Image Name="BookInfo_ studyr_shuzhi_736h.png" />
+            <Image Name="BookInfo_ studyr_vip_736h.png" />
+            <Image Name="zg1.png" />
+            <Image Name="zg2.png" />
+            <Image Name="zg3.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="BookStoreScene">
+          <Folder Name="csb">
+            <Project Name="background.csd" Type="Layer" />
+            <Project Name="book.csd" Type="Layer" />
+            <PlistInfo Name="bookstore.csi" Type="Plist" />
+            <Project Name="pager.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="Carriage_0001_wheel_l.png" />
+            <Image Name="Carriage_0003_Body.png" />
+            <Image Name="Carriage_0004_wheel_r@2x.png" />
+            <Image Name="Carriage_0006_background.png" />
+            <Image Name="Carriage_0006_board.png" />
+            <Image Name="Carriage_night_window_568h.png" />
+            <Image Name="Ellabook_new_736h.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="IndexScene">
+          <Folder Name="csb">
+            <PlistInfo Name="background.csi" Type="Plist" />
+            <Project Name="bookcity.csd" Type="Layer" />
+            <Project Name="huiben.csd" Type="Node" />
+            <PlistInfo Name="Index.csi" Type="Plist" />
+            <Project Name="kangxuanshudian.csd" Type="Node" />
+            <Project Name="Locomotive.csd" Type="Node" />
+            <Project Name="ParentMessageBox.csd" Type="Layer" />
+            <PlistInfo Name="train.csi" Type="Plist" />
+            <Project Name="vip.csd" Type="Node" />
+            <Project Name="wuxinghapping.csd" Type="Node" />
+            <Project Name="xianshimianfei.csd" Type="Node" />
+            <Project Name="yilatuijian.csd" Type="Node" />
+            <Project Name="yilaxinshu.csd" Type="Node" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="Baffle_ipad@2x.png" />
+            <Image Name="beam_ipad@2x.png" />
+            <Image Name="bluebird_00000.png" />
+            <Image Name="bluebird_00001.png" />
+            <Image Name="bluebird_00002.png" />
+            <Image Name="bluebird_00003.png" />
+            <Image Name="BookHome_0001_board_ipad@2x.png" />
+            <Image Name="BookHome_girl_0000.png" />
+            <Image Name="Bookstore_ipad@2x.png" />
+            <Image Name="cloud_00000.png" />
+            <Image Name="cloud_00001.png" />
+            <Image Name="cloud_00002.png" />
+            <Image Name="cloud_00003.png" />
+            <Image Name="cloud_00004.png" />
+            <Image Name="cloud_00005.png" />
+            <Image Name="cloud_00006.png" />
+            <Image Name="cloud_00007.png" />
+            <Image Name="cloud_00008.png" />
+            <Image Name="cloud_00009.png" />
+            <Image Name="cloud_00010.png" />
+            <Image Name="Common_Popup_Close_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
+            <Image Name="Comp 1_00000.png" />
+            <Image Name="Comp 1_00001.png" />
+            <Image Name="Comp 1_00002.png" />
+            <Image Name="Comp 1_00003.png" />
+            <Image Name="Comp 1_00004.png" />
+            <Image Name="Comp 1_00005.png" />
+            <Image Name="Comp 1_00006.png" />
+            <Image Name="Comp 1_00007.png" />
+            <Image Name="Comp 1_00008.png" />
+            <Image Name="Comp 1_00009.png" />
+            <Image Name="Comp 1_00010.png" />
+            <Image Name="Comp 1_00011.png" />
+            <Image Name="Comp 1_00012.png" />
+            <Image Name="Comp 1_00013.png" />
+            <Image Name="Comp 1_00014.png" />
+            <Image Name="Comp 1_00015.png" />
+            <Image Name="Comp 1_00016.png" />
+            <Image Name="Comp 1_00017.png" />
+            <Image Name="Connect_ipad@2x.png" />
+            <Image Name="cyanbird_00000.png" />
+            <Image Name="cyanbird_00001.png" />
+            <Image Name="cyanbird_00002.png" />
+            <Image Name="cyanbird_00003.png" />
+            <Image Name="door flicker_00000.png" />
+            <Image Name="door flicker_00001.png" />
+            <Image Name="door flicker_00002.png" />
+            <Image Name="door flicker_00003.png" />
+            <Image Name="door_00000.png" />
+            <Image Name="door_00001.png" />
+            <Image Name="door_00002.png" />
+            <Image Name="door_00003.png" />
+            <Image Name="door_00004.png" />
+            <Image Name="door_00005.png" />
+            <Image Name="door_00006.png" />
+            <Image Name="flag_00000.png" />
+            <Image Name="flag_00001.png" />
+            <Image Name="flag_00002.png" />
+            <Image Name="flower_00000.png" />
+            <Image Name="flower_00001.png" />
+            <Image Name="flower_00002.png" />
+            <Image Name="flower_00003.png" />
+            <Image Name="flower_00004.png" />
+            <Image Name="flower_00005.png" />
+            <Image Name="flower_00006.png" />
+            <Image Name="flower_00007.png" />
+            <Image Name="flower_00008.png" />
+            <Image Name="flower_00009.png" />
+            <Image Name="flower_00010.png" />
+            <Image Name="flower_00011.png" />
+            <Image Name="flower_00012.png" />
+            <Image Name="flower_00013.png" />
+            <Image Name="flower_00014.png" />
+            <Image Name="flower_00015.png" />
+            <Image Name="flower_00016.png" />
+            <Image Name="flower2_00000.png" />
+            <Image Name="flower2_00001.png" />
+            <Image Name="flower2_00002.png" />
+            <Image Name="flower2_00003.png" />
+            <Image Name="flower2_00004.png" />
+            <Image Name="flower2_00005.png" />
+            <Image Name="flower2_00006.png" />
+            <Image Name="flower2_00007.png" />
+            <Image Name="flower2_00008.png" />
+            <Image Name="flower2_00009.png" />
+            <Image Name="flower2_00010.png" />
+            <Image Name="flower2_00011.png" />
+            <Image Name="flower2_00012.png" />
+            <Image Name="flower2_00013.png" />
+            <Image Name="flower2_00014.png" />
+            <Image Name="flower2_00015.png" />
+            <Image Name="flower2_00016.png" />
+            <Image Name="flower3_00000.png" />
+            <Image Name="flower3_00001.png" />
+            <Image Name="flower3_00002.png" />
+            <Image Name="flower3_00003.png" />
+            <Image Name="flower3_00004.png" />
+            <Image Name="flower3_00005.png" />
+            <Image Name="flower3_00006.png" />
+            <Image Name="flower3_00007.png" />
+            <Image Name="flower3_00008.png" />
+            <Image Name="flower3_00009.png" />
+            <Image Name="flower3_00010.png" />
+            <Image Name="flower3_00011.png" />
+            <Image Name="flower3_00012.png" />
+            <Image Name="flower3_00013.png" />
+            <Image Name="flower3_00014.png" />
+            <Image Name="flower3_00015.png" />
+            <Image Name="flower3_00016.png" />
+            <Image Name="flower3_00017.png" />
+            <Image Name="flower3_00018.png" />
+            <Image Name="flower3_00019.png" />
+            <Image Name="flower3_00020.png" />
+            <Image Name="headstock_ipad@2x.png" />
+            <Image Name="index_background.png" />
+            <Image Name="index_background_night_ipad.png" />
+            <Image Name="index_background0.png" />
+            <Image Name="index_background01.png" />
+            <Image Name="index_background01_night_ipad.png" />
+            <Image Name="index_background02.png" />
+            <Image Name="index_background02_night_ipad.png" />
+            <Image Name="index_background03.png" />
+            <Image Name="index_background03_night_ipad.png" />
+            <Image Name="index_background04.png" />
+            <Image Name="index_background04_night_ipad.png" />
+            <Image Name="index_background05_l_ipad@2x.png" />
+            <Image Name="index_background05_r_ipad@2x.png" />
+            <Image Name="index_clipping_bigc_ipad.png" />
+            <Image Name="index_glowworm_568h.png" />
+            <Image Name="index_light_ipad@2x.png" />
+            <Image Name="index_light02_568h.png" />
+            <Image Name="index_meteor_568h.png" />
+            <Image Name="index_star_normal_568h.png" />
+            <Image Name="index_star_Selecyed_568h.png" />
+            <Image Name="index_tree_l_143_ipad@2x.png" />
+            <Image Name="index_tree_r_185_ipad@2x.png" />
+            <Image Name="Kxsd_ipad@2x.png" />
+            <Image Name="Music_ipad@2x.png" />
+            <Image Name="No_Music_ipad@2x.png" />
+            <Image Name="Parents_ipad@2x.png" />
+            <Image Name="parentsVerification_button_blue_ipad@2x.png" />
+            <Image Name="parentsVerification_button_red_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_blue_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_red_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_yellow_ipad@2x.png" />
+            <Image Name="parentsVerification_button_yellow_ipad@2x.png" />
+            <Image Name="Picture_ipad@2x.png" />
+            <Image Name="pinkbird_00000.png" />
+            <Image Name="pinkbird_00001.png" />
+            <Image Name="pinkbird_00002.png" />
+            <Image Name="pinkbird_00003.png" />
+            <Image Name="redbird_00000.png" />
+            <Image Name="redbird_00001.png" />
+            <Image Name="redbird_00002.png" />
+            <Image Name="redbird_00003.png" />
+            <Image Name="Smallwheel_ipad@2x.png" />
+            <Image Name="star_00006.png" />
+            <Image Name="star_00007.png" />
+            <Image Name="star_00008.png" />
+            <Image Name="star_00009.png" />
+            <Image Name="star_00010.png" />
+            <Image Name="star_00011.png" />
+            <Image Name="star_00012.png" />
+            <Image Name="star_00013.png" />
+            <Image Name="star_00014.png" />
+            <Image Name="star_00015.png" />
+            <Image Name="star_00016.png" />
+            <Image Name="star_00017.png" />
+            <Image Name="star_00018.png" />
+            <Image Name="star_00019.png" />
+            <Image Name="star_00020.png" />
+            <Image Name="User_bg_ipad@2x.png" />
+            <Image Name="User_bg1_ipad@2x.png" />
+            <Image Name="User_m_ipad@2x.png" />
+            <Image Name="User_up_ipad@2x.png" />
+            <Image Name="vip_store_667h.png" />
+            <Image Name="Wheel_ipad@2x.png" />
+            <Image Name="wink_1.png" />
+            <Image Name="wink_2.png" />
+            <Image Name="Wxhp_ipad@2x.png" />
+            <Image Name="Xsmf_ipad@2x.png" />
+            <Image Name="yancong_00000.png" />
+            <Image Name="yancong_00001.png" />
+            <Image Name="yancong_00002.png" />
+            <Image Name="yancong_00003.png" />
+            <Image Name="yancong_00004.png" />
+            <Image Name="yancong_00005.png" />
+            <Image Name="yancong_00006.png" />
+            <Image Name="yancong_00007.png" />
+            <Image Name="yancong_00008.png" />
+            <Image Name="yancong_00009.png" />
+            <Image Name="yancong_00010.png" />
+            <Image Name="yancong_00011.png" />
+            <Image Name="yancong_00012.png" />
+            <Image Name="yancong_00013.png" />
+            <Image Name="yancong_00014.png" />
+            <Image Name="yancong_00015.png" />
+            <Image Name="yancong_00016.png" />
+            <Image Name="yancong_00017.png" />
+            <Image Name="yancong_00018.png" />
+            <Image Name="yellowbird_00000.png" />
+            <Image Name="yellowbird_00001.png" />
+            <Image Name="yellowbird_00002.png" />
+            <Image Name="yellowbird_00003.png" />
+            <Image Name="Yltj_ipad@2x.png" />
+            <Image Name="Ylxs_ipad@2x.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="LoginScene">
+          <Folder Name="csb">
+            <Project Name="addchild.csd" Type="Layer" />
+            <Project Name="forgetpassword.csd" Type="Layer" />
+            <Project Name="Login.csd" Type="Layer" />
+            <PlistInfo Name="login.csi" Type="Plist" />
+            <Project Name="register.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="AddChild_Background_736h.png" />
+            <Image Name="AddChild_input_736h.png" />
+            <Image Name="AddChild_Pop_up_736h.png" />
+            <Image Name="ChangePasswd_bg_ipad@2x.png" />
+            <Image Name="ChangePasswd_bg_Selected_ipad@2x.png" />
+            <Image Name="checkboxbackground.png" />
+            <Image Name="Common_Popup_Close_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
+            <Image Name="Common_Popup_Return_ipad@2x.png" />
+            <Image Name="Common_Popup_Return_Selected_ipad@2x.png" />
+            <Image Name="ForgetPassword_Background_ipad@2x.png" />
+            <Image Name="login_Background_ipad@2x.png" />
+            <Image Name="man.png" />
+            <Image Name="push_image_2.png" />
+            <Image Name="push_image_3.png" />
+            <Image Name="register_Background_ipad@2x.png" />
+            <Image Name="register_input_l_ipad@2x.png" />
+            <Image Name="register_input_s_ipad@2x.png" />
+            <Image Name="register_Selected_Verification_ipad@2x.png" />
+            <Image Name="register_Verification_ipad@2x.png" />
+            <Image Name="sel.png" />
+            <Image Name="textbg.png" />
+            <Image Name="woman.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="MessageBox">
+          <Folder Name="csb">
+            <Project Name="fxz_box.csd" Type="Layer" />
+            <PlistInfo Name="message.csi" Type="Plist" />
+            <Project Name="messagebox2.csd" Type="Layer" />
+            <Project Name="toast.csd" Type="Node" />
+            <PlistInfo Name="toast.csi" Type="Plist" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="_0000__0000_-5 .png" />
+            <Image Name="_0001__0001_-3.png" />
+            <Image Name="_0002_-0.png" />
+            <Image Name="ApplePay_close_off_667h.png" />
+            <Image Name="ApplePay_close_selected_667h.png" />
+            <Image Name="FXZ_ipad.png" />
+            <Image Name="push_image_bg_2.png" />
+            <Image Name="push_image_bg_3.png" />
+            <Image Name="push_image_bg1.png" />
+            <Image Name="toast (2).png" />
+            <Image Name="yila.png" />
+            <Image Name="Z_ipad.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="Notification">
+          <Folder Name="csb">
+            <Project Name="activity.csd" Type="Layer" />
+            <Project Name="update.csd" Type="Layer" />
+            <Project Name="version.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="progress.png" />
+            <Image Name="progress1.png" />
+            <Image Name="push_image_2.png" />
+            <Image Name="push_image_3.png" />
+            <Image Name="push_image_close_667h.png" />
+            <Image Name="push_image_close_select_667h.png" />
+            <Image Name="push_image_loading_667h.png" />
+            <Image Name="push_image_noSelected_667h.png" />
+            <Image Name="push_image_selectbg_667h.png" />
+            <Image Name="push_image_Selected_667h.png" />
+            <Image Name="pushView_Bg_667h.png" />
+            <Image Name="pushView_interlinkage.png" />
+            <Image Name="pushView_interlinkage_667h.png" />
+            <Image Name="pushView_interlinkage_Selected.png" />
+            <Image Name="pushView_interlinkage_Selected_667h.png" />
+            <Image Name="update_bg.png" />
+            <Image Name="update_button1.png" />
+            <Image Name="update_button2.png" />
+            <Image Name="update_progress.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="other">
+          <Folder Name="DropBox">
+            <Image Name="1000X100.png" />
+            <Image Name="2000X1200X2.png" />
+            <Image Name="2000X1200X3.png" />
+            <File Name="Address.plist" />
+            <Image Name="commit1.png" />
+            <Image Name="commit2.png" />
+          </Folder>
+          <Project Name="AAA.csd" Type="Node" />
+          <Image Name="Backcover_vioce_background_736h.png" />
+          <Image Name="Backcover_vioce0_736h.png" />
+          <Image Name="Backcover_vioce1_736h.png" />
+          <Image Name="Backcover_vioce2_736h.png" />
+          <Image Name="bianji.png" />
+          <Image Name="bianji2.png" />
+          <Image Name="bianji3.png" />
+          <Image Name="bianji4.png" />
+          <Image Name="block.png" />
+          <Image Name="Book_Background.png" />
+          <Image Name="Book_cover.png" />
+          <Image Name="Book_Mask.png" />
+          <Image Name="BookInfo_book details_ Popover_button_fork_736h.png" />
+          <Image Name="BookInfo_book details_ Popover_button_fork_press_736h.png" />
+          <Image Name="chacha_10_ipad@2x.png" />
+          <Image Name="Common_Popup_Close_ipad@2x.png" />
+          <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
+          <Image Name="Common_Popup_Return_ipad@2x.png" />
+          <Image Name="Common_Popup_Return_Selected_ipad@2x.png" />
+          <Image Name="Common_Return.png" />
+          <Image Name="Common_Return_Selected.png" />
+          <Image Name="delete_ipad@2x.png" />
+          <Image Name="HBSRedpacket_XX_736h.png" />
+          <Image Name="HBSRedpacket_XX_ZZ_736h.png" />
+          <Image Name="headportaitdefult.png" />
+          <Image Name="headportaitnull.png" />
+          <Image Name="qiehuanhaizi.png" />
+          <Image Name="qiehuanhaizi2.png" />
+          <Image Name="shufang_button_1_736h.png" />
+          <Image Name="shufang_button_2_736h.png" />
+          <Image Name="Userinfo_childcenter_close__ipad@2x.png" />
+          <PlistInfo Name="vioceplist.csi" Type="Plist" />
+          <Image Name="BookInfo_book-details_-Popover_background_667h.png" />
+          <Image Name="BookInfo_book-details_-Popover_blue_background_667h.png" />
+        </Folder>
+        <Folder Name="ParentScene">
+          <Folder Name="csb">
+            <Project Name="changepassword.csd" Type="Layer" />
+            <Project Name="lianxiwomen.csd" Type="Layer" />
+            <Project Name="loginButton.csd" Type="Layer" />
+            <Project Name="logoffMessagebox.csd" Type="Layer" />
+            <Project Name="messagebox.csd" Type="Layer" />
+            <Project Name="messagebox_wipecache.csd" Type="Layer" />
+            <Project Name="Parent.csd" Type="Layer" />
+            <PlistInfo Name="parent.csi" Type="Plist" />
+            <Project Name="shezhi.csd" Type="Layer" />
+            <Project Name="zhanghaoxinxi.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="bg.png" />
+            <Image Name="block.png" />
+            <Image Name="ChangePasswd_background_ipad.png" />
+            <Image Name="ChangePasswd_bg_ipad@2x.png" />
+            <Image Name="ChangePasswd_bg_Selected_ipad@2x.png" />
+            <Image Name="ChangePasswd_Determine_ipad@2x.png" />
+            <Image Name="ChangePasswd_Determine_Selected_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
+            <Image Name="Common_Return.png" />
+            <Image Name="Common_Return_Selected.png" />
+            <Image Name="content.png" />
+            <Image Name="Feedback_Background_ipad.png" />
+            <Image Name="Feedback_Btn_ipad.png" />
+            <Image Name="Feedback_Btn_Selected_ipad.png" />
+            <Image Name="icorn.png" />
+            <Image Name="icorn1.png" />
+            <Image Name="logoff.png" />
+            <Image Name="no.png" />
+            <Image Name="no2.png" />
+            <Image Name="Parents_about_border_ipad@2x.png" />
+            <Image Name="Parents_Account_information_ipad@2x.png" />
+            <Image Name="Parents_Account_information_Selected_ipad@2x.png" />
+            <Image Name="Parents_Background_736h.png" />
+            <Image Name="Parents_Binding_border_ipad@2x.png" />
+            <Image Name="Parents_book_border_ipad@2x.png" />
+            <Image Name="Parents_button_1_ipad@2x.png" />
+            <Image Name="Parents_button_1_Selected_ipad@2x.png" />
+            <Image Name="Parents_button_2_ipad@2x.png" />
+            <Image Name="Parents_button_2_Selected_ipad@2x.png" />
+            <Image Name="Parents_button_3_ipad@2x.png" />
+            <Image Name="Parents_button_3_Selected_ipad@2x.png" />
+            <Image Name="Parents_button_4_ipad@2x.png" />
+            <Image Name="Parents_button_4_Selected_ipad@2x.png" />
+            <Image Name="Parents_button_5_ipad@2x.png" />
+            <Image Name="Parents_button_5_Selected_ipad@2x.png" />
+            <Image Name="Parents_button_Background_ipad@2x.png" />
+            <Image Name="Parents_button_businessQQ_568h.png" />
+            <Image Name="Parents_button_businessQQ_Selected_568h.png" />
+            <Image Name="Parents_button_Cancellation.png" />
+            <Image Name="Parents_button_Cancellation_Selected.png" />
+            <Image Name="Parents_button_Change-password.png" />
+            <Image Name="Parents_button_Change-password_Selected.png" />
+            <Image Name="Parents_button_Change-wdhb_736h.png" />
+            <Image Name="Parents_button_Change-wdhb_yy_736h.png" />
+            <Image Name="Parents_button_Check-and-update.png" />
+            <Image Name="Parents_button_Check-and-update_Selected.png" />
+            <Image Name="Parents_button_Clean-cache.png" />
+            <Image Name="Parents_button_Clean-cache_Selected.png" />
+            <Image Name="Parents_button_Complete.png" />
+            <Image Name="Parents_button_Complete_Selected.png" />
+            <Image Name="Parents_button_copyrightQQ_568h.png" />
+            <Image Name="Parents_button_copyrightQQ_Selected_568h.png" />
+            <Image Name="Parents_button_Edit.png" />
+            <Image Name="Parents_button_Edit_Selected.png" />
+            <Image Name="Parents_button_Feedback.png" />
+            <Image Name="Parents_button_Feedback_Selected.png" />
+            <Image Name="Parents_button_input_ipad@2x.png" />
+            <Image Name="Parents_button_Not-selected_1_ipad@2x.png" />
+            <Image Name="Parents_button_Not-selected_2_ipad@2x.png" />
+            <Image Name="Parents_button_QQ.png" />
+            <Image Name="Parents_button_QQ_568h.png" />
+            <Image Name="Parents_button_QQ_Selected.png" />
+            <Image Name="Parents_button_QQ_Selected_568h.png" />
+            <Image Name="Parents_button_QR-code.png" />
+            <Image Name="Parents_button_QR-code_Selected.png" />
+            <Image Name="Parents_button_recharge_736h.png" />
+            <Image Name="Parents_button_recharge_Selected__03_736h.png" />
+            <Image Name="Parents_button_recovering.png" />
+            <Image Name="Parents_button_restore_fail.png" />
+            <Image Name="Parents_button_restore_success.png" />
+            <Image Name="Parents_button_return_buy.png" />
+            <Image Name="Parents_button_Selected_1_ipad@2x.png" />
+            <Image Name="Parents_button_Selected_2_ipad@2x.png" />
+            <Image Name="Parents_Cache_border_ipad@2x.png" />
+            <Image Name="Parents_centent_ipad@2x.png" />
+            <Image Name="Parents_Contact_us_ipad@2x.png" />
+            <Image Name="Parents_Contact_us_Selected_ipad@2x.png" />
+            <Image Name="Parents_Download_border_ipad@2x.png" />
+            <Image Name="Parents_Login_ipad@2x.png" />
+            <Image Name="Parents_Login_Selected_ipad@2x.png" />
+            <Image Name="Parents_QR-code_736h.png" />
+            <Image Name="Parents_Set_up_ipad@2x.png" />
+            <Image Name="Parents_Set_up_Selected_ipad@2x.png" />
+            <Image Name="Parents_Title_ipad@2x.png" />
+            <Image Name="Parents_us_border_ipad@2x.png" />
+            <Image Name="title.png" />
+            <Image Name="yes.png" />
+            <Image Name="yes2.png" />
+            <Image Name="yn.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="Pay">
+          <Folder Name="csb">
+            <Project Name="gongxihuodehongbao.csd" Type="Layer" />
+            <Project Name="isPay.csd" Type="Layer" />
+            <Project Name="item.csd" Type="Layer" />
+            <Project Name="paylayer.csd" Type="Layer" />
+            <PlistInfo Name="paypng.csi" Type="Plist" />
+            <Project Name="piaodai.csd" Type="Node" />
+            <Project Name="redpacket.csd" Type="Node" />
+            <Project Name="redpacketmessage.csd" Type="Layer" />
+            <Project Name="selectredpacket.csd" Type="Layer" />
+            <Project Name="whetherToPay.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="ApplePay_0_667h.png" />
+            <Image Name="ApplePay_1_667h.png" />
+            <Image Name="ApplePay_2_667h.png" />
+            <Image Name="ApplePay_3_667h.png" />
+            <Image Name="ApplePay_4_667h.png" />
+            <Image Name="ApplePay_5_667h.png" />
+            <Image Name="ApplePay_6_667h.png" />
+            <Image Name="ApplePay_7_667h.png" />
+            <Image Name="ApplePay_8_667h.png" />
+            <Image Name="ApplePay_9_667h.png" />
+            <Image Name="ApplePay_close_off_667h.png" />
+            <Image Name="ApplePay_close_selected_667h.png" />
+            <Image Name="ApplePay_coin_667h.png" />
+            <Image Name="ApplePay_coin_selected_667h.png" />
+            <Image Name="ApplePay_frame_667h.png" />
+            <Image Name="ApplePay_gotopay_background_667h.png" />
+            <Image Name="ApplePay_weixin_667h.png" />
+            <Image Name="ApplePay_weixin_sel_667h.png" />
+            <Image Name="ApplePay_zhifubao_667h.png" />
+            <Image Name="ApplePay_zhifubao_sel_667h.png" />
+            <Image Name="block.png" />
+            <Image Name="caidai_an.png" />
+            <Image Name="caidai_liang.png" />
+            <Image Name="HBSRedpacket_BSYHB_736h.png" />
+            <Image Name="HBSRedpacket_BSYHBXZ_736h.png" />
+            <Image Name="HBSRedpacket_CHDT_736h.png" />
+            <Image Name="HBSRedpacket_DDB_667h.png" />
+            <Image Name="HBSRedpacket_DG_736h.png" />
+            <Image Name="HBSRedpacket_HB_736h.png" />
+            <Image Name="HBSRedpacket_HDT_736h.png" />
+            <Image Name="HBSRedpacket_HYJJX_667h.png" />
+            <Image Name="HBSRedpacket_HYJJX_736h.png" />
+            <Image Name="HBSRedpacket_JT_736h.png" />
+            <Image Name="HBSRedpacket_JT_JR_736h.png" />
+            <Image Name="HBSRedpacket_M_736h.png" />
+            <Image Name="HBSRedpacket_WDHB_736h.png" />
+            <Image Name="HBSRedpacket_XDB_667h.png" />
+            <Image Name="HBSRedpacket_YJJX_667h.png" />
+            <Image Name="HBSRedpacket_YLHB_736h.png" />
+            <Image Name="HBSRedpacket_ZHYE_667h.png" />
+            <Image Name="push_image_bg_4.png" />
+            <Image Name="weixin_667h.png" />
+            <Image Name="zhifubao_667h.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="RestRemind">
+          <Folder Name="csb">
+            <Project Name="restRemind.csd" Type="Layer" />
+            <PlistInfo Name="restRemind.csi" Type="Plist" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="BookHome_0001_board_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
+            <Image Name="EyeProtectionNotification_Background_ipad.png" />
+            <Image Name="EyeProtectionNotification_Unlock_ipad.png" />
+            <Image Name="EyeProtectionNotification_Unlock_Selected_ipad.png" />
+            <Image Name="parentsVerification_button_blue_ipad@2x.png" />
+            <Image Name="parentsVerification_button_red_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_blue_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_red_ipad@2x.png" />
+            <Image Name="parentsVerification_button_Selected_yellow_ipad@2x.png" />
+            <Image Name="parentsVerification_button_yellow_ipad@2x.png" />
+          </Folder>
+        </Folder>
+        <Folder Name="VIPBook">
+          <Folder Name="csb">
+            <Project Name="renew.csd" Type="Layer" />
+          </Folder>
+          <Folder Name="res" />
+        </Folder>
+        <Folder Name="WaitMessageBox">
+          <Folder Name="csb">
+            <Project Name="wait.csd" Type="Layer" />
+            <PlistInfo Name="wait.csi" Type="Plist" />
+          </Folder>
+          <Folder Name="res">
+            <Image Name="loading 4_00000.png" />
+            <Image Name="loading 4_00001.png" />
+            <Image Name="loading 4_00002.png" />
+            <Image Name="loading 4_00003.png" />
+            <Image Name="loading 4_00004.png" />
+            <Image Name="loading 4_00005.png" />
+            <Image Name="loading 4_00006.png" />
+            <Image Name="loading 4_00007.png" />
+          </Folder>
+        </Folder>
+        <TTF Name="FZHLJW.TTF" />
+        <TTF Name="hkhb.TTF" />
+        <TTF Name="Impact.TTF" />
+        <TTF Name="wdtyj.TTF" />
+        <TTF Name="wryh.TTF" />
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>

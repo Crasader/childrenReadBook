@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="403dp"
+    android:layout_height="282dp"
+    android:background="@android:color/transparent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rela1"
+        android:layout_width="383dp"
+        android:layout_height="219dp"
+        android:background="@drawable/shareview_bg_ipad" >
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/close"
+            android:layout_width="27.5dp"
+            android:layout_height="26.5dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/sharesiew_close_ipad" />
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/erweima"
+            android:layout_width="89.5dp"
+            android:layout_height="89.5dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="31.5dp"
+            android:background="@drawable/sharesiew_two_dimension_code_ipad" />
+
+        <LinearLayout
+            android:layout_width="89.5dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="126dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tx1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/downloadapp1"
+                android:textColor="#0a8dd9"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tx2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/downloadapp2"
+                android:textColor="#0a8dd9"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="261.5dp"
+            android:layout_height="152.5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp" >
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="261.5dp"
+                android:layout_height="152.5dp"
+                android:background="@drawable/sharesiew_floor_ipad" />
+
+            <com.ellabook.share.RoundImageView
+                android:id="@+id/img2"
+                android:layout_width="251.5dp"
+                android:layout_height="142.5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/transparent" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="175dp" >
+
+            <com.ellabook.share.RoundImageView
+                android:id="@+id/head"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginTop="9dp"
+                android:src="@drawable/icon" />
+
+            <ImageView
+                android:id="@+id/img3"
+                android:layout_width="258.5dp"
+                android:layout_height="42dp"
+                android:background="@drawable/sharesiew_dialog_box_ipad" />
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="42dp"
+                android:layout_marginTop="13dp"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sharetext1"
+                    android:textColor="#000000"
+                    android:textSize="8sp" />
+
+                <TextView
+                    android:id="@+id/bookname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textSize="8sp" />
+            </LinearLayout>
+        </FrameLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="256dp"
+        android:layout_height="42.99dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/sharesiew_platter_ipad"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="@string/share"
+            android:textColor="#0a8dd9"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="36dp"
+                android:layout_height="34.5dp"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <com.ellabook.share.TileButton
+                    android:id="@+id/weixin"
+                    android:layout_width="36dp"
+                    android:layout_height="34.5dp"
+                    android:background="@drawable/sharesiew_wechatsession_ipad" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="36dp"
+                android:layout_height="34.5dp"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <com.ellabook.share.TileButton
+                    android:id="@+id/pengyouquan"
+                    android:layout_width="36dp"
+                    android:layout_height="34.5dp"
+                    android:background="@drawable/sharesiew_wechattimeline" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="36dp"
+                android:layout_height="34.5dp"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <com.ellabook.share.TileButton
+                    android:id="@+id/qq"
+                    android:layout_width="36dp"
+                    android:layout_height="34.5dp"
+                    android:background="@drawable/sharesiew_qq_ipad" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="36dp"
+                android:layout_height="34.5dp"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <com.ellabook.share.TileButton
+                    android:id="@+id/qqzone"
+                    android:layout_width="36dp"
+                    android:layout_height="34.5dp"
+                    android:background="@drawable/sharesiew_qzone_ipad" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

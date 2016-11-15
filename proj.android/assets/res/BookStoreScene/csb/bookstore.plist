@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>BookStoreScene/res/Carriage_0001_wheel_l.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{194,119},{140,140}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{140,140}</string>
+			</dict>
+			<key>BookStoreScene/res/Carriage_0004_wheel_r@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{278,261},{120,120}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{120,120}</string>
+			</dict>
+			<key>BookStoreScene/res/Carriage_0006_board.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1},{410,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{410,116}</string>
+			</dict>
+			<key>BookStoreScene/res/Ellabook_new_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,119},{191,201}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{191,201}</string>
+			</dict>
+			<key>BookStoreScene/res/Carriage_night_window_568h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,322},{109,275}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{109,275}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>bookstore.png</string>
+			<key>realTextureFileName</key>
+			<string>bookstore.png</string>
+			<key>size</key>
+			<string>{512,512}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>512</integer>
+			<key>height</key>
+			<integer>512</integer>
+		</dict>
+	</dict>
+</plist>

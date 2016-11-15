@@ -1,0 +1,36 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="bookRoom" Type="Plist" ID="a8ffe0f7-8de4-4b70-9e31-eee2b25d9b51" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="2" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="BookRoom/res/BookHome_Delete.png" />
+      <FilePathData Path="BookRoom/res/BookHome_Download.png" />
+      <FilePathData Path="BookRoom/res/BookHome_Download_Background.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0000.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0001.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0002.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0003.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0006.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0007.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0008.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0009.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0010.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0017.png" />
+      <FilePathData Path="BookRoom/res/BookHome_girl_0018.png" />
+      <FilePathData Path="BookRoom/res/zg1.png" />
+      <FilePathData Path="BookRoom/res/zg2.png" />
+      <FilePathData Path="BookRoom/res/zg3.png" />
+      <FilePathData Path="BookRoom/res/BookHome_night_window_ipad.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_vip_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_shuzhi_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_allbook_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_allbook_press_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_downloaded_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_downloaded_press_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_reading_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_reading_press_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_vip book_736h.png" />
+      <FilePathData Path="BookRoom/res/BookInfo_ studyr_button_vip book_press_736h.png" />
+    </ImageFiles>
+    <MaxSize Width="1024" Height="2048" />
+  </Content>
+</PlistInfoProjectFile>

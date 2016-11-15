@@ -1,0 +1,13 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="bookCity" Type="Plist" ID="db4f0321-cd45-44fb-9f32-184afa432e2c" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="1" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="BookCity/res/img_937.png" />
+      <FilePathData Path="BookCity/res/border3.png" />
+      <FilePathData Path="BookCity/res/l.png" />
+      <FilePathData Path="BookCity/res/r.png" />
+      <FilePathData Path="BookCity/res/jiazai.png" />
+    </ImageFiles>
+    <MaxSize Width="512" Height="1024" />
+  </Content>
+</PlistInfoProjectFile>

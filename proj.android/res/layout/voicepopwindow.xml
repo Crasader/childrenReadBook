@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:android_custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent" >
+
+    <RelativeLayout
+        android:id="@+id/rela"
+        android:layout_width="241.5dp"
+        android:layout_height="252.5dp"
+        android:layout_gravity="center"
+        android:background="@drawable/voicecomment_background" >
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/back"
+            android:layout_width="34dp"
+            android:layout_height="29.5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="13.325dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/voicecomment_background_back" />
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/close"
+            android:layout_width="34dp"
+            android:layout_height="29.5dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="13.325dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/voicecomment_background_fork" />
+
+        <LinearLayout
+            android:id="@+id/starlin"
+            android:layout_width="match_parent"
+            android:layout_height="29dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginTop="75dp"
+            android:orientation="horizontal" >
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/star1"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:background="@drawable/voicecomment_star_press" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/star2"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:layout_marginLeft="6.65dp"
+                android:background="@drawable/voicecomment_star_press" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/star3"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:layout_marginLeft="6.65dp"
+                android:background="@drawable/voicecomment_star_press" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/star4"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:layout_marginLeft="6.65dp"
+                android:background="@drawable/voicecomment_star_press" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/star5"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:layout_marginLeft="6.65dp"
+                android:background="@drawable/voicecomment_star_press" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="104.165dp"
+            android:textColor="#ff0780bd"
+            android:textSize="10sp" />
+
+        <FrameLayout
+            android:id="@+id/voicefra"
+            android:layout_width="70.25dp"
+            android:layout_height="73.5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="117.5dp" >
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/voice"
+                android:layout_width="70.25dp"
+                android:layout_height="73.5dp"
+                android:background="@drawable/voicecomment_voice_button" />
+
+            <com.ellabook.record.AudioRecordView
+                android:id="@+id/audioRecordView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <com.ellabook.share.TileButton
+                    android:id="@+id/audioRecordViewbutton"
+                    android:layout_width="70.25dp"
+                    android:layout_height="73.5dp"
+                    android:background="@drawable/voicecomment_voice_button_press" />
+            </com.ellabook.record.AudioRecordView>
+
+            <com.ellabook.record.VoiceView
+                android:id="@+id/voiceview"
+                android:layout_width="63.58dp"
+                android:layout_height="63.58dp"
+                android:layout_marginBottom="3.33dp"
+                android:layout_marginLeft="3.33dp" />
+
+            <com.ellabook.record.RoundProgressBar
+                android:id="@+id/circleview"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="2dp"
+                android_custom:roundColor="#000780bd"
+                android_custom:roundProgressColor="#ff0780bd"
+                android_custom:roundWidth="3dip"
+                android_custom:textIsDisplayable="false"
+                android_custom:textSize="0sp" />
+        </FrameLayout>
+
+        <com.ellabook.share.TileButton
+            android:id="@+id/text"
+            android:layout_width="117.5dp"
+            android:layout_height="8.75dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="203.5dp"
+            android:background="@drawable/voicecomment_voice_word" />
+
+        <RelativeLayout
+            android:id="@+id/choserela"
+            android:layout_width="match_parent"
+            android:layout_height="30.5dp"
+            android:layout_marginLeft="27dp"
+            android:layout_marginRight="27dp"
+            android:layout_marginTop="203.5dp" >
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/button1"
+                android:layout_width="75dp"
+                android:layout_height="30.5dp"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/voicecomment_voice_cancel_button" />
+
+            <com.ellabook.share.TileButton
+                android:id="@+id/button2"
+                android:layout_width="75dp"
+                android:layout_height="30.5dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/voicecomment_voice_say_it_againl_button" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

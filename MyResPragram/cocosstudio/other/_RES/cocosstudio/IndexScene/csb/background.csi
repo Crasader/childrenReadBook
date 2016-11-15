@@ -1,0 +1,20 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="background" Type="Plist" ID="c5dcbc93-f306-41cb-b0a2-cc2bb15944b6" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="2" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="IndexScene/res/index_background.png" />
+      <FilePathData Path="IndexScene/res/index_background0.png" />
+      <FilePathData Path="IndexScene/res/index_background02.png" />
+      <FilePathData Path="IndexScene/res/index_background03.png" />
+      <FilePathData Path="IndexScene/res/index_background04.png" />
+      <FilePathData Path="IndexScene/res/index_tree_l_143_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/index_tree_r_185_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/index_glowworm_568h.png" />
+      <FilePathData Path="IndexScene/res/index_light02_568h.png" />
+      <FilePathData Path="IndexScene/res/index_meteor_568h.png" />
+      <FilePathData Path="IndexScene/res/index_star_normal_568h.png" />
+      <FilePathData Path="IndexScene/res/index_star_Selecyed_568h.png" />
+    </ImageFiles>
+    <MaxSize Width="2048" Height="2048" />
+  </Content>
+</PlistInfoProjectFile>

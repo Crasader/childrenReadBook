@@ -1,0 +1,8 @@
+git init
+git add .
+git commit -m "first commit"
+git remote add origin http://192.168.10.10:3000/yuyuexing/ellabook_android.git
+git push -u origin master
+
+git config --global user.email "operatium@163.com"
+git config --global user.name "yuyuexing"

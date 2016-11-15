@@ -1,0 +1,951 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>IndexScene/res/yancong_00000.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,1},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00001.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,114},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00002.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,227},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00003.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,340},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00004.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,453},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00005.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,566},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00006.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,679},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00007.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,792},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00008.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,905},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00009.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1962,1018},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00010.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1953},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00011.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{114,1953},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00012.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{227,1953},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00013.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{340,1937},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00014.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{453,1937},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00015.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{566,1931},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00016.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{635,1931},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00017.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{704,1931},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/yancong_00018.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{773,1931},{67,111}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{67,111}</string>
+			</dict>
+			<key>IndexScene/res/Wheel_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1785,1097},{63,60}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{63,60}</string>
+			</dict>
+			<key>IndexScene/res/wink_1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{771,931},{57,31}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{57,31}</string>
+			</dict>
+			<key>IndexScene/res/wink_2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{771,990},{57,31}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{57,31}</string>
+			</dict>
+			<key>IndexScene/res/Wxhp_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,617},{312,408}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{312,408}</string>
+			</dict>
+			<key>IndexScene/res/Xsmf_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{411,931},{304,358}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{304,358}</string>
+			</dict>
+			<key>IndexScene/res/Smallwheel_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1069,794},{24,25}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{24,25}</string>
+			</dict>
+			<key>IndexScene/res/star_00006.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{821,617},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00007.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{821,853},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00008.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1245},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00009.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1481},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00010.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1717},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00011.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{389,1543},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00012.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{625,1543},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00013.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{861,1517},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00014.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1077,1131},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00015.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1097,1515},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00016.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1333,1515},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00017.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1313,1131},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00018.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1549,1097},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00019.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1569,1515},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/star_00020.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1805,1485},{234,246}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{234,246}</string>
+			</dict>
+			<key>IndexScene/res/Picture_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{411,617},{312,408}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{312,408}</string>
+			</dict>
+			<key>IndexScene/res/Kxsd_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,931},{312,408}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{312,408}</string>
+			</dict>
+			<key>IndexScene/res/flag_00000.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1069,692},{32,21}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{32,21}</string>
+			</dict>
+			<key>IndexScene/res/flag_00001.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1069,726},{32,21}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{32,21}</string>
+			</dict>
+			<key>IndexScene/res/flag_00002.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1069,760},{32,21}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{32,21}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00000.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{771,1449},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00001.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{842,1931},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00002.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{910,1931},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00003.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{978,1931},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00004.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1046,1931},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00005.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{877,1449},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00006.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{983,1449},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00007.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1077,1379},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00008.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1089,1447},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00009.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1183,1379},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00010.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1195,1447},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00011.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1289,1379},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00012.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1301,1447},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00013.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1395,1379},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00014.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1407,1447},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00015.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1501,1379},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00016.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1513,1447},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Comp 1_00017.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1607,1345},{104,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,66}</string>
+			</dict>
+			<key>IndexScene/res/Connect_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1069,617},{73,26}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{73,26}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00000.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{249,1245},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00001.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{249,1521},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00002.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{249,1797},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00003.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{525,1791},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00004.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{801,1791},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00005.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1077,1765},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00006.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1114,1905},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00007.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1353,1763},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00008.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1390,1903},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00009.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1713,1345},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/cloud_00010.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1629,1763},{274,138}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{274,138}</string>
+			</dict>
+			<key>IndexScene/res/Baffle_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1619,1413},{59,67}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{59,67}</string>
+			</dict>
+			<key>IndexScene/res/beam_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2031,1},{36,5}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{36,5}</string>
+			</dict>
+			<key>IndexScene/res/Yltj_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{771,1089},{304,358}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{304,358}</string>
+			</dict>
+			<key>IndexScene/res/index_background_night_ipad.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1},{1094,614}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{1094,614}</string>
+			</dict>
+			<key>IndexScene/res/index_background01_night_ipad.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1648,1},{1094,193}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1094,193}</string>
+			</dict>
+			<key>IndexScene/res/index_background02_night_ipad.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1097,1},{1094,299}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1094,299}</string>
+			</dict>
+			<key>IndexScene/res/index_background03_night_ipad.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1398,1},{1094,248}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1094,248}</string>
+			</dict>
+			<key>IndexScene/res/index_background04_night_ipad.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1843,1},{1094,117}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1094,117}</string>
+			</dict>
+			<key>IndexScene/res/Ylxs_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{411,1237},{304,358}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{304,358}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>train.png</string>
+			<key>realTextureFileName</key>
+			<string>train.png</string>
+			<key>size</key>
+			<string>{2048,2048}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>2048</integer>
+			<key>height</key>
+			<integer>2048</integer>
+		</dict>
+	</dict>
+</plist>

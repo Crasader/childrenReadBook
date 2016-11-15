@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>WaitMessageBox/res/loading 4_00000.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+			<key>WaitMessageBox/res/loading 4_00001.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,236},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+			<key>WaitMessageBox/res/loading 4_00002.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{172,1},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+			<key>WaitMessageBox/res/loading 4_00003.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{172,236},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+			<key>WaitMessageBox/res/loading 4_00004.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{343,1},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+			<key>WaitMessageBox/res/loading 4_00005.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{343,236},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+			<key>WaitMessageBox/res/loading 4_00006.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{514,1},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+			<key>WaitMessageBox/res/loading 4_00007.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{749,1},{233,169}}</string>
+				<key>offset</key>
+				<string>{12,9}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{1092,614}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>wait.png</string>
+			<key>realTextureFileName</key>
+			<string>wait.png</string>
+			<key>size</key>
+			<string>{1024,512}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1024</integer>
+			<key>height</key>
+			<integer>512</integer>
+		</dict>
+	</dict>
+</plist>

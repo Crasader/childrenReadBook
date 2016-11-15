@@ -1,0 +1,19 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="backcover" Type="Plist" ID="64b4e404-27fe-4c07-850d-e4b82fe9a423" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="1" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="Book/res/Backcover_I-want-to-write-reviews_button_736h.png" />
+      <FilePathData Path="Book/res/Backcover_I-want-to-write-reviews_button_press_736h.png" />
+      <FilePathData Path="Book/res/Backcover_reading_book_736h.png" />
+      <FilePathData Path="Book/res/Backcover_try_buy_button_736h.png" />
+      <FilePathData Path="Book/res/Backcover_try_buy_button_press_736h.png" />
+      <FilePathData Path="Book/res/Backcover_try_good-comments_no-comment_736h.png" />
+      <FilePathData Path="Book/res/Backcover_try_Invitation-to-register_ipad@2x.png" />
+      <FilePathData Path="Book/res/Backcover_vip_button_736h.png" />
+      <FilePathData Path="Book/res/Backcover_vip_button_press_736h.png" />
+      <FilePathData Path="Book/res/Backcover_comments_736h.png" />
+      <FilePathData Path="Book/res/Backcover_comments_press_736h.png" />
+    </ImageFiles>
+    <MaxSize Width="1024" Height="1024" />
+  </Content>
+</PlistInfoProjectFile>

@@ -1,0 +1,92 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="train" Type="Plist" ID="6c96c7f0-6bf3-4016-856a-89a15090c036" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="1" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="IndexScene/res/yancong_00000.png" />
+      <FilePathData Path="IndexScene/res/yancong_00001.png" />
+      <FilePathData Path="IndexScene/res/yancong_00002.png" />
+      <FilePathData Path="IndexScene/res/yancong_00003.png" />
+      <FilePathData Path="IndexScene/res/yancong_00004.png" />
+      <FilePathData Path="IndexScene/res/yancong_00005.png" />
+      <FilePathData Path="IndexScene/res/yancong_00006.png" />
+      <FilePathData Path="IndexScene/res/yancong_00007.png" />
+      <FilePathData Path="IndexScene/res/yancong_00008.png" />
+      <FilePathData Path="IndexScene/res/yancong_00009.png" />
+      <FilePathData Path="IndexScene/res/yancong_00010.png" />
+      <FilePathData Path="IndexScene/res/yancong_00011.png" />
+      <FilePathData Path="IndexScene/res/yancong_00012.png" />
+      <FilePathData Path="IndexScene/res/yancong_00013.png" />
+      <FilePathData Path="IndexScene/res/yancong_00014.png" />
+      <FilePathData Path="IndexScene/res/yancong_00015.png" />
+      <FilePathData Path="IndexScene/res/yancong_00016.png" />
+      <FilePathData Path="IndexScene/res/yancong_00017.png" />
+      <FilePathData Path="IndexScene/res/yancong_00018.png" />
+      <FilePathData Path="IndexScene/res/Wheel_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/wink_1.png" />
+      <FilePathData Path="IndexScene/res/wink_2.png" />
+      <FilePathData Path="IndexScene/res/Wxhp_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/Xsmf_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/Smallwheel_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/star_00006.png" />
+      <FilePathData Path="IndexScene/res/star_00007.png" />
+      <FilePathData Path="IndexScene/res/star_00008.png" />
+      <FilePathData Path="IndexScene/res/star_00009.png" />
+      <FilePathData Path="IndexScene/res/star_00010.png" />
+      <FilePathData Path="IndexScene/res/star_00011.png" />
+      <FilePathData Path="IndexScene/res/star_00012.png" />
+      <FilePathData Path="IndexScene/res/star_00013.png" />
+      <FilePathData Path="IndexScene/res/star_00014.png" />
+      <FilePathData Path="IndexScene/res/star_00015.png" />
+      <FilePathData Path="IndexScene/res/star_00016.png" />
+      <FilePathData Path="IndexScene/res/star_00017.png" />
+      <FilePathData Path="IndexScene/res/star_00018.png" />
+      <FilePathData Path="IndexScene/res/star_00019.png" />
+      <FilePathData Path="IndexScene/res/star_00020.png" />
+      <FilePathData Path="IndexScene/res/Picture_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/Kxsd_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/flag_00000.png" />
+      <FilePathData Path="IndexScene/res/flag_00001.png" />
+      <FilePathData Path="IndexScene/res/flag_00002.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00000.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00001.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00002.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00003.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00004.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00005.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00006.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00007.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00008.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00009.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00010.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00011.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00012.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00013.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00014.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00015.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00016.png" />
+      <FilePathData Path="IndexScene/res/Comp 1_00017.png" />
+      <FilePathData Path="IndexScene/res/Connect_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/cloud_00000.png" />
+      <FilePathData Path="IndexScene/res/cloud_00001.png" />
+      <FilePathData Path="IndexScene/res/cloud_00002.png" />
+      <FilePathData Path="IndexScene/res/cloud_00003.png" />
+      <FilePathData Path="IndexScene/res/cloud_00004.png" />
+      <FilePathData Path="IndexScene/res/cloud_00005.png" />
+      <FilePathData Path="IndexScene/res/cloud_00006.png" />
+      <FilePathData Path="IndexScene/res/cloud_00007.png" />
+      <FilePathData Path="IndexScene/res/cloud_00008.png" />
+      <FilePathData Path="IndexScene/res/cloud_00009.png" />
+      <FilePathData Path="IndexScene/res/cloud_00010.png" />
+      <FilePathData Path="IndexScene/res/Baffle_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/beam_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/Yltj_ipad@2x.png" />
+      <FilePathData Path="IndexScene/res/index_background_night_ipad.png" />
+      <FilePathData Path="IndexScene/res/index_background01_night_ipad.png" />
+      <FilePathData Path="IndexScene/res/index_background02_night_ipad.png" />
+      <FilePathData Path="IndexScene/res/index_background03_night_ipad.png" />
+      <FilePathData Path="IndexScene/res/index_background04_night_ipad.png" />
+      <FilePathData Path="IndexScene/res/Ylxs_ipad@2x.png" />
+    </ImageFiles>
+    <MaxSize Width="2048" Height="2048" />
+  </Content>
+</PlistInfoProjectFile>

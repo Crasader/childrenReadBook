@@ -1,0 +1,11 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="vioceplist" Type="Plist" ID="cf1c9d90-2b05-4bfe-accb-ee231f17938b" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="1" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="other/Backcover_vioce0_736h.png" />
+      <FilePathData Path="other/Backcover_vioce1_736h.png" />
+      <FilePathData Path="other/Backcover_vioce2_736h.png" />
+    </ImageFiles>
+    <MaxSize Width="256" Height="256" />
+  </Content>
+</PlistInfoProjectFile>
