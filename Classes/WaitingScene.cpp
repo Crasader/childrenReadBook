@@ -75,7 +75,10 @@ bool Waiting::init(std::string bookId, bool isView)
 			bookPath = FileUtils::getInstance()->getWritablePath() + "bookUNZip/" + bookId + "/Iphone1334";
 			drawPath = "bookUNZip/" + bookId + "/";
 		}
-		//BookParser::getInstance()->setBookPlayModeState(AUTOPLAY);
+		if (App::getMemberID() == "5656")
+		{
+			BookParser::getInstance()->setBookPlayModeState(AUTOPLAY);
+		}
 		BookParser::getInstance()->setDrawFilePath(drawPath);
 		//BookParser::getInstance()->setScreenShotPath(StringUtils::format("temp/share%d.png", (int)YYXLayer::getRandom()));
 		//退出按钮

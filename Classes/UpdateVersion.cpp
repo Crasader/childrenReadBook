@@ -129,13 +129,14 @@ bool UpdateVersion::init() {
 		//char* buf = static_cast<char*>(event->getUserData());
 		//progressBar->setPercent(atoi(buf));
 		int rateofprogress = (int)event->getUserData();
-		progressBar->setPercent(rateofprogress);
+		if(progressBar)
+			progressBar->setPercent(rateofprogress);
 	});
 	//下载成功事件注册
 	auto listenDownSuccess = EventListenerCustom::create("UpdataVersionDownload_Success", [=](EventCustom* event) {
 		this->removeFromParentAndCleanup(true);
 	});
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenDownloading, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenDownloading, progressBar);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenDownSuccess, this);
 	return true;
 }

@@ -924,7 +924,7 @@ void Load::getEllaNotification() {
 	////测试
 	//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushId", 10);
 	//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushType", 2);
-	////YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "imageUrl", -999, "http://b.hiphotos.baidu.com/image/h%3D200/sign=22ca0df79b13b07ea2bd57083cd69113/5fdf8db1cb134954d01b62b25e4e9258d0094adb.jpg");
+	//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "imageUrl", -999, "http://b.hiphotos.baidu.com/image/h%3D200/sign=22ca0df79b13b07ea2bd57083cd69113/5fdf8db1cb134954d01b62b25e4e9258d0094adb.jpg");
 	//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushUrl", -999, "www.baidu.com");
 	//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushTitle", -999, "Title");
 	//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushString", -999, App::getString("YOUARENOTVIP"));

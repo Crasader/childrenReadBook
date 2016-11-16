@@ -379,12 +379,14 @@ public class RecordPresenter {
 						voice.setBackgroundResource(R.drawable.voicecomment_voice_button2);
 						mCirclePercentView.setVisibility(View.GONE);
 						voice.setEnabled(true);
+						mediaPlayer.reset();
 						restartAllOtherVoice();
 
 					}
 				});
 				try {
-					mediaPlayer.setDataSource(mAudioRecordFilePath);
+					if(mAudioRecordFilePath != null)
+						mediaPlayer.setDataSource(mAudioRecordFilePath);
 					mediaPlayer.prepare();voice.setBackgroundResource(R.drawable.voicecomment_voice_button3);
 					mCirclePercentView.setVisibility(View.VISIBLE);
 					Timer mTimer = new Timer();
@@ -410,7 +412,7 @@ public class RecordPresenter {
 						}
 					});
 
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
