@@ -1124,11 +1124,15 @@ Layer* Parent::initNode_Set()
 	if (invite)
 	{
 		invite->addClickEventListener([](Ref* sender) {
-			if (App::GetInstance()->m_me)
-			{
-				string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
-				NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
-			}
+			YYXLayer::controlTouchTime(1, "yaoqingzhuceTime", []() {
+				if (App::GetInstance()->m_me)
+				{
+					string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
+					NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
+				}
+				else
+					Toast::create(App::getString("STR_YOUDONTLOGIN"));
+			});
 		});
 	}
 	return (Layer *)layer;

@@ -70,6 +70,7 @@
             android:background="@android:color/transparent" >
 
             <com.ellabook.share.TileButton
+                android:id="@+id/detailedrulesbtn"
                 android:layout_width="50.5dp"
                 android:layout_height="11dp"
                 android:layout_alignParentRight="true"
@@ -86,6 +87,7 @@
             android:background="@android:color/transparent" >
 
             <com.ellabook.share.TileButton
+                android:id="@+id/myinvitationbtn"
                 android:layout_width="50.5dp"
                 android:layout_height="11dp"
                 android:layout_alignParentLeft="true"

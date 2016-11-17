@@ -159,7 +159,18 @@ public class MySharePresenter {
 		RelativeLayout detailedrules = (RelativeLayout) contentView.findViewById(R.id.detailedrules);
 		RelativeLayout myinvitation = (RelativeLayout) contentView.findViewById(R.id.myinvitation);
 
+		Button detailedrulesbtn = (Button) contentView.findViewById(R.id.detailedrulesbtn);
+		Button myinvitationbtn = (Button) contentView.findViewById(R.id.myinvitationbtn);
 		detailedrules.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				rela1.setVisibility(View.GONE);
+				rela2.setVisibility(View.VISIBLE);
+			}
+		});
+		detailedrulesbtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -208,6 +219,53 @@ public class MySharePresenter {
 				rela1.setVisibility(View.VISIBLE);
 			}
 		});
+		myinvitationbtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				final String url = MacroCode.IP + MacroCode.NET_GETAVATAR + "?memberId=" + memberID;
+				Log.e("show", url);
+//				new Thread(new Runnable() {
+//
+//					public void run() {
+						StringRequest request = new StringRequest(Method.GET, url,
+								new Listener<String>() {
+							@Override
+							public void onResponse(String response) {
+								System.out.println(response);
+								JSONObject obj;
+								try {
+									obj = new JSONObject(response);
+									rela1.setVisibility(View.GONE);
+									rela3.setVisibility(View.VISIBLE);
+									if(obj.getBoolean("result")){
+										JSONArray data = obj.getJSONArray("data");
+										listView.setAdapter(new com.ellabook.share.ListAdapter(context , data));
+										tv_text.setText("已成功邀请"+data.length()+"人，累计红包"+data.length()*10+"元");
+									}
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+								
+							}
+
+						}, new Response.ErrorListener() {
+							@Override
+							public void onErrorResponse(VolleyError error) {
+								Log.e("201608161705", error.toString());
+							}
+						});
+						mQueue.add(request);
+//					}
+//					
+//				}).start();
+				
+
+			}
+		});
 		myinvitation.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -226,11 +284,11 @@ public class MySharePresenter {
 								JSONObject obj;
 								try {
 									obj = new JSONObject(response);
+									rela1.setVisibility(View.GONE);
+									rela3.setVisibility(View.VISIBLE);
 									if(obj.getBoolean("result")){
 										JSONArray data = obj.getJSONArray("data");
 										listView.setAdapter(new com.ellabook.share.ListAdapter(context , data));
-										rela1.setVisibility(View.GONE);
-										rela3.setVisibility(View.VISIBLE);
 										tv_text.setText("已成功邀请"+data.length()+"人，累计红包"+data.length()*10+"元");
 									}
 								} catch (JSONException e) {

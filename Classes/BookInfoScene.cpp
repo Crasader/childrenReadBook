@@ -435,7 +435,8 @@ bool BookInfo::init(int bookId)
 	auto listenerm_ReadButton = EventListenerCustom::create("isBuyRefersh", [=](EventCustom* e) {
 		isBuy = isBuyThisBook();
 		if (isBuy)
-		{			
+		{
+			YYXLayer::sendNotify("bookinfoTianjiapinglun");
 			if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(m_bookId)))
 			{
 				m_tryReadButton->setVisible(false);
@@ -1506,23 +1507,32 @@ Layer* BookInfo::initCommonView()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	//评论按钮
 	auto commentMe = ( Button*)pinglun->getChildByName(BOOKINFO_BUTTON_PINGLUN);
-	commentMe->setTouchEnabled(true);
-	commentMe->addClickEventListener([=](Ref* sender) {
-		YYXLayer::controlTouchTime(1, "BookInfoScenecommentMe", [=]() {
-			//用户未登录
-			if (App::GetInstance()->m_me == nullptr) {
-				Toast::create(App::getString("COMMENT_TIP_LOGIN"));
-				return;
-			}
-			//未购买
-			if (!isBuy) {
-				Toast::create(App::getString("COMMENT_TIP_BUY"));
-				return;
-			}
-			auto pScene = Director::getInstance()->getRunningScene();
-			pScene->addChild(SendComment::create(m_bookId));
+	commentMe->setVisible(false);
+	if (isBuyThisBook())
+	{
+		commentMe->setVisible(true);
+		commentMe->setTouchEnabled(true);
+		commentMe->addClickEventListener([=](Ref* sender) {
+			YYXLayer::controlTouchTime(1, "BookInfoScenecommentMe", [=]() {
+				auto pScene = Director::getInstance()->getRunningScene();
+				pScene->addChild(SendComment::create(m_bookId));
+			});
 		});
+	}
+	auto listener_comment = EventListenerCustom::create("bookinfoTianjiapinglun", [=](EventCustom* e) {
+		if (isBuyThisBook())
+		{
+			commentMe->setVisible(true);
+			commentMe->setTouchEnabled(true);
+			commentMe->addClickEventListener([=](Ref* sender) {
+				YYXLayer::controlTouchTime(1, "BookInfoScenecommentMe", [=]() {
+					auto pScene = Director::getInstance()->getRunningScene();
+					pScene->addChild(SendComment::create(m_bookId));
+				});
+			});
+		}
 	});
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener_comment, pinglun);
 	m_listview = (ListView*)pinglun->getChildByName(BOOKINFO_FIND_LISTVIEW_BYNAME_COMMENT);
 	m_listview->setScrollBarEnabled(false);
 	m_listview->setSize(Size(320, 300));
