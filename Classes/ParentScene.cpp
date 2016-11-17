@@ -1088,7 +1088,7 @@ Layer* Parent::initNode_Set()
 	wipecache_button->addClickEventListener([=](Ref *sender) {
 		if (YYXLayer::getBoolFromXML(SOUND_KEY))
 			YYXLayer::PLAYBUTTON;
-		//TODO 弹框确认
+		//弹框确认
 		auto messagebox = CSLoader::createNode(MESSAGEBOX_WIPECACHE_CSB);
 		messagebox->setAnchorPoint(Vec2(0.5f, 0.5f));
 		messagebox->setPosition(visibleSize.width / 2, visibleSize.height / 2);
@@ -1101,12 +1101,9 @@ Layer* Parent::initNode_Set()
 		});
 		auto yes = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_YES);
 		yes->addClickEventListener([=](Ref* sender) {
-
 			if (YYXLayer::getBoolFromXML(SOUND_KEY))
 				YYXLayer::PLAYBUTTON;
-
-			//清除缓存并更新数据库
-			////CCLOG("%d", GetCurrentThreadId());
+			//清除缓存
 			std::thread pthread(&Parent::deleteCache, this);
 			pthread.detach();
 			this->removeChild(messagebox);
@@ -1269,68 +1266,7 @@ void Parent::deleteCache() {
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "downloadBook");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "bookCity");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "voiceComment");
-	//sqlite3* myDB = SqliteManager::OpenDataBase();
-
-	//删除zip文件
-	//vector<string> param;
-	//param.push_back("bookId");
-	//param.push_back("path");
-	//param.push_back("status");
-	//vector<unordered_map<string, ParaType>> result = SqliteManager::SelectData(myDB, DB_RES, param, "where status=1 or status=4");//zip文件
-	//将不在解压的zip文件删除
-	//bool isUnzip = false;
-	//for (int i = 0; i < result.size(); i++) {
-	//	isUnzip = false;
-	//	string zipName;
-	//	if (result[i]["status"].intPara == 1) {
-	//		zipName = StringUtils::format("%d", result[i]["bookId"].intPara);
-	//	}
-	//	else{
-	//		zipName = StringUtils::format("%dview", result[i]["bookId"].intPara);
-	//	}
-	//	//判断zip是否正在被解压
-	//	for (vector<string>::iterator it = DownloadRes::getInstans()->unpressingBooks.begin(); it != DownloadRes::getInstans()->unpressingBooks.end();) {
-	//		if (strcmp((*it).c_str(), zipName.c_str()) == 0) {
-	//			isUnzip = true;
-	//			break;
-	//		}
-	//		it++;
-	//	}
-	//	//不在解压，则删除zip及数据库记录
-	//	if (!isUnzip) {
-	//		FileUtils::getInstance()->removeFile(FileUtils::getInstance()->getWritablePath() + result[i]["path"].stringPara);
-	//		SqliteManager::DeleteData(myDB, DB_RES, StringUtils::format("where bookId=%d and status=%d", result[i]["bookId"].intPara, result[i]["status"].intPara));
-	//	}
-	//}
-
-	////根据用户是否登录判断需要清理的文件
-	//if (App::GetInstance()->m_me == nullptr) {
-	//	//用户未登录，删除所有封面资源，下载的试读阅读资源
-	//	string docPath = FileUtils::getInstance()->getWritablePath() + "bookCover";
-	//	DeleteDirectory(docPath);
-	//	docPath = FileUtils::getInstance()->getWritablePath() + "unzip";
-	//	DeleteDirectory(docPath);
-	//	SqliteManager::DeleteData(myDB, DB_RES, "where status=0 or status=2 or status=5");
-	//	SqliteManager::DeleteData(myDB, DB_DOWNLOAD, "");
-	//}
-	//else {
-	//	//用户已登录，删除所有封面资源
-	//	string docPath = FileUtils::getInstance()->getWritablePath() + "bookCover";
-	//	DeleteDirectory(docPath);
-	//	
-	//	//删除下载的试读资源
-	//	vector<string> param2;
-	//	param2.push_back("path");
-	//	vector<unordered_map<string, ParaType>> result2 = SqliteManager::SelectData(myDB, DB_RES, param2, "status=5");//试读资源文件
-	//	for (int i = 0; i < result2.size(); i++) {
-	//		FileUtils::getInstance()->removeFile(FileUtils::getInstance()->getWritablePath() + result2[i]["path"].stringPara);
-	//	}
-
-	//	//删除数据库相关记录
-	//	SqliteManager::DeleteData(myDB, DB_RES, "where status=0 or status=5");
-	//}
-	//SqliteManager::CloseDataBase(myDB);
-
+	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "LocalCacheSize", getLocalCacheSize() * 100);
 	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=] {
 		auto sv = (cocos2d::ui::ScrollView*)m_show->getChildByName(FIND_ScrollView_BY_NAME);
 		auto wipecache_text = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_BY_NAME_WIPECACHE);
@@ -1402,6 +1338,10 @@ void Parent::DeleteDirectory(string filePath)
 	//删除空文件夹
 	rmdir(filePath.c_str());
 #endif // (CC_PLATFORM_ANDROID == CC_TARGET_PLATFORM)
+	if (!FileUtils::getInstance()->isDirectoryExist(filePath))
+	{
+		FileUtils::getInstance()->createDirectory(filePath);
+	}
 }
 
 //意见反馈
