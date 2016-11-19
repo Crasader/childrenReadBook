@@ -64,7 +64,7 @@ bool NetIntface::IsNetConnect(bool hint)
 	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	App::log("WIN32--This function(NetIntface::IsNetConnect()) is not implemented");
-	result = true;
+	result = false;
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	result = CocosAndroidJni::IsNetConnect(hint, "showNetConnectError");
@@ -189,7 +189,7 @@ void NetIntface::WIN32_httpGet(string url, string runKey, string errorKey)
 	});
 }
 
-void NetIntface::TraversingFiles(string path, function<void(string filePath)> fileRun, function<void(string fileDir)> dirRun)
+void NetIntface::TraversingFiles(string path, function<void(string filePath, string name)> fileRun, function<void(string fileDir, string name)> dirRun)
 {
 	if (!FileUtils::getInstance()->isDirectoryExist(path))
 		return;
@@ -210,7 +210,7 @@ void NetIntface::TraversingFiles(string path, function<void(string filePath)> fi
 			//文件-删除
 			sprintf(FileName, FolderName, ent->d_name);
 			if (fileRun)
-				fileRun(FileName);
+				fileRun(FileName, ent->d_name);
 		}
 		else {
 			if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) {
@@ -219,7 +219,7 @@ void NetIntface::TraversingFiles(string path, function<void(string filePath)> fi
 			//文件夹-递归
 			sprintf(FileName, FolderName, ent->d_name);
 			if (dirRun)
-				dirRun(FileName);
+				dirRun(FileName, ent->d_name);
 		}
 	}
 #endif
@@ -240,7 +240,7 @@ void NetIntface::TraversingFiles(string path, function<void(string filePath)> fi
 			{//文件夹-递归
 				string newPath = path + "/" + FileInfo.name;
 				if (dirRun)
-					dirRun(newPath);
+					dirRun(newPath, FileInfo.name);
 			}
 		}
 		else
@@ -248,7 +248,7 @@ void NetIntface::TraversingFiles(string path, function<void(string filePath)> fi
 			//文件-删除
 			string filename = (path + "/" + FileInfo.name);
 			if (fileRun)
-				fileRun(filename);
+				fileRun(filename, FileInfo.name);
 		}
 	} while (_findnext(Handle, &FileInfo) == 0);
 	_findclose(Handle);
@@ -2090,6 +2090,7 @@ void NetIntface::share(string filePath, string bookName, string targetUrl, strin
 		return;
 	setMapFunction(runKey, runFunction);
 	setMapFunction(errorKey, errorRunFunction);
+	SimpleAudioEngine::getInstance()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::Share(filePath.c_str(), bookName.c_str() , targetUrl.c_str(), headUrl.c_str(), title.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
@@ -2428,6 +2429,10 @@ void NetIntface::inviteRegister(int memberId, string url , string runKey, functi
 		return;
 	setMapFunction(runKey, runFunction);
 	setMapFunction(errorKey, errorRunFunction);
+	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
+		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+	else
+		SimpleAudioEngine::getInstance()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::inviteRegister(memberId, url.c_str(), runKey.c_str(), errorKey.c_str());
 #endif

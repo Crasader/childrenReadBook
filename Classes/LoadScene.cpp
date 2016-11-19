@@ -90,6 +90,9 @@ void Load::onEnterTransitionDidFinish()
 	initData();
 	initMemberHttp();
 	App::protectedTiming();
+	thread([]() {
+		YYXLayer::CopyDirectory(FileUtils::getInstance()->getWritablePath()+"unzip", FileUtils::getInstance()->getWritablePath()+"bookUNZip");
+	}).detach();
 }
 
 void Load::initData()

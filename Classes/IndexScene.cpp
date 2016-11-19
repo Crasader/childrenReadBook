@@ -356,28 +356,31 @@ bool Index::init()
 	music->setTouchEnabled(true);
 	music->addClickEventListener([=](Ref* pSender) {
 		CCLOG("音乐按钮回调函数");
-		if (music->getTag() == OPEN)
-		{
-			music->loadTexture(PICTURE_INDEX_CLOSE_MUSIC, TextureResType::PLIST);
-			music->setTag(CLOSE);
-			//setBoolToXML(MUSIC_KEY, false);
-			//setBoolToXML(SOUND_KEY, false);
-			YYXLayer::setFileValue(MUSIC_KEY, "false");
-			YYXLayer::setFileValue(SOUND_KEY, "false");
-			SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-			SimpleAudioEngine::getInstance()->pauseAllEffects();
-		}
-		else
-		{
-			music->loadTexture(PICTURE_INDEX_OPEN_MUSIC, TextureResType::PLIST);
-			music->setTag(OPEN);
-			//setBoolToXML(MUSIC_KEY, true);
-			//setBoolToXML(SOUND_KEY, true);
-			YYXLayer::setFileValue(MUSIC_KEY, "true");
-			YYXLayer::setFileValue(SOUND_KEY, "true");
-			SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-			SimpleAudioEngine::getInstance()->resumeAllEffects();
-		}
+		YYXLayer::controlTouchTime(1, "setmusicTime", [=]() {
+			if (music->getTag() == OPEN)
+			{
+				music->loadTexture(PICTURE_INDEX_CLOSE_MUSIC, TextureResType::PLIST);
+				music->setTag(CLOSE);
+				YYXLayer::setFileValue(MUSIC_KEY, "false");
+				YYXLayer::setFileValue(SOUND_KEY, "false");
+				SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+				SimpleAudioEngine::getInstance()->stopAllEffects();
+				SimpleAudioEngine::getInstance()->end();
+			}
+			else
+			{
+				music->loadTexture(PICTURE_INDEX_OPEN_MUSIC, TextureResType::PLIST);
+				music->setTag(OPEN);
+				YYXLayer::setFileValue(MUSIC_KEY, "true");
+				YYXLayer::setFileValue(SOUND_KEY, "true");
+				if (App::isNight())
+					SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY_NIGHT, true);
+				else
+					SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
+			}
+		}, []() {
+			Toast::create(App::getString("CAOZUOGUOYUPINGFAN"),false);
+		});
 	});
 	////猫头鹰
 	auto owl = Sprite::create();

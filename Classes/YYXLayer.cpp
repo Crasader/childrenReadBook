@@ -2400,3 +2400,21 @@ void YYXLayer::PLAYBUTTON()
 	if (getBoolFromXML(SOUND_KEY))
     SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_BUTTON);
 }
+
+//复制文件夹 不替换
+void YYXLayer::CopyDirectory(string sourceDir, string destDir)
+{
+	App::log("YYXLayer::CopyDirectory " + sourceDir + " == >>>" + destDir);
+	if (!FileUtils::getInstance()->isDirectoryExist(destDir))
+		FileUtils::getInstance()->createDirectory(destDir);
+	NetIntface::TraversingFiles(sourceDir, [destDir](string filepath, string filename) {
+		string destpath = destDir + "/" + filename;
+		if (!FileUtils::getInstance()->isFileExist(destpath))
+		{
+			App::copyFile(filepath, destpath);
+			App::log("copyFile=  " + filepath + "   ======>>" + destpath);
+		}
+	}, [destDir](string dirpath, string dirname) {
+		CopyDirectory(dirpath, destDir + "/" + dirname);
+	});
+}

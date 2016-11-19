@@ -812,7 +812,7 @@ void App::searchReadRecordJson()
 	//int httpReadRecordPause = YYXStruct::getMapInt64(App::GetInstance()->myData, "httpReadRecordPause", -999);
 	//if (httpReadRecordPause == 1)
 		//return;
-	NetIntface::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "readBookRecord", [=](string filePath) {
+	NetIntface::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "readBookRecord", [=](string filePath, string name) {
 		//string httpReadRecordJsonPath = YYXStruct::getMapString(App::GetInstance()->myData, "httpReadRecordJsonPath", "");
 		//if (httpReadRecordJsonPath != "")
 			//return;
@@ -875,7 +875,7 @@ void App::searchReadRecordJson()
 				//YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "httpReadRecordJsonPath");
 			});
 		}
-	}, [](string dirPath) {
+	}, [](string dirPath, string name) {
 		App::log("NetIntface::TraversingFiles dir =" + dirPath);
 	});
 }

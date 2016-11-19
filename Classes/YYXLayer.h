@@ -156,6 +156,7 @@ public:
 	//声音宏转换过来的函数 兼容性
 	static bool getBoolFromXML(string str);
 	static void PLAYBUTTON();
+	static void CopyDirectory(string sourceDir, string destDir);
 	//写json
 	static string getStringFormMap(map<string, string>);
 	//解析json

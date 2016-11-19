@@ -33,6 +33,8 @@ bool BookRoom::init()
     {
         return false;
     }
+	//数据
+	loadTheDataInTheMemory();
 	m_offline = !NetIntface::IsNetConnect();
 	YYXFunctionQueue::GetInstance()->clear();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -145,9 +147,7 @@ bool BookRoom::init()
 		books.push_back(book3);
 		books.push_back(book4);
 		books.push_back(book5);
-	}
-	//数据
-	loadTheDataInTheMemory();
+	}	
 	//书籍
 	refershPage(bookMode);
 	//滑动控制
@@ -854,13 +854,18 @@ vector<int> BookRoom::getCurrentPageBookID()
 	}
 	if (m_offline)
 	{
+		vector<int> removebook;
 		//离线的时候把未下载的书全部剔除
 		for (auto it : alldata)
 		{
 			if (!FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(it.first)))
 			{
-				alldata.erase(it.first);
+				removebook.push_back(it.first);
 			}
+		}
+		for (auto it : removebook)
+		{
+			alldata.erase(it);
 		}
 		//App::GetInstance()->myBuyBookMap.clear();
 		//App::GetInstance()->myBuyBookVector.clear();

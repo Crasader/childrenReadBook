@@ -94,7 +94,7 @@ void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 	AudioPlayer::getInstance()->pauseAllEffect();
     // if you use SimpleAudioEngine, it must be pause
-     SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+	SimpleAudioEngine::getInstance()->end();
 }
 
 // this function will be called when the app is active again
@@ -102,5 +102,11 @@ void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 	AudioPlayer::getInstance()->resumeAllEffect();
     // if you use SimpleAudioEngine, it must resume here
-     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
+	{
+		if (App::isNight())
+			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY_NIGHT, true);
+		else
+			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
+	}
 }

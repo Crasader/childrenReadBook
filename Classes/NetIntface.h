@@ -36,7 +36,7 @@ public:
 	static void httpGet(string url, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	static void WIN32_httpGet(string url, string runKey, string errorKey);
 	//遍历文件夹
-	static void TraversingFiles(string path, function<void(string filePath)> fileRun, function<void(string fileDir)> dirRun);
+	static void TraversingFiles(string path, function<void(string filePath, string name)> fileRun, function<void(string fileDir, string name)> dirRun);
 	//判断wifi是否存在
 	static bool isWifi();
 	//获取下载的目录
