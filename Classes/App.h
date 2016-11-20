@@ -23,25 +23,6 @@ USING_NS_CC;
 using namespace cocos2d::network;
 using namespace std;
 
-//通知类型
-//enum NotifyType {
-//	REFRESHUI, //刷新界面
-//	HTTPCOVER, //请求封面
-//	HTTPBOOKINFO, //请求书籍信息
-//	STARTSCHEDU, //启动倒计时
-//	REMOVEWAITLayer,//删除等待屏蔽层
-//	MESSAGEBOX,//提示消息
-//	PAY,//支付
-//	LOADDATA,//加载数据源
-//	NOTIFY_HOME,//设置返回上级按钮为可点击状态
-//	JUMPSCENE//跳转场景
-//};
-//
-//#define NOTIFY_REFRESHUI "refreshUI"//通知名称: 刷新界面
-//#define NOTIFY_HTTPCOVER "httpCover"//通知名称: 网络请求封面
-//#define NOTIFY_HTTPBOOKINFO "httpBookInfo"//通知名称: 网络请求书籍简介
-//#define NOTIFY_STARTSCHEDUTIME "startSchedu"//通知名称: 启动倒计时
-//#define NOTIFY_JUMPSCENE "jumpToScene"//通知名称: 跳转场景
 typedef pair<int, int> PAIR;
 
 enum MySceneName {
@@ -126,9 +107,9 @@ public:
 
 	static std::string m_resource;//设备
 
-	string version = "1.7.0";//应用版本
+	string version = "1.7.1";//应用版本
 
-	int DataBaseVersion = 6;//数据库版本
+	//int DataBaseVersion = 6;//数据库版本
 
 	vector<map<std::string ,YYXStruct>> m_SceneOrder;//记录场景的顺序
 

@@ -42,7 +42,7 @@ public class MacroCode {
 	
 	public final static String IP = "http://cloud.ellabook.cn";
 //	public final static String IP = "http://192.168.10.10:8089";
-//	public final static String IP = "http://112.124.61.64";
+//	public final static String IP = "http://114.55.175.152";
 	public final static String RESOURCE = "android";//"iphone6";
 	public final static String NET_LOGIN = "/ellabook-server/member/login.do";
 	//登录post (username String 用户名& password String 密码) ----0男1女2保密
