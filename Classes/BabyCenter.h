@@ -25,8 +25,8 @@ private:
 	//Node* m_parentNode;
 	//Node* m_photoNode;
 	int m_childrenId;
-	string selectPath="";//选中的原图
-	string selectCutRoundPath = "";//选中的圆形图片 用于展示界面
+	//string selectPath="";//选中的原图
+	//string selectCutRoundPath = "";//选中的圆形图片 用于展示界面
 	
 public:
 	ImageView* m_BigPhoto;//大头像控件

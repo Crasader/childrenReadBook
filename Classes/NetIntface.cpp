@@ -1,4 +1,4 @@
-#include "NetIntface.h"
+﻿#include "NetIntface.h"
 #include "YYXLayer.h"
  #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <windows.h>
@@ -1448,7 +1448,7 @@ string NetIntface::getAlbumAbsolutePath()
 	CocosAndroidJni::GetPhotoPath(path);
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	path = FileUtils::getInstance()->getWritablePath();
+	path = FileUtils::getInstance()->getWritablePath() + "temp";
 #endif
 	return path;
 }
@@ -1547,7 +1547,25 @@ void NetIntface::photograph(string fileName, string dir, string runKey, function
 	CocosAndroidJni::photographAlbumSelectImage(fileName.c_str(), dir.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	Toast::create("win32 have not photographAlbumSelectImage");
+	//Toast::create("win32 have not photographAlbumSelectImage");
+	auto paht = FileUtils::getInstance()->fullPathForFilename(IAMGE_BABYCENTER_CHANGECHILD_CHILD_HEADPORTRAIT);
+	if (!FileUtils::getInstance()->isDirectoryExist(dir))
+		FileUtils::getInstance()->createDirectory(dir);
+	auto res = CopyFileA(paht.c_str(), (dir + "/" + fileName).c_str(), FALSE);
+	if (res == TRUE)
+	{
+		if (runFunction)
+		{
+			runFunction(dir + "/" + fileName);
+		}
+	}
+	else
+	{
+		if (errorRunFunction)
+		{
+			errorRunFunction("");
+		}
+	}
 #endif
 }
 

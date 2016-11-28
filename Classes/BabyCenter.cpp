@@ -684,6 +684,7 @@ void BabyCenter::initPhotoLayer() {
 	m_BigPhoto = (ImageView*)SelcetHeadPortrait->getChildByName(PHOTOSHOW_FIND_BIGPHOTO);
 	showPortrait(m_BigPhoto);
 	auto listenerShowPhoto = EventListenerCustom::create("PhotoLayerShowFullPathImage", [=](EventCustom* e) {
+		string selectCutRoundPath = YYXStruct::getMapString(App::GetInstance()->myData, "selectCutRoundPath", "");
 		if (selectCutRoundPath != "" && FileUtils::getInstance()->isFileExist(selectCutRoundPath))
 			m_BigPhoto->loadTexture(selectCutRoundPath);
 	});
@@ -693,7 +694,8 @@ void BabyCenter::initPhotoLayer() {
 	localPhoto->setTouchEnabled(true);
 	localPhoto->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "PHOTOSHOW_FIND_LOCALPHOTOTime", [=]() {
-			selectPath = "";
+			//selectPath = "";
+			YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "selectPath");
 			if (YYXLayer::getBoolFromXML(SOUND_KEY))
 				YYXLayer::PLAYBUTTON;
 			string dir = FileUtils::getInstance()->getWritablePath() + "temp";
@@ -704,11 +706,13 @@ void BabyCenter::initPhotoLayer() {
 				FileUtils::getInstance()->removeFile(thispath);
 			}
 			NetIntface::openPhotoAlbumSelectImage(fileName, dir, 600, 600, "openPhotoAlbumSelectImageSuccess", [=](string path) {
-				selectPath = path;
+				//selectPath = path;
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectPath", -999, path);
 				int id = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
 				string savePath = FileUtils::getInstance()->getWritablePath() + StringUtils::format("temp/ShowchildHead_%d.png", id);
 				App::makeRoundImage(path, savePath);
-				selectCutRoundPath = savePath;
+				//selectCutRoundPath = savePath;
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectCutRoundPath", -999, savePath);
 				YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
 			}, "openPhotoAlbumSelectImageFail", [](string str) {
 				Toast::create(App::getString("QUXIAOCAOZUO"));
@@ -721,25 +725,30 @@ void BabyCenter::initPhotoLayer() {
 	takePhoto->setScale9Enabled(true);
 	takePhoto->setTouchEnabled(true);
 	takePhoto->addClickEventListener([=](Ref* sender) {
-		selectPath = "";
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
-		string dir = NetIntface::getAlbumAbsolutePath();
-		string fileName = "photograph.png";
-		string imgpath = dir + "/" + fileName;
-		if (FileUtils::getInstance()->isFileExist(imgpath))
-		{
-			FileUtils::getInstance()->removeFile(imgpath);
-		}
-		NetIntface::photograph(fileName, dir, "photographSuccess", [=](string path) {
-			selectPath = path;
-			int id = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
-			string savePath = FileUtils::getInstance()->getWritablePath() + StringUtils::format("temp/ShowchildHead_%d.png", id);
-			App::makeRoundImage(path, savePath);
-			selectCutRoundPath = savePath;
-			YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
-		}, "photographFail", [](string str) {
-			Toast::create(App::getString("QUXIAOCAOZUO"));
+		YYXLayer::controlTouchTime(1, "PHOTOSHOW_FIND_LOCALPHOTOTime", [=]() {
+			//selectPath = "";
+			YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "selectPath");
+			if (YYXLayer::getBoolFromXML(SOUND_KEY))
+				YYXLayer::PLAYBUTTON;
+			string dir = NetIntface::getAlbumAbsolutePath();
+			string fileName = "photograph.png";
+			string imgpath = dir + "/" + fileName;
+			if (!FileUtils::getInstance()->isDirectoryExist(dir))
+				FileUtils::getInstance()->createDirectory(dir);
+			if (FileUtils::getInstance()->isFileExist(imgpath))
+				FileUtils::getInstance()->removeFile(imgpath);
+			NetIntface::photograph(fileName, dir, "photographSuccess", [=](string path) {
+				//selectPath = path;
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectPath", -999, path);
+				int id = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
+				string savePath = FileUtils::getInstance()->getWritablePath() + StringUtils::format("temp/ShowchildHead_%d_%d.png", id, (int)YYXLayer::getRandom());
+				App::makeRoundImage(path, savePath);
+				//selectCutRoundPath = savePath;
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectCutRoundPath", -999, savePath);
+				YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
+			}, "photographFail", [](string str) {
+				Toast::create(App::getString("QUXIAOCAOZUO"));
+			});
 		});
 	});
 
@@ -1302,8 +1311,6 @@ void BabyCenter::getReadRecord(int child_id) {
 void BabyCenter::uploadAvatar() {
 	App::log("BabyCenter::uploadAvatar");
 	auto showID = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
-	App::log("childid=", showID);
-	App::log("path=" + selectPath);
 	if (showID == -999)
 	{
 		App::GetInstance()->pushScene(BabyCenterScene);
@@ -1312,6 +1319,7 @@ void BabyCenter::uploadAvatar() {
 			Toast::create(App::getString("DENGLUSHIXIAOCHONGXINDENGLU"));
 		});
 	}
+	string selectPath = YYXStruct::getMapString(App::GetInstance()->myData, "selectPath", "");
 	if (selectPath == "" || !FileUtils::getInstance()->isFileExist(selectPath))
 	{
 		Toast::create(App::getString("SHANGCHUANDETOUXIANGTUPIANYICHANG"));
@@ -1319,6 +1327,7 @@ void BabyCenter::uploadAvatar() {
 	}
 	auto memberid = App::GetInstance()->m_me->id;
 	NetIntface::httpUpImage(showID, selectPath, memberid, "httpUpImageSuccess", [=](string fullpath) {
+		string selectCutRoundPath = YYXStruct::getMapString(App::GetInstance()->myData, "selectCutRoundPath", "");
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, selectCutRoundPath);
 		YYXLayer::setFileValue("ShowChildHeadPortrait", selectCutRoundPath);
 		string pathkey = StringUtils::format("path+childID=%d",showID);
@@ -1327,7 +1336,6 @@ void BabyCenter::uploadAvatar() {
 	}, "httpUpImageFail", [](string str) {
 		Toast::create(App::getString("STR_UPPICTURE_ERROR"));
 	});
-
 	App::log("BabyCenter::uploadAvatar---END");
 }
 

@@ -363,7 +363,7 @@ void BookParser::bookQuit()
 	PreLoadResourcesController::pageQuitRemoveResources();
 	Director::getInstance()->getTextureCache()->removeAllTextures();
 	SpriteFrameCache::getInstance()->removeSpriteFrames();
-	Director::getInstance()->replaceScene(BookParser::getInstance()->getRootScene());
+	//Director::getInstance()->replaceScene(BookParser::getInstance()->getRootScene());
 	log("%s", Director::getInstance()->getTextureCache()->getCachedTextureInfo().c_str());
 	drawLayerSavePNGFile();
 	//Director::getInstance()->replaceScene(TransitionPageTurn::create(0.2, IndexLayer::createScene(), true));
