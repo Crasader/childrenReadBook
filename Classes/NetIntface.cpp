@@ -64,7 +64,7 @@ bool NetIntface::IsNetConnect(bool hint)
 	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	App::log("WIN32--This function(NetIntface::IsNetConnect()) is not implemented");
-	result = false;
+	result = true;
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	result = CocosAndroidJni::IsNetConnect(hint, "showNetConnectError");
@@ -95,42 +95,25 @@ long long NetIntface::getMillsTime()
 	return result;
 }
 
-//***********************
-//<=插入函数
-//***********************
-//打开数据库
-//bool NetIntface::openDataBase()
-//{
-//	bool result = false;
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	result = true;
-//#endif
-//	return result;
-//}
-
-//判断数据库是否正常,判断数据库的版本是否最新,否则重建数据库
-//int NetIntface::examineDataBase()
-//{
-//	int result = -999;
-//	int databaseVersion = App::GetInstance()->DataBaseVersion;
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	result = CocosAndroidJni::examineDataBase(databaseVersion);
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//#endif
-//	return result;
-//}
-
 //网络请求POST方法
 void NetIntface::httpPost(string url, map<string, string> parameter, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
 	if (!IsNetConnect())
 		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = url+": httpPost error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 	string p = YYXLayer::getStringFormMap(parameter);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::httpPost(url.c_str(), p.c_str(), runKey.c_str(), errorKey.c_str());
@@ -162,8 +145,20 @@ void NetIntface::httpGet(string url , string runKey, function<void(string)> runF
 {
 	if (!IsNetConnect())
 		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = url + ": httpGet error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 	//App::log(url);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::httpGet(url.c_str(), runKey.c_str(), errorKey.c_str());
@@ -554,8 +549,20 @@ void NetIntface::httpPay(int memberId,  int rechargeCount, int payMoney, string 
 {
 	if (!IsNetConnect())
 		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = payinfo + ": httpPay error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::httpGetRechargeOrderID(memberId, rechargeCount, payMoney, payType.c_str(), payinfo.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
@@ -611,17 +618,6 @@ void NetIntface::httpShareWithCoupon(int memberID, string runKey, function<void(
 {
 	auto url = std::string(IP).append(NET_GETSHAREREDPACKET).append(StringUtils::format("?memberId=%d", memberID)).append("&resource=").append(App::m_resource);
 	httpGet(url, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpShareWithCoupon(memberID, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpShareWithCoupon, memberID,  runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpShareWithCoupon(int memberID,  string runKey, string errorKey)
@@ -688,17 +684,6 @@ void NetIntface::httpBookStoreSceneCurrentlyPageBookListInfo(int memberID, int B
 		.append("&memberId=").append(StringUtils::format("%d", memberID))
 		.append("&visitFrom=").append(visitFrom);
 	httpGet(url, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpBookStoreSceneCurrentlyPageBookListInfo(memberID, BookStoreId, pageIndex, visitFrom.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpBookStoreSceneCurrentlyPageBookListInfo, memberID, BookStoreId, pageIndex, visitFrom, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpBookStoreSceneCurrentlyPageBookListInfo(int memberID, int BookStoreId, int pageIndex, string m_visitFrom, string runKey, string errorKey)
@@ -1011,18 +996,6 @@ void NetIntface::httpGetUserBuyBooks(long memberID, string runKey, function<void
 	string url = std::string(IP).append(NET_BOOKROOMBOOKLIST).append("memberId=").append
 		(StringUtils::format("%d", memberID)).append("&page=1").append("&pagesize=1000").append("&resource=").append(App::GetInstance()->m_resource);
 	httpGet(url, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//	//http://112.124.61.64/ellabook-server/mybook?memberId=17167&page=1&pagesize=1000&resource=android
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpGetUserBuyBooks(memberID, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpGetUserBuyBooks, memberID, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 /*{"data":[{"goodsId":100290,"bookMakeUrl":"","bookId":336,"goods_verify":0,"hashBuy":1,"bookAuthor":"孙瑾慧  张霞","remainTime":0,"osskey":"2adbb845e5c14f138c4120260ada449b","downloadTime":1471344212,"isNewEllaBook":0,"bookPrice":0,"bookmarketPrice":0,"orderId":2050,"bookName":"点点乐园  识字（五）","downloadNum":4,"bookDownloadSize":0,"ossbucket":"ellabook-book","payMent":0,"bookPress":null,"bookReadUrl":"","goods_addtime":0,"bookScore":0,"goods_state":0,"coverKey":"464359ffa47d4aaf83564dc868c5e299","bookCoverUrl":"","bookPlayUrl":"","bookListenUrl":""},{"goodsId":13,"bookMakeUrl":"","bookId":13,"goods_verify":0,"hashBuy":1,"bookAuthor":"朱文迪 刘晓博","remainTime":0,"osskey":"b9a1e5892bae4de9a9f039c04ca06d22","downloadTime":1471344212,"isNewEllaBook":0,"bookPrice":0,"bookmarketPrice":0,"orderId":2035,"bookName":"动态阅读8-3文字游乐园","downloadNum":3,"bookDownloadSize":0,"ossbucket":"ellabook-book","payMent":0,"bookPress":null,"bookReadUrl":"","goods_addtime":0,"bookScore":0,"goods_state":0,"coverKey":"1a8c9db1fbcd4331aba67686226fb7d0","bookCoverUrl":"","bookPlayUrl":"","bookListenUrl":""},{"goodsId":7,"bookMakeUrl":"","bookId":7,"goods_verify":0,"hashBuy":1,"bookAuthor":"樊慧  陈桐","remainTime":0,"osskey":"ae651eaeb1524ebe9dcb8e9a1b0d6e24","downloadTime":1471249126,"isNewEllaBook":0,"bookPrice":0,"bookmarketPrice":0,"orderId":2034,"bookName":"动态阅读2-1来，抱抱","downloadNum":3,"bookDownloadSize":0,"ossbucket":"ellabook-book","payMent":0,"bookPress":null,"bookReadUrl":"","goods_addtime":0,"bookScore":0,"goods_state":0,"coverKey":"cc3d0c5068e140f28d8c076f24e64af3","bookCoverUrl":"","bookPlayUrl":"","bookListenUrl":""},{"goodsId":100277,"bookMakeUrl":"","bookId":323,"goods_verify":0,"hashBuy":1,"bookAuthor":"霍君尧 马文静","remainTime":0,"osskey":"e4b6e6bfa31b4213b238d7187f25ee01","downloadTime":1471240154,"isNewEllaBook":0,"bookPrice":0,"bookmarketPrice":0,"orderId":2029,"bookName":"点点乐园  识字（六）","downloadNum":2,"bookDownloadSize":0,"ossbucket":"ellabook-book","payMent":0,"bookPress":null,"bookReadUrl":"","goods_addtime":0,"bookScore":0,"goods_state":0,"coverKey":"ac2d873ad14e42419b93cdafd16469b0","bookCoverUrl":"","bookPlayUrl":"","bookListenUrl":""},{"goodsId":100283,"bookMakeUrl":"","bookId":329,"goods_verify":0,"hashBuy":1,"bookAuthor":"刘晓博","remainTime":0,"osskey":"1b41b32ef9934ace95139d5a74777063","downloadTime":1471344211,"isNewEllaBook":0,"bookPrice":0,"bookmarketPrice":0,"orderId":2028,"bookName":"卖火柴的小女孩","downloadNum":3,"bookDownloadSize":0,"ossbucket":"ellabook-book","payMent":0,"bookPress":null,"bookReadUrl":"","goods_addtime":0,"bookScore":0,"goods_state":0,"coverKey":"4028e1116b994a9e91dd618ed357a527","bookCoverUrl":"","bookPlayUrl":"","bookListenUrl":""},{"goodsId":100302,"bookMakeUrl":"","bookId":348,"goods_verify":0,"hashBuy":1,"bookAuthor":"张宇飞","remainTime":0,"osskey":"a54601a9607a4bd5b35cfbeca27bb422","downloadTime":1471240149,"isNewEllaBook":0,"bookPrice":0,"bookmarketPrice":0,"orderId":2025,"bookName":"如果没有其他小朋友的话","downloadNum":2,"bookDownloadSize":0,"ossbucket":"ellabook-book","payMent":0,"bookPress":null,"bookReadUrl":"","goods_addtime":0,"bookScore":0,"goods_state":0,"coverKey":"d37b8fcfc6bf42b6921d1c4da35ecb26","bookCoverUrl":"","bookPlayUrl":"","bookListenUrl":""},{"goodsId":14,"bookMakeUrl":"","bookId":14,"goods_verify":0,"hashBuy":1,"bookAuthor":"李朋   张宇飞","remainTime":0,"osskey":"dd8bcb2c66d348d18b6632c92aa1ac74","downloadTime":1471245886,"isNewEllaBook":0,"bookPrice":0,"bookmarketPrice":0,"orderId":2024,"bookName":"动态阅读4-2春天在哪里","downloadNum":9,"bookDownloadSize":0,"ossbucket":"ellabook-book","payMent":0,"bookPress":null,"bookReadUrl":"","goods_addtime":0,"bookScore":0,"goods_state":0,"coverKey":"101e19249d9c4b7c98a726970c2398d9","bookCoverUrl":"","bookPlayUrl":"","bookListenUrl":""},{"goodsId":2,"bookMakeUrl":"","bookId":2,"goods_verify":0,"hashBuy":1,"bookAuthor":"曹珑","remainTime":0,"osskey":"67281fe28af04b9cbce87ed*/
 void NetIntface::WIN32_httpGetUserBuyBooks(int memberID, string runKey, string errorKey)
@@ -1093,17 +1066,6 @@ void NetIntface::httpGetUserBalance(long memberID, string runKey, function<void(
 	string url = std::string(IP).append(NET_GETRECHARGE).append("?memberId=").append
 		(StringUtils::format("%d", memberID)).append("&resource=").append(App::GetInstance()->m_resource);
 	NetIntface::httpGet(url, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpGetUserBalance(memberID, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpGetUserBalance,  memberID, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpGetUserBalance(int memberID, string runKey, string errorKey)
@@ -1167,17 +1129,6 @@ void NetIntface::httpAccountRegiste(string memberName, string memberPasswd, stri
 	string url = string() + IP + NET_REGISTER + "?memberName=" + memberName
 		+ "&memberPasswd=" + memberPasswd + "&resource=" + App::m_resource;
 	httpGet(url, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpAccountRegiste(memberName.c_str(), memberPasswd.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpAccountRegiste, memberName,  memberPasswd, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpAccountRegiste(string memberName, string memberPasswd, string runKey, string errorKey)
@@ -1358,17 +1309,6 @@ void NetIntface::httpAmendUserInfo(int memberId, int sex, string city,  string p
 	parameter["province"] = province;
 	parameter["resource"] = App::GetInstance()->m_resource;
 	httpPost(url, parameter, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpAmendUserInfo(memberId, sex, city.c_str(), province.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpAmendUserInfo, memberId, sex, city, province, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpAmendUserInfo(int memberId, int sex, string city, string province, string runKey, string errorKey)
@@ -1464,17 +1404,6 @@ void NetIntface::httpAmendBabyInfo(int childrenId, string childrenName, int chil
 	parameter["childrenBirth"] = childrenBirth;
 	parameter["resource"] = App::GetInstance()->m_resource;
 	httpPost(url, parameter, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpAmendBabyInfo(childrenId, childrenName.c_str(), childrenSex, childrenBirth.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpAmendBabyInfo, childrenId,  childrenName,  childrenSex,  childrenBirth, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpAmendBabyInfo(int childrenId, string childrenName, int childrenSex, string childrenBirth, string runKey, string errorKey)
@@ -1497,24 +1426,23 @@ void NetIntface::WIN32_httpAmendBabyInfo(int childrenId, string childrenName, in
 	});
 }
 
-////拍照,裁切成圆形图片保存到指定位置
-//void NetIntface::photographAlbumSelectImage(string fileName, string dir, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
-//{
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::photographAlbumSelectImage(fileName.c_str(), dir.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	Toast::create("win32 have not photographAlbumSelectImage");
-//#endif
-//}
-
 //打开相册选中图片,图片保存到指定位置
 void NetIntface::openPhotoAlbumSelectImage(string fileName,string dir, long width, long height, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = dir+"/"+ fileName + "error: openPhotoAlbumSelectImage => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("photo_%d.txt", (int)YYXLayer::getRandom()), 3);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::openPhotoAlbumSelectImage(fileName.c_str(), dir.c_str(), width, height, runKey.c_str(), errorKey.c_str());
 #endif
@@ -1527,9 +1455,21 @@ void NetIntface::openPhotoAlbumSelectImage(string fileName,string dir, long widt
 void NetIntface::httpUpImage(int childID, string ImageFullPath, int memberId, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
 	if (!IsNetConnect())
-		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+		return; 
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = ImageFullPath + ": httpUpImage error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::UpImage(childID, ImageFullPath.c_str(),  memberId,  runKey.c_str(), errorKey.c_str());
 #endif
@@ -1541,8 +1481,20 @@ void NetIntface::httpUpImage(int childID, string ImageFullPath, int memberId, st
 //拍照, 保存到指定图片路径
 void NetIntface::photograph(string fileName, string dir, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = dir + "/" + fileName + "error: photograph => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("photo_%d.txt", (int)YYXLayer::getRandom()),3);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::photographAlbumSelectImage(fileName.c_str(), dir.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
@@ -1572,8 +1524,20 @@ void NetIntface::photograph(string fileName, string dir, string runKey, function
 //图片切成圆形
 void NetIntface::cutTheRounded(string path, string savePath, long width, long height, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = path + ": cutTheRounded  savePath error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.txt", (int)YYXLayer::getRandom()),3);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::cutTheRounded(path.c_str(), savePath.c_str(), width, height, runKey.c_str(), errorKey.c_str());
 #endif
@@ -1591,18 +1555,6 @@ void NetIntface::httpLogIn(string account, string password, string runKey, funct
 	parameter["password"] = password;
 	parameter["resource"] = App::GetInstance()->m_resource;
 	httpPost(url, parameter, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//	UserDefault::getInstance()->setStringForKey("", password);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpLogIn(account.c_str(), password.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpLogIn, account, password, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpLogIn(string account, string password, string runKey, string errorKey)
@@ -1680,17 +1632,6 @@ void NetIntface::httpDeleteChild(int memberId, int childrenId, string runKey, fu
 	parameter["childrenId"] = StringUtils::format("%d", childrenId);
 	parameter["resource"] = App::GetInstance()->m_resource;
 	httpPost(url, parameter, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpDeleteChild(memberId, childrenId, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpDeleteChild, memberId, childrenId, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpDeleteChild(int memberId, int childrenId, string runKey, string errorKey)
@@ -1733,17 +1674,6 @@ void NetIntface::httpAddChild(int memberId, string childrenName, int childrenSex
 	parameter["childrenBirth"] = childrenBirth;
 	parameter["resource"] = App::GetInstance()->m_resource;
 	httpPost(url, parameter, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpAddChild(memberId, childrenName.c_str(), childrenSex, childrenBirth.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpAddChild, memberId, childrenName, childrenSex, childrenBirth, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpAddChild(int memberId, string childrenName, int childrenSex, string childrenBirth, string runKey, string errorKey)
@@ -1774,25 +1704,25 @@ void NetIntface::httpAddChildCallBack(string json)
 }
 
 
-/*//下载图片---发送消息的回调可以调用本方法下载,如果不是消息进行回调的需要自行书写回调
-void NetIntface::DownLoadImage(string url , string dir ,string fileName, string runKey, string errorKey)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	CocosAndroidJni::DownLoadImage(url.c_str(), dir.c_str(), fileName.c_str(), runKey.c_str(), errorKey.c_str());
-#endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	std::thread thisthread(&YYXLayer::DownLoadNotify, url, dir, fileName, runKey, errorKey);
-	thisthread.detach();
-#endif
-}*/
-
 //下载
 void NetIntface::DownLoadFile(string url, string dir, string fileName, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
 	if (!IsNetConnect())
 		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = url + ": DownLoadFile " + dir + "/" + fileName + " error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 	std::thread thisthread(&NetIntface::WIN32_DownLoad, url, dir, fileName, runKey, errorKey);
 	thisthread.detach();
 }
@@ -1802,8 +1732,20 @@ void NetIntface::DownLoadImage(string url, string dir, string fileName, string r
 {
 	if (!IsNetConnect())
 		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = url + ": DownLoadImage "+ dir +"/"+fileName+" error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::DownLoadImage(url.c_str(), dir.c_str(), fileName.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
@@ -1874,17 +1816,6 @@ void NetIntface::httpGetChildDetails(int memberID, string runKey, function<void(
 	parameter["memberId"] = StringUtils::format("%d", memberID);
 	parameter["resource"] = App::GetInstance()->m_resource;
 	httpPost(url, parameter, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpGetChildDetails(memberID, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpGetChildDetails, memberID, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpGetChildDetails(int memberID, string runKey, string errorKey)
@@ -1944,17 +1875,6 @@ void NetIntface::httpGetFirstChildHeadPortrait(int memberID,  string runKey, fun
 {
 	string url = string(IP).append(NET_GETFIRSTCHILDHEADPORTRAIT).append("?memberId=").append(StringUtils::format("%d", memberID));
 	NetIntface::httpGet(url, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpGetFirstChildHeadPortrait(memberID,runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpGetFirstChildHeadPortrait, memberID, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpGetFirstChildHeadPortrait(int memberID,  string runKey, string errorKey)
@@ -2000,17 +1920,6 @@ void NetIntface::httpGetBookInfo(int bookInfoID, string runKey, function<void(st
 	auto url = std::string(IP).append(NET_BOOKINFO).append(StringUtils::format("%d", bookInfoID))
 		.append("?memberId=").append(App::getMemberID()).append("&resource=").append(App::GetInstance()->m_resource);
 	NetIntface::httpGet(url, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpGetBookInfo(bookInfoID, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread thisthread(&NetIntface::WIN32_httpGetBookInfo, bookInfoID, runKey, errorKey);
-//	thisthread.detach();
-//#endif
 }
 
 void NetIntface::WIN32_httpGetBookInfo(int bookInfoID, string runKey, string errorKey)
@@ -2106,8 +2015,20 @@ void NetIntface::share(string filePath, string bookName, string targetUrl, strin
 {
 	if (!IsNetConnect())
 		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = bookName + ": share " + " error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 	SimpleAudioEngine::getInstance()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::Share(filePath.c_str(), bookName.c_str() , targetUrl.c_str(), headUrl.c_str(), title.c_str(), runKey.c_str(), errorKey.c_str());
@@ -2153,30 +2074,6 @@ void NetIntface::httpGetUserRedPacketsCallBack(string json, const function<void(
 			errorRunable();
 	}
 }
-//void NetIntface::httpGetUserRedPackets(int memberID, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
-//{
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpGetUserRedPackets(memberID, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread getRedpacketthread(&NetIntface::WIN32_httpGetUserRedPackets, memberID,  runKey,  errorKey);
-//	getRedpacketthread.detach();
-//#endif
-//}
-//
-//void NetIntface::WIN32_httpGetUserRedPackets(int memberID,  string runKey, string errorKey)
-//{
-//	string url = string(IP).append(NET_USERREDPACKET).append("?memberId=").append(StringUtils::format("%d", memberID));
-//	stringHttpRequest(HttpRequest::Type::GET, url, map<string, string>(), 3, [=](string json) {
-//		sendNotify4YYXStruct(runKey,-999, json);
-//	}, [=]() {
-//		sendNotify4YYXStruct(errorKey);
-//	});
-//}
 
 //使用红包购书
 void NetIntface::httpBuyBookWithRedPacket(int memberId, int couponId, int bookId, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
@@ -2190,13 +2087,6 @@ void NetIntface::httpBuyBookWithRedPacket(int memberId, int couponId, int bookId
 	paramter["chargePlatformType"] = "0";
 	paramter["chargePlatformName"] = "android";
 	httpPost(url, paramter, runKey, runFunction, errorKey, errorRunFunction);
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::httpBuyBookWithRedPacket(memberId, couponId, bookId, runKey.c_str(), errorKey.c_str());
-//#endif
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-//	std::thread buybook(&NetIntface::WIN32_httpBuyBookWithRedPacket, memberId, couponId, bookId, runKey, errorKey);
-//	buybook.detach();
-//#endif
 }
 //红包购书的回调
 void NetIntface::httpBuyBookWithRedPacketCallback(string json, function<void(string str)> runable, function<void(string error)> errorRun)
@@ -2331,8 +2221,20 @@ void NetIntface::httpGetBookIsBuyCallBack(string json, function<void(string orde
 //发表语音评论(带界面)
 void NetIntface::goToSendRecording(int bookId, int memberId, int types, string membername, string orderid, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = membername + ": goToSendRecording " + " error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::commentTheRecording(bookId, memberId, types, membername.c_str(), orderid.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
@@ -2371,13 +2273,6 @@ void NetIntface::saveReadRecord(long memberId, long childrenId, long bookId, str
 	paramter["readEndTime"] = readEndTime;
 	paramter["resource"] = App::m_resource;
 	NetIntface::httpPost(url, paramter, runKey, runFunction, errorKey, errorRunFunction);
-//	if (!IsNetConnect())
-//		return;
-//	setMapFunction(runKey, runFunction);
-//	setMapFunction(errorKey, errorRunFunction);	
-//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	CocosAndroidJni::saveReadRecord(memberId, childrenId, bookId, readStartTime.c_str(), readEndTime.c_str(), runKey.c_str(), errorKey.c_str());
-//#endif
 }
 
 void NetIntface::saveReadRecordCallBack(string json, const function<void()> runable, const function<void()> errorRunable)
@@ -2445,8 +2340,20 @@ void NetIntface::inviteRegister(int memberId, string url , string runKey, functi
 {
 	if (!IsNetConnect(true))
 		return;
-	setMapFunction(runKey, runFunction);
-	setMapFunction(errorKey, errorRunFunction);
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = url + ": inviteRegister " + " error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
 	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
 		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 	else
@@ -2456,5 +2363,18 @@ void NetIntface::inviteRegister(int memberId, string url , string runKey, functi
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	Toast::create("windows have not inviteRegister");
+#endif
+}
+
+void NetIntface::getPhoneModel()
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	App::GetInstance()->phoneModel = "android";
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	App::GetInstance()->phoneModel = "win32";
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	App::GetInstance()->phoneModel = "ios";
 #endif
 }

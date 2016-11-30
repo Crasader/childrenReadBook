@@ -107,6 +107,8 @@ public:
 
 	static std::string m_resource;//设备
 
+	string phoneModel = "android";
+
 	string version = "1.7.1";//应用版本
 
 	//int DataBaseVersion = 6;//数据库版本
@@ -225,19 +227,28 @@ public:
 	readMemberId
 	readChildrenId
 	*/
+	//获取唯一字符串标记
+	static string getOnlyKey();
+
+	//记录报错记录
+	static void addErrorLog(string error, string filename, int type);
+
+	//遍历上传报错记录
+	static void upLoadingErrorLog();
+
 	//map排序
 	static vector<PAIR> sortMapToVector(map<int, int> mapData);
 
 	//最近下载
 	map<int, int> bookDownLoad;
+
 	static void addRecordBookDownload(int bookid);
 	//最近阅读
 	map<int, int> bookRead;
+
+	//记录阅读记录
 	static void addRecordBookRead(int bookid);
-	//排序
-	//static vector<PAIR> sortRecordBookDownload();
-	//static vector<PAIR> sortRecordBookRead();
-	//static vector<PAIR> sortRecordMyRentBook();
+
 	static void getMapFromFile(string path, map<string, string>& data);//读出文件里的json, 写入map
 
 	static void cancelData();//注销后,内存数据处理
@@ -339,39 +350,21 @@ public:
 
 	static void threadTiming(long long);//根据视力保护时间开始计时
 
+	//遍历上传阅读记录
 	static void searchReadRecordJson();
+
 	map<string, string> unDeleteFile;
 
 	static void backThreading();//开启安卓返回键计时
+
 	static void backWating();//安卓返回键计时
+
 	//----------------------------------------场景跳转栈------------------------------------------------------
 	void pushScene(MySceneName name, int data=-999,std::string str = "");
 
 	void popBack(MySceneName dangqianScene = LoadScene);
 
 	MySceneName getFromScene();
-	//----------------------------------网络和数据库-----------------------------------------------------
-	//static sqlite3* sqliteOpen();
-
-	//static void sqliteClose();
-
-	//static vector<unordered_map<string, ParaType>> sqliteBookCity4StoreList(sqlite3 * db);//数据库查询书城里面的按钮列表
-
-	//static vector<unordered_map<string, ParaType>> sqliteStoreInfo(sqlite3* db, int BookStoreId);//数据库查询书店信息
-
-	//static vector<unordered_map<string, ParaType>> sqliteBookList(sqlite3* db, int BookStoreId);//数据库查询书店里书籍列表ID
-
-	//static vector<unordered_map<string, ParaType>> sqliteBookInfo(sqlite3* db, int BookId);//数据库查询书籍详情
-
-	//static bool sqliteBookInfoUptime(sqlite3* db, int BookId);//查询书籍详情更新时间
-
-	//static vector<unordered_map<string, ParaType>> sqliteBookPicture(sqlite3* db, int BookId);//数据库查询书籍封面
-
-	//static vector<unordered_map<string, ParaType>> sqliteBookCity_bg(sqlite3 * db, int castleId);//数据库查询书城的背景图片
-
-	//static vector<unordered_map<string, ParaType>> sqliteBookCity_border(sqlite3 * db, int castleId);//数据库查询书城 边框图片
-
-	//static void saveReadRecord();//网络请求-记录阅读记录
 };
 
 #endif // __App_SCENE_H__

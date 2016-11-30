@@ -1,4 +1,4 @@
-#ifndef __YYXDownload_HH__
+﻿#ifndef __YYXDownload_HH__
 #define __YYXDownload_HH__
 #include "cocos2d.h"
 #include <stdio.h>
@@ -50,6 +50,8 @@ public:
 	bool isExitReadyQueue(string taskTag);
 	//判断任务是否被暂停
 	bool isPause(string taskTag);
+	//判断任务是否结束
+	bool isEnd(string taskTag);
 	//开始所有下载线程
 	void startAll();
 	//判断是否在下载队列中

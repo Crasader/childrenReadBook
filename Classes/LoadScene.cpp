@@ -31,8 +31,7 @@ bool Load::init()
     {
 		return false;
     }
-	App::GetInstance();
-	initHttp();
+	App::GetInstance();	
 	//记录当前场景
 	App::m_RunningScene = LoadScene;
 	totalCount = 23;
@@ -45,6 +44,8 @@ bool Load::init()
 	addChild(img);
 	//app打开时间
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "APPOpenTime", YYXLayer::getCurrentTime4Second());
+	//获取机型
+	NetIntface::getPhoneModel();
 	//通知异步加载图片完成
 	auto listenLoadPngOver = EventListenerCustom::create("NOTIFY_LOAD_PNG_OVER", [=](EventCustom* event) {
 		auto cache = SpriteFrameCache::getInstance();
@@ -93,6 +94,7 @@ void Load::onEnterTransitionDidFinish()
 	thread([]() {
 		YYXLayer::CopyDirectory(FileUtils::getInstance()->getWritablePath()+"unzip", FileUtils::getInstance()->getWritablePath()+"bookUNZip");
 	}).detach();
+	initHttp();
 }
 
 void Load::initData()
@@ -127,6 +129,8 @@ void Load::initHttp()
 {
 	//上传阅读记录
 	App::searchReadRecordJson();
+	//上传错误日志
+	App::upLoadingErrorLog();
 	//书城
 	httpBookCityInfoAndDownLoad();
 	//红包活动
@@ -183,6 +187,8 @@ void Load::initDir()
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "downloadBook");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "voiceComment"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "voiceComment");
+	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "errorLog"))
+		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "errorLog");
 }
 
 //获取到充值送红包的活动内容

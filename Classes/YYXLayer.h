@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 YYX框架
 针对cocos2dx封装图层类
 俞越星
@@ -182,5 +182,7 @@ public:
 	static void loge(string str);
 	//展示评论列表
 	static void showCommentListView(ListView * listview, int bookid, int memberid=-1, int titleMaxLength = 15 * 3, int listviewMaxWidth = 320, int contentTextMaxLength = 135, int voiceMaxLength = 250);
+	//遍历json字符串
+	static void TraversingJson(string json, map<string, string>& data);
 };
 #endif // __YYXLAYER_H__

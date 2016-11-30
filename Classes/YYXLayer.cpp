@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 YYX框架
 针对cocos2dx封装图层类
 俞越星
@@ -707,15 +707,7 @@ void YYXLayer::sendNotify4YYXStruct(string eventName, long long luserdata, strin
 long long YYXLayer::getCurrentTime4Second()
 {
 	long long times = -999;
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	times = time(0);
-#endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	times = time(0);
-#endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	times = time(0);
-#endif
 	return times;
 }
 
@@ -723,15 +715,7 @@ long long YYXLayer::getCurrentTime4Second()
 long long YYXLayer::getRandom()
 {
 	long long times = -999;
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	times = time(0);
-#endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	times = time(0);
-#endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	App::log("IOS--This function is not implemented");
-#endif
 	auto num = YYXStruct::getMapInt64(App::GetInstance()->myData, "getRandom", -999);
 	if (times <= num)
 		++num;
@@ -2392,6 +2376,23 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 	listview->jumpToTop();
 	YYXLayer::sendNotify("showCommentListViewEND","666666666666", listview->getItems().size());
 	loge("YYXLayer::showCommentListView");
+}
+
+void YYXLayer::TraversingJson(string json, map<string, string>& data)
+{
+	rapidjson::Document doc;
+	doc.Parse<0>(json.c_str());
+	if (!doc.HasParseError())
+	{
+		for (auto it = doc.MemberBegin(); it != doc.MemberEnd(); it++)
+		{
+			string key = (it->name).GetString();
+			string value = (it->value).GetString();
+			data[key] = value;
+		}
+	}
+	else
+		App::log("json is Error");
 }
 
 //返回按钮

@@ -1,4 +1,4 @@
-#include "YYXFunctionQueue.h"
+﻿#include "YYXFunctionQueue.h"
 
 YYXFunctionQueue* YYXFunctionQueue::instance = nullptr;
 

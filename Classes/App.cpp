@@ -307,7 +307,6 @@ void App::httpComment(int bookid, function<void()> runFunction)
 			string commentCountKey = StringUtils::format("comment_bookid=%d", bookid);//book评论的数量
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, commentCountKey, index + 1);
 		}, runFunction, []() {});
-		NetIntface::deleteMapFunction(runkey);
 	}, errorkey, [](string str) {});
 }
 
@@ -809,13 +808,7 @@ void App::threadTiming(long long startAppTime) {
 
 void App::searchReadRecordJson()
 {
-	//int httpReadRecordPause = YYXStruct::getMapInt64(App::GetInstance()->myData, "httpReadRecordPause", -999);
-	//if (httpReadRecordPause == 1)
-		//return;
 	NetIntface::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "readBookRecord", [=](string filePath, string name) {
-		//string httpReadRecordJsonPath = YYXStruct::getMapString(App::GetInstance()->myData, "httpReadRecordJsonPath", "");
-		//if (httpReadRecordJsonPath != "")
-			//return;
 		string str = YYXLayer::readFile(filePath);
 		rapidjson::Document doc;
 		if (YYXLayer::getJsonObject4Json(doc, str))
@@ -832,7 +825,6 @@ void App::searchReadRecordJson()
 			paramter["readStartTime"] = readStartTime;
 			paramter["readEndTime"] = readEndTime;
 			paramter["resource"] = App::m_resource;
-			//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "httpReadRecordJsonPath", -999, filePath);
 			string url = string(IP).append(NET_SAVE_READHISTORY);
 			string successKey = StringUtils::format("shangchuanReadRecordSuccess_%d", (int)YYXLayer::getRandom());
 			NetIntface::httpPost(url, paramter, successKey, [=](string json) {
@@ -840,34 +832,8 @@ void App::searchReadRecordJson()
 					if (FileUtils::getInstance()->isFileExist(filePath))
 					{
 						if (!FileUtils::getInstance()->removeFile(filePath))
-						{
 							App::GetInstance()->unDeleteFile[filePath] = "";
-						}
 					}
-					//string httpReadRecordJsonPath = YYXStruct::getMapString(App::GetInstance()->myData, "httpReadRecordJsonPath", "");
-					//if (httpReadRecordJsonPath != "" && FileUtils::getInstance()->isFileExist(httpReadRecordJsonPath))
-					//{
-						//if (!FileUtils::getInstance()->removeFile(httpReadRecordJsonPath))
-						//{//删除文件失败
-							//YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "httpReadRecordPause", 1);
-							//thread([]() {
-								//string httpReadRecordJsonPath = YYXStruct::getMapString(App::GetInstance()->myData, "httpReadRecordJsonPath", "");
-								//do {
-									//App::ccsleep(1000 * 60);									
-									//if (httpReadRecordJsonPath != "" && FileUtils::getInstance()->isFileExist(httpReadRecordJsonPath))
-									//{
-										//if (FileUtils::getInstance()->removeFile(httpReadRecordJsonPath)) {
-											//YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "httpReadRecordJsonPath");
-											//YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "httpReadRecordPause");
-											//return;
-										//}
-									//}
-								//} while (FileUtils::getInstance()->isFileExist(httpReadRecordJsonPath));
-							//}).detach();
-							//return;
-						//}
-					//}
-					//YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "httpReadRecordJsonPath");
 				}, []() {
 					//YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "httpReadRecordJsonPath");
 				});
@@ -1198,6 +1164,48 @@ void App::addRecordBookDownload(int bookid)
 
 bool cmp_by_value(const PAIR& lhs, const PAIR& rhs) {
 	return lhs.second > rhs.second;
+}
+
+string App::getOnlyKey()
+{
+	auto str = StringUtils::format("%lld", YYXLayer::getRandom());
+	App::log("%lld= "+str);
+	return str;
+}
+
+void App::addErrorLog(string error, string filename, int type)
+{/*type 1=网络错误  2=文件错误  3= 其他错误*/
+	map<string, string> parater;
+	parater["error"] = error;
+	parater["time"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
+	parater["phone"] = App::GetInstance()->phoneModel;
+	parater["memberId"] = App::getMemberID();
+	parater["resource"] = App::m_resource;
+	parater["system"] = "android 5.0";
+	parater["type"] = StringUtils::format("%d", type);
+	string josn = YYXLayer::getStringFormMap(parater);
+	string filepath = FileUtils::getInstance()->getWritablePath() + "errorLog/" + filename;
+	YYXLayer::writeFile(josn, filepath);
+}
+
+void App::upLoadingErrorLog()
+{
+	NetIntface::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "errorLog", [=](string filePath, string name) {
+		string str = YYXLayer::readFile(filePath);
+		map<string, string> paramter;
+		YYXLayer::TraversingJson(str, paramter);
+		string url = string(IP).append("");
+		NetIntface::httpPost(url, paramter, "", [=](string json) {//post成功
+			NetIntface::saveReadRecordCallBack(json, [=]() {//解析成功
+				if (FileUtils::getInstance()->isFileExist(filePath))
+				{
+					if (!FileUtils::getInstance()->removeFile(filePath))
+						App::GetInstance()->unDeleteFile[filePath] = "";
+				}
+			}, []() {});
+		}, "", [](string posterror) {});		
+	}, [](string dirPath, string name) {//遍历到文件夹
+	});
 }
 
 vector<PAIR> App::sortMapToVector(map<int , int> mapData)

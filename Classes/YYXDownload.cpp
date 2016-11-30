@@ -1,7 +1,7 @@
-#include "YYXDownload.h"
+ï»¿#include "YYXDownload.h"
 
 YYXDownload* YYXDownload::instance = nullptr;
-//	string statusKey = taskTag + "+status";//ÏÂÔØ×´Ì¬ 0=ÏÂÔØ 1=×¼±¸ÏÂÔØ   2=ÔİÍ£  3=ÏÂÔØ½áÊø
+//	string statusKey = taskTag + "+status";//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
 YYXDownload::YYXDownload()
 {
 	App::log("YYXDownload::YYXDownload()");
@@ -30,13 +30,13 @@ std::string YYXDownload::download(string url, string dir, string fileName, strin
 		App::log("YYXDownload::download / " + dir);
 		FileUtils::getInstance()->createDirectory(dir);
 	}
-	//ÅĞ¶ÏÊÇ·ñÖØ¸´ÈÎÎñ
+	//åˆ¤æ–­æ˜¯å¦é‡å¤ä»»åŠ¡
 	auto urltag = YYXStruct::getMapString(data, url, "");
 	auto pathtag = YYXStruct::getMapString(data, dir + "/" + fileName, "");
 	string taskTag = "";
 	if (urltag == "" && pathtag == "")
 	{
-		//Éú³ÉÏÂÔØÈÎÎñµÄÎ¨Ò»±êÊ¶·û
+		//ç”Ÿæˆä¸‹è½½ä»»åŠ¡çš„å”¯ä¸€æ ‡è¯†ç¬¦
 		taskTag = StringUtils::format("%s_downloadTag_%d", fileName.c_str(),(int)YYXLayer::getRandom());
 		YYXStruct::initMapYYXStruct(data, url, -999, taskTag);
 		YYXStruct::initMapYYXStruct(data, dir + "/" + fileName, -999, taskTag);
@@ -76,8 +76,8 @@ std::string YYXDownload::download(string url, string dir, string fileName, strin
 void YYXDownload::pause(string tag)
 {
 	App::log("YYXDownload::stop");
-	//´ÓÏÂÔØ¶ÓÁĞÒÆ³ı
-	//ÅĞ¶ÏÊÇ·ñÔÚÏÂÔØ¶ÓÁĞÖĞ
+	//ä»ä¸‹è½½é˜Ÿåˆ—ç§»é™¤
+	//åˆ¤æ–­æ˜¯å¦åœ¨ä¸‹è½½é˜Ÿåˆ—ä¸­
 	string statusKey = tag + "+status";
 	YYXStruct::initMapYYXStruct(data, statusKey, 2);
 	if (downloadQueue.find(tag) != downloadQueue.end())
@@ -94,7 +94,7 @@ void YYXDownload::pause(string tag)
 
 void YYXDownload::pauseAll()
 {
-	//È«²¿Çå¿Õ
+	//å…¨éƒ¨æ¸…ç©º
 	while (!readyQueue.empty())
 	{
 		auto tag = readyQueue.front();
@@ -113,7 +113,7 @@ void YYXDownload::pauseAll()
 }
 
 //void YYXDownload::autoFullDownload()
-//{//ÅĞ¶ÏÏÂÔØ¶ÓÁĞÊÇ·ñÂú¸ººÉ
+//{//åˆ¤æ–­ä¸‹è½½é˜Ÿåˆ—æ˜¯å¦æ»¡è´Ÿè·
 //	App::log("YYXDownload::autoFullDownload", downloadCount);
 //	App::log("downqueue.size = ", downloadQueue.size());
 //	App::log("readyqueue.size = ", readyQueue.size());
@@ -307,7 +307,7 @@ bool YYXDownload::isExitDownloadQueue(string taskTag)
 //	string statusKey = taskTag + "+status";
 //	int status = YYXStruct::getMapInt64(data, statusKey, 1);
 //	if (url != "" && path != "") 
-//	{//ÏÂÔØ×´Ì¬ 0=ÏÂÔØ 1=×¼±¸ÏÂÔØ   2=ÔİÍ£  3=ÏÂÔØ½áÊø
+//	{//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
 //		if (status == 1)
 //		{
 //			thread(&YYXDownload::downLoadFile, this, url, path, taskTag).detach();
@@ -367,81 +367,87 @@ void YYXDownload::taskEnd(string taskTag, int resultCode)
 }
 
 void YYXDownload::downLoadFile(string url, string path,  const string& taskTag)
-{//ÏÂÔØ×´Ì¬ 0=ÏÂÔØ 1=×¼±¸ÏÂÔØ   2=ÔİÍ£  3=ÏÂÔØ½áÊø
+{//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
 	YYXLayer::logb("YYXDownload::downLoadFile");
 	taskBegin(taskTag);
 	CURL *pCurl;
-	pCurl = curl_easy_init();//³õÊ¼»¯CURLÈ¡µÃ³õÊ¼»¯³É¹¦ºóµÄCURLÖ¸Õë
+	pCurl = curl_easy_init();//åˆå§‹åŒ–CURLå–å¾—åˆå§‹åŒ–æˆåŠŸåçš„CURLæŒ‡é’ˆ
 	FILE *pFile = nullptr;
 	App::log("YYXDownload::downLoadFile"+path);
 	pFile = fopen(path.c_str(), "ab+");
 	if (pFile == nullptr)
 	{
-		taskEnd(taskTag, -1);//³õÊ¼»¯Ê§°Ü
+		taskEnd(taskTag, -1);//åˆå§‹åŒ–å¤±è´¥
 		YYXLayer::loge("YYXDownload::downLoadFile");
 		return;
 	}
-	string statusKey = string(taskTag).append("+status");	//±ê¼Ç¿ªÊ¼ÏÂÔØµÄ×´Ì¬
+	string statusKey = string(taskTag).append("+status");	//æ ‡è®°å¼€å§‹ä¸‹è½½çš„çŠ¶æ€
 	YYXStruct::initMapYYXStruct(data, statusKey, 0);
 	curl_easy_setopt(pCurl, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(pCurl, CURLOPT_FILE, pFile);                  //Ö¸¶¨Ğ´ÈëµÄÎÄ¼şÖ¸Õë
-	curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, pWriteCallback);//ÉèÖÃĞ´Êı¾İµÄ»Øµ÷º¯Êı
-	curl_easy_setopt(pCurl, CURLOPT_VERBOSE, true);                //ÈÃCURL±¨¸æÃ¿Ò»¼şÒâÍâµÄÊÂÇé
-	curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 10000);                 //ÉèÖÃ³¬Ê±Ê±¼ä
+	curl_easy_setopt(pCurl, CURLOPT_FILE, pFile);                  //æŒ‡å®šå†™å…¥çš„æ–‡ä»¶æŒ‡é’ˆ
+	curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, pWriteCallback);//è®¾ç½®å†™æ•°æ®çš„å›è°ƒå‡½æ•°
+	curl_easy_setopt(pCurl, CURLOPT_VERBOSE, true);                //è®©CURLæŠ¥å‘Šæ¯ä¸€ä»¶æ„å¤–çš„äº‹æƒ…
+	curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 10000);                 //è®¾ç½®è¶…æ—¶æ—¶é—´
 	curl_easy_setopt(pCurl, CURLOPT_NOPROGRESS, false);
-	curl_easy_setopt(pCurl, CURLOPT_PROGRESSFUNCTION, DownProgresss);//Ö¸¶¨ÏÔÊ¾½ø¶ÈµÄ»Øµ÷º¯Êı
-	curl_easy_setopt(pCurl, CURLOPT_RESUME_FROM, getLocalFileSize(path.c_str()));// ´Ó±¾µØ´óĞ¡Î»ÖÃ½øĞĞÇëÇóÊı¾İ
-	curl_easy_setopt(pCurl, CURLOPT_PROGRESSDATA, &taskTag);//DownProgresssº¯ÊıµÄµÚÒ»¸ö²ÎÊı	
-	CURLcode nResCode = curl_easy_perform(pCurl);//Ö´ĞĞÉÏÃæÉè¶¨µÄ¶¯×÷²¢·µ»Ø×´Ì¬Âë
-	curl_easy_cleanup(pCurl);//ÊÍ·ÅÏà¹Ø×ÊÔ´
+	curl_easy_setopt(pCurl, CURLOPT_PROGRESSFUNCTION, DownProgresss);//æŒ‡å®šæ˜¾ç¤ºè¿›åº¦çš„å›è°ƒå‡½æ•°
+	curl_easy_setopt(pCurl, CURLOPT_RESUME_FROM, getLocalFileSize(path.c_str()));// ä»æœ¬åœ°å¤§å°ä½ç½®è¿›è¡Œè¯·æ±‚æ•°æ®
+	curl_easy_setopt(pCurl, CURLOPT_PROGRESSDATA, &taskTag);//DownProgressså‡½æ•°çš„ç¬¬ä¸€ä¸ªå‚æ•°	
+	CURLcode nResCode = curl_easy_perform(pCurl);//æ‰§è¡Œä¸Šé¢è®¾å®šçš„åŠ¨ä½œå¹¶è¿”å›çŠ¶æ€ç 
+	curl_easy_cleanup(pCurl);//é‡Šæ”¾ç›¸å…³èµ„æº
 	fclose(pFile);
 	if(!isPause(taskTag))
-		YYXStruct::initMapYYXStruct(data, statusKey, 3);//±ê¼Ç½áÊøÏÂÔØµÄ×´Ì¬	
+		YYXStruct::initMapYYXStruct(data, statusKey, 3);//æ ‡è®°ç»“æŸä¸‹è½½çš„çŠ¶æ€	
 	taskEnd(taskTag, nResCode);
 	YYXLayer::loge("*****************YYXDownload::downLoadFile");
 }
-//zipNameÎŞºó×º
+//zipNameæ— åç¼€
 bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath, function<void(string str)> successRun, function<void(string str)> failRun)
 {
 	YYXLayer::logb("YYXDownload::uncompress");
 	App::ccsleep(1000);
-	//´ò¿ªzipÎÄ¼ş
+	//æ‰“å¼€zipæ–‡ä»¶
 	string zipPath = zipDir + "/" + zipName + ".zip";
 	unzFile zipfile = unzOpen(zipPath.c_str());
 	if (!zipfile) {
-		App::log("can not open downloaded zip file " + zipPath);
-		//Í¨Öª½âÑ¹Ê§°Ü
+		string errorstr = zipPath + " error : Unable to open the zip file";
+		App::log(errorstr);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt",(int)YYXLayer::getRandom()),2);
+		//é€šçŸ¥è§£å‹å¤±è´¥
 		if (failRun)
 			failRun(zipPath);
 		return false;
 	}
 
-	//»ñÈ¡zipÎÄ¼şĞÅÏ¢
+	//è·å–zipæ–‡ä»¶ä¿¡æ¯
 	unz_global_info global_info;
 	if (unzGetGlobalInfo(zipfile, &global_info) != UNZ_OK) {
-		App::log("can not read file global info of " + zipPath);
-		//Í¨Öª½âÑ¹Ê§°Ü
+		string errorstr = zipPath + " error : Unable to get the zip file information";
+		App::log(errorstr);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+		//é€šçŸ¥è§£å‹å¤±è´¥
 		if (failRun)
 			failRun(zipPath);
 		unzClose(zipfile);
 		return false;
 	}
 
-	//±£´æ´ÓÎÄ¼ş¶ÁÈ¡µÄÊı¾İµÄ»º³åÇø
+	//ä¿å­˜ä»æ–‡ä»¶è¯»å–çš„æ•°æ®çš„ç¼“å†²åŒº
 	char readBuffer[8192];
 
 	App::log("start uncompressing");
 
-	//Ñ­»·³éÈ¡Õû¸öÎÄ¼ş
+	//å¾ªç¯æŠ½å–æ•´ä¸ªæ–‡ä»¶
 	uLong i;
 	for (i = 0; i < global_info.number_entry; ++i) {
-		//»ñÈ¡µ±Ç°ÎÄ¼şĞÅÏ¢
+		//è·å–å½“å‰æ–‡ä»¶ä¿¡æ¯
 		unz_file_info fileInfo;
 		char fileName[512];
-		if (unzGetCurrentFileInfo(zipfile, &fileInfo, fileName, 512, nullptr, 0, nullptr, 0) != UNZ_OK) {//¶ÁÈ¡ÎÄ¼şĞÅÏ¢Ê§°Ü
+		if (unzGetCurrentFileInfo(zipfile, &fileInfo, fileName, 512, nullptr, 0, nullptr, 0) != UNZ_OK) {//è¯»å–æ–‡ä»¶ä¿¡æ¯å¤±è´¥
 			unzClose(zipfile);
-			//Í¨Öª½âÑ¹Ê§°Ü
-			App::log("Ñ­»·³éÈ¡Õû¸öÎÄ¼şnotifyUpressFailed " + zipPath);
+			//é€šçŸ¥è§£å‹å¤±è´¥
+			string errorstr = zipPath + " error : "+ string(fileName) +" =>Read the current file information failure";
+			App::log(errorstr);
+			App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
 			if (failRun)
 				failRun(zipPath);
 			return false;
@@ -458,11 +464,13 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 		const string fullPath = _storagePath + fileName;
 
 		if (fileName[filenameLength - 1] == '/' || fileName[filenameLength - 1] == '\\') {
-			//Èç¹ûÊÇÎÄ¼ş¼Ğ£¬Ôò´´½¨Ò»¸öÎÄ¼ş¼Ğ£¬Èç¹ûÎÄ¼ş¼ĞÒÑ´æÔÚÔò²»»áÔÙ´Î´´½¨
+			//å¦‚æœæ˜¯æ–‡ä»¶å¤¹ï¼Œåˆ™åˆ›å»ºä¸€ä¸ªæ–‡ä»¶å¤¹ï¼Œå¦‚æœæ–‡ä»¶å¤¹å·²å­˜åœ¨åˆ™ä¸ä¼šå†æ¬¡åˆ›å»º
 			if (!FileUtils::getInstance()->createDirectory(fullPath)) {
 				unzClose(zipfile);
-				//Í¨Öª½âÑ¹Ê§°Ü
-				App::log("Èç¹ûÊÇÎÄ¼ş¼Ğ£¬Ôò´´½¨Ò»¸öÎÄ¼ş¼Ğ£¬Èç¹ûÎÄ¼ş¼ĞÒÑ´æÔÚÔò²»»áÔÙ´Î´´½¨notifyUpressFailed " + zipName);
+				//é€šçŸ¥è§£å‹å¤±è´¥
+				string errorstr = zipPath + " error : "+ fullPath +"=>Failed to create the folder";
+				App::log(errorstr);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -482,8 +490,10 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				if (!out) {
 					if (!FileUtils::getInstance()->createDirectory(dir)) {
 						unzClose(zipfile);
-						//Í¨Öª½âÑ¹Ê§°Ü
-						App::log("1111111111notifyUpressFailed " + zipName);
+						//é€šçŸ¥è§£å‹å¤±è´¥
+						string errorstr = zipPath + " error : "+ dir +"=>Failed to create the folder";
+						App::log(errorstr);
+						App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
 						if (failRun)
 							failRun(zipPath);
 						return false;
@@ -496,12 +506,14 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				index = fileNameStr.find("/", startIndex);
 			}
 
-			// µ±Ç°Èë¿ÚÊÇÒ»¸öÎÄ¼ş, ËùÒÔ³éÈ¡ÎÄ¼ş
-			// ´ò¿ªµ±Ç°ÎÄ¼ş
+			// å½“å‰å…¥å£æ˜¯ä¸€ä¸ªæ–‡ä»¶, æ‰€ä»¥æŠ½å–æ–‡ä»¶
+			// æ‰“å¼€å½“å‰æ–‡ä»¶
 			if (unzOpenCurrentFile(zipfile) != UNZ_OK) {
-				unzClose(zipfile);
-				//Í¨Öª½âÑ¹Ê§°Ü
-				App::log("222222222 notifyUpressFailed" + zipName);
+				unzClose(zipfile); 
+				//é€šçŸ¥è§£å‹å¤±è´¥
+				string errorstr = zipPath + " error : " + string(fileName) + " =>unzOpenCurrentFile is Failed";
+				App::log(errorstr);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -511,13 +523,15 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 			if (!out) {
 				unzCloseCurrentFile(zipfile);
 				unzClose(zipfile);
-				//Í¨Öª½âÑ¹Ê§°Ü
-				App::log("333333333333 notifyUpressFailed" + zipName);
+				//é€šçŸ¥è§£å‹å¤±è´¥
+				string errorstr = zipPath + " error : "+ fullPath +" =>Failed to open the file";
+				App::log(errorstr);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
 			}
-			//½«µ±Ç°ÎÄ¼şµÄÄÚÈİĞ´ÈëÎÄ¼ş
+			//å°†å½“å‰æ–‡ä»¶çš„å†…å®¹å†™å…¥æ–‡ä»¶
 			int error = UNZ_OK;
 			do {
 				error = unzReadCurrentFile(zipfile, readBuffer, BUFFER_SIZE);
@@ -525,7 +539,10 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 					App::log("can not read zip file " + string(fileName) + ", error code is ", error);
 					unzCloseCurrentFile(zipfile);
 					unzClose(zipfile);
-					//Í¨Öª½âÑ¹Ê§°Ü
+					//é€šçŸ¥è§£å‹å¤±è´¥
+					string errorstr = zipPath + " error : " + string(fileName) + " =>unzReadCurrentFile is Failed";
+					App::log(errorstr);
+					App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
 					if (failRun)
 						failRun(zipPath);
 					return false;
@@ -539,12 +556,14 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 
 		unzCloseCurrentFile(zipfile);
 
-		//Ç°ÍùÏÂÒ»¸öÈë¿Ú
+		//å‰å¾€ä¸‹ä¸€ä¸ªå…¥å£
 		if ((i + 1) < global_info.number_entry) {
 			if (unzGoToNextFile(zipfile) != UNZ_OK) {
 				unzClose(zipfile);
-				//Í¨Öª½âÑ¹Ê§°Ü
-				App::log("444444444444 notifyUpressFailed" + zipName);
+				//é€šçŸ¥è§£å‹å¤±è´¥
+				string errorstr = zipPath + " error : " + string(fileName) + " =>unzGoToNextFile is Failed";
+				App::log(errorstr);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -554,10 +573,10 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 
 	App::log("end uncompressing");
 	unzClose(zipfile);
-	//½âÑ¹³É¹¦Í¨Öª
+	//è§£å‹æˆåŠŸé€šçŸ¥
 	if(successRun)
 		successRun(zipPath);
-	//½âÑ¹Íê³ÉºóÉ¾³ızipÎÄ¼ş
+	//è§£å‹å®Œæˆååˆ é™¤zipæ–‡ä»¶
 	remove(zipPath.c_str());
 	YYXLayer::loge("YYXDownload::uncompress");
 	return true;
@@ -565,24 +584,6 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 
 bool YYXDownload::isExitReadyQueue(string taskTag)
 {
-	//down_mtx.lock();
-	//bool result = false;
-	//vector<string> data;
-	//for (int i = 0; i < readyQueue.size(); i++)
-	//{
-	//	auto it = readyQueue.front();
-	//	data.push_back(it);
-	//	readyQueue.pop();
-	//	if (it == taskTag)
-	//		result= true;
-	//	else
-	//		result= false;
-	//}
-	//for (auto it : data)
-	//{
-	//	readyQueue.push(it);
-	//}
-	//down_mtx.unlock();
 	if (readyQueueMap.find(taskTag) != readyQueueMap.end())
 	{
 		return true;
@@ -597,10 +598,25 @@ bool YYXDownload::isExitReadyQueue(string taskTag)
 bool YYXDownload::isPause(string taskTag)
 {
 	string statusKey = taskTag + "+status";
-	//int status = YYXStruct::getMapInt64(data, statusKey, 1);//ÏÂÔØ×´Ì¬ 0=ÏÂÔØ 1=×¼±¸ÏÂÔØ   2=ÔİÍ£  3=ÏÂÔØ½áÊø
+	//int status = YYXStruct::getMapInt64(data, statusKey, 1);//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
 	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey, 0);
 	if (status == 2)
 	{		
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool YYXDownload::isEnd(string taskTag)
+{
+	string statusKey = taskTag + "+status";
+	//int status = YYXStruct::getMapInt64(data, statusKey, 1);//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
+	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey, 0);
+	if (status == 3)
+	{
 		return true;
 	}
 	else
@@ -624,7 +640,7 @@ bool YYXDownload::isPause(string taskTag)
 //			if (it != "")
 //			{
 //				string statusKey = it + "+status";
-//				int status = YYXStruct::getMapInt64(data, statusKey, 1);//ÏÂÔØ×´Ì¬ 0=ÏÂÔØ 1=×¼±¸ÏÂÔØ   2=ÔİÍ£  3=ÏÂÔØ½áÊø
+//				int status = YYXStruct::getMapInt64(data, statusKey, 1);//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
 //				if (status == 1)
 //					addDownloadQueue(it);
 //			}
@@ -666,7 +682,7 @@ int YYXDownload::DownProgresss(void* clientp, double fDownLoadTotal, double fDow
 	}	
 	taskDownloading(*tag, pragress);
 	string statusKey = *tag + "+status";
-	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey , 0);//ÏÂÔØ×´Ì¬ 0=ÏÂÔØ 1=×¼±¸ÏÂÔØ   2=ÔİÍ£  3=ÏÂÔØ½áÊø
+	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey , 0);//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
 	if (status == 2 )
 	{
 		int pausePint = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, *tag + "+pause", 0);
@@ -684,16 +700,16 @@ int YYXDownload::DownProgresss(void* clientp, double fDownLoadTotal, double fDow
 	}
 }
 
-//1.ÏÂÔØÍê³ÉÖ®ºóÉ¾³ıtaskTag
-//2.¿ªÊ¼×Ô¶¯È«¸ººÉÏÂÔØ, ½«×¼±¸¶ÓÁĞµÄÈÎÎñ»ñÈ¡¹ıÀ´, ÈÃÏÂÔØ¶ÓÁĞÂú¸ººÉÏÂÔØ
-//3.ÔİÍ£Ò»¸öÈÎÎñ Ö»ĞèÒªstring statusKey = tag + "+status";//ÏÂÔØ×´Ì¬ 1=×¼±¸ÏÂÔØ  0=ÏÂÔØ
+//1.ä¸‹è½½å®Œæˆä¹‹ååˆ é™¤taskTag
+//2.å¼€å§‹è‡ªåŠ¨å…¨è´Ÿè·ä¸‹è½½, å°†å‡†å¤‡é˜Ÿåˆ—çš„ä»»åŠ¡è·å–è¿‡æ¥, è®©ä¸‹è½½é˜Ÿåˆ—æ»¡è´Ÿè·ä¸‹è½½
+//3.æš‚åœä¸€ä¸ªä»»åŠ¡ åªéœ€è¦string statusKey = tag + "+status";//ä¸‹è½½çŠ¶æ€ 1=å‡†å¤‡ä¸‹è½½  0=ä¸‹è½½
 //YYXStruct::initMapYYXStruct(data, statusKey, 1);
 
 
 /*
-1.²ÉÓÃÏß³Ì³Ø·½Ê½ÏÂÔØ
-2.¿ªÆô×î´óÉèÖÃÏß³ÌÊıÁ¿
-3.Ã¿¸öÏß³ÌµÈ´ıÏÂÔØ
+1.é‡‡ç”¨çº¿ç¨‹æ± æ–¹å¼ä¸‹è½½
+2.å¼€å¯æœ€å¤§è®¾ç½®çº¿ç¨‹æ•°é‡
+3.æ¯ä¸ªçº¿ç¨‹ç­‰å¾…ä¸‹è½½
 */
 void YYXDownload::downloadThreadRuning()
 {
@@ -701,7 +717,7 @@ void YYXDownload::downloadThreadRuning()
 	{
 		//App::log("              void YYXDownload::downloadThreadRuning()");
 		App::ccsleep(5000);
-		//1.ÅĞ¶ÏÊÇ·ñÓĞÈÎÎñĞèÒªÏÂÔØ
+		//1.åˆ¤æ–­æ˜¯å¦æœ‰ä»»åŠ¡éœ€è¦ä¸‹è½½
 		string taskTag = "";
 		down_mtx.lock();
 		if (!readyQueue.empty())
@@ -719,7 +735,7 @@ void YYXDownload::downloadThreadRuning()
 			string pathKey = taskTag + "+path";
 			string path = YYXStruct::getMapString(data, pathKey, "");
 			string statusKey = taskTag + "+status";
-			int status = YYXStruct::getMapInt64(data, statusKey, 1);//ÏÂÔØ×´Ì¬ 0=ÏÂÔØ 1=×¼±¸ÏÂÔØ   2=ÔİÍ£  3=ÏÂÔØ½áÊø
+			int status = YYXStruct::getMapInt64(data, statusKey, 1);//ä¸‹è½½çŠ¶æ€ 0=ä¸‹è½½ 1=å‡†å¤‡ä¸‹è½½   2=æš‚åœ  3=ä¸‹è½½ç»“æŸ
 			if (status == 1)
 			{
 				//thread(&YYXDownload::downLoadFile, this, url, path, taskTag).detach();				

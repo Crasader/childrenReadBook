@@ -232,8 +232,8 @@ bool BookInfo::init(int bookId)
 					}
 				});
 				m_tryReadButton->setTitleText("0%");
-				//任务字符串绑定书名
 				App::addRecordBookDownload(m_bookId);
+				//任务字符串绑定书名				
 				//书籍信息 原价+书籍名称+ 书页数
 				string BookNameKey = StringUtils::format("bookName+bookID=%d", bookId);
 				string taskBookName = YYXStruct::getMapString(App::GetInstance()->myData, BookNameKey, "");
@@ -311,7 +311,7 @@ bool BookInfo::init(int bookId)
 					//下载的时候, 点击暂停下载
 					string zippath = App::getBookReadZipPath(m_bookId);
 					string taskTag = YYXDownload::getTag(zippath);
-					if (taskTag != "" && !YYXDownload::GetInstance()->isPause(taskTag))
+					if (taskTag != "" && !YYXDownload::GetInstance()->isEnd(taskTag) && !YYXDownload::GetInstance()->isPause(taskTag))
 					{
 						Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(taskTag + "_BookProgressing");
 						YYXDownload::GetInstance()->pause(taskTag);
@@ -2520,8 +2520,7 @@ string BookInfo::DownLoadBook(int bookId, string bookPlayUrl, string ZipName)
 			//下载成功,解压									
 			std::thread(&YYXDownload::uncompress, App::getReadZipDir(), StringUtils::format("%d", bookid), App::getReadDir(), [=](string zipPath) {
 				YYXLayer::sendNotify(taskTag2 + "_BookProgressing", "", 100);
-				YYXLayer::sendNotify("refershVIPText");
-				App::addRecordBookDownload(bookId);
+				YYXLayer::sendNotify("refershVIPText");				
 			}, [=](string zipPath) {
 				//解压失败
 				string bookNameError = bookName + App::getString("JIEYACUOWUCHANGXINXIAZAI") + StringUtils::format("%d", bookid);
@@ -2542,6 +2541,7 @@ string BookInfo::DownLoadBook(int bookId, string bookPlayUrl, string ZipName)
 			}
 		}
 	});
+	App::addRecordBookDownload(bookId);
 	return bookTag;
 }
 

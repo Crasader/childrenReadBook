@@ -110,13 +110,15 @@ void BabyCenter::initBabyCenter() {
 	//网络请求宝贝列表
 	if(App::GetInstance()->m_me && App::GetInstance()->m_me->id > 0)
 	{
-		NetIntface::httpGetChildDetails(App::GetInstance()->m_me->id, "BabyCenterScenehttpGetChildDetailsSuccess", [=](string json) {
+		string runkey = StringUtils::format("BabyCenterScenehttpGetChildDetailsSuccess_%d", (int)YYXLayer::getRandom());
+		string errorkey = StringUtils::format("BabyCenterScenehttpGetChildDetailsFail_%d", (int)YYXLayer::getRandom());
+		NetIntface::httpGetChildDetails(App::GetInstance()->m_me->id, runkey, [=](string json) {
 			getChildDetailsBusinessLogic(json, [=]() {
 				//解析错误
 				App::cancelData();
 				YYXLayer::sendNotify("babyCenterSceneReLogin");
 			});
-		}, "BabyCenterScenehttpGetChildDetailsFail", [](string str) {
+		}, errorkey, [](string str) {
 			Toast::create(App::getString("SHUAXINSHIBAI"));
 		});
 	}
@@ -243,8 +245,10 @@ void BabyCenter::initBabyCenter() {
 				App::log("name = "+ name);
 				App::log("birthday = " + birthday);
 				App::log("sexNum = " , sexNum);
+				string runkey2 = StringUtils::format("httpAmendBabyInfoSuccess_%d", (int)YYXLayer::getRandom());
+				string errorkey2 = StringUtils::format("httpAmendBabyInfoFail_%d", (int)YYXLayer::getRandom());
 				NetIntface::httpAmendBabyInfo(id, name , sexNum, birthday,
-					"httpAmendBabyInfoSuccess", [=](string json) {
+					runkey2, [=](string json) {
 					rapidjson::Document doc;
 					auto result = YYXLayer::getJsonObject4Json(doc, json);
 					if (result)
@@ -264,7 +268,7 @@ void BabyCenter::initBabyCenter() {
 						else
 							YYXLayer::sendNotify("MODIFY_BABY_INFO_FAILED");
 					}
-				}, "httpAmendBabyInfoFail", [](string str) {
+				}, errorkey2, [](string str) {
 					YYXLayer::sendNotify("MODIFY_BABY_INFO_FAILED");
 				});
 			}
@@ -705,7 +709,9 @@ void BabyCenter::initPhotoLayer() {
 			{
 				FileUtils::getInstance()->removeFile(thispath);
 			}
-			NetIntface::openPhotoAlbumSelectImage(fileName, dir, 600, 600, "openPhotoAlbumSelectImageSuccess", [=](string path) {
+			string runkey3 = StringUtils::format("openPhotoAlbumSelectImageSuccess_%d", (int)YYXLayer::getRandom());
+			string errorkey3 = StringUtils::format("openPhotoAlbumSelectImageFail_%d", (int)YYXLayer::getRandom());
+			NetIntface::openPhotoAlbumSelectImage(fileName, dir, 600, 600, runkey3, [=](string path) {
 				//selectPath = path;
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectPath", -999, path);
 				int id = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
@@ -714,7 +720,7 @@ void BabyCenter::initPhotoLayer() {
 				//selectCutRoundPath = savePath;
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectCutRoundPath", -999, savePath);
 				YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
-			}, "openPhotoAlbumSelectImageFail", [](string str) {
+			}, errorkey3, [](string str) {
 				Toast::create(App::getString("QUXIAOCAOZUO"));
 			});
 		});
@@ -737,7 +743,9 @@ void BabyCenter::initPhotoLayer() {
 				FileUtils::getInstance()->createDirectory(dir);
 			if (FileUtils::getInstance()->isFileExist(imgpath))
 				FileUtils::getInstance()->removeFile(imgpath);
-			NetIntface::photograph(fileName, dir, "photographSuccess", [=](string path) {
+			string runkey4 = StringUtils::format("photographSuccess_%d", (int)YYXLayer::getRandom());
+			string errorkey4 = StringUtils::format("photographFail_%d", (int)YYXLayer::getRandom());
+			NetIntface::photograph(fileName, dir, runkey4, [=](string path) {
 				//selectPath = path;
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectPath", -999, path);
 				int id = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
@@ -746,7 +754,7 @@ void BabyCenter::initPhotoLayer() {
 				//selectCutRoundPath = savePath;
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "selectCutRoundPath", -999, savePath);
 				YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
-			}, "photographFail", [](string str) {
+			}, errorkey4, [](string str) {
 				Toast::create(App::getString("QUXIAOCAOZUO"));
 			});
 		});
@@ -949,7 +957,9 @@ Layer* BabyCenter::initAddChild()
 				return;
 			}
 			auto day = ttf_day->getDateText();
-			NetIntface::httpAddChild(App::GetInstance()->m_me->id, name, IsMan ? 1 : 2, day, "babyCenterScenehttpAddChildSuccess", [=](string json) {
+			string runkey = StringUtils::format("babyCenterScenehttpAddChildSuccess_%d", (int)YYXLayer::getRandom());
+			string errorkey = StringUtils::format("babyCenterScenehttpAddChildFail_%d", (int)YYXLayer::getRandom());
+			NetIntface::httpAddChild(App::GetInstance()->m_me->id, name, IsMan ? 1 : 2, day, runkey, [=](string json) {
 				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
 					Toast::create(App::getString("MESAAGEBOX_ADDCHILD_SUCCESS"));
 					addchildMessagebox->removeFromParentAndCleanup(true);
@@ -959,7 +969,7 @@ Layer* BabyCenter::initAddChild()
 						Toast::create(App::getString("SHUAXINSHIBAI"));
 					});
 				});
-			}, "babyCenterScenehttpAddChildFail", [](string str) {
+			}, errorkey, [](string str) {
 				Toast::create(App::getString("MESAAGEBOX_ADDCHILD_ERROR"));
 			});
 		});
@@ -1055,15 +1065,19 @@ void BabyCenter::setNodeChild(Node* node, int index)
 				YYXLayer::controlTouchTime(1, "FIND_BUTTON_BYNAME_BABYCENTER_CHANGECHILD_CHILD_DELETETime", [=]() {
 					auto messagebox = YYXLayer::MyMessageBox(App::getString("QUEDINGSHANCHU"), App::getString("QUEDING"), [=]()
 					{
-						NetIntface::httpDeleteChild(App::GetInstance()->m_me->id, id, "babyCenterScenehttpDeleteChildSuccess", [=](string json) {
+						string runkey = StringUtils::format("babyCenterScenehttpDeleteChildSuccess_%d", (int)YYXLayer::getRandom());
+						string errorkey = StringUtils::format("babyCenterScenehttpDeleteChildFail_%d", (int)YYXLayer::getRandom());
+						NetIntface::httpDeleteChild(App::GetInstance()->m_me->id, id, runkey, [=](string json) {
 							//宝贝删除成功
 							Toast::create(App::getString("SHANCHUBAOBEICHENGGONG"));
-							NetIntface::httpGetChildDetails(App::GetInstance()->m_me->id, "BabyCenterSceneHttpGetChildDetailsSuccess2", [=](string json) {
+							string runkey1 = StringUtils::format("BabyCenterSceneHttpGetChildDetailsSuccess2_%d", (int)YYXLayer::getRandom());
+							string errorkey1 = StringUtils::format("BabyCenterSceneHttpGetChildDetailsFail2_%d", (int)YYXLayer::getRandom());
+							NetIntface::httpGetChildDetails(App::GetInstance()->m_me->id, runkey1, [=](string json) {
 								getChildDetailsBusinessLogic(json, []() {});
-							}, "BabyCenterSceneHttpGetChildDetailsFail2", [](string str) {
+							}, errorkey1, [](string str) {
 								Toast::create(App::getString("SHUAXINSHIBAI"));
 							});
-						}, "babyCenterScenehttpDeleteChildFail", [](string str) {
+						}, errorkey, [](string str) {
 							Toast::create(App::getString("SHANCHUBAOBEISHIBAI"));
 						});
 					}, App::getString("QUXIAO"), []() {
@@ -1326,14 +1340,16 @@ void BabyCenter::uploadAvatar() {
 		return;
 	}
 	auto memberid = App::GetInstance()->m_me->id;
-	NetIntface::httpUpImage(showID, selectPath, memberid, "httpUpImageSuccess", [=](string fullpath) {
+	string runkey = StringUtils::format("httpUpImageSuccess_%d",(int)YYXLayer::getRandom());
+	string errorkey = StringUtils::format("httpUpImageFail_%d", (int)YYXLayer::getRandom());
+	NetIntface::httpUpImage(showID, selectPath, memberid, runkey, [=](string fullpath) {
 		string selectCutRoundPath = YYXStruct::getMapString(App::GetInstance()->myData, "selectCutRoundPath", "");
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, selectCutRoundPath);
 		YYXLayer::setFileValue("ShowChildHeadPortrait", selectCutRoundPath);
 		string pathkey = StringUtils::format("path+childID=%d",showID);
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), selectCutRoundPath);
 		Toast::create(App::getString("SHANGCHUANTOUXIANGCHEGNGONG"));
-	}, "httpUpImageFail", [](string str) {
+	}, errorkey, [](string str) {
 		Toast::create(App::getString("STR_UPPICTURE_ERROR"));
 	});
 	App::log("BabyCenter::uploadAvatar---END");
@@ -1664,18 +1680,3 @@ void BabyCenter::setBabyInfoToXml(string name, string birthday, int sex, int id)
 	YYXLayer::setFileValue("ShowChildSex", StringUtils::format("%d", sex));
 	YYXLayer::setFileValue("ShowChildBirthday", birthday);
 }
-
-////处理成圆形图片
-//void BabyCenter::makeRoundImage(string path)
-//{
-//	selectPath = path;
-//	string savePath = FileUtils::getInstance()->getWritablePath() + "temp/showPhotograph.png";
-//	if (FileUtils::getInstance()->isFileExist(savePath))
-//	{
-//		FileUtils::getInstance()->removeFile(savePath);
-//	}
-//	NetIntface::cutTheRounded(path, savePath, 600, 600, "", [=](string path) {
-//		selectCutRoundPath = path;
-//		YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
-//	}, "", [](string str) {});
-//}

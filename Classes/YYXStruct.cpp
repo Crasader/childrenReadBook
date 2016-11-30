@@ -1,4 +1,4 @@
-#include "YYXStruct.h"
+﻿#include "YYXStruct.h"
 
 YYXStruct::YYXStruct()
 	:intData(0),stringData(""), refData(nullptr)

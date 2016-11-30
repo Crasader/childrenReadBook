@@ -1,4 +1,4 @@
-#ifndef __YYXFunctionQueue_H__
+﻿#ifndef __YYXFunctionQueue_H__
 #define __YYXFunctionQueue_H__
 
 #include "cocos2d.h"
