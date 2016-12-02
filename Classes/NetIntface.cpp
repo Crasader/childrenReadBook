@@ -35,7 +35,7 @@ function<void(string)> NetIntface::getMapFunction(string key)
 			return result;
 		}
 	}
-	App::log("NetIntface::getMapFunction find not" + key);
+	//App::log("NetIntface::getMapFunction find not" + key);
 	return nullptr;
 }
 
@@ -43,7 +43,7 @@ void NetIntface::setMapFunction(string key, function<void(string)> runFunction)
 {
 	if (&key && runFunction && key != "")
 	{
-		App::log("set" + key);
+		//App::log("set" + key);
 		NetIntface::m_functionMap[key] = runFunction;
 	}
 }
@@ -63,19 +63,17 @@ bool NetIntface::IsNetConnect(bool hint)
 		Toast::create(App::getString("WEIJIANCEDAOWANGLUO"), false);
 	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	App::log("WIN32--This function(NetIntface::IsNetConnect()) is not implemented");
+	//App::log("WIN32--This function(NetIntface::IsNetConnect()) is not implemented");
 	result = true;
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	result = CocosAndroidJni::IsNetConnect(hint, "showNetConnectError");
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	App::log("IOS--This function(NetIntface::IsNetConnect()) is not implemented");
+	//App::log("IOS--This function(NetIntface::IsNetConnect()) is not implemented");
 	result = true;
 #endif
-	if (result)
-		App::log("NetIntface::IsNetConnect = true");
-	else
+	if (!result)
 		App::log("NetIntface::IsNetConnect = false");
 	return result;
 }
@@ -104,13 +102,17 @@ void NetIntface::httpPost(string url, map<string, string> parameter, string runK
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		string jsonstr = YYXLayer::getStringFormMap(parameter);
+		App::log(" ( httpPost OK ) " + url +"<"+ jsonstr+ "> => " + json);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
-		string errorstr = url+": httpPost error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		string jsonstr = YYXLayer::getStringFormMap(parameter);
+		auto parstr = jsonstr.substr(1, jsonstr.length() - 2);
+		string errorstr = url+"("+ parstr +"): httpPost error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -132,9 +134,6 @@ void NetIntface::WIN32_httpPost(string url, map<string, string> parameter,string
 		if (runable)
 			runable(json);
 	}, [=]() {
-		string path = FileUtils::getInstance()->getWritablePath() + "error.txt";
-		YYXLayer::writeFilepp(url+ "\n\r", path);
-		YYXLayer::writeFilepp(YYXLayer::getStringFormMap(parameter) + "\n\r\n\r", path);
 		if (errorRunable)
 			errorRunable("");
 	});
@@ -149,13 +148,14 @@ void NetIntface::httpGet(string url , string runKey, function<void(string)> runF
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( httpGet OK ) "+url + " => "+json);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = url + ": httpGet error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -177,8 +177,6 @@ void NetIntface::WIN32_httpGet(string url, string runKey, string errorKey)
 		if (runable)
 			runable(json);
 	}, [=]() {
-		string path = FileUtils::getInstance()->getWritablePath() + "error.txt";
-		YYXLayer::writeFilepp(url + "\n\r\n\r", path);
 		if (errorRunable)
 			errorRunable("");
 	});
@@ -553,13 +551,14 @@ void NetIntface::httpPay(int memberId,  int rechargeCount, int payMoney, string 
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log("支付成功的回调");
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 });
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = payinfo + ": httpPay error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.txt", (int)YYXLayer::getRandom()),1);
+		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.dat", (int)YYXLayer::getRandom()),1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -1433,13 +1432,14 @@ void NetIntface::openPhotoAlbumSelectImage(string fileName,string dir, long widt
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( selcete OK ) headImage = " + dir + "/" + fileName);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = dir+"/"+ fileName + "error: openPhotoAlbumSelectImage => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("photo_%d.txt", (int)YYXLayer::getRandom()), 3);
+		App::addErrorLog(errorstr, StringUtils::format("photo_%d.dat", (int)YYXLayer::getRandom()), 3);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -1460,13 +1460,14 @@ void NetIntface::httpUpImage(int childID, string ImageFullPath, int memberId, st
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( uploading OK ) " + ImageFullPath);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 });
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = ImageFullPath + ": httpUpImage error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -1485,13 +1486,14 @@ void NetIntface::photograph(string fileName, string dir, string runKey, function
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( photograph OK ) headImage = " + dir + "/" + fileName);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = dir + "/" + fileName + "error: photograph => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("photo_%d.txt", (int)YYXLayer::getRandom()),3);
+		App::addErrorLog(errorstr, StringUtils::format("photo_%d.dat", (int)YYXLayer::getRandom()),3);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -1528,13 +1530,14 @@ void NetIntface::cutTheRounded(string path, string savePath, long width, long he
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( cutTheRounded OK )  headImage : " + path+" => "+savePath);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 });
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = path + ": cutTheRounded  savePath error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.txt", (int)YYXLayer::getRandom()),3);
+		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.dat", (int)YYXLayer::getRandom()),3);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -1711,15 +1714,16 @@ void NetIntface::DownLoadFile(string url, string dir, string fileName, string ru
 		return;
 	runKey = App::getOnlyKey();
 	errorKey = App::getOnlyKey();
-	setMapFunction(runKey, [=](string json) {
-		runFunction(json);
+	setMapFunction(runKey, [=](string path) {
+		runFunction(path);
+		App::log(" ( OK )  " + url + " : DownLoad = > " + path);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = url + ": DownLoadFile " + dir + "/" + fileName + " error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),2);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -1734,15 +1738,16 @@ void NetIntface::DownLoadImage(string url, string dir, string fileName, string r
 		return;
 	runKey = App::getOnlyKey();
 	errorKey = App::getOnlyKey();
-	setMapFunction(runKey, [=](string json) {
-		runFunction(json);
+	setMapFunction(runKey, [=](string path) {
+		runFunction(path);
+		App::log(" ( OK ) "+url + " : DownLoad = > " + path);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = url + ": DownLoadImage "+ dir +"/"+fileName+" error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),2);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -1759,10 +1764,9 @@ void NetIntface::WIN32_DownLoad(string url, string dir, string fileName, string 
 {
 	auto runable = getMapFunction(runKey);
 	auto errorRunable = getMapFunction(errorKey);
-	App::log("DownLoad = >" + url);
 	if (!&url)
 	{
-		App::log("DownLoad = >paramter is error");
+		App::log(url + " error : DownLoad = >paramter is error");
 		if (errorRunable)
 			errorRunable("");
 		return;
@@ -1770,20 +1774,20 @@ void NetIntface::WIN32_DownLoad(string url, string dir, string fileName, string 
 	HttpRequest* pRequest = new HttpRequest();
 	pRequest->setUrl(url.c_str());
 	pRequest->setRequestType(HttpRequest::Type::GET);
-	pRequest->setResponseCallback([errorRunable, runable, dir, fileName](HttpClient* client, HttpResponse* response)
+	pRequest->setResponseCallback([=](HttpClient* client, HttpResponse* response)
 	{
 		if (!response)
 		{
+			//App::log(url + " error : DownLoad = > 404");
 			if (errorRunable)
 				errorRunable("");
-			App::log("DownLoad = > 404");
 			return;
 		}
 		if (!response->isSucceed())
 		{
+			//App::log(url + " error : DownLoad = > 404");
 			if (errorRunable)
-				errorRunable("");
-			App::log("DownLoad = >404");
+				errorRunable("");			
 			return;
 		}
 		if (!FileUtils::getInstance()->isDirectoryExist(dir))
@@ -1794,15 +1798,14 @@ void NetIntface::WIN32_DownLoad(string url, string dir, string fileName, string 
 		std::vector<char> *buffer = response->getResponseData();
 		auto buf = new char[buffer->size()];
 		std::copy(buffer->begin(), buffer->end(), buf);
-		App::log("DownLoad = > ", buffer->size());
+		App::log(url + " : DownLoadFile.Size() = ",  buffer->size());
 		FILE *fp = fopen(path.c_str(), "wb+");
 		fwrite(buf, 1, buffer->size(), fp);
 		fclose(fp);
 		if (buf)
 			delete[] buf;
 		if (runable)
-			runable(path);
-		App::log("DownLoad = > OK" + path);
+			runable(path);		
 	});
 	HttpClient::getInstance()->send(pRequest);
 	pRequest->release();
@@ -2019,13 +2022,14 @@ void NetIntface::share(string filePath, string bookName, string targetUrl, strin
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( share OK )   " + bookName);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = bookName + ": share " + " error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -2219,24 +2223,32 @@ void NetIntface::httpGetBookIsBuyCallBack(string json, function<void(string orde
 }
 
 //发表语音评论(带界面)
-void NetIntface::goToSendRecording(int bookId, int memberId, int types, string membername, string orderid, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
+void NetIntface::goToSendRecording(int bookId, int memberId, int types, string membername, string orderid, 
+	string runKey, function<void(string)> runFunction, //语音成功回调
+	string errorKey, function<void(string)> errorRunFunction,//语音失败回调
+	string closeKey, function<void(string)> closeFunction)//关闭按钮回调
 {
 	runKey = App::getOnlyKey();
 	errorKey = App::getOnlyKey();
+	closeKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( VoiceComment OK )   " + StringUtils::format("bookId = %d, memberid = %d,types = %d, membername = ",bookId, memberId, types)+ membername);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
+		deleteMapFunction(closeKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
-		string errorstr = membername + ": goToSendRecording " + " error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+	});
+	setMapFunction(closeKey, [=](string closestr) {
+		closeFunction(closestr);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
-	});
+		deleteMapFunction(closeKey);
+});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	CocosAndroidJni::commentTheRecording(bookId, memberId, types, membername.c_str(), orderid.c_str(), runKey.c_str(), errorKey.c_str());
+	CocosAndroidJni::commentTheRecording(bookId, memberId, types, membername.c_str(), orderid.c_str(), runKey.c_str(), errorKey.c_str(), closeKey.c_str());
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	Toast::create("windows have not goToSendRecording");
@@ -2344,13 +2356,14 @@ void NetIntface::inviteRegister(int memberId, string url , string runKey, functi
 	errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
+		App::log(" ( inviteRegister OK )   " + StringUtils::format("memberid = %d, url = ", memberId) + url);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = url + ": inviteRegister " + " error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.txt", (int)YYXLayer::getRandom()),1);
+		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});

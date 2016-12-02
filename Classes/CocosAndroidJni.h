@@ -37,7 +37,7 @@ public:
 	static void inviteRegister(long memberId, const char* url, const char* runKey, const char* errorKey);
 
 	// JNI 发表录音评论
-	static void commentTheRecording(long bookId, long memberId, long types, const char * membername, const char * orderid, const char* runKey, const char* errorKey);
+	static void commentTheRecording(long bookId, long memberId, long types, const char * membername, const char * orderid, const char* runKey, const char* errorKey, const char* closeKey);
 
 	// JNI 获取毫秒时间
 	static long long getMillsTime();

@@ -761,6 +761,7 @@ void BookInfo::initEvent()
 		//httpGetComments();
 		App::httpComment(m_bookId, []() {
 			YYXLayer::sendNotify("showCommentListView", "", -1);
+			App::log("httpComment  ===>>> showCommentListView");
 		});
 	});
 }

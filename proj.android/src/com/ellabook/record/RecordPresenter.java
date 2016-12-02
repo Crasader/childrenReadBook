@@ -69,14 +69,14 @@ public class RecordPresenter {
 	private AudioRecordView mAudioRecordView; 
 	private int starNum = 5;
 	private int bookId, memberId ,tyPe ;
-	private String gevalTime, comment, membername , orderId,runkey,errorkey;
+	private String gevalTime, comment, membername , orderId,runkey,errorkey,closekey;
 	private Dialog dialog ;
 	private RelativeLayout rela,choserela;
 	private LinearLayout starlin;
 	private FrameLayout voicefra ;
 	int wi ,hi;
 	private WindowManager mag;
-	public void show(Context context ,int bookId,String membername,int memberId ,String orderId ,int tyPe,String runKey, String errorKey,WindowManager mag){
+	public void show(Context context ,int bookId,String membername,int memberId ,String orderId ,int tyPe,String runKey, String errorKey,String closeKey,WindowManager mag){
 		this.context=context;
 		this.bookId =bookId;
 		this.memberId=memberId;
@@ -87,6 +87,7 @@ public class RecordPresenter {
 		this.tyPe = tyPe;
 		this.runkey = runKey;
 		this.errorkey = errorKey;
+		this.closekey = closeKey;
 		this.mag = mag;
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		mag.getDefaultDisplay().getMetrics(displayMetrics);
@@ -233,6 +234,7 @@ public class RecordPresenter {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				back();
+				AppActivity.NetInterfaceCallback(closekey, "");
 			}
 		});
 		fork.setOnClickListener(new OnClickListener() {
@@ -241,6 +243,7 @@ public class RecordPresenter {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				back();
+				AppActivity.NetInterfaceCallback(closekey, "");
 			}
 		});
 		show1();
@@ -261,8 +264,7 @@ public class RecordPresenter {
 				// TODO Auto-generated method stub
 				if (arg1 == KeyEvent.KEYCODE_BACK  && arg2.getRepeatCount() == 0) {  
 					return true; 
-				}  
-				System.out.println("按个屁");
+				}
 				return false; 
 			}
 		});
@@ -344,10 +346,10 @@ public class RecordPresenter {
 //				Toast.makeText(context, "评论成功", Toast.LENGTH_SHORT).show();	
 				back();
 				AppActivity.NetInterfaceCallback(runkey, "");
-				
 				break;
 			case 4:
-				Toast.makeText(context, "上传评论失败,请重试", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(context, "上传评论失败,请重试", Toast.LENGTH_SHORT).show();
+				AppActivity.NetInterfaceCallback(errorkey, "");
 				break;
 			default:
 				break;
@@ -620,16 +622,19 @@ public class RecordPresenter {
 	class MyAudioRecordFinishListener implements AudioRecordFinishListener {
 		@Override
 		public void onFinish(float second, String filePath) {
-			mAudioRecordFilePath = filePath;
-			mAudioRecordView.setVisibility(View.GONE);
-			// 设置录音秒数
-			String sec = String.valueOf(second);
-			sec = sec.substring(0, sec.indexOf("."));
-			show3();
-			textview.setVisibility(View.VISIBLE);
-			textview.setText(second/10 + "s");
-			gevalTime = second/10+"";
-			restartAllOtherVoice();
+
+            if(second>0){
+                System.out.println(second+"=================================");
+                mAudioRecordFilePath = filePath;
+                mAudioRecordView.setVisibility(View.GONE);
+                // 设置录音秒数
+                show3();
+                textview.setVisibility(View.VISIBLE);
+                textview.setText(second/10 + "s");
+                gevalTime = second/10+"";
+                restartAllOtherVoice();
+            }
+
 		}
 	}
 
@@ -643,7 +648,6 @@ public class RecordPresenter {
 			mediaPlayer.release();
 		}
 		dialog.dismiss();
-		AppActivity.NetInterfaceCallback(errorkey, "");
 	}
 
 

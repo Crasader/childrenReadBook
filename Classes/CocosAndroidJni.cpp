@@ -80,19 +80,19 @@ void CocosAndroidJni::inviteRegister(long memberId, const char*  url, const char
 }
 
 // JNI 发表录音评论
-void CocosAndroidJni::commentTheRecording(long bookId, long memberId, long types, const char * membername, const char * orderid, const char* runKey, const char* errorKey)
+void CocosAndroidJni::commentTheRecording(long bookId, long memberId, long types, const char * membername, const char * orderid, const char* runKey, const char* errorKey, const char* closeKey)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
 	JniMethodInfo function;
 	//原型函数	public static void commentTheRecording(int bookId, int memberId, int types,	String membername, String orderid, String runkey, String errorkey)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "commentTheRecording", "(IIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "commentTheRecording", "(IIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
 	if (!isHave)
 	{
 		App::log("jni:commentTheRecording did not exist");
 	}
 	else
 	{
-		//App::log("jni:commentTheRecording exist");
+		App::log("jni:commentTheRecording exist");
 		jint _bookId = bookId;
 		jint _memberid = memberId;
 		jint _types = types;
@@ -100,12 +100,14 @@ void CocosAndroidJni::commentTheRecording(long bookId, long memberId, long types
 		jstring _orderid = function.env->NewStringUTF(orderid);
 		jstring _runKey = function.env->NewStringUTF(runKey);
 		jstring _errorKey = function.env->NewStringUTF(errorKey);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _bookId, _memberid, _types, _membername, _orderid, _runKey, _errorKey);
+		jstring _closeKey = function.env->NewStringUTF(closeKey);
+		function.env->CallStaticVoidMethod(function.classID, function.methodID, _bookId, _memberid, _types, _membername, _orderid, _runKey, _errorKey, _closeKey);
 		function.env->DeleteLocalRef(function.classID);
 		function.env->DeleteLocalRef(_membername);
 		function.env->DeleteLocalRef(_orderid);
 		function.env->DeleteLocalRef(_runKey);
 		function.env->DeleteLocalRef(_errorKey);
+		function.env->DeleteLocalRef(_closeKey);
 	}
 #endif
 }
@@ -146,7 +148,7 @@ void CocosAndroidJni::httpPost(const char* url, const char* json, const char* ru
 	}
 	else
 	{
-		App::log("jni:httpPost exist");
+		//App::log("jni:httpPost exist");
 		jstring _url = function.env->NewStringUTF(url);
 		jstring _json = function.env->NewStringUTF(json);
 		jstring _runKey = function.env->NewStringUTF(runKey);
@@ -174,7 +176,7 @@ void CocosAndroidJni::httpGet(const char* url, const char* runKey, const char* e
 	}
 	else
 	{
-		App::log("jni:httpGet exist");
+		//App::log("jni:httpGet exist");
 		jstring _url = function.env->NewStringUTF(url);
 		jstring _runKey = function.env->NewStringUTF(runKey);
 		jstring _errorKey = function.env->NewStringUTF(errorKey);
@@ -202,7 +204,7 @@ void CocosAndroidJni::httpGetRechargeOrderID(long memberid, long rechargeCount, 
 	}
 	else
 	{
-		App::log("jni:httpGetRechargeOrderID exist");
+		//App::log("jni:httpGetRechargeOrderID exist");
 		jint _memberid = memberid;
 		jint _rechargeCount = rechargeCount;
 		jint _price100 = price100;
@@ -233,7 +235,7 @@ void CocosAndroidJni::httpShareWithCoupon(long memberID, const char* runKey, con
 	}
 	else
 	{
-		App::log("jni:httpShareWithCoupon exist");
+		//App::log("jni:httpShareWithCoupon exist");
 		jint _memberID = memberID;
 		jstring _runKey = function.env->NewStringUTF(runKey);
 		jstring _errorKey = function.env->NewStringUTF(errorKey);
@@ -287,7 +289,7 @@ void CocosAndroidJni::getAppVersion(std::string& version)
 	}
 	else
 	{
-		App::log("jni:getAppVersion exist");
+		//App::log("jni:getAppVersion exist");
 		jstring jret = (jstring)function.env->CallStaticObjectMethod(function.classID, function.methodID);
 		version = JniHelper::jstring2string(jret);
 		function.env->DeleteLocalRef(jret);
@@ -1548,7 +1550,7 @@ bool CocosAndroidJni::IsNetConnect(bool hint, const char* runKey)
 	}
 	else
 	{
-		App::log("jni:IsNetConnect exist");
+		//App::log("jni:IsNetConnect exist");
 		jboolean _hint = hint;
 		jstring _runKey = function.env->NewStringUTF(runKey);
 		jboolean jret = (jboolean)function.env->CallStaticBooleanMethod(function.classID, function.methodID, _hint, _runKey);
@@ -1650,7 +1652,7 @@ void CocosAndroidJni::GetPhotoPath(std::string& ret)
 	}
 	else
 	{
-		App::log("jni:GetPhotoPath exist");
+		//App::log("jni:GetPhotoPath exist");
 		jstring jret = (jstring)function.env->CallStaticObjectMethod(function.classID, function.methodID);
 		ret = JniHelper::jstring2string(jret);
 		function.env->DeleteLocalRef(jret);
@@ -1672,7 +1674,7 @@ void CocosAndroidJni::GetDownloadPath(std::string& ret)
 	}
 	else
 	{
-		App::log("jni:GetDownloadPath exist");
+		//App::log("jni:GetDownloadPath exist");
 		jstring jret = (jstring)function.env->CallStaticObjectMethod(function.classID, function.methodID);
 		ret = JniHelper::jstring2string(jret);
 		function.env->DeleteLocalRef(jret);

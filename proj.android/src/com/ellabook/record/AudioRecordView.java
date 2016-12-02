@@ -145,11 +145,9 @@ public class AudioRecordView extends LinearLayout {
 						@Override
 						public void run() {
 							// 录音结束
-							//							mDialogManager.dismissDialog();
 							voiceView.waveAmplitude = 10;
 							if (mIsRecording) {
-								mSecond=300;
-								audioRecordFinishListener.onFinish(mSecond, mRecorderUtil.getRecorderPath());
+								audioRecordFinishListener.onFinish(300, mRecorderUtil.getRecorderPath());
 								initRecording();
 							}
 						}

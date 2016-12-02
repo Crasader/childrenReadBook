@@ -1104,8 +1104,9 @@ Layer* Parent::initNode_Set()
 			if (YYXLayer::getBoolFromXML(SOUND_KEY))
 				YYXLayer::PLAYBUTTON;
 			//清除缓存
-			std::thread pthread(&Parent::deleteCache, this);
-			pthread.detach();
+			std::thread([=]() {
+				deleteCache();
+			}).detach();
 			this->removeChild(messagebox);
 		});
 		auto no = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_NO);		

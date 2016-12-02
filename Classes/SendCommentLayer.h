@@ -1,4 +1,4 @@
-#ifndef __SendCommentLayer_HH__
+﻿#ifndef __SendCommentLayer_HH__
 #define __SendCommentLayer_HH__
 
 #include "cocos2d.h"

@@ -1,4 +1,4 @@
-#include "SendCommentLayer.h"
+ï»¿#include "SendCommentLayer.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "BookInfoScene.h"
@@ -45,7 +45,7 @@ bool SendComment::init(int bookId) {
 	commentLayer->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	addChild(commentLayer);
 
-	//ºÚÉ«°ëÍ¸Ã÷±³¾°ÆÁ±ÎÏÂ²ã´¥Ãş
+	//é»‘è‰²åŠé€æ˜èƒŒæ™¯å±è”½ä¸‹å±‚è§¦æ‘¸
 	auto myImgView = (ImageView*)commentLayer->getChildByName(SENDCOMMENT_BLACK_IMGVIEW);
 	myImgView->setTouchEnabled(true);
 	myImgView->addClickEventListener([](Ref* sender) {
@@ -55,16 +55,16 @@ bool SendComment::init(int bookId) {
 		commentLayer->removeFromParentAndCleanup(true);
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(liste, commentLayer);
-	//----------------------------¸¸Ä¸È·ÈÏ--------------------------------
+	//----------------------------çˆ¶æ¯ç¡®è®¤--------------------------------
 	auto parentSure = (Node*)commentLayer->getChildByName(SENDCOMMENT_KUANG_PARENT_SURE);
-	//¹Ø±Õ°´Å¥
+	//å…³é—­æŒ‰é’®
 	auto parent_close = (Button*)parentSure->getChildByName(SENDCOMMENT_KUANG_PARENT_SURE_CLOSE_BTN);
 	parent_close->addClickEventListener([=](Ref* sender) {
 		this->removeFromParentAndCleanup(true);
 	});
-	//ÌáÊ¾ÎÄ±¾
+	//æç¤ºæ–‡æœ¬
 	auto parent_text = (Text*)parentSure->getChildByName(SENDCOMMENT_KUANG_PARENT_SURE_TEXT_TIP);
-	//Ëæ»úÎÄ±¾
+	//éšæœºæ–‡æœ¬
 	int goal_color = rand() % 3;
 	if (goal_color == 0)
 		parent_text->setString(App::getString("STR_RED"));
@@ -72,30 +72,30 @@ bool SendComment::init(int bookId) {
 		parent_text->setString(App::getString("STR_YELLOW"));
 	else if (goal_color == 2)
 		parent_text->setString(App::getString("STR_BLUE"));
-	//ºìÉ«°´Å¥
+	//çº¢è‰²æŒ‰é’®
 	auto parent_red = (Button*)parentSure->getChildByName(SENDCOMMENT_KUANG_PARENT_SURE_RED);
-	//»ÆÉ«°´Å¥
+	//é»„è‰²æŒ‰é’®
 	auto parent_yellow = (Button*)parentSure->getChildByName(SENDCOMMENT_KUANG_PARENT_SURE_YELLOW);
-	//À¶É«°´Å¥
+	//è“è‰²æŒ‰é’®
 	auto parent_blue = (Button*)parentSure->getChildByName(SENDCOMMENT_KUANG_PARENT_SURE_BLUE);
 
 
-	//·¢±íÆÀÂÛ
+	//å‘è¡¨è¯„è®º
 	auto comment = (Node*)commentLayer->getChildByName(SENDCOMMENT_KUANG_COMMENT);
-	//¹Ø±Õ°´Å¥
+	//å…³é—­æŒ‰é’®
 	auto comment_close = (Button*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_CLOSE_BTN);
 	comment_close->addClickEventListener([=](Ref* sender) {
 		this->removeFromParentAndCleanup(true);
 	});
-	//µÚÒ»¿ÅĞÇĞÇ
+	//ç¬¬ä¸€é¢—æ˜Ÿæ˜Ÿ
 	auto comment_star1 = (ImageView*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_STAR1);
-	//µÚ¶ş¿ÅĞÇĞÇ
+	//ç¬¬äºŒé¢—æ˜Ÿæ˜Ÿ
 	auto comment_star2 = (ImageView*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_STAR2);
-	//µÚÈı¿ÅĞÇĞÇ
+	//ç¬¬ä¸‰é¢—æ˜Ÿæ˜Ÿ
 	auto comment_star3 = (ImageView*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_STAR3);
-	//µÚËÄ¿ÅĞÇĞÇ
+	//ç¬¬å››é¢—æ˜Ÿæ˜Ÿ
 	auto comment_star4 = (ImageView*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_STAR4);
-	//µÚÎå¿ÅĞÇĞÇ
+	//ç¬¬äº”é¢—æ˜Ÿæ˜Ÿ
 	auto comment_star5 = (ImageView*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_STAR5);
 	comment_star1->setTouchEnabled(true);
 	comment_star2->setTouchEnabled(true);
@@ -143,7 +143,7 @@ bool SendComment::init(int bookId) {
 		//comment_star5->loadTexture(SENDCOMMENT_FINDPIC_STAR2, ui::Widget::TextureResType::PLIST);
 	});
 
-	//ÊäÈë±êÌâ
+	//è¾“å…¥æ ‡é¢˜
 	auto textTitle = MyEditBox::create(Size(200, 36), App::getString("COMMENT_TITLE"));
 	textTitle->setMyFontSize(18);
 	//textTitle->setBoxMaxLength(11);
@@ -152,7 +152,7 @@ bool SendComment::init(int bookId) {
 	textTitle->setAnchorPoint(Vec2(0, 1));
 	textTitle->setPosition(Vec2(525, 325));
 	comment->addChild(textTitle);
-	//ÊäÈëÄÚÈİ
+	//è¾“å…¥å†…å®¹
 	auto textContent = MyEditBox::create(Size(290, 130), App::getString("EDITBOX_FEEDBOX"));
 	textContent->setMyFontSize(18);
 	textContent->setMyInputMode(cocos2d::ui::EditBox::InputMode::ANY);
@@ -160,7 +160,7 @@ bool SendComment::init(int bookId) {
 	textContent->setAnchorPoint(Vec2(0, 1));
 	textContent->setPosition(Vec2(547, 215));
 	comment->addChild(textContent);
-	//·¢±íÓïÒôÆÀÂÛ
+	//å‘è¡¨è¯­éŸ³è¯„è®º
 	auto yuying = (Button*)comment->getChildByName("Button_1");
 	if (yuying)
 	{
@@ -176,42 +176,45 @@ bool SendComment::init(int bookId) {
 						SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 						SimpleAudioEngine::getInstance()->pauseAllEffects();
 					}
-					//´ò¿ªÓïÒô½çÃæ
+					//æ‰“å¼€è¯­éŸ³ç•Œé¢
 					NetIntface::goToSendRecording(m_bookId, App::GetInstance()->m_me->id, types, userAccount,  orderid, "goToSendRecordingSuccess", [](string json) {
-						//ÓïÒô³É¹¦
+						//è¯­éŸ³æˆåŠŸçš„å›è°ƒ - 
 						Toast::create(App::getString("COMMENT_SUCCESS"));
 						YYXLayer::sendNotify("bookinfoSceneHttpSendCommentSuccess");
 						YYXLayer::sendNotify("DeleteSendComment");
-					}, "goToSendRecordingFail", [=](string str) {					
-						//·µ»ØµÄ»Øµ÷
 						if (YYXLayer::getBoolFromXML(MUSIC_KEY))
 							SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 						else
 							SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-						//Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-						//	Director::getInstance()->getRunningScene()->addChild(SendComment::create(bookid), 10); 
-						//	YYXLayer::sendNotify("SendCommentShowTextComment");
-						//});
+					}, "goToSendRecordingFail", [=](string str) {	
+						//è¯­éŸ³å¤±è´¥çš„å›è°ƒ
+						Toast::create(App::getString("COMMENT_FAILED"));
+					}, "goToSendRecordingCloseButton", [=](string str) {
+						//å…³é—­æŒ‰é’®çš„å›è°ƒ
+						if (YYXLayer::getBoolFromXML(MUSIC_KEY))
+							SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+						else
+							SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 					});
 					YYXLayer::sendNotify("DeleteSendComment");
 				});
 			}, "goToSendRecordingFail", [](string str) {
-				//orderid »ñÈ¡µÄÊ§°Ü»Øµ÷
+				//orderid è·å–çš„å¤±è´¥å›è°ƒ
 				Toast::create(App::getString("WUFAQIDONGYUYINGPINGLUN"));
 			});
 		});
 	}
-	//·¢±í°´Å¥
+	//å‘è¡¨æŒ‰é’®
 	auto comment_send = (Button*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_SEND_BTN);
 	comment_send->addClickEventListener([=](Ref* sender) {
 		string strTitle = textTitle->getString();
 		string strContent = textContent->getString();
-		//±êÌâÎª¿Õ
+		//æ ‡é¢˜ä¸ºç©º
 		if (strTitle.length() == 0) {
 			Toast::create(App::getString("COMMENT_TITLE_ERROR"));
 			return;
 		}
-		//ÄÚÈİÉÙÓÚ10¸ö×Ö
+		//å†…å®¹å°‘äº10ä¸ªå­—
 		if (strContent.length() < 20) {
 			Toast::create(App::getString("COMMENT_CONTENT_ERROR"));
 			return;
@@ -222,30 +225,27 @@ bool SendComment::init(int bookId) {
 		this->removeFromParentAndCleanup(true);
 	});
 
-	//ºìÉ«°´Å¥µã»÷ÊÂ¼ş
+	//çº¢è‰²æŒ‰é’®ç‚¹å‡»äº‹ä»¶
 	parent_red->addClickEventListener([=](Ref* sender) {
 		if (goal_color != 0) {
-			CCLOG("------------error");
 			this->removeFromParentAndCleanup(true);
 			return;
 		}
 		parentSure->setPositionX(1094);
 		comment->setPositionX(0);
 	});
-	//»ÆÉ«°´Å¥µã»÷ÊÂ¼ş
+	//é»„è‰²æŒ‰é’®ç‚¹å‡»äº‹ä»¶
 	parent_yellow->addClickEventListener([=](Ref* sender) {
 		if (goal_color != 1) {
-			CCLOG("------------error");
 			this->removeFromParentAndCleanup(true);
 			return;
 		}
 		parentSure->setPositionX(1094);
 		comment->setPositionX(0);
 	});
-	//À¶É«°´Å¥µã»÷ÊÂ¼ş
+	//è“è‰²æŒ‰é’®ç‚¹å‡»äº‹ä»¶
 	parent_blue->addClickEventListener([=](Ref* sender) {
 		if (goal_color != 2) {
-			CCLOG("------------error");
 			this->removeFromParentAndCleanup(true);
 			return;
 		}
@@ -260,7 +260,7 @@ bool SendComment::init(int bookId) {
 	return true;
 }
 
-//ÎÄ×ÖÆÀÂÛ
+//æ–‡å­—è¯„è®º
 void SendComment::sendComment(string title, string content) {
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "sendCommentData", m_bookId, "", (Ref*)star_score);
 	NetIntface::httpGetBookIsBuy(m_bookId, App::GetInstance()->m_me->id, -1, "bookinfoSceneGetBookIsBuySuccess", [=](string json) {
@@ -306,7 +306,7 @@ void SendComment::sendComment(string title, string content) {
 	App::log(std::string(IP).append(NET_SEND_COMMENT).c_str());
 	App::log(postData.c_str());
 
-	//ÇëÇóµÄ»Øµ÷º¯Êı
+	//è¯·æ±‚çš„å›è°ƒå‡½æ•°
 	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
 		if (!response)
 		{
@@ -320,7 +320,7 @@ void SendComment::sendComment(string title, string content) {
 			return;
 		}
 		
-		//json½âÎö
+		//jsonè§£æ
 		std::string str(response->getResponseData()->begin(), response->getResponseData()->end());
 		App::log(str);
 		rapidjson::Document doc;
@@ -341,15 +341,15 @@ void SendComment::sendComment(string title, string content) {
 			return;
 		}
 
-		if (value.GetInt() == 0) {//ÆÀ¼Û³É¹¦
+		if (value.GetInt() == 0) {//è¯„ä»·æˆåŠŸ
 			sendOver(0);
 			return;
 		}
-		else if(value.GetInt() == 1){//ÒÑÆÀ¼Û¹ı£¬²»ÄÜÔÙ´ÎÆÀ¼Û
+		else if(value.GetInt() == 1){//å·²è¯„ä»·è¿‡ï¼Œä¸èƒ½å†æ¬¡è¯„ä»·
 			sendOver(1);
 			return;
 		}
-		else{//ÆÀ¼ÛÊ§°Ü
+		else{//è¯„ä»·å¤±è´¥
 			sendOver(-1);
 			return;
 		}

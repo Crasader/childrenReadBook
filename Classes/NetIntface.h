@@ -162,7 +162,7 @@ public:
 	static void httpGetBookIsBuy(int bookId, int memberId, int orderId, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	static void httpGetBookIsBuyCallBack(string json, function<void(string order, int types)> runable);
 	//发表语音评论(带界面)
-	static void goToSendRecording(int bookId, int memberId, int types, string membername, string orderid, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
+	static void goToSendRecording(int bookId, int memberId, int types, string membername, string orderid, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction, string closeKey, function<void(string)> closeFunction);
 	//删除评论
 	static void httpDeleteComment(int id, function<void(int commentID)> runable, function<void(string errorStr)> errorRun);
 	//邀请注册送红包

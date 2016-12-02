@@ -130,7 +130,7 @@ void Load::initHttp()
 	//上传阅读记录
 	App::searchReadRecordJson();
 	//上传错误日志
-	App::upLoadingErrorLog();
+	//App::upLoadingErrorLog();
 	//书城
 	httpBookCityInfoAndDownLoad();
 	//红包活动

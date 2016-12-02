@@ -411,7 +411,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 	if (!zipfile) {
 		string errorstr = zipPath + " error : Unable to open the zip file";
 		App::log(errorstr);
-		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt",(int)YYXLayer::getRandom()),2);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat",(int)YYXLayer::getRandom()),2);
 		//通知解压失败
 		if (failRun)
 			failRun(zipPath);
@@ -423,7 +423,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 	if (unzGetGlobalInfo(zipfile, &global_info) != UNZ_OK) {
 		string errorstr = zipPath + " error : Unable to get the zip file information";
 		App::log(errorstr);
-		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 		//通知解压失败
 		if (failRun)
 			failRun(zipPath);
@@ -447,7 +447,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 			//通知解压失败
 			string errorstr = zipPath + " error : "+ string(fileName) +" =>Read the current file information failure";
 			App::log(errorstr);
-			App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+			App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 			if (failRun)
 				failRun(zipPath);
 			return false;
@@ -470,7 +470,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : "+ fullPath +"=>Failed to create the folder";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -493,7 +493,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 						//通知解压失败
 						string errorstr = zipPath + " error : "+ dir +"=>Failed to create the folder";
 						App::log(errorstr);
-						App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+						App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 						if (failRun)
 							failRun(zipPath);
 						return false;
@@ -513,7 +513,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : " + string(fileName) + " =>unzOpenCurrentFile is Failed";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -526,7 +526,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : "+ fullPath +" =>Failed to open the file";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -542,7 +542,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 					//通知解压失败
 					string errorstr = zipPath + " error : " + string(fileName) + " =>unzReadCurrentFile is Failed";
 					App::log(errorstr);
-					App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+					App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 					if (failRun)
 						failRun(zipPath);
 					return false;
@@ -563,7 +563,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : " + string(fileName) + " =>unzGoToNextFile is Failed";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.txt", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;

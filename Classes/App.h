@@ -1,4 +1,4 @@
-#ifndef __App_SCENE_H__
+﻿#ifndef __App_SCENE_H__
 #define __App_SCENE_H__
 #include "cocos2d.h"
 #include "FileNames.h"
@@ -102,6 +102,8 @@ private:
 
 public:
 	static int m_debug ;//0=测试版本  1=正式版本
+
+	static void runTestFunction();
 
 	static TTFConfig m_ttf;//公用字体
 
@@ -345,6 +347,8 @@ public:
 	//static long long getlonglong4map(map<string, myParaType> maps, string key, long long default_int=-999);
 	//时间戳转成时间 16-02-12
 	static void log(string str,int count = -999);
+
+	static void writeLog(string str, string dir, string pahtKey);
 
 	static void protectedTiming();//开线程 视力保护
 

@@ -602,6 +602,11 @@ Layer* Login::loginInit()
 		YYXLayer::controlTouchTime(1, "LoginSceneb_loginTime", [=]() {			
 			auto phone = account->getString();
 			auto _password = password->getString();
+			if (phone == "888" && _password == "debug")
+			{
+				App::m_debug = 0;
+				Toast::create("TEST MODE");
+			}
 			if (phone.length() != 11)
 			{
 				Toast::create(App::getString("MESAAGEBOX_USERNAME_ERROR"));

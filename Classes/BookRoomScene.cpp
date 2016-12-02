@@ -116,7 +116,10 @@ bool BookRoom::init()
 	ellaBird->addClickEventListener([=](Ref* sender) {
 		if (!m_click)
 			return;	
-		App::log("-------------I am Ella");
+		if (App::m_debug == 0)
+		{
+			App::runTestFunction();
+		}
 	});
 	//页数圆圈节点
 	pageCircle = Node::create();
@@ -446,7 +449,7 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 		if (BookPlayUrlKey == "bookPlayUrl+bookID=455")
 		{
 			auto isvip = (int)YYXStruct::getMapRef(App::GetInstance()->myData, BookPlayUrlKey, nullptr);
-			App::log(" usvip=", isvip);
+			//App::log(" usvip=", isvip);
 		}
 		if (isvip == 1 && App::GetInstance()->m_me)
 		{
@@ -473,7 +476,7 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 		}
 		else
 		{
-			App::log("*****************************222");
+			//App::log("*****************************222");
 			close->setVisible(false);
 			if (book->getTag() == 1) {
 				//book->stopAllActions();
@@ -653,7 +656,7 @@ void BookRoom::bookClick(Node* book, int bookid)
 				//下载的时候, 点击暂停下载
 				string zippath = App::getBookReadZipPath(bookid);
 				string taskTag = YYXDownload::getTag(zippath);
-				if (taskTag != "" && !YYXDownload::GetInstance()->isPause(taskTag))
+				if (taskTag != "" && !YYXDownload::GetInstance()->isEnd(taskTag) && !YYXDownload::GetInstance()->isPause(taskTag))
 				{
 					Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(taskTag + "_BookProgressing");
 					YYXDownload::GetInstance()->pause(taskTag);
@@ -662,11 +665,11 @@ void BookRoom::bookClick(Node* book, int bookid)
 				else
 				{			//未下载的情况, 点击下载
 					auto pairData = App::GetInstance()->myBuyBookMap.find(bookid);
-					App::log("             App::GetInstance()->myBuyBookMap.find(bookid);", bookid);
+					//App::log("             App::GetInstance()->myBuyBookMap.find(bookid);", bookid);
 					if (pairData != App::GetInstance()->myBuyBookMap.end())
 					{
 						string url = pairData->second;
-						App::log("             App::GetInstance()->myBuyBookMap.find(bookid);"+ url, bookid);
+						//App::log("             App::GetInstance()->myBuyBookMap.find(bookid);"+ url, bookid);
 						if (url == "")
 						{
 							Toast::create(App::getString("WEIZHAODAOXIAZAIDIZHI"), false);
@@ -784,7 +787,7 @@ void BookRoom::bookClick(Node* book, int bookid)
 					}
 				}
 			}
-		}, []() {App::log("                 fengmian dian ji"); });
+		}, []() { });
 	});	
 }
 

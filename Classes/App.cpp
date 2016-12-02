@@ -21,15 +21,26 @@ std::string App::m_resource = "android";// "iphone6";
 
 //sqlite3* App::m_db = nullptr;//数据库指针
 
-int App::m_debug = 1;//0=测试版本  1=正式版本
+int App::m_debug = 0;//0=测试版本  1=正式版本
 
-MySceneName App::m_RunningScene =LoadScene;
+void App::runTestFunction()
+{
+	Toast::create("测试");
+	std::thread([]() {
+		string soursedir = FileUtils::getInstance()->getWritablePath() + "temp";
+		string destdir = NetIntface::getAlbumAbsolutePath() + "/ellabook";
+		if (soursedir == destdir)
+			destdir = FileUtils::getInstance()->getWritablePath() + "ellabook";
+		YYXLayer::CopyDirectory(soursedir, destdir);
+	}).detach();
+}
+
+MySceneName App::m_RunningScene = LoadScene;
 
 string App::m_photsName ="0";
 
 App::App()   //构造函数是私有的
 {	
-	App::log("App::App() ");
 	m_me = nullptr;
 	//m_notification = nullptr;
 	m_acount = new AcountInfo();
@@ -43,7 +54,6 @@ App::App()   //构造函数是私有的
 	isBack = true;
 	isMusicPlay = false;
 	CsbCache = *(new map<string, Data>);
-	App::log("App::App()---END ");
 }
 
 App * App::GetInstance()
@@ -321,7 +331,7 @@ bool App::addData(string path, Data& result)
 		return false;
 	CsbCache[path] = data;
 	result = data;
-	App::log(path + " add csb File cache");
+	//App::log(path + " add csb File cache");
 	return true;
 }
 
@@ -332,7 +342,7 @@ bool App::getData(string path, Data& data)
 	if (CsbCache.find(path) != CsbCache.end())
 	{
 		data = CsbCache[path];
-		App::log(path+" get csb File cache");
+		//App::log(path+" get csb File cache");
 	}
 	else
 	{
@@ -929,12 +939,12 @@ void App::pushScene(MySceneName name,int data,std::string  str)
 		}
 	}
 	m_SceneOrder.push_back(mapvalue);
-	FileUtils::getInstance()->removeFile(FileUtils::getInstance()->getWritablePath() + "push.txt");
-	for (auto it : m_SceneOrder)
-	{
-		string str = string("\n\r----------").append(it["MySceneName"].stringData).append("---------------- ").append(StringUtils::format("%d\n\r", it["MySceneName"].intData));
-		YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath()+"push.txt");
-	}
+	//FileUtils::getInstance()->removeFile(FileUtils::getInstance()->getWritablePath() + "push.txt");
+	//for (auto it : m_SceneOrder)
+	//{
+	//	string str = string("\n\r----------").append(it["MySceneName"].stringData).append("---------------- ").append(StringUtils::format("%d\n\r", it["MySceneName"].intData));
+	//	YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath()+"push.txt");
+	//}
 }
 
 void App::popBack(MySceneName dangqianScene)
@@ -1123,7 +1133,33 @@ void App::log(string str,int count)
 	else
 		CCLOG("%s / %d", str.c_str(), count);
 #endif
+	//写日志
+	if(App::m_debug == 0)
+		writeLog(StringUtils::format("(%d)%s", count, str.c_str()), FileUtils::getInstance()->getWritablePath() + "temp","LogFileName");
+}
 
+void App::writeLog(string str, string dir, string pahtKey)
+{
+	if (str.empty())
+		return;
+	string path = YYXLayer::getFileValue(pahtKey, "");
+	if (path == "")
+	{
+		auto fileName = StringUtils::format("/%lld.dat", YYXLayer::getRandom());
+		path = dir + fileName;
+		YYXLayer::setFileValue(pahtKey, path);
+	}
+	if (FileUtils::getInstance()->isFileExist(path))
+	{
+		auto fsize = FileUtils::getInstance()->getFileSize(path);
+		if (fsize > 500000)
+		{
+			auto fileName =StringUtils::format("/%lld.dat", YYXLayer::getRandom());
+			path = dir + fileName;
+			YYXLayer::setFileValue(pahtKey, path);
+		}
+	}
+	YYXLayer::writeFilepp(str+"\r\n", path);
 }
 
 void App::backThreading() {
@@ -1169,7 +1205,6 @@ bool cmp_by_value(const PAIR& lhs, const PAIR& rhs) {
 string App::getOnlyKey()
 {
 	auto str = StringUtils::format("%lld", YYXLayer::getRandom());
-	App::log("%lld= "+str);
 	return str;
 }
 
@@ -1184,8 +1219,7 @@ void App::addErrorLog(string error, string filename, int type)
 	parater["system"] = "android 5.0";
 	parater["type"] = StringUtils::format("%d", type);
 	string josn = YYXLayer::getStringFormMap(parater);
-	string filepath = FileUtils::getInstance()->getWritablePath() + "errorLog/" + filename;
-	YYXLayer::writeFile(josn, filepath);
+	writeLog(josn+"\r\n", FileUtils::getInstance()->getWritablePath() + "errorLog", "ErrorLogKey");
 }
 
 void App::upLoadingErrorLog()

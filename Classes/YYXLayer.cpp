@@ -280,25 +280,25 @@ void YYXLayer::stringHttpRequest(HttpRequest::Type type,string url,map<string,st
 			request->setRequestData(postData.c_str(), postData.length());
 		}
 	}
-	App::log("\n" + url + "       -----------------------     \n" + postData);
+	//App::log("\n" + url + "       -----------------------     \n" + postData);
 	//请求的回调函数
 	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
 		if (!response)
 		{
 			if(errorRunable)
 				errorRunable();
-			App::log("\n\n\n" + url + "                                      \n" + postData + "                                                \n" + "stringHttpRequest http failed code = 404" + "\n\n\n");
+			//App::log(url + +" ( "+postData + " )" + " stringHttpRequest http failed code = 404" + "\n\n\n");
 			return;
 		}
 		if (!response->isSucceed())
 		{
 			if(errorRunable)
 				errorRunable();
-			App::log("\n\n\n" + url + "                                      \n" + postData + "                                                \n" + "stringHttpRequest http failed code =" + "\n\n\n", response->getResponseCode());
+			//App::log("\n\n\n" + url + "                                      \n" + postData + "                                                \n" + "stringHttpRequest http failed code =" + "\n\n\n", response->getResponseCode());
 			return;
 		}
 		std::string str(response->getResponseData()->begin(), response->getResponseData()->end());
-		App::log("\n\n\n"+url+"                                      \n" + postData +"                                                \n"+str+ "\n\n\n");
+		//App::log("\n\n\n"+url+"                                      \n" + postData +"                                                \n"+str+ "\n\n\n");
 		if (runable)
 			runable(str);
 	});
@@ -313,12 +313,12 @@ Ref* YYXLayer::findControl(string controlName)
 	//App::log(className+"::findControl()" );
 	if (parentNode == nullptr)
 	{
-		App::log("parentNode is null");
+		//App::log("parentNode is null");
 		return nullptr;
 	}
 	if (!&controlName && controlName.empty())
 	{
-		App::log("controlName is empty");
+		//App::log("controlName is empty");
 		return nullptr;
 	}
 	if (controls.find(controlName) == controls.end())
@@ -326,13 +326,13 @@ Ref* YYXLayer::findControl(string controlName)
 		auto control = parentNode->getChildByName(controlName);
 		if (control == nullptr)
 		{
-			App::log("controlName is null");
+			//App::log("controlName is null");
 			return nullptr;
 		}
 		else
 		{
 			controls[controlName] = control;
-			App::log(className + "::findControl---END");
+			//App::log(className + "::findControl---END");
 			return control;
 		}
 	}
@@ -341,12 +341,12 @@ Ref* YYXLayer::findControl(string controlName)
 		auto control = controls[controlName];
 		if (control)
 		{
-			App::log(className+ "::findControl---END");
+			//App::log(className+ "::findControl---END");
 			return control;
 		}
 		else
 		{
-			App::log("controlName is null");
+			//App::log("controlName is null");
 			return nullptr;
 		}
 	}
@@ -365,19 +365,26 @@ void YYXLayer::controlTouchTime(float outTime, string keyOfSaveTime, std::functi
 		return;
 	}
 	int t1 = outTime * 1000;
-	auto t = App::GetInstance()->getTime(keyOfSaveTime, 0) + t1;
+	auto t = App::GetInstance()->getTime(keyOfSaveTime, 0);
 	int time = t % 100000000;
 	int nowtime = NetIntface::getMillsTime()% 100000000;
-	if (nowtime >= time)
+	auto reslut = time - nowtime;
+	App::log(StringUtils::format(" ( %d ) controlTouchTime >= %f", abs(reslut), outTime));
+	if (abs(reslut) >= t1)
 	{
 		App::GetInstance()->addTime(keyOfSaveTime, nowtime);
 		if (runable)
+		{
+			App::log(StringUtils::format("( %d ) controlTouchTime RUN: TimeKey = %s, nowtime = %d, lastTime = %d  ", abs(reslut), keyOfSaveTime.c_str(), nowtime, time));
 			runable();
+		}
 	}
 	else
 	{
-		if(unTouchRun)
+		App::log(StringUtils::format("( %d ) controlTouchTime Error: TimeKey = %s, nowtime = %d, lastTime = %d  ", abs(reslut), keyOfSaveTime.c_str(), nowtime, time));
+		if (unTouchRun) {
 			unTouchRun();
+		}
 	}
 }
 
@@ -424,7 +431,7 @@ void YYXLayer::addSchedule(const string scheduleTimeName,float interval,const st
 
 void YYXLayer::sendNotify(string eventName,string className, int data)
 {	
-	App::log(className + "::sendNotify = "+eventName ,data);
+	//App::log(className + "::sendNotify = "+eventName ,data);
 	if (!&eventName || !&className)
 	{
 		App::log("paramter is error");
@@ -437,7 +444,7 @@ void YYXLayer::sendNotify(string eventName,string className, int data)
 			event.setUserData((void*)data);
 		Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
 	});
-	App::log(className + "::sendNotify = " + eventName +"---END");
+	//App::log(className + "::sendNotify = " + eventName +"---END");
 }
 
 void YYXLayer::sendNotify4YYXStruct(string eventName, long long luserdata, string userdata, string className)
@@ -1594,7 +1601,6 @@ void YYXLayer::writeFilepp (string str, string path)//追加写文件
 {
 	size_t size = 0;
 	const char* mode = "ab+";
-	auto fileutils = FileUtils::getInstance();
 	do
 	{
 		// Read the file from hardware

@@ -551,7 +551,8 @@ public class AppActivity extends Cocos2dxActivity {
 				String orderid = HttpTool.GetString(Jdata,"orderid", "201610291528");
 				String runkey = HttpTool.GetString(Jdata,"runkey", "201610291527");
 				String errorkey = HttpTool.GetString(Jdata,"errorkey", "201610291526");
-				new RecordPresenter().show(m_context,bookid, membername, memberId,orderid,types,runkey,errorkey,mag);
+				String closekey = HttpTool.GetString(Jdata,"closekey", "201610291525");
+				new RecordPresenter().show(m_context,bookid, membername, memberId,orderid,types,runkey,errorkey,closekey,mag);
 				break;
 			default:
 				break;
@@ -1861,7 +1862,7 @@ public class AppActivity extends Cocos2dxActivity {
 
 	// JNI 发表录音评论
 	public static void commentTheRecording(int bookId, int memberId, int types,
-			String membername, String orderid, String runkey, String errorkey) {
+			String membername, String orderid, String runkey, String errorkey, String closekey) {
 		Message msg = new Message();
 		msg.what = MacroCode.commentTheRecording;
 		try {
@@ -1873,6 +1874,7 @@ public class AppActivity extends Cocos2dxActivity {
 			json.put("orderid", orderid);
 			json.put("runkey", runkey);
 			json.put("errorkey", errorkey);
+			json.put("closekey", closekey);
 			msg.obj = json;
 		} catch (Exception e) {
 			Log.e("201610291535", e.toString());
