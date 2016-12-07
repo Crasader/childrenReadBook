@@ -1,4 +1,4 @@
-#ifndef __NETINTFACE_SCENE_H__
+﻿#ifndef __NETINTFACE_SCENE_H__
 #define __NETINTFACE_SCENE_H__
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //2016.04.09 俞越星*/

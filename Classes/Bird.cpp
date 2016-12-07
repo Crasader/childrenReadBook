@@ -1,4 +1,4 @@
-#include "Bird.h"
+﻿#include "Bird.h"
 #include "YYXLayer.h"
 
 Bird::Bird(const std::string& filename, const std::string& c_plist, const char* c_FileNameFormat, Vec2 P0, Vec2 P1, Vec2 P2, Vec2 P3, float DelayTime, float FlyTime)

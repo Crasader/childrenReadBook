@@ -1,4 +1,4 @@
-#ifndef __Parent_SCENE_H__
+ï»¿#ifndef __Parent_SCENE_H__
 #define __Parent_SCENE_H__
 
 #include "cocos2d.h"
@@ -13,10 +13,10 @@
 class Parent : public cocos2d::Layer
 {
 private:
-	Node* m_show;//¼ÇÂ¼µ±Ç°ÏÔÊ¾µÄÍ¼²ã
-	Node* m_parentNode;//Õû¸ö³¡¾°
-	int m_times;//»ñÈ¡ÑéÖ¤Âë¼ÆÊ±
-	map<string,void*> m_voids;//´æÖ¸Õë
+	Node* m_show;//è®°å½•å½“å‰æ˜¾ç¤ºçš„å›¾å±‚
+	Node* m_parentNode;//æ•´ä¸ªåœºæ™¯
+	int m_times;//è·å–éªŒè¯ç è®¡æ—¶
+	map<string,void*> m_voids;//å­˜æŒ‡é’ˆ
 public:
 	~Parent();
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
@@ -29,65 +29,65 @@ public:
 	// implement the "static create()" method manually
     CREATE_FUNC(Parent);	
 
-	//ÉèÖÃ½çÃæµÄ³õÊ¼»¯
+	//è®¾ç½®ç•Œé¢çš„åˆå§‹åŒ–
 	Layer* initNode_Set();
 
-	//ÁªÏµÎÒÃÇ½çÃæµÄ³õÊ¼»¯
+	//è”ç³»æˆ‘ä»¬ç•Œé¢çš„åˆå§‹åŒ–
 	Layer* initNode_Contact();
 
-	//ÕËºÅĞÅÏ¢½çÃæ³õÊ¼»¯
+	//è´¦å·ä¿¡æ¯ç•Œé¢åˆå§‹åŒ–
 	Layer* initNode_Account();
 
-	//µÇÂ½½çÃæ³õÊ¼»¯
+	//ç™»é™†ç•Œé¢åˆå§‹åŒ–
 	Layer* initNode_Login();
 
-	//Ô¤¼ÓÔØ
+	//é¢„åŠ è½½
 	//static void prestrain();
 
-	//»ñÈ¡±¾µØ»º´æ´óĞ¡
+	//è·å–æœ¬åœ°ç¼“å­˜å¤§å°
 	float getLocalCacheSize();
 
-	//»ñÈ¡ÎÄ¼ş¼Ğ´óĞ¡
+	//è·å–æ–‡ä»¶å¤¹å¤§å°
 	long getDirectorySize(string);
 
-	//Çå³ı»º´æ
+	//æ¸…é™¤ç¼“å­˜
 	void deleteCache();
 
-	//É¾³ı±¾µØ·Ç¿ÕÄ¿Â¼
+	//åˆ é™¤æœ¬åœ°éç©ºç›®å½•
 	static void DeleteDirectory(string );
 
-	//Òâ¼û·´À¡
+	//æ„è§åé¦ˆ
 	void FeedBack(string,string);
 
-	//ÍøÂçÇëÇóĞŞ¸ÄÓÃ»§ĞÅÏ¢
+	//ç½‘ç»œè¯·æ±‚ä¿®æ”¹ç”¨æˆ·ä¿¡æ¯
 	//void updateInfo(int, string, string);
 	//void updateInfoCallback(string, int, string, string);
 
-	//Í¨ÖªĞŞ¸ÄÓÃ»§ĞÅÏ¢³É¹¦
+	//é€šçŸ¥ä¿®æ”¹ç”¨æˆ·ä¿¡æ¯æˆåŠŸ
 	//void notifyModifySuccess();
 
-	//Í¨ÖªĞŞ¸ÄÓÃ»§ĞÅÏ¢Ê§°Ü
+	//é€šçŸ¥ä¿®æ”¹ç”¨æˆ·ä¿¡æ¯å¤±è´¥
 	//void notifyModifyFailed();
 
-	//»ñÈ¡ÑéÖ¤Âë
+	//è·å–éªŒè¯ç 
 	void getCode(string);
 
-	//ÍøÂçÇëÇóĞŞ¸ÄÃÜÂë
+	//ç½‘ç»œè¯·æ±‚ä¿®æ”¹å¯†ç 
 	void modifyPassword(string, string);
 
-	//ÍøÂçÇëÇóÕË»§Óà¶î
+	//ç½‘ç»œè¯·æ±‚è´¦æˆ·ä½™é¢
 	void getUserMoney();
 
-	//Õ¹Ê¾ºì°ü
+	//å±•ç¤ºçº¢åŒ…
 	void showRedPacket();
 
-	//»ñÈ¡ÓĞĞ§ºì°üµÄ»Øµ÷
+	//è·å–æœ‰æ•ˆçº¢åŒ…çš„å›è°ƒ
 	//void httpGetRedpacketCallback(string json);
 
 	void listViewShowRedPacket(ListView * listview);
 
 	void loadRedPacketData(Node * node, int index);
-	//»ñÈ¡ÓĞĞ§ºì°ü
+	//è·å–æœ‰æ•ˆçº¢åŒ…
 	void httpGetUserRedPacket();
 
 	//void stringHttpRequest(HttpRequest::Type type, string url, map<string, string> paramter, int outTime, std::function<void(string json)> runable, std::function<void()> errorRunable);

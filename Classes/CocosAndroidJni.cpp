@@ -1,4 +1,4 @@
-#include "CocosAndroidJni.h"
+﻿#include "CocosAndroidJni.h"
 #include "App.h"
 
 CocosAndroidJni::CocosAndroidJni(){}

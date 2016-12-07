@@ -1,4 +1,4 @@
-#ifndef __BOOKCITYSCENE_H__
+ï»¿#ifndef __BOOKCITYSCENE_H__
 #define __BOOKCITYSCENE_H__
 
 #include "App.h"
@@ -12,13 +12,13 @@ USING_NS_CC;
 class BookCityScene : public cocos2d::Layer
 {
 public:
-	Data m_bookStoreCSBRes_double;//csbµÄ¼ÓÔØ 2¿ÅĞ¡°´Å¥
-	Data m_bookStoreCSBRes_onlyone;//csbµÄ¼ÓÔØ 1¿Å´ó°´Å¥
+	Data m_bookStoreCSBRes_double;//csbçš„åŠ è½½ 2é¢—å°æŒ‰é’®
+	Data m_bookStoreCSBRes_onlyone;//csbçš„åŠ è½½ 1é¢—å¤§æŒ‰é’®
 	ListView* m_listview;
 	Vec2 m_touchBegan;
 	//long long *m_eventTime;
-	//static daocode::threadQueue* m_queue;//ÍøÂçÇëÇó¶ÓÁĞ¹ÜÀí
-	long long m_createTime;//³¡¾°´´½¨Ê±¼ä
+	//static daocode::threadQueue* m_queue;//ç½‘ç»œè¯·æ±‚é˜Ÿåˆ—ç®¡ç†
+	long long m_createTime;//åœºæ™¯åˆ›å»ºæ—¶é—´
 public:
 	BookCityScene();
 	~BookCityScene();
@@ -29,13 +29,13 @@ public:
 	void initListView();
 	void onEnterTransitionDidFinish();
 	//YYXLayer * LoadingLayer();
-	//³õÊ¼»¯listview
+	//åˆå§‹åŒ–listview
 	void httpBookCityInfo();
-	//static void AsyncDownload(int, std::string, int);//°´Å¥·âÃæ»ò±ß¿òµÄÒì²½ÏÂÔØ
+	//static void AsyncDownload(int, std::string, int);//æŒ‰é’®å°é¢æˆ–è¾¹æ¡†çš„å¼‚æ­¥ä¸‹è½½
 	//static void threadDownd(int, std::string, int);
-	//static void notifyLoadFailed(std::string);//Í¨ÖªÏÂÔØ·âÃæ»ò±ß¿òÊ§°Ü
+	//static void notifyLoadFailed(std::string);//é€šçŸ¥ä¸‹è½½å°é¢æˆ–è¾¹æ¡†å¤±è´¥
 
-	static bool m_isMoved;//ÅĞ¶ÏÊÇ·ñÒÆ¶¯
+	static bool m_isMoved;//åˆ¤æ–­æ˜¯å¦ç§»åŠ¨
 };
 
 class BigBtn : public Node

@@ -1,4 +1,4 @@
-#ifndef __ShowNotification_LAYER_H__
+﻿#ifndef __ShowNotification_LAYER_H__
 #define __ShowNotification_LAYER_H__
 
 #include "cocos2d.h"

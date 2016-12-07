@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "ui/CocosGUI.h"

@@ -1,4 +1,4 @@
-#ifndef __BABYCENTER_SCENE_H__
+﻿#ifndef __BABYCENTER_SCENE_H__
 #define __BABYCENTER_SCENE_H__
 
 #include "cocos2d.h"

@@ -1,4 +1,4 @@
-#include "UpdateVersion.h"
+﻿#include "UpdateVersion.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 

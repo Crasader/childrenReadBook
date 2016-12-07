@@ -1,4 +1,4 @@
-#include "App.h"
+﻿#include "App.h"
 #include "CocosAndroidJni.h"
 //#include "DownloadRes.h"
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)

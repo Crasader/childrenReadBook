@@ -1,4 +1,4 @@
-#ifndef __RestRemind_SCENE_H__
+ï»¿#ifndef __RestRemind_SCENE_H__
 #define __RestRemind_SCENE_H__
 
 #include "cocos2d.h"
@@ -14,8 +14,8 @@ public:
     virtual bool init();
     CREATE_FUNC(RestRemind);
 private:
-	EventListenerTouchOneByOne* myTouchListener;//´¥Ãş¼àÌı
-	int m_times;//¼ÆÊ±
+	EventListenerTouchOneByOne* myTouchListener;//è§¦æ‘¸ç›‘å¬
+	int m_times;//è®¡æ—¶
 };
 
 #endif // __Parent_SCENE_H__

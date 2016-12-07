@@ -1,4 +1,4 @@
-#ifndef __UpdateVersion_LAYER_H__
+﻿#ifndef __UpdateVersion_LAYER_H__
 #define __UpdateVersion_LAYER_H__
 
 #include "cocos2d.h"

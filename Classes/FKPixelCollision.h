@@ -1,4 +1,4 @@
-#ifndef FKPixelCollision_h
+﻿#ifndef FKPixelCollision_h
 #define FKPixelCollision_h
 
 #include <iostream>

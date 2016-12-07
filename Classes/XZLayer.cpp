@@ -1,10 +1,10 @@
-#include <iostream>   
+ï»¿#include <iostream>   
 #include <string>   
 #include "XZLayer.h"
 #include "App.h"
 
 
-//Õ¹Ê¾·ÖÏíºì°ü
+//å±•ç¤ºåˆ†äº«çº¢åŒ…
 void XZLayer::showShareRedPacket(string redCount)
 {
 	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {

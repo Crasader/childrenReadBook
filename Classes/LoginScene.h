@@ -1,4 +1,4 @@
-#ifndef __Login_SCENE_H__
+﻿#ifndef __Login_SCENE_H__
 #define __Login_SCENE_H__
 
 #include "cocostudio/CocoStudio.h"

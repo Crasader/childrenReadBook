@@ -1,4 +1,4 @@
-#ifndef __XZLayer_H__
+﻿#ifndef __XZLayer_H__
 #define __XZLayer_H__
 
 #include "cocos2d.h"

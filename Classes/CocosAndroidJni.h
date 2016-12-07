@@ -1,4 +1,4 @@
-//
+﻿//
 //  CocosAndroidJni.h
 //  cocosAlipay
 //

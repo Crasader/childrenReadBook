@@ -1,4 +1,4 @@
-#ifndef __Index_SCENE_H__
+﻿#ifndef __Index_SCENE_H__
 #define __Index_SCENE_H__
 
 #include "cocos2d.h"

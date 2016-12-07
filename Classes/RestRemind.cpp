@@ -1,4 +1,4 @@
-#include "RestRemind.h"
+﻿#include "RestRemind.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 

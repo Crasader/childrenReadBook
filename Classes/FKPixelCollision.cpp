@@ -1,4 +1,4 @@
-#include "FKPixelCollision.h"
+﻿#include "FKPixelCollision.h"
 
 static const auto kVertexShader = "SolidColorShader.vsh";
 static const auto kFragmentShader = "SolidColorShader.fsh";

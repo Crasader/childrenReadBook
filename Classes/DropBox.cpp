@@ -1,4 +1,4 @@
-#include "DropBox.h"
+﻿#include "DropBox.h"
 
 DropBox::DropBox() {
 	lastIndex1 = 0;

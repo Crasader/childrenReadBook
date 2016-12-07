@@ -1,4 +1,4 @@
-#ifndef __BookStore_SCENE_H__
+﻿#ifndef __BookStore_SCENE_H__
 #define __BookStore_SCENE_H__
 ///*逻辑简介
 //本类是书店场景,展示书籍简介(封面,价格)

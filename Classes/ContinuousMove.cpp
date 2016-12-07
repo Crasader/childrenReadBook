@@ -1,4 +1,4 @@
-#include "ContinuousMove.h"
+﻿#include "ContinuousMove.h"
 
 
 ContinuousMove::ContinuousMove(float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_Offset, float f_MoveTime, Vec2 Show4AnchorPoint, Vec2 Shadow4AnchorPoint, Vec2 MoveUpStart, float MoveUpTime, float ShakeTime, float JumpHeight,int Jumps)

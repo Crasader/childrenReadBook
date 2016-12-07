@@ -1,4 +1,4 @@
-#include "ThreadQueue.h"
+ï»¿#include "ThreadQueue.h"
 
 #include<iostream>
 
@@ -13,7 +13,7 @@ threadQueue::~threadQueue()
 }
 
 
-void threadQueue::push_back(const ThreadfuncPtr ptr)//½«Ò»¸öÏß³Ì¼ÓÈë¶ÓÁĞ
+void threadQueue::push_back(const ThreadfuncPtr ptr)//å°†ä¸€ä¸ªçº¿ç¨‹åŠ å…¥é˜Ÿåˆ—
 {
     std::unique_lock <std::mutex> lck (mtx);
     if (thrPtrs.size() < (size_t)max_size_queue)
@@ -37,9 +37,9 @@ void threadQueue::Process()
     }
 }
 
-void threadQueue::start()//³õÊ¼»¯Ïß³Ì¶ÓÁĞ
+void threadQueue::start()//åˆå§‹åŒ–çº¿ç¨‹é˜Ÿåˆ—
 {
-    if (!is_start){//Èç¹ûÒÑ³õÊ¼»¯£¬Ôò²»»áÔÙ´Î½øĞĞ³õÊ¼»¯
+    if (!is_start){//å¦‚æœå·²åˆå§‹åŒ–ï¼Œåˆ™ä¸ä¼šå†æ¬¡è¿›è¡Œåˆå§‹åŒ–
         is_start=true;
         for (int i=0;i<thread_cnt;i++){
             std::shared_ptr<std::thread> thrptr (new std::thread(std::bind(&threadQueue::Process,this)));
@@ -53,10 +53,10 @@ void threadQueue::stop()
     if(!is_start)
         return ;
     is_start=false;
-    cond.notify_all();//Èç¹ûÔÚcond.waitÖ®Ç°·¢£¬µ¼ÖÂ×èÈûÔÚcond.wait
+    cond.notify_all();//å¦‚æœåœ¨cond.waitä¹‹å‰å‘ï¼Œå¯¼è‡´é˜»å¡åœ¨cond.wait
 
     for(int i=0;i<(int)work_threads.size();i++){
         if (work_threads[i]->joinable())
-            work_threads[i]->join();//Èç¹ûÈÎÎñ×öÍêÁË£¬×èÈûÔÚÕâÀï»¹¿É£¬Èç¹ûÃ»×öÍê£¬×èÈûÔòµ¼ÖÂnotify_all£¬·¢³öºó½ÓÊÕ²»µ½
+            work_threads[i]->join();//å¦‚æœä»»åŠ¡åšå®Œäº†ï¼Œé˜»å¡åœ¨è¿™é‡Œè¿˜å¯ï¼Œå¦‚æœæ²¡åšå®Œï¼Œé˜»å¡åˆ™å¯¼è‡´notify_allï¼Œå‘å‡ºåæ¥æ”¶ä¸åˆ°
     }
 }

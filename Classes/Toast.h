@@ -1,4 +1,4 @@
-#ifndef __Toast_H__
+﻿#ifndef __Toast_H__
 #define __Toast_H__
 
 #include "cocos2d.h"

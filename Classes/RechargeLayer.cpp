@@ -1,4 +1,4 @@
-#include "RechargeLayer.h"
+﻿#include "RechargeLayer.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "NetIntface.h"

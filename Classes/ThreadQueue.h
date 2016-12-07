@@ -1,4 +1,4 @@
-
+ï»¿
 
 #ifndef NONABLECOPY_H
 #define NONABLECOPY_H
@@ -55,7 +55,7 @@ namespace daocode {
 //#include "condition.h"
 
 namespace daocode{
-    //Ïß³Ì¶ÓÁĞ
+    //çº¿ç¨‹é˜Ÿåˆ—
 
     class threadQueue:public nonablecopy{
         //typedef std::function< void() > ThreadfuncPtr;
@@ -67,8 +67,8 @@ namespace daocode{
         ~threadQueue();
         void start();
         void stop();
-        void push_back(ThreadfuncPtr ptr);//¼ÓÈëÈÎÎñ¶ÓÁĞ
-        void Process();//´¦ÀíÈÎÎñ
+        void push_back(ThreadfuncPtr ptr);//åŠ å…¥ä»»åŠ¡é˜Ÿåˆ—
+        void Process();//å¤„ç†ä»»åŠ¡
         inline void SetMax_size_queue(int max_size_queue_=1024)
         {
             this->max_size_queue = max_size_queue_;
@@ -97,12 +97,12 @@ namespace daocode{
 		}
     private:
 
-        std::vector< std::shared_ptr<std::thread> > work_threads;//¹¤×÷Ïß³Ì
+        std::vector< std::shared_ptr<std::thread> > work_threads;//å·¥ä½œçº¿ç¨‹
         std::deque<ThreadfuncPtr> thrPtrs;
-        int max_size_queue;//¶ÓÁĞ×î´óÊı
-        int thread_cnt;    //Ïß³ÌÊı
-        int is_start;      //Ïß³ÌÊÇ·ñ¿ªÊ¼
-        std::mutex mtx;    //ÈÎÎñ¶ÓÁĞËø
+        int max_size_queue;//é˜Ÿåˆ—æœ€å¤§æ•°
+        int thread_cnt;    //çº¿ç¨‹æ•°
+        int is_start;      //çº¿ç¨‹æ˜¯å¦å¼€å§‹
+        std::mutex mtx;    //ä»»åŠ¡é˜Ÿåˆ—é”
         Condition cond;
     };
 }
