@@ -333,14 +333,24 @@ bool BookInfo::init(int bookId)
 							//vip并且是租书范围
 							if (App::GetInstance()->m_me->vip && IsRentBook())
 							{
-								httpRentBook([=]() {
+								auto bookTAG = YYXDownload::getTag(App::getReadZipDir() + "/" + ZipName);
+								if (YYXDownload::GetInstance()->isPause(bookTAG))
+								{
 									m_ReadButton->setTitleFontSize(36);
 									m_ReadButton->setTitleText("0%");
-									if (App::GetInstance()->myBuyBookMap.find(m_bookId) == App::GetInstance()->myBuyBookMap.end())
-										App::addRentBook(m_bookId);
 									string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
 									downloadingListener(m_bookId, bookTag, m_ReadButton);
-								});
+								}
+								else {
+									httpRentBook([=]() {
+										m_ReadButton->setTitleFontSize(36);
+										m_ReadButton->setTitleText("0%");
+										if (App::GetInstance()->myBuyBookMap.find(m_bookId) == App::GetInstance()->myBuyBookMap.end())
+											App::addRentBook(m_bookId);
+										string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
+										downloadingListener(m_bookId, bookTag, m_ReadButton);
+									});
+								}
 							}
 							else
 							{
@@ -857,12 +867,22 @@ void BookInfo::onEnterTransitionDidFinish()
 			if (bookPlayUrl != "" && App::getNetSetAndHintSet()) {
 				if (App::GetInstance()->m_me->vip)
 				{
-					httpRentBook([=]() {
+					auto bookTAG = YYXDownload::getTag(App::getReadZipDir() + "/" + ZipName);
+					if (YYXDownload::GetInstance()->isPause(bookTAG))
+					{
 						m_ReadButton->setTitleFontSize(36);
 						m_ReadButton->setTitleText("0%");
 						string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
-						downloadingListener(m_bookId, bookTag, m_ReadButton); 
-					});
+						downloadingListener(m_bookId, bookTag, m_ReadButton);
+					}
+					else {
+						httpRentBook([=]() {
+							m_ReadButton->setTitleFontSize(36);
+							m_ReadButton->setTitleText("0%");
+							string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
+							downloadingListener(m_bookId, bookTag, m_ReadButton);
+						});
+					}
 				}
 				else {
 					m_ReadButton->setTitleFontSize(36);
