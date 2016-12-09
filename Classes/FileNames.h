@@ -1019,6 +1019,8 @@ enum MyEnum
 #define NET_RENT "/ellabook-server/annualcard/pay"  //租书接口
 
 #define NET_DELETECOMMENT "/ellabook-server/evaluate/delectGoodsEvaluate"//删除评论
+
+#define NET_UPERRORLOG "/ellabook-server/Error/saveError.do"//上传错误日志
 //-----------------------------------------网络请求-------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
 

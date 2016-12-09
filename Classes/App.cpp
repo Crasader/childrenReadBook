@@ -806,10 +806,16 @@ void App::threadTiming(long long startAppTime) {
 		//删除文件
 		if (App::GetInstance()->unDeleteFile.size() > 0)
 		{
+			vector<string> data;
 			for (auto it : App::GetInstance()->unDeleteFile)
 			{
+				App::log("removeFile  "+it.first);
 				if (FileUtils::getInstance()->removeFile(it.first))
-					App::GetInstance()->unDeleteFile.erase(it.first);
+					data.push_back(it.first);
+			}
+			for (auto da : data)
+			{
+				App::GetInstance()->unDeleteFile.erase(da);
 			}
 		}
 		App::ccsleep(1000);
@@ -1142,6 +1148,10 @@ void App::writeLog(string str, string dir, string pahtKey)
 {
 	if (str.empty())
 		return;
+	if (!FileUtils::getInstance()->isDirectoryExist(dir))
+	{
+		FileUtils::getInstance()->createDirectory(dir);
+	}
 	string path = YYXLayer::getFileValue(pahtKey, "");
 	if (path == "")
 	{
@@ -1211,32 +1221,40 @@ string App::getOnlyKey()
 void App::addErrorLog(string error, string filename, int type)
 {/*type 1=网络错误  2=文件错误  3= 其他错误*/
 	map<string, string> parater;
-	parater["error"] = error;
-	parater["time"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
-	parater["phone"] = App::GetInstance()->phoneModel;
-	parater["memberId"] = App::getMemberID();
+	parater["logInfo"] = error;
+	parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
+	parater["models"] = App::GetInstance()->phoneModel;
+	parater["memberid"] = App::getMemberID();
 	parater["resource"] = App::m_resource;
-	parater["system"] = "android 5.0";
-	parater["type"] = StringUtils::format("%d", type);
+	parater["systemInfo"] = App::GetInstance()->systemVersion;
+	parater["logType"] = StringUtils::format("%d", type);
 	string josn = YYXLayer::getStringFormMap(parater);
-	writeLog(josn+"\r\n", FileUtils::getInstance()->getWritablePath() + "errorLog", "ErrorLogKey");
+	//writeLog(josn+"\r\n", FileUtils::getInstance()->getWritablePath() + "errorLog", "ErrorLogKey");
+	string path = FileUtils::getInstance()->getWritablePath() + "errorLog/" + StringUtils::format("%d.dat", (int)YYXLayer::getRandom());
+	YYXLayer::writeFile(josn, path);
 }
 
 void App::upLoadingErrorLog()
 {
 	NetIntface::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "errorLog", [=](string filePath, string name) {
+		App::log("upLoadingErrorLog  " + filePath);
 		string str = YYXLayer::readFile(filePath);
 		map<string, string> paramter;
 		YYXLayer::TraversingJson(str, paramter);
-		string url = string(IP).append("");
+		string url = "";
+		if (App::m_debug == 0)
+			url = string("http://192.168.10.164:8080").append(NET_UPERRORLOG);
+		else
+			url = string(IP).append(NET_UPERRORLOG);
 		NetIntface::httpPost(url, paramter, "", [=](string json) {//post成功
-			NetIntface::saveReadRecordCallBack(json, [=]() {//解析成功
-				if (FileUtils::getInstance()->isFileExist(filePath))
-				{
-					if (!FileUtils::getInstance()->removeFile(filePath))
-						App::GetInstance()->unDeleteFile[filePath] = "";
-				}
-			}, []() {});
+			rapidjson::Document doc;
+			bool result = YYXLayer::getJsonObject4Json(doc, json);
+			if (result)
+			{
+				auto sres=  YYXLayer::getBoolForJson(false, doc, "result");
+				if (sres)					
+					App::GetInstance()->unDeleteFile[filePath] = "";			
+			}
 		}, "", [](string posterror) {});		
 	}, [](string dirPath, string name) {//遍历到文件夹
 	});
@@ -1435,4 +1453,17 @@ void App::getLocalRentJson()
 			}
 		}
 	}
+}
+//修改字符串, 全部替换
+string App::replaceChar(string str, string oldChar,string newChar)
+{
+	string result = "";
+	for (auto charstr : str)
+	{
+		string n = string(1, charstr);
+		if (strcmp(n.c_str(), oldChar.c_str()) == 0)
+			n = newChar;
+		result = result + n;
+	}
+	return result;
 }

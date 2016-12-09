@@ -2398,7 +2398,7 @@ void YYXLayer::TraversingJson(string json, map<string, string>& data)
 		}
 	}
 	else
-		App::log("json is Error");
+		App::log("json TraversingJson Error: "+ json);
 }
 
 //返回按钮

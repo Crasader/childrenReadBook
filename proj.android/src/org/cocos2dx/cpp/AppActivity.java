@@ -93,6 +93,7 @@ import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -1880,5 +1881,20 @@ public class AppActivity extends Cocos2dxActivity {
 			Log.e("201610291535", e.toString());
 		}
 		mHandler.sendMessage(msg);
+	}
+
+	//JNI 获取机型
+	public static String getPhoneInfo(int num)
+	{
+		switch (num){
+			case 0:
+				return Build.MODEL;
+			case 1:
+				return Build.VERSION.SDK;
+			case 2:
+				return Build.VERSION.RELEASE;
+			default:
+				return "android";
+		}
 	}
 }

@@ -33,6 +33,9 @@ public:
 	// JNI 判断数据库是否正常,判断数据库的版本是否最新,否则重建数据库
 	//static int examineDataBase(int dataBaseVersion);
 
+	// JNI 	获取机型,android版本,sdk
+	static void getPhoneInfo(long selectNum, std::string & info);
+
 	// JNI 邀请注册送红包
 	static void inviteRegister(long memberId, const char* url, const char* runKey, const char* errorKey);
 

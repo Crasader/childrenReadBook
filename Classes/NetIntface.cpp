@@ -110,9 +110,18 @@ void NetIntface::httpPost(string url, map<string, string> parameter, string runK
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string jsonstr = YYXLayer::getStringFormMap(parameter);
-		auto parstr = jsonstr.substr(1, jsonstr.length() - 2);
-		string errorstr = url+"("+ parstr +"): httpPost error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),1);
+		string errorstr = url+"("+ jsonstr +")>>> httpPost error => " + error;
+		errorstr = App::replaceChar(errorstr, "&", "___");
+		errorstr = App::replaceChar(errorstr, ",", "___");
+		errorstr = App::replaceChar(errorstr, ":", "=");
+		App::log(" ( post error ) "+errorstr);
+		string urlstr = "";
+		if (App::m_debug == 0)
+			urlstr = string("http://192.168.10.164:8080").append(NET_UPERRORLOG);
+		else
+			urlstr = string(IP).append(NET_UPERRORLOG);
+		if (url != urlstr)
+			App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()), 1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -154,7 +163,10 @@ void NetIntface::httpGet(string url , string runKey, function<void(string)> runF
 	});
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
-		string errorstr = url + ": httpGet error => " + error;
+		string errorstr = url + ">>> httpGet error => " + error;
+		errorstr = App::replaceChar(errorstr, "&", "___");
+		errorstr = App::replaceChar(errorstr, ",", "___");
+		errorstr = App::replaceChar(errorstr, ":", "=");
 		App::addErrorLog(errorstr, StringUtils::format("http_%d.dat", (int)YYXLayer::getRandom()),1);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
@@ -2379,15 +2391,19 @@ void NetIntface::inviteRegister(int memberId, string url , string runKey, functi
 #endif
 }
 
-void NetIntface::getPhoneModel()
-{
+string NetIntface::getPhoneModel(int um)
+{//0=机型 1=sdk版本 2=android版本
+	string str="";
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	App::GetInstance()->phoneModel = "android";
+	str = "android";
+	CocosAndroidJni::getPhoneInfo(um, str);
+	str = "android" + str;
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	App::GetInstance()->phoneModel = "win32";
+	str = "win32";
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	App::GetInstance()->phoneModel = "ios";
-#endif
+	str = "ios";
+#endif	
+	return str;
 }

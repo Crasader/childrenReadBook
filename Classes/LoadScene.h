@@ -98,6 +98,7 @@ public:
 	void initUserData();
 	//将本地的数据全部加载内存
 	void loadingLocalFileData();
+	void getPhoneInfo();
 private:
 	int totalCount;
 	int currentCount;

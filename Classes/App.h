@@ -111,6 +111,8 @@ public:
 
 	string phoneModel = "android";
 
+	string systemVersion = "";
+
 	string version = "1.7.1";//应用版本
 
 	//int DataBaseVersion = 6;//数据库版本
@@ -269,7 +271,12 @@ public:
 
 	static void deleteRentBook(int bookid);//(删除租书不修改本地, 在loadscene中根据本地书籍调整载入)
 
-	static void getLocalRentJson();//读取本地租书json
+	static void getLocalRentJson();
+
+	//修改字符串, 全部替换
+	static string replaceChar(string str, string oldChar, string newChar);
+
+	//读取本地租书json
 
 	void addTime(string key, long long data); //添加时刻
 	

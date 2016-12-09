@@ -168,7 +168,7 @@ public:
 	//邀请注册送红包
 	static void inviteRegister(int memberId, string url, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	//获取机型
-	static void getPhoneModel();
+	static string getPhoneModel(int um);
 	//***********************************************
 	//***********************************************
 	//***********************************************

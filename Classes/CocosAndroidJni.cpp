@@ -51,6 +51,28 @@ CocosAndroidJni::~CocosAndroidJni(){}
 //#endif
 //}
 
+// JNI 	获取机型,android版本,sdk
+void CocosAndroidJni::getPhoneInfo(long selectNum, std::string& info)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
+	JniMethodInfo function;
+	//原型函数public static String getPhoneInfo(int num)
+	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "getPhoneInfo", "(I)Ljava/lang/String;");
+	if (!isHave)
+	{
+		App::log("jni:getPhoneInfo did not exist");
+	}
+	else
+	{
+		//App::log("jni:getPhoneInfo exist");
+		jint _selectNum = selectNum;
+		jstring jret = (jstring)function.env->CallStaticObjectMethod(function.classID, function.methodID, _selectNum);
+		info = JniHelper::jstring2string(jret);
+		function.env->DeleteLocalRef(jret);
+		function.env->DeleteLocalRef(function.classID);
+	}
+#endif
+}
 
 // JNI 邀请注册送红包
 void CocosAndroidJni::inviteRegister(long memberId, const char*  url, const char* runKey, const char* errorKey)
