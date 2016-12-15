@@ -601,12 +601,38 @@ void NetIntface::httpPay(int memberId,  int rechargeCount, int payMoney, string 
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
 		string errorstr = " ( "+ payType+" ) "+payinfo + ": httpPay error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.dat", (int)YYXLayer::getRandom()),3);
+		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.dat", (int)YYXLayer::getRandom()),4);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::httpGetRechargeOrderID(memberId, rechargeCount, payMoney, payType.c_str(), payinfo.c_str(), runKey.c_str(), errorKey.c_str());
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#endif
+}
+//VIP
+void NetIntface::httpVIPPay(int memberId, int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
+{
+	if (!IsNetConnect())
+		return;
+	runKey = App::getOnlyKey();
+	errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);
+		App::log("VIP支付成功的回调");
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = payinfo + ": httpVIPPay error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("httpVIPPay_%d.dat", (int)YYXLayer::getRandom()), 4);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	CocosAndroidJni::httpGetVIPOrderID(memberId, rechargeCount, payMoney, payType.c_str(), payinfo.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #endif

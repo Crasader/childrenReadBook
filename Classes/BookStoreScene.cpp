@@ -580,11 +580,7 @@ void BookStore::onEnterTransitionDidFinish()
 	Toast::GetInstance()->SceneInitToast();
 	if (m_bookStoreId == BOOKSTOREID_TRAIN_8)
 	{
-		auto lay = showUserIsVip();
-		if (lay)
-		{
-			addChild(lay, 9);
-		}
+		baonianStore();
 	}
 	App::log("BookStore::onEnterTransitionDidFinish--END");
 }
@@ -1946,32 +1942,21 @@ void BookStore::runingQueue()
 	}
 }
 
-YYXLayer* BookStore::showUserIsVip()
+void BookStore::baonianStore()
 {
-	if (App::GetInstance()->m_me)
-	{
-		if (App::GetInstance()->m_me->vip)
-			return nullptr;
-	}
+	//提示非年卡用户 升级年卡
+	if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
+		return ;
 	int show = YYXStruct::getMapInt64(App::GetInstance()->myData, "showYouAreVip", 0);
 	if (show == 1)
 	{
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "showYouAreVip", 0);
-		map<string, int64String> paramter;
-		YYXLayer::insertMap4ParaType(paramter, "className", -999, "bookstoreShowUserIsVip");
-		YYXLayer::insertMap4ParaType(paramter, "csb", -999, "BookInfo/csb/youarenotvip.csb");
-		auto viphint = YYXLayer::create(paramter);
-		auto pNode = viphint->getParentNode();
-		pNode->setAnchorPoint(Vec2(0.5, 0.5));
-		pNode->setPosition(Director::getInstance()->getWinSize() / 2);
-		auto bclose = (Button*)viphint->findControl("Button_1");
-		if (bclose)
-		{
-			bclose->addClickEventListener([=](Ref* sender) {
-				viphint->removeFromParent();
-			});
-		}
-		return viphint;
+		auto layer = XZLayer::OpenVIPCardService(1, [=]() {
+			App::GetInstance()->pushScene(m_backScene, m_bookStoreId, StringUtils::format("%d", m_selectPageIndex[1]));
+			leave();
+		});
+		if (layer)
+			addChild(layer, 9);
 	}
-	return nullptr;
+	//
 }

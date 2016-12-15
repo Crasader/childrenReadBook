@@ -57,11 +57,6 @@ void Index::onEnterTransitionDidFinish() {
 		}, "", [](string str) {});
 	}
 	Toast::GetInstance()->SceneInitToast();
-	auto vipRenew = showVIPRenew();
-	if (vipRenew)
-	{
-		addChild(vipRenew);
-	}
 }
 
 // on "init" you need to initialize your instance
@@ -97,8 +92,6 @@ bool Index::init()
 	/////////////////////////////
 	auto cache = SpriteFrameCache::getInstance();
 	auto plist = PLIST_INDEX;
-	
-
 	//根据系统时间判断显示白天场景或夜晚场景
 	if (App::isNight()) {
 		//背景音效播放
@@ -553,7 +546,93 @@ bool Index::init()
 		//UserDefault::getInstance()->deleteValueForKey("accountRegisteUserId");
 		YYXLayer::deleteFileValue("accountRegisteUserId");
 	});	
+	//年卡服务提示
+	InitVIPCard();
     return true;
+}
+
+void Index::InitVIPCard()
+{
+	if (App::GetInstance()->m_me)
+	{		//检查vip
+		App::httpCheckVIP(App::GetInstance()->m_me->id);
+	}
+	//VIP网络请求回来后, 根据情况提示VIP到期时间
+	Director::getInstance()->getEventDispatcher()->addCustomEventListener("showVIPRenew", [=](EventCustom* e) {
+		if (App::GetInstance()->getFromScene() != MySceneName::LoadScene)
+			return;
+		if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
+		{
+			auto runable = [=]() {
+				auto vipRenew = XZLayer::showVIPRenew(nullptr);
+				if (vipRenew)
+					addChild(vipRenew);
+			};		
+			if (App::GetInstance()->m_me->vipTime < 86400 * 30)
+			{
+				if (App::GetInstance()->m_me->vipTime > 86400 * 21) {
+					if (YYXLayer::getFileValue("VIP_WEEK1", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_WEEK1", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 14 && App::GetInstance()->m_me->vipTime < 86400 * 21) {
+					if (YYXLayer::getFileValue("VIP_WEEK2", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_WEEK2", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 7 && App::GetInstance()->m_me->vipTime < 86400 * 14) {
+					if (YYXLayer::getFileValue("VIP_WEEK3", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_WEEK3", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 6 && App::GetInstance()->m_me->vipTime < 86400 * 7) {
+					if (YYXLayer::getFileValue("VIP_DAY1", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_DAY1", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 5 && App::GetInstance()->m_me->vipTime < 86400 * 6) {
+					if (YYXLayer::getFileValue("VIP_DAY2", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_DAY2", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 4 && App::GetInstance()->m_me->vipTime < 86400 * 5) {
+					if (YYXLayer::getFileValue("VIP_DAY3", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_DAY3", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 3 && App::GetInstance()->m_me->vipTime < 86400 * 4) {
+					if (YYXLayer::getFileValue("VIP_DAY4", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_DAY4", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 2 && App::GetInstance()->m_me->vipTime < 86400 * 3) {
+					if (YYXLayer::getFileValue("VIP_DAY5", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_DAY5", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 1 && App::GetInstance()->m_me->vipTime < 86400 * 2) {
+					if (YYXLayer::getFileValue("VIP_DAY6", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_DAY6", "1");
+					}
+				}
+				else if (App::GetInstance()->m_me->vipTime > 86400 * 0 && App::GetInstance()->m_me->vipTime < 86400 * 1) {
+					if (YYXLayer::getFileValue("VIP_DAY7", "0") == "0") {
+						runable();
+						YYXLayer::setFileValue("VIP_DAY7", "1");
+					}
+				}
+			}
+		}		
+	});
 }
 
 void Index::menuCloseCallback(Ref* pSender)
@@ -1348,45 +1427,4 @@ void Index::loadRedPacketData(Node* node, int index)
 		//红包封面
 		auto redPacket = (ImageView*)node->getChildByName(FIND_IMAGEVIE_BY_NAME_EVERYREDPACKET_COVER);
 	}
-}
-
-//续费vip
-YYXLayer* Index::showVIPRenew()
-{
-	return nullptr;
-	if (App::GetInstance()->getFromScene() != MySceneName::LoadScene)
-		return nullptr;
-	if (App::GetInstance()->m_me)
-	{
-		App::log("           you are vip Time= ", App::GetInstance()->m_me->vipTime);
-		if (App::GetInstance()->m_me->vip /*&& App::GetInstance()->m_me->vipTime < 2592000*/)
-		{			
-			map<string, int64String> paramter;
-			YYXLayer::insertMap4ParaType(paramter, "className", -999, "IndexSceneShowVIPRenew");
-			YYXLayer::insertMap4ParaType(paramter, "csb", -999, "VIPBook/csb/renew.csb");
-			auto viphint = YYXLayer::create(paramter);
-			auto pNode = viphint->getParentNode();
-			pNode->setAnchorPoint(Vec2(0.5, 0.5));
-			pNode->setPosition(Director::getInstance()->getWinSize() / 2);
-			auto bclose = (Button*)viphint->findControl("Button_1");
-			if (bclose)
-			{
-				bclose->addClickEventListener([=](Ref* sender) {
-					viphint->removeFromParent();
-				});
-			}
-			auto time = (Text*)viphint->findControl("Text_6_0_0");
-			if (time)
-			{
-				time->setText(StringUtils::format("come %s to %s,vipTime = %d", App::GetInstance()->m_me->startvip.c_str(), App::GetInstance()->m_me->endvip.c_str(), App::GetInstance()->m_me->vipTime));
-			}
-			auto acc = (Text*)viphint->findControl("Text_6_0");
-			if (acc)
-			{
-				acc->setText(StringUtils::format("memberID = %d", App::GetInstance()->m_me->id));
-			}
-			return viphint;
-		}
-	}	
-	return nullptr;
 }

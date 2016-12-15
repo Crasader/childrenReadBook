@@ -57,6 +57,9 @@ public:
 	// JNI 充值订单
 	static void httpGetRechargeOrderID(long memberid, long rechargeCount, long price100, const char* payType, const char* payInfo, const char* runKey, const char* errorKey);
 
+	//JNI 包年订单
+	static void httpGetVIPOrderID(long memberid, long rechargeCount, long price100, const char * payType, const char * payInfo, const char * runKey, const char * errorKey);
+
 	// JNI 获取分享成功的红包
 	static void httpShareWithCoupon(long memberID, const char* runKey, const char* errorKey);
 

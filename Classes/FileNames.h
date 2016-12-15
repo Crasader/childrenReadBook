@@ -236,6 +236,8 @@ enum MyEnum
 
 #define FIND_BUTTON_BY_NAME_PARENTSCENE_MYREDPACKET "Button_1"//我的红包 按钮 控件名称
 
+#define FIND_BUTTON_BY_NAME_PARENTSCENE_VIP "Button_1_0"//充值VIP 按钮 控件名称
+
 #define RECHARGE_CSB "Pay/csb/paylayer.csb"//充值界面 csb文件
 
 #define FIND_IMAGEVIEW_BY_NAME_3 "coin1" // 3元 控件名称

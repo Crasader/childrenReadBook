@@ -103,11 +103,14 @@
             <Project Name="bookInfo.csd" Type="Layer" />
             <PlistInfo Name="bookInfo.csi" Type="Plist" />
             <Project Name="comment.csd" Type="Layer" />
+            <Project Name="daoqitixing.csd" Type="Layer" />
             <Project Name="hongbaodikou.csd" Type="Node" />
             <Project Name="jianjie.csd" Type="Layer" />
             <Project Name="pinglun.csd" Type="Layer" />
             <Project Name="rentbook.csd" Type="Layer" />
             <Project Name="sendcomment.csd" Type="Layer" />
+            <Project Name="vippayy.csd" Type="Layer" />
+            <Project Name="vipxufei.csd" Type="Layer" />
             <Project Name="voicecomment.csd" Type="Layer" />
             <Project Name="youarenotvip.csd" Type="Layer" />
           </Folder>
@@ -116,7 +119,10 @@
             <Image Name="BookInfo_abstract.png" />
             <Image Name="BookInfo_abstract_s.png" />
             <Image Name="BookInfo_background.png" />
+            <Image Name="BookInfo_book details_ Popover_background_667h.png" />
+            <Image Name="BookInfo_book details_ Popover_title_nowords_667h.png" />
             <Image Name="BookInfo_book details_days-background_736h.png" />
+            <Image Name="BookInfo_book-details_-Popover_title_667h.png" />
             <Image Name="BookInfo_btn_Comment.png" />
             <Image Name="BookInfo_btn_Comment_push.png" />
             <Image Name="BookInfo_btn_Previews.png" />
@@ -157,9 +163,6 @@
             <Image Name="Voicecomment_Voice button_press_ipad@2x.png" />
             <Image Name="yila_736h.png" />
             <Image Name="yila2_736h.png" />
-            <Image Name="BookInfo_book-details_-Popover_title_667h.png" />
-            <Image Name="BookInfo_book details_ Popover_title_nowords_667h.png" />
-            <Image Name="BookInfo_book details_ Popover_background_667h.png" />
           </Folder>
         </Folder>
         <Folder Name="BookRoom">
@@ -552,6 +555,8 @@
           <Image Name="Book_Mask.png" />
           <Image Name="BookInfo_book details_ Popover_button_fork_736h.png" />
           <Image Name="BookInfo_book details_ Popover_button_fork_press_736h.png" />
+          <Image Name="BookInfo_book-details_-Popover_background_667h.png" />
+          <Image Name="BookInfo_book-details_-Popover_blue_background_667h.png" />
           <Image Name="chacha_10_ipad@2x.png" />
           <Image Name="Common_Popup_Close_ipad@2x.png" />
           <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
@@ -570,8 +575,6 @@
           <Image Name="shufang_button_2_736h.png" />
           <Image Name="Userinfo_childcenter_close__ipad@2x.png" />
           <PlistInfo Name="vioceplist.csi" Type="Plist" />
-          <Image Name="BookInfo_book-details_-Popover_background_667h.png" />
-          <Image Name="BookInfo_book-details_-Popover_blue_background_667h.png" />
         </Folder>
         <Folder Name="ParentScene">
           <Folder Name="csb">
@@ -762,7 +765,19 @@
           <Folder Name="csb">
             <Project Name="renew.csd" Type="Layer" />
           </Folder>
-          <Folder Name="res" />
+          <Folder Name="res">
+            <Image Name="BookInfo_book_vip_bookstore_buy_background_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_buy_title_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_overdue_title_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_overdue_titsle_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_renewal_background_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_renewal_select_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_renewal_select_default_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_renewal_title_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_renewal_weixin_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_renewal_zhifubao_736h.png" />
+            <Image Name="BookInfo_book_vip_bookstore_title_736h.png" />
+          </Folder>
         </Folder>
         <Folder Name="WaitMessageBox">
           <Folder Name="csb">

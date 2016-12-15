@@ -32,6 +32,8 @@ public:
 	vector<int> getCurrentPageBookID4DownLoad();
 	//最近阅读界面, 计算得到当前页的所有书籍bookid, 如果越界, 进行滚动效果
 	vector<int> getCurrentPageBookID4Read();
+	vector<int> getCurrentPageBookID4Collect();
+	vector<int> getCurrentPageBookID4Delect();
 	vector<int> getCurrentPageBookID4Rent();
 	//展示按钮
 	void showImageView(int status, ImageView* view1, ImageView* view2, ImageView* view3, ImageView* view4);

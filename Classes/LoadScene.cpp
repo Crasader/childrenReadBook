@@ -148,8 +148,6 @@ void Load::initMemberHttp()
 	//根据加载的数据 网络请求
 	if (App::GetInstance()->m_me)
 	{
-		//检查vip
-		App::httpCheckVIP(App::GetInstance()->m_me->id);
 		//获取孩子信息
 		getChildList(App::GetInstance()->m_me->id, []() {
 			auto ShowChildID = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
@@ -187,6 +185,10 @@ void Load::initDir()
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "readBook");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "downloadBook"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "downloadBook");
+	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "deleteBook"))
+		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "deleteBook");
+	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "collectBook"))
+		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "collectBook");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "voiceComment"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "voiceComment");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "errorLog"))
@@ -1230,8 +1232,12 @@ void Load::loadingLocalFileData()
 	//本地读取最近下载 最近阅读
 	string rfilename = "readBook/download_" + userIdstr + ".json";
 	string dfilename = "downloadBook/download_" + userIdstr + ".json";
+	string cfilename = "collectBook/collect_" + userIdstr + ".json";
+	string defilename = "deleteBook/delete_" + userIdstr + ".json";
 	string downloadPath = FileUtils::getInstance()->getWritablePath() + dfilename;
 	string readPath = FileUtils::getInstance()->getWritablePath() + rfilename;
+	string deletePath = FileUtils::getInstance()->getWritablePath() + defilename;
+	string collectPath = FileUtils::getInstance()->getWritablePath() + cfilename;
 	map<string, string> data;
 	App::getMapFromFile(downloadPath, data);
 	App::GetInstance()->bookDownLoad.clear();
@@ -1249,6 +1255,25 @@ void Load::loadingLocalFileData()
 		int d = atoi(its.first.c_str());
 		if (d != 0)
 			App::GetInstance()->bookRead[d] = atoi(its.second.c_str());
+	}
+	map<string, string> dataDe;
+	App::getMapFromFile(deletePath, dataDe);
+	App::GetInstance()->bookDelete.clear();
+	for (auto its : dataDe)
+	{
+		int d = atoi(its.first.c_str());
+		if (d != 0)
+			App::GetInstance()->bookDelete[d] = atoi(its.second.c_str());
+	}
+	App::GetInstance()->m_me->vip;
+	map<string, string> dataC;
+	App::getMapFromFile(collectPath, dataC);
+	App::GetInstance()->bookCollect.clear();
+	for (auto its : dataC)
+	{
+		int d = atoi(its.first.c_str());
+		if (d != 0)
+			App::GetInstance()->bookCollect[d] = atoi(its.second.c_str());
 	}
 	//是否仅WiFi下载
 	string result = YYXLayer::getFileValue("IS_ONLY_WIFI", "");

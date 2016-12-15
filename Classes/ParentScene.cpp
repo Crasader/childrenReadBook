@@ -267,6 +267,28 @@ Layer* Parent::initNode_Account()
 	auto rechange = (Button*)account->getChildByName(FIND_BUTTON_BY_NAME_RECHARGE);
 	//我的红包
 	auto myRedPacket = (Button*)account->getChildByName(FIND_BUTTON_BY_NAME_PARENTSCENE_MYREDPACKET);
+	//充值VIP
+	auto VIPButton = (Button*)account->getChildByName(FIND_BUTTON_BY_NAME_PARENTSCENE_VIP);
+	if (VIPButton) {
+		if (App::GetInstance()->m_me->vip)
+			VIPButton->setTitleText(App::getString("OPENVIPAGAIN"));
+		else
+			VIPButton->setTitleText(App::getString("OPENVIP"));
+		VIPButton->addClickEventListener([=](Ref* sender) {
+			if (App::GetInstance()->m_me->vip)
+			{
+				auto layers = XZLayer::payVip_xufei();
+				if (layers)
+					addChild(layers, 9);
+			}
+			else {				
+				auto layer = XZLayer::payBuyVip();
+				if (layer)
+					addChild(layer, 9);
+			}
+		});
+	}
+	
 	//余额
 	auto momey = (Text*)account->getChildByName(FIND_TEXT_BY_NAME_RECHARGE);
 	//momey->retain();
@@ -281,7 +303,7 @@ Layer* Parent::initNode_Account()
 		if (viptext)
 		{
 			if (App::GetInstance()->m_me->vip)
-				viptext->setText("VIP");
+				viptext->setText(App::getString("NIANKAFUWUJIEZHI") + App::GetInstance()->m_me->endvip);
 		}
 	}
 	if (myMomey <= 0)
@@ -328,49 +350,6 @@ Layer* Parent::initNode_Account()
 		girl_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_GIRL_SEL, TextureResType::PLIST);
 		boy_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_BOY_UNSEL, TextureResType::PLIST);
 	}
-	/*int member_sex = 1;
-	string memberProvince = "";
-	string memberCity = "";
-	if (result.size() > 0) {
-		member_name = result[0]["member_name"].stringPara;
-		member_sex = result[0]["member_sex"].intPara;
-		memberProvince = result[0]["memberProvince"].stringPara;
-		memberCity = result[0]["memberCity"].stringPara;
-	}
-	else
-	{
-		member_name = App::GetInstance()->m_me->memberName;
-		member_sex = App::GetInstance()->m_me->sex;
-		memberProvince = App::GetInstance()->m_me->memberProvince;
-		memberCity = App::GetInstance()->m_me->memberCity;
-	}
-	//初始化账号--号码
-	if (member_name.length() >= 7) {
-		account_text->setString(member_name.substr(0, 3) + "****" + member_name.substr(member_name.length() - 4, member_name.length() - 1));
-	}
-	//判断性别
-	if (member_sex == 1) {
-		sex_text->setString(App::getString("SUPER_FATHER"));
-		sex_text->setTag(SELECT);
-		boy_img->setTag(SELECT);
-		girl_img->setTag(UNSELECT);
-		boy_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_BOY_SEL, TextureResType::PLIST);
-		girl_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_GIRL_UNSEL, TextureResType::PLIST);
-	}
-	else {
-		sex_text->setString(App::getString("SUPER_MOTHER"));
-		sex_text->setTag(UNSELECT);
-		girl_img->setTag(SELECT);
-		boy_img->setTag(UNSELECT);
-		girl_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_GIRL_SEL, TextureResType::PLIST);
-		boy_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_BOY_UNSEL, TextureResType::PLIST);
-	}
-	//判断本地是否缓存地点信息	
-	if (memberProvince.length() > 0) {
-		city_text->setString(memberProvince + memberCity);
-		city_drop->setSiteText(memberProvince, memberCity);
-	}*/
-	
 
 	//------------------------------------------点击事件----------------------------------------------------
 	//性别选择 点击事件
@@ -796,7 +775,26 @@ Layer* Parent::initNode_Account()
 		App::log("展示余额END", momey->getReferenceCount());
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenshowyue, momey);
-
+	//通知 升级VIP
+	_eventDispatcher->addCustomEventListener("refershMemberIDVIP", [=](EventCustom* sender) {
+		App::log("升级VIP成功后刷新界面");
+	
+			if (App::GetInstance()->m_me)
+			{
+				if (App::GetInstance()->m_me->vip)
+				{
+					if(VIPButton)
+						VIPButton->setTitleText(App::getString("OPENVIPAGAIN"));
+					if (viptext)
+						viptext->setText(App::getString("NIANKAFUWUJIEZHI") + App::GetInstance()->m_me->endvip);
+				}
+				else
+				{
+					if (VIPButton)
+						VIPButton->setTitleText(App::getString("OPENVIP"));
+				}				
+			}
+	});
 	//网络请求用户信息可以不刷新,登录会自动获取到,刷新意义不大
 	return (Layer*)account;
 }

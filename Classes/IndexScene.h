@@ -42,6 +42,8 @@ public:
 
     virtual bool init();
 
+	void InitVIPCard();//初始化包年
+
 	void onEnterTransitionDidFinish();
     
     void menuCloseCallback(cocos2d::Ref* pSender);
@@ -130,9 +132,6 @@ public:
 
 	//加载红包数据到节点上
 	void loadRedPacketData(Node* node, int index);
-
-	//vip续费
-	YYXLayer* showVIPRenew();
 };
 
 #endif // __Index_SCENE_H__

@@ -510,7 +510,8 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 				if (!FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
 				{
 					if (App::GetInstance()->myRentBookMap.find(bookid) != App::GetInstance()->myRentBookMap.end())
-						App::deleteRentBook(bookid);
+						App::deleteRentBook(bookid); 
+						App::addRecordBookDelete(bookid);					
 				}
 			}, "", []() {});
 			if (message)
@@ -1045,6 +1046,63 @@ vector<int> BookRoom::getCurrentPageBookID4Read()
 	return v_boosSort;
 }
 
+//收藏界面, 计算得到当前页的所有书籍bookid, 如果越界, 进行滚动效果
+vector<int> BookRoom::getCurrentPageBookID4Collect()
+{
+	vector<int> v_boosSort;
+	auto booksum = App::GetInstance()->bookCollect.size();
+	int pagesum = ceil(booksum / 6.0);
+	if (m_currentPageNumber < 0)
+	{
+		m_currentPageNumber = pagesum - 1;
+	}
+	else if (m_currentPageNumber > pagesum - 1)
+	{
+		m_currentPageNumber = 0;
+	}
+	int begin;//第一本书的sort
+	int end;//最后一本书的sort
+	begin = m_currentPageNumber * 6;
+	end = m_currentPageNumber * 6 + 5;
+	if (end >= booksum)
+		end = booksum - 1;
+	auto vcdata = App::sortMapToVector(App::GetInstance()->bookCollect);
+	for (int i = begin; i <= end; i++)
+	{
+		auto bookid = vcdata[i];
+		v_boosSort.push_back(bookid.first);
+	}
+	return v_boosSort;
+}
+
+//删除界面, 计算得到当前页的所有书籍bookid, 如果越界, 进行滚动效果
+vector<int> BookRoom::getCurrentPageBookID4Delect()
+{
+	vector<int> v_boosSort;
+	auto booksum = App::GetInstance()->bookDelete.size();
+	int pagesum = ceil(booksum / 6.0);
+	if (m_currentPageNumber < 0)
+	{
+		m_currentPageNumber = pagesum - 1;
+	}
+	else if (m_currentPageNumber > pagesum - 1)
+	{
+		m_currentPageNumber = 0;
+	}
+	int begin;//第一本书的sort
+	int end;//最后一本书的sort
+	begin = m_currentPageNumber * 6;
+	end = m_currentPageNumber * 6 + 5;
+	if (end >= booksum)
+		end = booksum - 1;
+	auto vcdata = App::sortMapToVector(App::GetInstance()->bookDelete);
+	for (int i = begin; i <= end; i++)
+	{
+		auto bookid = vcdata[i];
+		v_boosSort.push_back(bookid.first);
+	}
+	return v_boosSort;
+}
 //最近租书界面, 计算得到当前页的所有书籍bookid, 如果越界, 进行滚动效果
 vector<int> BookRoom::getCurrentPageBookID4Rent()
 {

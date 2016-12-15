@@ -10,7 +10,12 @@
 #include "NetIntface.h"
 
 using namespace std;
+/*
+$(EngineRoot)external\win32-specific\zlib\include
+libcurl_imp.lib
 
+void App::addErrorLog(string error, string filename, int type)   type 1=网络错误  2=文件错误  3= 日志文件上传, 4=支付错误
+*/
 App* App::m_pInstance = nullptr;
 
 __Dictionary* App::m_strings = nullptr;
@@ -263,6 +268,12 @@ void App::httpCheckVIP(int memberID)
 					App::GetInstance()->m_me->startvip = YYXLayer::getStringTimeFromInt64Time(startTime);
 					App::GetInstance()->m_me->endvip = YYXLayer::getStringTimeFromInt64Time(expireTime);
 					App::GetInstance()->m_me->vipTime = times;
+					YYXLayer::sendNotify("showVIPRenew");//提示续费
+					YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
+					if (App::m_debug ==0)
+					{
+						App::GetInstance()->m_me->vipTime = 86400*29;
+					}
 				}
 				else
 				{
@@ -703,7 +714,16 @@ std::string App::GetStringTime2()
 	string timeStr = StringUtils::format("%d-%02d-%02d %02d:%02d:%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
 	return timeStr;
 }
-
+//获取系统时间3
+std::string App::GetStringTime3()
+{
+	time_t tt;
+	time(&tt);
+	struct tm * now;
+	now = localtime(&tt);
+	string timeStr = StringUtils::format("%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
+	return timeStr;
+}
 //根据系统时间判断白天或夜晚
 bool App::isNight() {
 	time_t tt;
@@ -1208,6 +1228,56 @@ void App::addRecordBookDownload(int bookid)
 	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
 }
 
+void App::addRecordBookCollect(int bookid)
+{
+	App::GetInstance()->bookCollect[bookid] = (int)YYXLayer::getCurrentTime4Second();
+	if (App::GetInstance()->bookCollect.size() > 60)
+	{
+		auto vit = sortMapToVector(App::GetInstance()->bookCollect);
+		while (vit.size() > 60)
+		{
+			auto itb = vit.back();
+			App::GetInstance()->bookCollect.erase(itb.first);
+			vit.pop_back();
+		}
+	}
+	map<string, string> data;
+	for (auto it : App::GetInstance()->bookCollect)
+	{
+		string key = StringUtils::format("%d", it.first);
+		string value = StringUtils::format("%d", it.second);
+		data[key] = value;
+	}
+	string json = YYXLayer::getStringFormMap(data);
+	string filename = "collectBook/collect_" + App::getMemberID() + ".json";
+	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
+}
+
+void App::addRecordBookDelete(int bookid)
+{
+	App::GetInstance()->bookDelete[bookid] = (int)YYXLayer::getCurrentTime4Second();
+	map<string, string> data;
+	for (auto it : App::GetInstance()->bookDelete)
+	{
+		string key = StringUtils::format("%d", it.first);
+		string value = StringUtils::format("%d", it.second);
+		data[key] = value;
+	}
+	if (App::GetInstance()->bookDelete.size() > 60)
+	{
+		auto vit = sortMapToVector(App::GetInstance()->bookDelete);
+		while (vit.size() > 60)
+		{
+			auto itb = vit.back();
+			App::GetInstance()->bookDelete.erase(itb.first);
+			vit.pop_back();
+		}
+	}
+	string json = YYXLayer::getStringFormMap(data);
+	string filename = "deleteBook/delete_" + App::getMemberID() + ".json";
+	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
+}
+
 bool cmp_by_value(const PAIR& lhs, const PAIR& rhs) {
 	return lhs.second > rhs.second;
 }
@@ -1219,7 +1289,7 @@ string App::getOnlyKey()
 }
 
 void App::addErrorLog(string error, string filename, int type)
-{/*type 1=网络错误  2=文件错误  3= 日志文件上传, */
+{/*type 1=网络错误  2=文件错误  3= 日志文件上传, 4=支付错误*/
 	map<string, string> parater;
 	parater["logInfo"] = error;
 	parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
@@ -1400,6 +1470,8 @@ void App::cancelData()
 	App::GetInstance()->myRentBookMap.clear();
 	App::GetInstance()->bookRead.clear();
 	App::GetInstance()->bookDownLoad.clear();
+	App::GetInstance()->bookCollect.clear();
+	App::GetInstance()->bookDelete.clear();
 	//创建temp目录
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "temp"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "temp");

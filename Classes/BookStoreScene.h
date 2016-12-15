@@ -48,6 +48,7 @@
 #include "App.h"
 #include <fstream>
 #include <iostream>
+#include "XZLayer.h"
 #include "YYXLayer.h"
 USING_NS_CC;
 using namespace daocode;
@@ -123,6 +124,9 @@ public:
     virtual bool init(int BookStoreId);
 
 	void onEnterTransitionDidFinish();
+	
+	//年卡书店初始化
+	void baonianStore();
 
 	static BookStore* create(int BookStoreId);
 	
@@ -182,8 +186,6 @@ public:
 	void startQueue();
 	void stopQueue();
 	void runingQueue();
-	//展示vip用户提示
-	YYXLayer* showUserIsVip();
 };
 
 #endif // __BookStore_SCENE_H__

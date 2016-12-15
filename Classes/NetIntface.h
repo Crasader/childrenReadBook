@@ -58,6 +58,8 @@ public:
 	static void httpGetRechargeActivityCallBack(string json, const function<void(int, int)> itemRun, const function<void()> runable, const function<void()> errorRunable);
 	// 支付
 	static void httpPay(int memberId, int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
+	//开通包年服务
+	static void httpVIPPay(int memberId, int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	// 获取书城信息json解析函数
 	static void httpBookCityInfoCallBack(string json, const function<void(int, int, int, int, int, int, string, string, string, string)> itemRun, const function<void(int)> runable, const function<void()> errorRunable);
 	// 获取分享成功的红包

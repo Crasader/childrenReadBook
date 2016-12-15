@@ -250,6 +250,18 @@ public:
 	map<int, int> bookDownLoad;
 
 	static void addRecordBookDownload(int bookid);
+
+	//收藏
+	map<int, int> bookCollect;
+
+	static void addRecordBookCollect(int bookid);
+
+	//删除
+	map<int, int> bookDelete;
+
+	static void addRecordBookDelete(int bookid);
+
+
 	//最近阅读
 	map<int, int> bookRead;
 
@@ -274,12 +286,9 @@ public:
 
 	static void deleteRentBook(int bookid);//(删除租书不修改本地, 在loadscene中根据本地书籍调整载入)
 
-	static void getLocalRentJson();
-
-	//修改字符串, 全部替换
-	static string replaceChar(string str, string oldChar, string newChar);
-
-	//读取本地租书json
+	static void getLocalRentJson();//读取本地租书json
+	
+	static string replaceChar(string str, string oldChar, string newChar);	//修改字符串, 全部替换
 
 	void addTime(string key, long long data); //添加时刻
 	
@@ -336,7 +345,9 @@ public:
 	static void startTime();//启动定时器
 	static long long getCurrentTime();//获取当前时间 秒
 	static std::string GetStringTime();//获取系统时间，格式，例：2016/04/06 18:06:48
-	static std::string GetStringTime2();//获取系统时间，格式，例：2016-04-06 18:06:48
+	static std::string GetStringTime2();
+	static std::string GetStringTime3();
+	//获取系统时间，格式，例：2016-04-06 18:06:48
 	static bool isNight();//根据系统时间判断白天或夜晚
 	static const char* getString(const char* key);
 	static const char* getChars(const char* key);//获取字符串

@@ -274,6 +274,39 @@ void CocosAndroidJni::httpGetRechargeOrderID(long memberid, long rechargeCount, 
 #endif
 }
 
+// JNI VIP订单
+void CocosAndroidJni::httpGetVIPOrderID(long memberid, long rechargeCount, long price100, const char*  payType, const char*  payInfo, const char* runKey, const char* errorKey)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
+	JniMethodInfo function;
+	//原型函数public static void httpGetRechargeOrderID(int memberid, int rechargeCount,
+	//int price100, String payType, String payInfo, final String runKey,
+	//final String errorKey)
+	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpGetVIPOrderID", "(IIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	if (!isHave)
+	{
+		App::log("jni:httpGetRechargeOrderID did not exist");
+	}
+	else
+	{
+		//App::log("jni:httpGetRechargeOrderID exist");
+		jint _memberid = memberid;
+		jint _rechargeCount = rechargeCount;
+		jint _price100 = price100;
+		jstring _payType = function.env->NewStringUTF(payType);
+		jstring _payInfo = function.env->NewStringUTF(payInfo);
+		jstring _runKey = function.env->NewStringUTF(runKey);
+		jstring _errorKey = function.env->NewStringUTF(errorKey);
+		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberid, _rechargeCount, _price100, _payType, _payInfo, _runKey, _errorKey);
+		function.env->DeleteLocalRef(_payType);
+		function.env->DeleteLocalRef(_payInfo);
+		function.env->DeleteLocalRef(_runKey);
+		function.env->DeleteLocalRef(_errorKey);
+		function.env->DeleteLocalRef(function.classID);
+}
+#endif
+}
+
 // JNI 获取分享成功的红包
 void CocosAndroidJni::httpShareWithCoupon(long memberID, const char* runKey, const char* errorKey)
 {
