@@ -25,7 +25,6 @@ YYX框架
 #include "SimpleAudioEngine.h"
 #include "AudioEngine.h"
 
-
 using namespace experimental;
 using namespace CocosDenshion;
 USING_NS_CC;
@@ -181,7 +180,7 @@ public:
 	static void logb(string str);
 	static void loge(string str);
 	//展示评论列表
-	static void showCommentListView(ListView * listview, int bookid, int memberid=-1, int titleMaxLength = 15 * 3, int listviewMaxWidth = 320, int contentTextMaxLength = 135, int voiceMaxLength = 250);
+	static void showCommentListView(ListView* listview, int bookid, int memberid=-1, int titleMaxLength = 15 * 3, int listviewMaxWidth = 320, int contentTextMaxLength = 135, int voiceMaxLength = 250);
 	//遍历json字符串
 	static void TraversingJson(string json, map<string, string>& data);
 };

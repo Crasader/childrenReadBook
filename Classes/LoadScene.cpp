@@ -139,6 +139,8 @@ void Load::initHttp()
 	getEllaVersion();
 	//请求消息推送
 	getEllaNotification();
+	if (App::m_debug == 0)
+		App::upLogFiles();
 }
 
 void Load::initMemberHttp()
@@ -189,6 +191,8 @@ void Load::initDir()
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "voiceComment");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "errorLog"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "errorLog"); 
+	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "temp/Log"))
+		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "temp/Log");
 }
 
 //获取到充值送红包的活动内容

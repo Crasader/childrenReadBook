@@ -45,7 +45,10 @@ public:
 	// JNI 获取毫秒时间
 	static long long getMillsTime();
 
-	// JNI 网络请求少量参数的Post
+	//网络请求上传文件接口
+	static void httpUpFile(const char * url, const char * json, const char * filepath, const char * runKey, const char * errorKey);
+
+	// JNI 网络请求Post
 	static void httpPost(const char * url, const char * json, const char * runKey, const char * errorKey);
 
 	// JNI 网络请求GET

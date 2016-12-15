@@ -364,24 +364,30 @@ void YYXLayer::controlTouchTime(float outTime, string keyOfSaveTime, std::functi
 		App::log("paramter is error");
 		return;
 	}
+	bool logstr = true;
+	if (keyOfSaveTime == "BookProgressingTime")
+		logstr = false;
 	int t1 = outTime * 1000;
 	auto t = App::GetInstance()->getTime(keyOfSaveTime, 0);
 	int time = t % 100000000;
 	int nowtime = NetIntface::getMillsTime()% 100000000;
 	auto reslut = time - nowtime;
-	App::log(StringUtils::format(" ( %d ) controlTouchTime >= %f", abs(reslut), outTime));
+	if(logstr)
+		App::log(StringUtils::format(" ( %d ) controlTouchTime >= %f", abs(reslut), outTime));
 	if (abs(reslut) >= t1)
 	{
 		App::GetInstance()->addTime(keyOfSaveTime, nowtime);
 		if (runable)
 		{
-			App::log(StringUtils::format("( %d ) controlTouchTime RUN: TimeKey = %s, nowtime = %d, lastTime = %d  ", abs(reslut), keyOfSaveTime.c_str(), nowtime, time));
+			if (logstr)
+				App::log(StringUtils::format("( %d ) controlTouchTime RUN: TimeKey = %s, nowtime = %d, lastTime = %d  ", abs(reslut), keyOfSaveTime.c_str(), nowtime, time));
 			runable();
 		}
 	}
 	else
 	{
-		App::log(StringUtils::format("( %d ) controlTouchTime Error: TimeKey = %s, nowtime = %d, lastTime = %d  ", abs(reslut), keyOfSaveTime.c_str(), nowtime, time));
+		if (logstr)
+			App::log(StringUtils::format("( %d ) controlTouchTime Error: TimeKey = %s, nowtime = %d, lastTime = %d  ", abs(reslut), keyOfSaveTime.c_str(), nowtime, time));
 		if (unTouchRun) {
 			unTouchRun();
 		}

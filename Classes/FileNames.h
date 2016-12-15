@@ -1021,6 +1021,9 @@ enum MyEnum
 #define NET_DELETECOMMENT "/ellabook-server/evaluate/delectGoodsEvaluate"//删除评论
 
 #define NET_UPERRORLOG "/ellabook-server/Error/saveError.do"//上传错误日志
+
+#define NET_UPLOGFILE "/ellabook-server/Error/uploadError.do"//上传日志文件
+
 //-----------------------------------------网络请求-------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
 

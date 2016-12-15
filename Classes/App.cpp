@@ -28,7 +28,7 @@ void App::runTestFunction()
 	Toast::create("测试");
 	std::thread([]() {
 		string soursedir = FileUtils::getInstance()->getWritablePath() + "temp";
-		string destdir = NetIntface::getAlbumAbsolutePath() + "/ellabook";
+		string destdir = NetIntface::getDownloadDir() + "/ellabook";
 		if (soursedir == destdir)
 			destdir = FileUtils::getInstance()->getWritablePath() + "ellabook";
 		YYXLayer::CopyDirectory(soursedir, destdir);
@@ -1141,7 +1141,7 @@ void App::log(string str,int count)
 #endif
 	//写日志
 	if(App::m_debug == 0)
-		writeLog(StringUtils::format("(%d)%s", count, str.c_str()), FileUtils::getInstance()->getWritablePath() + "temp","LogFileName");
+		writeLog(StringUtils::format("(%d)%s", count, str.c_str()), FileUtils::getInstance()->getWritablePath() + "temp/Log","LogFileName");
 }
 
 void App::writeLog(string str, string dir, string pahtKey)
@@ -1219,7 +1219,7 @@ string App::getOnlyKey()
 }
 
 void App::addErrorLog(string error, string filename, int type)
-{/*type 1=网络错误  2=文件错误  3= 其他错误*/
+{/*type 1=网络错误  2=文件错误  3= 日志文件上传, */
 	map<string, string> parater;
 	parater["logInfo"] = error;
 	parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
@@ -1234,6 +1234,40 @@ void App::addErrorLog(string error, string filename, int type)
 	YYXLayer::writeFile(josn, path);
 }
 
+void App::upLogFiles()
+{
+	NetIntface::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "temp/Log", [=](string filePath, string name) {
+		App::log("upLoadingErrorLog  " + filePath);
+		auto cocaltionfile = YYXLayer::getFileValue("LogFileName", "");
+		if (cocaltionfile == filePath)
+			return;
+		string url = "";
+		if (App::m_debug == 0)
+			url = string("http://192.168.10.10:8089").append(NET_UPLOGFILE);
+		else
+			url = string(IP).append(NET_UPLOGFILE);
+		map<string, string> parater;
+		parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
+		parater["models"] = App::GetInstance()->phoneModel;
+		parater["memberid"] = App::getMemberID();
+		parater["resource"] = App::m_resource;
+		parater["systemInfo"] = App::GetInstance()->systemVersion;
+		parater["logType"] = "3";
+		NetIntface::httpUpFile(url, YYXLayer::getStringFormMap(parater), filePath, [=](string json) {
+			rapidjson::Document doc;
+			bool result = YYXLayer::getJsonObject4Json(doc, json);
+			if (result)
+			{
+				auto sres = YYXLayer::getBoolForJson(false, doc, "result");
+				if (sres)
+					App::GetInstance()->unDeleteFile[filePath] = "";
+			}
+		}, [](string error) {
+		});
+	}, [](string dirPath, string name) {//遍历到文件夹
+	});
+}
+
 void App::upLoadingErrorLog()
 {
 	NetIntface::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "errorLog", [=](string filePath, string name) {
@@ -1243,7 +1277,7 @@ void App::upLoadingErrorLog()
 		YYXLayer::TraversingJson(str, paramter);
 		string url = "";
 		if (App::m_debug == 0)
-			url = string("http://192.168.10.164:8080").append(NET_UPERRORLOG);
+			url = string("http://192.168.10.10:8089").append(NET_UPERRORLOG);
 		else
 			url = string(IP).append(NET_UPERRORLOG);
 		NetIntface::httpPost(url, paramter, "", [=](string json) {//post成功

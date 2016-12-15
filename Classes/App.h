@@ -237,6 +237,9 @@ public:
 	//记录报错记录
 	static void addErrorLog(string error, string filename, int type);
 
+	//上传日志
+	static void upLogFiles();
+
 	//遍历上传报错记录
 	static void upLoadingErrorLog();
 

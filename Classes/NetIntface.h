@@ -29,6 +29,8 @@ public:
 	//static int examineDataBase();
 	// JNI 获取毫秒时间, 用于运算时间差
 	static long long getMillsTime();
+	//网络请求上传文件接口
+	static void httpUpFile(string url, string jsonparater, string filepath, function<void(string)> runFunction, function<void(string)> errorRunFunction);
 	//网络请求POST方法
 	static void httpPost(string url, map<string, string> parameter, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	static void WIN32_httpPost(string url, map<string, string> parameter, string runKey, string errorKey);

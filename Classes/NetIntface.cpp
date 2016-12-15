@@ -93,6 +93,37 @@ long long NetIntface::getMillsTime()
 	return result;
 }
 
+//网络请求上传文件接口
+void NetIntface::httpUpFile(string url, string jsonparater, string filepath, function<void(string)> runFunction, function<void(string)> errorRunFunction)
+{
+	if (!IsNetConnect())
+		return;
+	auto runKey = App::getOnlyKey();
+	auto errorKey = App::getOnlyKey();
+	setMapFunction(runKey, [=](string json) {
+		runFunction(json);	
+		App::log(" ( httpUpFile OK ) " + url + "<" + jsonparater + "> => " + json);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+	setMapFunction(errorKey, [=](string error) {
+		errorRunFunction(error);
+		string errorstr = url + "(" + jsonparater + ")>>> httpUpFile error => " + error;
+		errorstr = App::replaceChar(errorstr, "&", "___");
+		errorstr = App::replaceChar(errorstr, ",", "___");
+		errorstr = App::replaceChar(errorstr, ":", "=");
+		App::log(" ( httpUpFile error ) " + errorstr);
+		App::addErrorLog(errorstr, StringUtils::format("httpUpFile_%d.dat", (int)YYXLayer::getRandom()), 1);
+		deleteMapFunction(runKey);
+		deleteMapFunction(errorKey);
+	});
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	CocosAndroidJni::httpUpFile(url.c_str(), jsonparater.c_str(), filepath.c_str(), runKey.c_str(), errorKey.c_str());
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#endif
+}
+
 //网络请求POST方法
 void NetIntface::httpPost(string url, map<string, string> parameter, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
@@ -117,7 +148,7 @@ void NetIntface::httpPost(string url, map<string, string> parameter, string runK
 		App::log(" ( post error ) "+errorstr);
 		string urlstr = "";
 		if (App::m_debug == 0)
-			urlstr = string("http://192.168.10.164:8080").append(NET_UPERRORLOG);
+			urlstr = string("http://192.168.10.10:8089").append(NET_UPERRORLOG);
 		else
 			urlstr = string(IP).append(NET_UPERRORLOG);
 		if (url != urlstr)
@@ -569,8 +600,8 @@ void NetIntface::httpPay(int memberId,  int rechargeCount, int payMoney, string 
 });
 	setMapFunction(errorKey, [=](string error) {
 		errorRunFunction(error);
-		string errorstr = payinfo + ": httpPay error => " + error;
-		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.dat", (int)YYXLayer::getRandom()),1);
+		string errorstr = " ( "+ payType+" ) "+payinfo + ": httpPay error => " + error;
+		App::addErrorLog(errorstr, StringUtils::format("httpPay_%d.dat", (int)YYXLayer::getRandom()),3);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
@@ -2397,7 +2428,7 @@ string NetIntface::getPhoneModel(int um)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	str = "android";
 	CocosAndroidJni::getPhoneInfo(um, str);
-	str = "android" + str;
+	str = "android " + str;
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	str = "win32";

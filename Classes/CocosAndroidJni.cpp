@@ -157,7 +157,37 @@ long long CocosAndroidJni::getMillsTime()
 	return result;
 }
 
-// JNI 网络请求少量参数的Post
+//网络请求上传文件接口
+void CocosAndroidJni::httpUpFile(const char* url, const char* json, const char* filepath, const char* runKey, const char* errorKey)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
+	JniMethodInfo function;
+	//原型函数public static void httpUpFile(final String url, String jsonData, String filepath, final String runKey, final String errorKey)
+	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpUpFile", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	if (!isHave)
+	{
+		App::log("jni:httpUpFile did not exist");
+	}
+	else
+	{
+		//App::log("jni:httpUpFile exist");
+		jstring _url = function.env->NewStringUTF(url);
+		jstring _json = function.env->NewStringUTF(json);
+		jstring _filepath = function.env->NewStringUTF(filepath);
+		jstring _runKey = function.env->NewStringUTF(runKey);
+		jstring _errorKey = function.env->NewStringUTF(errorKey);
+		function.env->CallStaticVoidMethod(function.classID, function.methodID, _url, _json, _filepath, _runKey, _errorKey);
+		function.env->DeleteLocalRef(_url);
+		function.env->DeleteLocalRef(_json);
+		function.env->DeleteLocalRef(_filepath);
+		function.env->DeleteLocalRef(_runKey);
+		function.env->DeleteLocalRef(_errorKey);
+		function.env->DeleteLocalRef(function.classID);
+	}
+#endif
+}
+
+// JNI 网络请求Post
 void CocosAndroidJni::httpPost(const char* url, const char* json, const char* runKey, const char* errorKey)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
