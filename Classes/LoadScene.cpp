@@ -926,13 +926,36 @@ void Load::getEllaNotification() {
 			string desc = YYXLayer::getStringForJson("", doc, "desc");
 			if (desc == "success")
 			{
+				auto doingFunction = [&](string key, string typeName) {
+					if (typeName =="INT")
+					{
+						int number = YYXLayer::getIntForJson(-999, doc, "data", key);
+						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, number);
+						if (number != -999)
+							YYXLayer::setFileValue(key, StringUtils::format("%d", number));
+					}
+					else if (typeName == "STRING")
+					{
+						auto str = YYXLayer::getStringForJson("", doc, "data", key);
+						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, -999, str);
+						if(str != "")
+							YYXLayer::setFileValue(key, str);
+					}
+				};
+				doingFunction("pushId", "INT");
+				doingFunction("pushType", "INT");
+				doingFunction("imageUrl", "STRING");
+				doingFunction("pushUrl", "STRING");
+				doingFunction("pushTitle", "STRING");
+				doingFunction("pushString", "STRING");
+				doingFunction("pushVersion", "STRING");/*
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushId", YYXLayer::getIntForJson(-999, doc, "pushId"));
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushType", YYXLayer::getIntForJson(-999, doc, "pushType"));
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "imageUrl", -999, YYXLayer::getStringForJson("", doc, "imageUrl"));
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushUrl", -999, YYXLayer::getStringForJson("", doc, "pushUrl"));
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushTitle", -999, YYXLayer::getStringForJson("", doc, "pushTitle"));
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushString", -999, YYXLayer::getStringForJson("", doc, "pushString"));
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushVersion", -999, YYXLayer::getStringForJson("", doc, "pushVersion"));
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "pushVersion", -999, YYXLayer::getStringForJson("", doc, "pushVersion"));*/
 			}
 		}
 	}, "", [](string str) {});
@@ -1229,7 +1252,7 @@ void Load::loadingLocalFileData()
 			});
 		}
 	}
-	//本地读取最近下载 最近阅读
+	//本地读取最近下载 最近阅读, 最近删除 最近收藏
 	string rfilename = "readBook/download_" + userIdstr + ".json";
 	string dfilename = "downloadBook/download_" + userIdstr + ".json";
 	string cfilename = "collectBook/collect_" + userIdstr + ".json";
@@ -1284,6 +1307,26 @@ void Load::loadingLocalFileData()
 	//获取视力保护时间
 	string PROTECT_TIMEstr = YYXLayer::getFileValue("PROTECT_TIME", "0");
 	App::GetInstance()->protectTime = atoi(PROTECT_TIMEstr.c_str());
+	//获取通知
+	auto doingFunction = [](string key, string typeName) {
+		if (typeName == "INT")
+		{
+			auto number = YYXLayer::getFileValue(key, "-999");
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, atoi(number.c_str()));
+		}
+		else if (typeName == "STRING")
+		{
+			auto valu = YYXLayer::getFileValue(key, "");
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, -999, valu);
+		}
+	};
+	doingFunction("pushId", "INT");
+	doingFunction("pushType", "INT");
+	doingFunction("imageUrl", "STRING");
+	doingFunction("pushUrl", "STRING");
+	doingFunction("pushTitle", "STRING");
+	doingFunction("pushString", "STRING");
+	doingFunction("pushVersion", "STRING");
 }
 
 void Load::getPhoneInfo()

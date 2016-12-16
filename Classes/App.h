@@ -367,7 +367,7 @@ public:
 	//static string getString4map(map<string, myParaType> maps, string key,string default_str = "");
 	//static long long getlonglong4map(map<string, myParaType> maps, string key, long long default_int=-999);
 	//时间戳转成时间 16-02-12
-	static void log(string str,int count = -999);
+	static void log(string str,long long count = -999);
 
 	static void writeLog(string str, string dir, string pahtKey);
 

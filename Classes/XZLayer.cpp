@@ -170,10 +170,12 @@ YYXLayer * XZLayer::payVip_xufei()
 			App::log("支付启动");
 			if (App::GetInstance()->m_me)
 				NetIntface::httpVIPPay(App::GetInstance()->m_me->id, payCount, m_price, paytype, info, "httpVIPPaySuccess", [](string str) {
-
+				//续费成功
 				Toast::create(App::getString("CHONGZHICHENGGONG"), false);
 				App::httpCheckVIP(App::GetInstance()->m_me->id);
-
+				vector<string> da = { "VIP_WEEK1","VIP_WEEK2","VIP_WEEK3","VIP_DAY1" ,"VIP_DAY2" ,"VIP_DAY3" ,"VIP_DAY4" ,"VIP_DAY5" ,"VIP_DAY6" ,"VIP_DAY7" };
+				for(auto it : da)
+					YYXLayer::deleteFileValue(it);
 			}, "httpVIPPayError", [](string error) {
 				Toast::create(error.c_str());
 			});

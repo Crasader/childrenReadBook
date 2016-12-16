@@ -242,7 +242,7 @@ void App::httpCheckVIP(int memberID)
 	string url = string(IP).append(NET_CHECHVIP);
 	map<string, string> par;
 	par["memberId"] = StringUtils::format("%d", memberID);
-	NetIntface::httpPost(url, par, "checkVIPSuccess", [](string json) {
+	NetIntface::httpPost(url, par, "checkVIPSuccess", [=](string json) {
 		/*{
 		"expireTime": 1508947200,
 		"startTime": 1477411200,
@@ -261,6 +261,9 @@ void App::httpCheckVIP(int memberID)
 			{
 				if (YYXLayer::getBoolForJson(false, doc, "isVip"))
 				{
+					if (!App::GetInstance()->m_me)
+						App::GetInstance()->m_me = new MyAccount();
+					App::GetInstance()->m_me->id = memberID;
 					App::GetInstance()->m_me->vip = true;
 					auto startTime = YYXLayer::getInt64ForJson(0, doc, "startTime");
 					auto expireTime = YYXLayer::getInt64ForJson(0, doc, "expireTime");
@@ -270,10 +273,6 @@ void App::httpCheckVIP(int memberID)
 					App::GetInstance()->m_me->vipTime = times;
 					YYXLayer::sendNotify("showVIPRenew");//提示续费
 					YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
-					if (App::m_debug ==0)
-					{
-						App::GetInstance()->m_me->vipTime = 86400*29;
-					}
 				}
 				else
 				{
@@ -1145,7 +1144,7 @@ string App::getFormatTime(time_t t)
 //	return result;
 //}
 
-void App::log(string str,int count)
+void App::log(string str,long long count)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	if (count == -999)
@@ -1157,11 +1156,11 @@ void App::log(string str,int count)
 	if(count == -999)
 		CCLOG("%s", str.c_str());
 	else
-		CCLOG("%s / %d", str.c_str(), count);
+		CCLOG("%s / %lld", str.c_str(), count);
 #endif
 	//写日志
 	if(App::m_debug == 0)
-		writeLog(StringUtils::format("(%d)%s", count, str.c_str()), FileUtils::getInstance()->getWritablePath() + "temp/Log","LogFileName");
+		writeLog(StringUtils::format("(%lld)%s", count, str.c_str()), FileUtils::getInstance()->getWritablePath() + "temp/Log","LogFileName");
 }
 
 void App::writeLog(string str, string dir, string pahtKey)

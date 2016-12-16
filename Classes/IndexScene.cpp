@@ -26,7 +26,7 @@ Scene* Index::createScene()
     return scene;
 }
 void Index::onEnterTransitionDidFinish() {
-	Layer::onEnterTransitionDidFinish();
+	Layer::onEnterTransitionDidFinish();	
 	//消息推送
 	showNotification();
 	//版本比较
@@ -567,64 +567,64 @@ void Index::InitVIPCard()
 				auto vipRenew = XZLayer::showVIPRenew(nullptr);
 				if (vipRenew)
 					addChild(vipRenew);
-			};		
-			if (App::GetInstance()->m_me->vipTime < 86400 * 30)
+			};			
+			if (App::GetInstance()->m_me->vipTime <= 86400 * 30)
 			{
-				if (App::GetInstance()->m_me->vipTime > 86400 * 21) {
+				if (App::GetInstance()->m_me->vipTime >= 86400 * 21) {
 					if (YYXLayer::getFileValue("VIP_WEEK1", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_WEEK1", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 14 && App::GetInstance()->m_me->vipTime < 86400 * 21) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 14 && App::GetInstance()->m_me->vipTime < 86400 * 21) {
 					if (YYXLayer::getFileValue("VIP_WEEK2", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_WEEK2", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 7 && App::GetInstance()->m_me->vipTime < 86400 * 14) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 7 && App::GetInstance()->m_me->vipTime < 86400 * 14) {
 					if (YYXLayer::getFileValue("VIP_WEEK3", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_WEEK3", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 6 && App::GetInstance()->m_me->vipTime < 86400 * 7) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 6 && App::GetInstance()->m_me->vipTime < 86400 * 7) {
 					if (YYXLayer::getFileValue("VIP_DAY1", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_DAY1", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 5 && App::GetInstance()->m_me->vipTime < 86400 * 6) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 5 && App::GetInstance()->m_me->vipTime < 86400 * 6) {
 					if (YYXLayer::getFileValue("VIP_DAY2", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_DAY2", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 4 && App::GetInstance()->m_me->vipTime < 86400 * 5) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 4 && App::GetInstance()->m_me->vipTime < 86400 * 5) {
 					if (YYXLayer::getFileValue("VIP_DAY3", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_DAY3", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 3 && App::GetInstance()->m_me->vipTime < 86400 * 4) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 3 && App::GetInstance()->m_me->vipTime < 86400 * 4) {
 					if (YYXLayer::getFileValue("VIP_DAY4", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_DAY4", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 2 && App::GetInstance()->m_me->vipTime < 86400 * 3) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 2 && App::GetInstance()->m_me->vipTime < 86400 * 3) {
 					if (YYXLayer::getFileValue("VIP_DAY5", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_DAY5", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 1 && App::GetInstance()->m_me->vipTime < 86400 * 2) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 1 && App::GetInstance()->m_me->vipTime < 86400 * 2) {
 					if (YYXLayer::getFileValue("VIP_DAY6", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_DAY6", "1");
 					}
 				}
-				else if (App::GetInstance()->m_me->vipTime > 86400 * 0 && App::GetInstance()->m_me->vipTime < 86400 * 1) {
+				else if (App::GetInstance()->m_me->vipTime >= 86400 * 0 && App::GetInstance()->m_me->vipTime < 86400 * 1) {
 					if (YYXLayer::getFileValue("VIP_DAY7", "0") == "0") {
 						runable();
 						YYXLayer::setFileValue("VIP_DAY7", "1");
