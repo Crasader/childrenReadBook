@@ -1150,7 +1150,7 @@ void App::log(string str,long long count)
 	if (count == -999)
 		CocosAndroidJni::Log("show", str.c_str());
 	else
-		CocosAndroidJni::Log("show", StringUtils::format("%s / %d", str.c_str(), count).c_str());
+		CocosAndroidJni::Log("show", StringUtils::format("%s / %lld", str.c_str(), count).c_str());
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	if(count == -999)

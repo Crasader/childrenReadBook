@@ -59,19 +59,19 @@
             <Project Name="tryReadBookEndPage.csd" Type="Layer" />
           </Folder>
           <Folder Name="res">
-            <Image Name="Backcover_background_568h.png" />
             <Image Name="Backcover_comments_736h.png" />
             <Image Name="Backcover_comments_press_736h.png" />
             <Image Name="Backcover_I-want-to-write-reviews_button_736h.png" />
             <Image Name="Backcover_I-want-to-write-reviews_button_press_736h.png" />
             <Image Name="Backcover_reading_book_736h.png" />
-            <Image Name="Backcover_try_background_568h.png" />
             <Image Name="Backcover_try_buy_button_736h.png" />
             <Image Name="Backcover_try_buy_button_press_736h.png" />
             <Image Name="Backcover_try_good-comments_no-comment_736h.png" />
             <Image Name="Backcover_try_Invitation-to-register_ipad@2x.png" />
             <Image Name="Backcover_vip_button_736h.png" />
             <Image Name="Backcover_vip_button_press_736h.png" />
+            <Image Name="try_background_568h.png" />
+            <Image Name="background_568h.png" />
           </Folder>
         </Folder>
         <Folder Name="BookCity">
@@ -103,16 +103,12 @@
             <Project Name="bookInfo.csd" Type="Layer" />
             <PlistInfo Name="bookInfo.csi" Type="Plist" />
             <Project Name="comment.csd" Type="Layer" />
-            <Project Name="daoqitixing.csd" Type="Layer" />
             <Project Name="hongbaodikou.csd" Type="Node" />
             <Project Name="jianjie.csd" Type="Layer" />
             <Project Name="pinglun.csd" Type="Layer" />
             <Project Name="rentbook.csd" Type="Layer" />
             <Project Name="sendcomment.csd" Type="Layer" />
-            <Project Name="vippayy.csd" Type="Layer" />
-            <Project Name="vipxufei.csd" Type="Layer" />
             <Project Name="voicecomment.csd" Type="Layer" />
-            <Project Name="youarenotvip.csd" Type="Layer" />
           </Folder>
           <Folder Name="res">
             <Image Name="BookHome_0001_board_ipad@2x.png" />
@@ -122,7 +118,6 @@
             <Image Name="BookInfo_book details_ Popover_background_667h.png" />
             <Image Name="BookInfo_book details_ Popover_title_nowords_667h.png" />
             <Image Name="BookInfo_book details_days-background_736h.png" />
-            <Image Name="BookInfo_book-details_-Popover_title_667h.png" />
             <Image Name="BookInfo_btn_Comment.png" />
             <Image Name="BookInfo_btn_Comment_push.png" />
             <Image Name="BookInfo_btn_Previews.png" />
@@ -138,14 +133,6 @@
             <Image Name="BookInfo_star_s.png" />
             <Image Name="BookInfo_Time.png" />
             <Image Name="BookInfo_top_bg_736h.png" />
-            <Image Name="Comment_Publish_Selected_ipad.png" />
-            <Image Name="Comment_Release_ipad.png" />
-            <Image Name="Comment_star_ipad.png" />
-            <Image Name="Comment_star_Selected_ipad.png" />
-            <Image Name="Common_Popup_Close_ipad@2x.png" />
-            <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
-            <Image Name="Common_Return.png" />
-            <Image Name="Common_Return_Selected.png" />
             <Image Name="hand_736h.png" />
             <Image Name="mupai_736h.png" />
             <Image Name="parentsVerification_button_blue_ipad@2x.png" />
@@ -154,15 +141,16 @@
             <Image Name="parentsVerification_button_Selected_red_ipad@2x.png" />
             <Image Name="parentsVerification_button_Selected_yellow_ipad@2x.png" />
             <Image Name="parentsVerification_button_yellow_ipad@2x.png" />
-            <Image Name="Voicecomment_background_ipad@2x.png" />
-            <Image Name="Voicecomment_publish_button_ipad@2x.png" />
-            <Image Name="Voicecomment_publish_button_press_ipad@2x.png" />
             <Image Name="Voicecomment_star.png" />
             <Image Name="Voicecomment_star_press.png" />
-            <Image Name="Voicecomment_Voice button_ipad@2x.png" />
-            <Image Name="Voicecomment_Voice button_press_ipad@2x.png" />
             <Image Name="yila_736h.png" />
             <Image Name="yila2_736h.png" />
+            <Image Name="Voicecomment_background_736h.png" />
+            <Image Name="Voicecomment_publish_button_736h.png" />
+            <Image Name="Voicecomment_publish_button_press_736h.png" />
+            <Image Name="Voicecomment_Voice button_736h.png" />
+            <Image Name="Voicecomment_Voice button_press_736h.png" />
+            <Image Name="Voicecomment_word_background_736h.png" />
           </Folder>
         </Folder>
         <Folder Name="BookRoom">
@@ -201,6 +189,7 @@
             <Image Name="zg1.png" />
             <Image Name="zg2.png" />
             <Image Name="zg3.png" />
+            <Image Name="BookHome_winduw_pop_736h.png" />
           </Folder>
         </Folder>
         <Folder Name="BookStoreScene">
@@ -761,9 +750,12 @@
             <Image Name="parentsVerification_button_yellow_ipad@2x.png" />
           </Folder>
         </Folder>
-        <Folder Name="VIPBook">
+        <Folder Name="VIP">
           <Folder Name="csb">
-            <Project Name="renew.csd" Type="Layer" />
+            <Project Name="daoqitixing.csd" Type="Layer" />
+            <Project Name="vippayy.csd" Type="Layer" />
+            <Project Name="vipxufei.csd" Type="Layer" />
+            <Project Name="youarenotvip.csd" Type="Layer" />
           </Folder>
           <Folder Name="res">
             <Image Name="BookInfo_book_vip_bookstore_buy_background_736h.png" />
@@ -773,7 +765,6 @@
             <Image Name="BookInfo_book_vip_bookstore_renewal_background_736h.png" />
             <Image Name="BookInfo_book_vip_bookstore_renewal_select_736h.png" />
             <Image Name="BookInfo_book_vip_bookstore_renewal_select_default_736h.png" />
-            <Image Name="BookInfo_book_vip_bookstore_renewal_title_736h.png" />
             <Image Name="BookInfo_book_vip_bookstore_renewal_weixin_736h.png" />
             <Image Name="BookInfo_book_vip_bookstore_renewal_zhifubao_736h.png" />
             <Image Name="BookInfo_book_vip_bookstore_title_736h.png" />

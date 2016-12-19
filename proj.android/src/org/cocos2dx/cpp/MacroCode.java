@@ -74,6 +74,8 @@ public class MacroCode {
 	//查询书籍是否购买
 	public final static String NET_GETRECHARGE = "/ellabook-server/order/queryMemberAmount.do";
 	//获取用户余额
+	public final static String NET_GETVIPRECHARGEORDERID = "/ellabook-server/AndroidPayAnnualCard/AndroidPayVip.do";
+	//VIP充值
 	public final static String NET_GETRECHARGEORDERID = "/ellabook-server/order/GetChargeid_aliypay";
 	//充值订单
 	public final static String NET_RECHARG_BUYBOOK_ORDERID = "/ellabook-server/order";

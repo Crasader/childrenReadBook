@@ -40,7 +40,7 @@ YYXLayer* XZLayer::showVIPRenew(function<void()>runleave)
 {
 	map<string, int64String> paramter;
 	YYXLayer::insertMap4ParaType(paramter, "className", -999, "IndexSceneShowVIPRenew");
-	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "BookInfo/csb/daoqitixing.csb");
+	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "VIP/csb/daoqitixing.csb");
 	auto viphint = YYXLayer::create(paramter);
 	auto pNode = viphint->getParentNode();
 	pNode->setAnchorPoint(Vec2(0.5, 0.5));
@@ -102,7 +102,7 @@ YYXLayer * XZLayer::payVip_xufei()
 	bool isPayWx = true;//是否是微信支付
 	map<string, int64String> paramter;
 	YYXLayer::insertMap4ParaType(paramter, "className", -999, "payVip");
-	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "BookInfo/csb/vipxufei.csb");
+	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "VIP/csb/vipxufei.csb");
 	auto viphint = YYXLayer::create(paramter);
 	auto pNode = viphint->getParentNode();
 	pNode->setAnchorPoint(Vec2(0.5, 0.5));
@@ -205,7 +205,7 @@ YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave)
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "showYouAreVip", 0);
 	map<string, int64String> paramter;
 	YYXLayer::insertMap4ParaType(paramter, "className", -999, "bookstoreShowUserIsVip");
-	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "BookInfo/csb/youarenotvip.csb");
+	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "VIP/csb/youarenotvip.csb");
 	auto viphint = YYXLayer::create(paramter);
 	if (i == 0)
 	{
@@ -268,7 +268,7 @@ YYXLayer * XZLayer::payBuyVip()
 {
 	map<string, int64String> paramter;
 	YYXLayer::insertMap4ParaType(paramter, "className", -999, "payVip");
-	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "BookInfo/csb/vippayy.csb");
+	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "VIP/csb/vippayy.csb");
 	auto viphint = YYXLayer::create(paramter);
 	auto pNode = viphint->getParentNode();
 	pNode->setAnchorPoint(Vec2(0.5, 0.5));

@@ -192,8 +192,8 @@
             <PreSize X="0.0996" Y="0.1792" />
             <TextColor A="255" R="65" G="65" B="70" />
             <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Common_Return_Selected.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Common_Return.png" Plist="BookInfo/csb/bookInfo.plist" />
+            <PressedFileData Type="Normal" Path="other/Common_Return_Selected.png" Plist="" />
+            <NormalFileData Type="Normal" Path="other/Common_Return.png" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>

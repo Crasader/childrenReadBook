@@ -21,6 +21,7 @@ import org.cocos2dx.cpp.Tool;
 import org.cocos2dx.cpp.http.CallBackFunction.DownLoadImage;
 import org.cocos2dx.cpp.http.CallBackFunction.FindFunctionForKey;
 import org.cocos2dx.cpp.sqlite.MySQLiteOpenHelper;
+import org.cocos2dx.cpp.weixinPay;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,6 +93,60 @@ public class NetInterface {
 						AppActivity.NetInterfaceCallback(errorKey, "网络错误");
 					}
 				});
+		mQueue.add(request);
+	}
+	//{"result":true,"toURL":"","code":"","out_trade_no":"VIP4a873f4a391481619220","data":"","errorMessage":"","id":""}
+	// VIP充值订单
+	public static void httpGetVIPOrderId(final RequestQueue mQueue,
+	                                  int memberid,
+	                                  final int rechargeCount,// 充值额度
+	                                  final int price100, // 支付额度
+	                                  final String payType, final String payInfo, final String runKey,
+	                                  final String errorKey) {
+		if (memberid == -999)
+			return;
+		String url = MacroCode.IP + MacroCode.NET_GETVIPRECHARGEORDERID;
+		Map<String, String> paramter = new HashMap<String, String>();
+		paramter.put("price", String.valueOf(price100));
+		paramter.put("memberId", memberid + "");
+		if (payType.equals("alipay")) {
+			paramter.put("platform_id", "2");
+		} else if (payType.equals("weixinpay")) {
+			paramter.put("platform_id", "3");
+		}
+
+		Log.e("show", url + paramter.toString());
+		JsonObjectPostRequest request = new JsonObjectPostRequest(url,
+				paramter, new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					Log.e("show", response.toString());
+					boolean result = response.getBoolean("result");
+					if (result) {
+						String order_id = response.getString("out_trade_no");
+						//TODO
+						//测试支付"yyx"+order_id
+						//正式支付""+order_id
+						AppActivity.Pay(payType, "", "", "",
+								""+order_id, payInfo,
+								payInfo, price100, runKey, errorKey);
+					} else
+						AppActivity.NetInterfaceCallback(errorKey,
+								"充值异常");
+				} catch (Exception e) {
+					Log.e("201606241550", e.toString());
+					AppActivity.NetInterfaceCallback(errorKey, "充值异常");
+				}
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				AppActivity.NetInterfaceCallback(errorKey, "网络错误");
+			}
+		});
 		mQueue.add(request);
 	}
 	

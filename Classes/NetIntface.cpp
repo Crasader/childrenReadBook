@@ -125,12 +125,12 @@ void NetIntface::httpUpFile(string url, string jsonparater, string filepath, fun
 }
 
 //网络请求POST方法
-void NetIntface::httpPost(string url, map<string, string> parameter, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
+void NetIntface::httpPost(string url, map<string, string> parameter, string runKey1, function<void(string)> runFunction, string errorKey1, function<void(string)> errorRunFunction)
 {
 	if (!IsNetConnect())
 		return;
-	runKey = App::getOnlyKey();
-	errorKey = App::getOnlyKey();
+	string runKey = App::getOnlyKey();
+	string errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
 		string jsonstr = YYXLayer::getStringFormMap(parameter);
@@ -180,12 +180,12 @@ void NetIntface::WIN32_httpPost(string url, map<string, string> parameter,string
 }
 
 //网络请求GET方法
-void NetIntface::httpGet(string url , string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
+void NetIntface::httpGet(string url , string runKey1, function<void(string)> runFunction, string errorKey1, function<void(string)> errorRunFunction)
 {
 	if (!IsNetConnect())
 		return;
-	runKey = App::getOnlyKey();
-	errorKey = App::getOnlyKey();
+	string runKey = App::getOnlyKey();
+	string errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
 		runFunction(json);
 		App::log(" ( httpGet OK ) "+url + " => "+json);
@@ -2272,7 +2272,7 @@ void NetIntface::httpGetBookIsBuy(int bookId, int memberId, int orderId, string 
 	"type": -1, 0=买书 1=租书
 	"order_id": "23774"
 }*/
-void NetIntface::httpGetBookIsBuyCallBack(string json, function<void(string order, int types)> runable)
+void NetIntface::httpGetBookIsBuyCallBack(string json, function<void(string order, int types)> runable, function<void(string)> errorRun)
 {
 	rapidjson::Document doc;
 	if (YYXLayer::getJsonObject4Json(doc, json))
@@ -2288,6 +2288,16 @@ void NetIntface::httpGetBookIsBuyCallBack(string json, function<void(string orde
 					runable(order_id, type);
 			}
 		}
+		else
+		{
+			if (errorRun)
+				errorRun(App::getString("FAXIANNINWEICHENGYUEDU"));
+		}
+	}
+	else
+	{
+		if (errorRun)
+			errorRun("");
 	}
 }
 

@@ -7,7 +7,7 @@
 			<key>BookInfo/res/BookInfo_abstract.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{538,1255},{84,84}}</string>
+				<string>{{1959,2},{84,84}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -18,7 +18,7 @@
 			<key>BookInfo/res/BookInfo_abstract_s.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{538,1343},{84,84}}</string>
+				<string>{{1959,90},{84,84}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -29,7 +29,7 @@
 			<key>BookInfo/res/BookInfo_btn_Comment.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1984},{197,47}}</string>
+				<string>{{1778,862},{197,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -40,7 +40,7 @@
 			<key>BookInfo/res/BookInfo_btn_Previews.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{349,1771},{141,67}}</string>
+				<string>{{1454,832},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,7 +51,7 @@
 			<key>BookInfo/res/BookInfo_btn_Previews_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{494,1771},{141,67}}</string>
+				<string>{{1282,865},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -62,7 +62,7 @@
 			<key>BookInfo/res/BookInfo_btn_Read.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{629,1679},{141,67}}</string>
+				<string>{{1026,930},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -73,7 +73,7 @@
 			<key>BookInfo/res/BookInfo_btn_Read_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{639,1750},{141,67}}</string>
+				<string>{{1778,791},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -84,7 +84,7 @@
 			<key>BookInfo/res/BookInfo_Comment.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{538,1431},{84,78}}</string>
+				<string>{{1959,178},{84,78}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -95,7 +95,7 @@
 			<key>BookInfo/res/BookInfo_Comment_s.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{538,1513},{84,78}}</string>
+				<string>{{1959,260},{84,78}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -106,7 +106,7 @@
 			<key>BookInfo/res/BookInfo_Comment_star.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{564,2028},{19,18}}</string>
+				<string>{{1985,390},{19,18}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -117,7 +117,7 @@
 			<key>BookInfo/res/BookInfo_Comment_star_s.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{587,2028},{19,17}}</string>
+				<string>{{2008,402},{19,17}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -128,7 +128,7 @@
 			<key>BookInfo/res/BookInfo_Cover_bg.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{827,1255},{393,523}}</string>
+				<string>{{1562,2},{393,523}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -139,7 +139,7 @@
 			<key>BookInfo/res/BookInfo_star.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{591,1928},{26,26}}</string>
+				<string>{{2016,342},{26,26}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -150,7 +150,7 @@
 			<key>BookInfo/res/BookInfo_star_s.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{651,2014},{22,22}}</string>
+				<string>{{1959,390},{22,22}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -161,7 +161,7 @@
 			<key>BookInfo/res/BookInfo_Time.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{621,2014},{26,26}}</string>
+				<string>{{2016,372},{26,26}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -172,7 +172,7 @@
 			<key>BookInfo/res/BookInfo_top_bg_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{349,1690},{276,77}}</string>
+				<string>{{1473,643},{276,77}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -180,32 +180,10 @@
 				<key>sourceSize</key>
 				<string>{276,77}</string>
 			</dict>
-			<key>BookInfo/res/Common_Return.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{1123,1782},{109,110}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{109,110}</string>
-			</dict>
-			<key>BookInfo/res/Common_Return_Selected.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{1129,1896},{109,110}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{109,110}</string>
-			</dict>
 			<key>BookInfo/res/BookHome_0001_board_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1255},{532,431}}</string>
+				<string>{{1026,2},{532,431}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -213,76 +191,10 @@
 				<key>sourceSize</key>
 				<string>{532,431}</string>
 			</dict>
-			<key>BookInfo/res/Comment_Publish_Selected_ipad.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{591,1842},{232,82}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{232,82}</string>
-			</dict>
-			<key>BookInfo/res/Comment_Release_ipad.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{621,1928},{232,82}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{232,82}</string>
-			</dict>
-			<key>BookInfo/res/Comment_star_ipad.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{1200,650},{95,92}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{95,92}</string>
-			</dict>
-			<key>BookInfo/res/Comment_star_Selected_ipad.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{1200,746},{95,92}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{95,92}</string>
-			</dict>
-			<key>BookInfo/res/Common_Popup_Close_ipad@2x.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{404,1980},{76,66}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{76,66}</string>
-			</dict>
-			<key>BookInfo/res/Common_Popup_Close_Selected_ipad@2x.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{484,1980},{76,66}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{76,66}</string>
-			</dict>
 			<key>BookInfo/res/parentsVerification_button_blue_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1200,2},{104,104}}</string>
+				<string>{{1346,649},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -293,7 +205,7 @@
 			<key>BookInfo/res/parentsVerification_button_red_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1200,110},{104,104}}</string>
+				<string>{{1454,724},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -304,7 +216,7 @@
 			<key>BookInfo/res/parentsVerification_button_Selected_blue_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1200,218},{104,104}}</string>
+				<string>{{1346,757},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -315,7 +227,7 @@
 			<key>BookInfo/res/parentsVerification_button_Selected_red_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1200,326},{104,104}}</string>
+				<string>{{1174,795},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -326,7 +238,7 @@
 			<key>BookInfo/res/parentsVerification_button_Selected_yellow_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1200,434},{104,104}}</string>
+				<string>{{1562,724},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -337,7 +249,7 @@
 			<key>BookInfo/res/parentsVerification_button_yellow_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1200,542},{104,104}}</string>
+				<string>{{1670,791},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -348,7 +260,7 @@
 			<key>BookInfo/res/BookInfo_btn_Comment_push.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{203,1984},{197,47}}</string>
+				<string>{{1427,903},{197,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -356,43 +268,10 @@
 				<key>sourceSize</key>
 				<string>{197,47}</string>
 			</dict>
-			<key>BookInfo/res/Voicecomment_background_ipad@2x.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{2,2},{1194,1249}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{1194,1249}</string>
-			</dict>
-			<key>BookInfo/res/Voicecomment_publish_button_ipad@2x.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{2,1690},{343,150}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{343,150}</string>
-			</dict>
-			<key>BookInfo/res/Voicecomment_publish_button_press_ipad@2x.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{2,1844},{310,136}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{310,136}</string>
-			</dict>
 			<key>BookInfo/res/Voicecomment_star.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{975,1782},{144,141}}</string>
+				<string>{{1026,785},{144,141}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -403,7 +282,7 @@
 			<key>BookInfo/res/Voicecomment_star_press.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{827,1782},{144,142}}</string>
+				<string>{{1198,649},{144,142}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -411,32 +290,10 @@
 				<key>sourceSize</key>
 				<string>{144,142}</string>
 			</dict>
-			<key>BookInfo/res/Voicecomment_Voice button_ipad@2x.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{857,1928},{132,107}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{132,107}</string>
-			</dict>
-			<key>BookInfo/res/Voicecomment_Voice button_press_ipad@2x.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{993,1927},{132,107}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{132,107}</string>
-			</dict>
 			<key>BookInfo/res/yila_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{629,1255},{168,208}}</string>
+				<string>{{1301,437},{168,208}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -447,7 +304,7 @@
 			<key>BookInfo/res/yila2_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{629,1467},{168,208}}</string>
+				<string>{{1026,573},{168,208}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -458,7 +315,7 @@
 			<key>BookInfo/res/hand_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{564,1980},{53,44}}</string>
+				<string>{{1959,342},{53,44}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -469,13 +326,79 @@
 			<key>BookInfo/res/mupai_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{316,1844},{271,132}}</string>
+				<string>{{1026,437},{271,132}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
 				<string>{271,132}</string>
+			</dict>
+			<key>BookInfo/res/Voicecomment_word_background_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1171,954},{632,167}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{632,167}</string>
+			</dict>
+			<key>BookInfo/res/Voicecomment_background_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,2},{1020,1011}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{1020,1011}</string>
+			</dict>
+			<key>BookInfo/res/Voicecomment_publish_button_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1473,529},{270,110}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{270,110}</string>
+			</dict>
+			<key>BookInfo/res/Voicecomment_publish_button_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1747,529},{270,110}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{270,110}</string>
+			</dict>
+			<key>BookInfo/res/Voicecomment_Voice button_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1753,643},{141,144}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{141,144}</string>
+			</dict>
+			<key>BookInfo/res/Voicecomment_Voice button_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1898,643},{141,144}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{141,144}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>

@@ -18,15 +18,7 @@
       <FilePathData Path="BookInfo/res/BookInfo_star_s.png" />
       <FilePathData Path="BookInfo/res/BookInfo_Time.png" />
       <FilePathData Path="BookInfo/res/BookInfo_top_bg_736h.png" />
-      <FilePathData Path="BookInfo/res/Common_Return.png" />
-      <FilePathData Path="BookInfo/res/Common_Return_Selected.png" />
       <FilePathData Path="BookInfo/res/BookHome_0001_board_ipad@2x.png" />
-      <FilePathData Path="BookInfo/res/Comment_Publish_Selected_ipad.png" />
-      <FilePathData Path="BookInfo/res/Comment_Release_ipad.png" />
-      <FilePathData Path="BookInfo/res/Comment_star_ipad.png" />
-      <FilePathData Path="BookInfo/res/Comment_star_Selected_ipad.png" />
-      <FilePathData Path="BookInfo/res/Common_Popup_Close_ipad@2x.png" />
-      <FilePathData Path="BookInfo/res/Common_Popup_Close_Selected_ipad@2x.png" />
       <FilePathData Path="BookInfo/res/parentsVerification_button_blue_ipad@2x.png" />
       <FilePathData Path="BookInfo/res/parentsVerification_button_red_ipad@2x.png" />
       <FilePathData Path="BookInfo/res/parentsVerification_button_Selected_blue_ipad@2x.png" />
@@ -34,17 +26,18 @@
       <FilePathData Path="BookInfo/res/parentsVerification_button_Selected_yellow_ipad@2x.png" />
       <FilePathData Path="BookInfo/res/parentsVerification_button_yellow_ipad@2x.png" />
       <FilePathData Path="BookInfo/res/BookInfo_btn_Comment_push.png" />
-      <FilePathData Path="BookInfo/res/Voicecomment_background_ipad@2x.png" />
-      <FilePathData Path="BookInfo/res/Voicecomment_publish_button_ipad@2x.png" />
-      <FilePathData Path="BookInfo/res/Voicecomment_publish_button_press_ipad@2x.png" />
       <FilePathData Path="BookInfo/res/Voicecomment_star.png" />
       <FilePathData Path="BookInfo/res/Voicecomment_star_press.png" />
-      <FilePathData Path="BookInfo/res/Voicecomment_Voice button_ipad@2x.png" />
-      <FilePathData Path="BookInfo/res/Voicecomment_Voice button_press_ipad@2x.png" />
       <FilePathData Path="BookInfo/res/yila_736h.png" />
       <FilePathData Path="BookInfo/res/yila2_736h.png" />
       <FilePathData Path="BookInfo/res/hand_736h.png" />
       <FilePathData Path="BookInfo/res/mupai_736h.png" />
+      <FilePathData Path="BookInfo/res/Voicecomment_word_background_736h.png" />
+      <FilePathData Path="BookInfo/res/Voicecomment_background_736h.png" />
+      <FilePathData Path="BookInfo/res/Voicecomment_publish_button_736h.png" />
+      <FilePathData Path="BookInfo/res/Voicecomment_publish_button_press_736h.png" />
+      <FilePathData Path="BookInfo/res/Voicecomment_Voice button_736h.png" />
+      <FilePathData Path="BookInfo/res/Voicecomment_Voice button_press_736h.png" />
     </ImageFiles>
     <MaxSize Width="2048" Height="2048" />
   </Content>

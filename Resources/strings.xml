@@ -1,4 +1,4 @@
-<dict> 
+﻿<dict> 
     <key>GetCode</key> 
     <string>获取验证码</string>
     <key>YANZHENGMAQINGQIUSHIBAIQINGCHONGSHI</key>
@@ -182,7 +182,7 @@
     <key>EDITBOX_YILA</key>
     <string>咿啦</string>
     <key>EDITBOX_FEEDBOX</key>
-    <string>不少于10个字</string>
+    <string>评论不少于10个字</string>
     <key>EDITBOX_NEW_PASSWORD</key>
     <string>新密码</string>
     <key>CIRCLE</key>
@@ -387,6 +387,14 @@
     <string>删除评论?</string>
     <key>YUYINGBOFANGSHIBAI</key>
     <string>语音播放失败</string>
-  <key>SHANGWEIDENGLU</key>
-  <string>尚未登录</string>
+    <key>SHANGWEIDENGLU</key>
+    <string>尚未登录</string>
+    <key>OPENVIP</key>
+    <string>开通年卡服务</string>
+    <key>OPENVIPAGAIN</key>
+    <string>续费年卡服务</string>
+    <key>NIANKAFUWUJIEZHI</key>
+    <string>年卡用户     截止: </string>
+    <key>FAXIANNINWEICHENGYUEDU</key>
+    <string>发现您未曾阅读, 请先阅读再评论! </string>
 </dict> 

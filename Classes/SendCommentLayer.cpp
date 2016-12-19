@@ -142,23 +142,17 @@ bool SendComment::init(int bookId) {
 		//comment_star4->loadTexture(SENDCOMMENT_FINDPIC_STAR2, ui::Widget::TextureResType::PLIST);
 		//comment_star5->loadTexture(SENDCOMMENT_FINDPIC_STAR2, ui::Widget::TextureResType::PLIST);
 	});
-
-	//输入标题
-	auto textTitle = MyEditBox::create(Size(200, 36), App::getString("COMMENT_TITLE"));
-	textTitle->setMyFontSize(18);
-	//textTitle->setBoxMaxLength(11);
-	textTitle->setMyInputMode(cocos2d::ui::EditBox::InputMode::ANY);
-	textTitle->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
-	textTitle->setAnchorPoint(Vec2(0, 1));
-	textTitle->setPosition(Vec2(525, 325));
-	comment->addChild(textTitle);
+	//内容背景
+	auto img = (ImageView*)comment->getChildByName("Image_1");
 	//输入内容
-	auto textContent = MyEditBox::create(Size(290, 130), App::getString("EDITBOX_FEEDBOX"));
+	auto textContent = MyEditBox::create(Size(350 - 10, 175 - 20), App::getString("EDITBOX_FEEDBOX"));
 	textContent->setMyFontSize(18);
 	textContent->setMyInputMode(cocos2d::ui::EditBox::InputMode::ANY);
 	textContent->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
-	textContent->setAnchorPoint(Vec2(0, 1));
-	textContent->setPosition(Vec2(547, 215));
+	//textContent->setAnchorPoint(Vec2(0, 1));
+	textContent->setPosition(img->getPosition());
+	textContent->setBoxMaxLength(100);
+	//textContent->setColor(Color3B::GREEN);
 	comment->addChild(textContent);
 	//发表语音评论
 	auto yuying = (Button*)comment->getChildByName("Button_1");
@@ -197,6 +191,11 @@ bool SendComment::init(int bookId) {
 							SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 					});
 					YYXLayer::sendNotify("DeleteSendComment");
+				}, [](string errorstr) {
+					//没有购买或者没有vip下载记录
+					if (errorstr == "")
+						errorstr = App::getString("COMMENT_FAILED");
+					Toast::create(errorstr.c_str());
 				});
 			}, "goToSendRecordingFail", [](string str) {
 				//orderid 获取的失败回调
@@ -207,20 +206,13 @@ bool SendComment::init(int bookId) {
 	//发表按钮
 	auto comment_send = (Button*)comment->getChildByName(SENDCOMMENT_KUANG_COMMENT_SEND_BTN);
 	comment_send->addClickEventListener([=](Ref* sender) {
-		string strTitle = textTitle->getString();
 		string strContent = textContent->getString();
-		//标题为空
-		if (strTitle.length() == 0) {
-			Toast::create(App::getString("COMMENT_TITLE_ERROR"));
-			return;
-		}
 		//内容少于10个字
-		if (strContent.length() < 20) {
+		if (strContent.length() < 30) {
 			Toast::create(App::getString("COMMENT_CONTENT_ERROR"));
 			return;
 		}
-
-		sendComment(strTitle, strContent);
+		sendComment("version>=1.7.2 , no title", strContent);
 		comment_send->setTouchEnabled(false);
 		this->removeFromParentAndCleanup(true);
 	});
@@ -287,6 +279,11 @@ void SendComment::sendComment(string title, string content) {
 			}, "bookinfoSceneSendCommentFail", [](string sttr) {
 				Toast::create(App::getString("COMMENT_FAILED"));
 			});
+		}, [](string errorstr) {
+			//没有购买或者没有vip下载记录
+			if (errorstr == "")
+				errorstr = App::getString("COMMENT_FAILED");
+			Toast::create(errorstr.c_str());
 		});
 	}, "bookinfoSceneSendCommentFail", [](string str) {
 		Toast::create(App::getString("COMMENT_FAILED"));

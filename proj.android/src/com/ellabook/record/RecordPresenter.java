@@ -98,9 +98,9 @@ public class RecordPresenter {
 		//总布局
 		rela = (RelativeLayout)contentView.findViewById(R.id.rela);
 		LinearLayout.LayoutParams line= (android.widget.LinearLayout.LayoutParams) rela.getLayoutParams();
-		line.width = (int)(displayMetrics.widthPixels*0.45);
+		line.width = (int)(displayMetrics.widthPixels*0.48);
 		wi = line.width;
-		line.height = (int)(wi/241.5*252.5);
+		line.height = wi;
 		hi = line.height;
 		rela.setLayoutParams(line);
 

@@ -2,10 +2,8 @@ package org.cocos2dx.cpp.http;
 
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
+import com.android.volley.*;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import org.json.JSONArray;
@@ -20,8 +18,7 @@ public class JsonObjectPostRequest extends Request<JSONObject> {
     private Response.Listener<JSONObject> mListener;
     public String cookieFromResponse;
     private Map<String, String> sendHeader=new HashMap<String, String>();
-    
-    
+
     public JsonObjectPostRequest(String url,Map<String, String> map, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(Request.Method.POST, url, errorListener);
         mListener = listener;
@@ -47,7 +44,7 @@ public class JsonObjectPostRequest extends Request<JSONObject> {
             }
             else {
                 jsonObject = new JSONObject(jsonString);
-            }            
+            }
             Map<String,String> hashMap = response.headers;
 //            Log.i("show","get headers in parseNetworkResponse "+response.headers.toString());
             //使用正则表达式从reponse的头中提取cookie内容的子串

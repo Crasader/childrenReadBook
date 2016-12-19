@@ -37,6 +37,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.cocos2dx.cpp.http.BabyCenter;
 import org.cocos2dx.cpp.http.BookCityScene;
 import org.cocos2dx.cpp.http.BookInfoScene;
@@ -55,6 +65,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.alipay.sdk.app.PayTask;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
@@ -99,6 +110,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -599,7 +611,49 @@ public class AppActivity extends Cocos2dxActivity {
 	{
 		return System.currentTimeMillis();
 	}
-	
+
+	//网络请求上传文件接口
+	public static void httpUpFile(final String url, String jsonData,String filepath, final String runKey, final String errorKey)
+	{
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(url);
+		try {
+			FileBody fileStream = new FileBody(new File(filepath));
+			MultipartEntity reqEntity = new MultipartEntity();
+			reqEntity.addPart("file", fileStream);
+			JSONObject ob = new JSONObject(jsonData);
+			Iterator it = ob.keys();
+			while(it.hasNext())
+			{
+				String key = (String) it.next();
+				String value = ob.getString(key);
+				reqEntity.addPart(key, new StringBody(value));
+			}
+			httppost.setEntity(reqEntity);
+			HttpResponse response = httpclient.execute(httppost);
+			HttpEntity resEntity = response.getEntity();
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == HttpStatus.SC_OK)
+			{
+				if (resEntity != null)
+				{
+					String json = EntityUtils.toString(resEntity, "utf-8");
+					NetInterfaceCallback(runKey,json);
+					if (resEntity != null)
+					{
+						resEntity.consumeContent();
+					}
+					httpclient.getConnectionManager().shutdown();
+				}
+			}
+			else
+				NetInterfaceCallback(errorKey, "");
+		} catch (Exception e) {
+			Log.e("201612121539", e.toString());
+			NetInterfaceCallback(errorKey, e.toString());
+		}
+	}
+
 	//网络请求get
 	public static void httpGet(final String url, final String runKey, final String errorKey)
 	{		
@@ -618,6 +672,7 @@ public class AppActivity extends Cocos2dxActivity {
 						NetInterfaceCallback(errorKey, "");
 					}
 				});
+		request.setRetryPolicy(new DefaultRetryPolicy(100000,3,DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 		mQueue.add(request);
 	}
 	
@@ -651,6 +706,7 @@ public class AppActivity extends Cocos2dxActivity {
 							NetInterfaceCallback(errorKey, error.toString());
 						}
 					});
+			request.setRetryPolicy(new DefaultRetryPolicy(100000,3,DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 			mQueue.add(request);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -664,6 +720,15 @@ public class AppActivity extends Cocos2dxActivity {
 		m_callbackKey.put("RechargeRunKey", runKey);
 		m_callbackKey.put("RechargeErrorKey", errorKey);
 		NetInterface.httpGetOrderId(mQueue, memberid, rechargeCount, price100,
+				payType, payInfo, runKey, errorKey);
+	}
+	// JNI VIP订单
+	public static void httpGetVIPOrderID(int memberid, int rechargeCount,
+	                                          int price100, String payType, String payInfo, final String runKey,
+	                                          final String errorKey) {
+		m_callbackKey.put("RechargeRunKey", runKey);
+		m_callbackKey.put("RechargeErrorKey", errorKey);
+		NetInterface.httpGetVIPOrderId(mQueue, memberid, rechargeCount, price100,
 				payType, payInfo, runKey, errorKey);
 	}
 	
@@ -1883,7 +1948,7 @@ public class AppActivity extends Cocos2dxActivity {
 		mHandler.sendMessage(msg);
 	}
 
-	//JNI 获取机型
+	//JNI 获取机型,android版本,sdk
 	public static String getPhoneInfo(int num)
 	{
 		switch (num){
@@ -1895,6 +1960,15 @@ public class AppActivity extends Cocos2dxActivity {
 				return Build.VERSION.RELEASE;
 			default:
 				return "android";
+		}
+	}
+	public static String getDEVICE_ID(Context context){
+		TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+		String DEVICE_ID = tm.getDeviceId();
+		if(DEVICE_ID!=null){
+			return DEVICE_ID;
+		}else{
+			return "cant find DEVICE_ID";
 		}
 	}
 }

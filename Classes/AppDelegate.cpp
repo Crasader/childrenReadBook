@@ -102,6 +102,9 @@ void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 	AudioPlayer::getInstance()->resumeAllEffect();
     // if you use SimpleAudioEngine, it must resume here
+	auto isReading = YYXStruct::getMapInt64(App::GetInstance()->myData, "UserIsReadingBook", 1);
+	if (isReading == 1)
+		return;
 	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
 	{
 		if (App::isNight())

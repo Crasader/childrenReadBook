@@ -40,8 +40,8 @@
                 <PreSize X="0.0000" Y="0.0000" />
                 <TextColor A="255" R="65" G="65" B="70" />
                 <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-                <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Common_Popup_Close_Selected_ipad@2x.png" Plist="BookInfo/csb/bookInfo.plist" />
-                <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Common_Popup_Close_ipad@2x.png" Plist="BookInfo/csb/bookInfo.plist" />
+                <PressedFileData Type="Normal" Path="other/Common_Popup_Close_Selected_ipad@2x.png" Plist="" />
+                <NormalFileData Type="Normal" Path="other/Common_Popup_Close_ipad@2x.png" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
               </AbstractNodeData>
@@ -113,28 +113,28 @@
           <AbstractNodeData Name="comment" ActionTag="-1990105168" Tag="59" IconVisible="True" LeftMargin="1094.0000" TopMargin="614.0000" ctype="SingleNodeObjectData">
             <Size X="0.0000" Y="0.0000" />
             <Children>
-              <AbstractNodeData Name="comment1" ActionTag="1233265331" Tag="410" IconVisible="False" LeftMargin="90.0000" RightMargin="-1004.0000" TopMargin="-810.0000" BottomMargin="-196.0000" LeftEage="394" RightEage="394" TopEage="412" BottomEage="412" Scale9OriginX="394" Scale9OriginY="412" Scale9Width="406" Scale9Height="425" ctype="ImageViewObjectData">
-                <Size X="914.0000" Y="1006.0000" />
+              <AbstractNodeData Name="comment1" ActionTag="1233265331" Tag="410" IconVisible="False" LeftMargin="37.0000" RightMargin="-1057.0000" TopMargin="-812.5000" BottomMargin="-198.5000" LeftEage="394" RightEage="394" TopEage="412" BottomEage="412" Scale9OriginX="394" Scale9OriginY="412" Scale9Width="232" Scale9Height="187" ctype="ImageViewObjectData">
+                <Size X="1020.0000" Y="1011.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="547.0000" Y="307.0000" />
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition />
                 <PreSize X="0.0000" Y="0.0000" />
-                <FileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_background_ipad@2x.png" Plist="BookInfo/csb/bookInfo.plist" />
+                <FileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_background_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
               </AbstractNodeData>
-              <AbstractNodeData Name="close_btn" ActionTag="-1577159513" Tag="27" IconVisible="False" LeftMargin="668.6847" RightMargin="-744.6847" TopMargin="-532.0620" BottomMargin="466.0620" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="46" Scale9Height="44" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+              <AbstractNodeData Name="close_btn" ActionTag="-1577159513" Tag="27" IconVisible="False" LeftMargin="687.6923" RightMargin="-763.6923" TopMargin="-533.5906" BottomMargin="467.5906" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="46" Scale9Height="44" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
                 <Size X="76.0000" Y="66.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-                <Position X="706.6847" Y="499.0620" />
-                <Scale ScaleX="0.8000" ScaleY="0.8000" />
+                <Position X="725.6923" Y="500.5906" />
+                <Scale ScaleX="1.0000" ScaleY="1.0000" />
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition />
                 <PreSize X="0.0000" Y="0.0000" />
                 <TextColor A="255" R="65" G="65" B="70" />
                 <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-                <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Common_Popup_Close_Selected_ipad@2x.png" Plist="BookInfo/csb/bookInfo.plist" />
-                <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Common_Popup_Close_ipad@2x.png" Plist="BookInfo/csb/bookInfo.plist" />
+                <PressedFileData Type="Normal" Path="other/Common_Popup_Close_Selected_ipad@2x.png" Plist="" />
+                <NormalFileData Type="Normal" Path="other/Common_Popup_Close_ipad@2x.png" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
               </AbstractNodeData>
@@ -148,7 +148,7 @@
                 <PreSize X="0.0000" Y="0.0000" />
                 <FileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_star_press.png" Plist="BookInfo/csb/bookInfo.plist" />
               </AbstractNodeData>
-              <AbstractNodeData Name="star2" ActionTag="-337329864" Tag="33" IconVisible="False" LeftMargin="417.7383" RightMargin="-561.7383" TopMargin="-467.8443" BottomMargin="325.8443" LeftEage="31" RightEage="31" TopEage="30" BottomEage="30" Scale9OriginX="31" Scale9OriginY="30" Scale9Width="82" Scale9Height="82" ctype="ImageViewObjectData">
+              <AbstractNodeData Name="star2" ActionTag="-337329864" Tag="33" IconVisible="False" LeftMargin="417.7449" RightMargin="-561.7449" TopMargin="-467.8469" BottomMargin="325.8469" LeftEage="31" RightEage="31" TopEage="30" BottomEage="30" Scale9OriginX="31" Scale9OriginY="30" Scale9Width="82" Scale9Height="82" ctype="ImageViewObjectData">
                 <Size X="144.0000" Y="142.0000" />
                 <AnchorPoint ScaleX="0.4707" ScaleY="0.4800" />
                 <Position X="485.5257" Y="394.0069" />
@@ -188,33 +188,43 @@
                 <PreSize X="0.0000" Y="0.0000" />
                 <FileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_star_press.png" Plist="BookInfo/csb/bookInfo.plist" />
               </AbstractNodeData>
-              <AbstractNodeData Name="send_btn" ActionTag="-1846411515" Tag="37" IconVisible="False" LeftMargin="431.0000" RightMargin="-663.0000" TopMargin="-151.0000" BottomMargin="69.0000" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="202" Scale9Height="60" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-                <Size X="232.0000" Y="82.0000" />
+              <AbstractNodeData Name="send_btn" ActionTag="-1846411515" Tag="37" IconVisible="False" LeftMargin="411.0000" RightMargin="-681.0000" TopMargin="-175.4662" BottomMargin="65.4662" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="240" Scale9Height="88" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+                <Size X="270.0000" Y="110.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-                <Position X="547.0000" Y="110.0000" />
+                <Position X="546.0000" Y="120.4662" />
+                <Scale ScaleX="0.6000" ScaleY="0.6000" />
+                <CColor A="255" R="255" G="255" B="255" />
+                <PrePosition />
+                <PreSize X="0.0000" Y="0.0000" />
+                <TextColor A="255" R="65" G="65" B="70" />
+                <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+                <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_publish_button_press_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
+                <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_publish_button_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
+                <OutlineColor A="255" R="255" G="0" B="0" />
+                <ShadowColor A="255" R="110" G="110" B="110" />
+              </AbstractNodeData>
+              <AbstractNodeData Name="Image_1" ActionTag="1310892805" Tag="762" IconVisible="False" LeftMargin="165.4223" RightMargin="-865.4223" TopMargin="-437.8576" BottomMargin="87.8576" Scale9Enable="True" LeftEage="208" RightEage="208" TopEage="55" BottomEage="55" Scale9OriginX="208" Scale9OriginY="55" Scale9Width="216" Scale9Height="57" ctype="ImageViewObjectData">
+                <Size X="700.0000" Y="350.0000" />
+                <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+                <Position X="515.4223" Y="262.8576" />
+                <Scale ScaleX="0.5000" ScaleY="0.5000" />
+                <CColor A="255" R="255" G="255" B="255" />
+                <PrePosition />
+                <PreSize X="0.0000" Y="0.0000" />
+                <FileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_word_background_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
+              </AbstractNodeData>
+              <AbstractNodeData Name="Button_1" ActionTag="1088399246" Tag="411" IconVisible="False" LeftMargin="666.7833" RightMargin="-807.7833" TopMargin="-338.5323" BottomMargin="194.5323" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="111" Scale9Height="122" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+                <Size X="141.0000" Y="144.0000" />
+                <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+                <Position X="737.2833" Y="266.5323" />
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition />
                 <PreSize X="0.0000" Y="0.0000" />
                 <TextColor A="255" R="65" G="65" B="70" />
                 <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-                <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Comment_Publish_Selected_ipad.png" Plist="BookInfo/csb/bookInfo.plist" />
-                <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Comment_Release_ipad.png" Plist="BookInfo/csb/bookInfo.plist" />
-                <OutlineColor A="255" R="255" G="0" B="0" />
-                <ShadowColor A="255" R="110" G="110" B="110" />
-              </AbstractNodeData>
-              <AbstractNodeData Name="Button_1" ActionTag="1088399246" Tag="411" IconVisible="False" LeftMargin="598.4683" RightMargin="-730.4683" TopMargin="-377.6951" BottomMargin="270.6951" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="102" Scale9Height="85" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-                <Size X="132.0000" Y="107.0000" />
-                <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-                <Position X="664.4683" Y="324.1951" />
-                <Scale ScaleX="0.4000" ScaleY="0.4000" />
-                <CColor A="255" R="255" G="255" B="255" />
-                <PrePosition />
-                <PreSize X="0.0000" Y="0.0000" />
-                <TextColor A="255" R="65" G="65" B="70" />
-                <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-                <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_Voice button_press_ipad@2x.png" Plist="BookInfo/csb/bookInfo.plist" />
-                <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_Voice button_ipad@2x.png" Plist="BookInfo/csb/bookInfo.plist" />
+                <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_Voice button_press_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
+                <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Voicecomment_Voice button_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
               </AbstractNodeData>

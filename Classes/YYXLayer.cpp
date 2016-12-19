@@ -2117,19 +2117,19 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 		item4->setContentSize(Size(listviewMaxWidth, view->getContentSize().height / beishu - 10));
 		if (commentType ==1)
 		{
-			//标题
-			auto item1 = Layout::create();
-			if (titileText.length() > titleMaxLength)
-				titileText = titileText.substr(0, titleMaxLength).append("...");
-			auto titil = Label::create(titileText, "wdtyj.TTF", 16 * beishu);
-			titil->setAnchorPoint(Vec2(0, 0));
-			titil->setTextColor(Color4B(251, 133, 54, 255));
-			titil->setAdditionalKerning(4 * beishu);//字体间距
-			titil->setLineHeight(16 * beishu);//行间距
-			titil->setMaxLineWidth(listviewMaxWidth * beishu);
-			titil->setScale(1 / beishu);
-			item1->addChild(titil);
-			item1->setContentSize(Size(listviewMaxWidth, titil->getContentSize().height / beishu + 4));
+			////标题
+			//auto item1 = Layout::create();
+			//if (titileText.length() > titleMaxLength)
+			//	titileText = titileText.substr(0, titleMaxLength).append("...");
+			//auto titil = Label::create(titileText, "wdtyj.TTF", 16 * beishu);
+			//titil->setAnchorPoint(Vec2(0, 0));
+			//titil->setTextColor(Color4B(251, 133, 54, 255));
+			//titil->setAdditionalKerning(4 * beishu);//字体间距
+			//titil->setLineHeight(16 * beishu);//行间距
+			//titil->setMaxLineWidth(listviewMaxWidth * beishu);
+			//titil->setScale(1 / beishu);
+			//item1->addChild(titil);
+			//item1->setContentSize(Size(listviewMaxWidth, titil->getContentSize().height / beishu + 4));
 			//内容
 			auto item3 = Layout::create();
 			if (contentText.length() > contentTextMaxLength)
@@ -2195,7 +2195,7 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 			item3->setContentSize(Size(listviewMaxWidth, content->getContentSize().height / beishu + 4));
 
 			//插入
-			listview->pushBackCustomItem(item1);
+			//listview->pushBackCustomItem(item1);
 			listview->pushBackCustomItem(item2);
 			listview->pushBackCustomItem(item3);
 			listview->pushBackCustomItem(item4);

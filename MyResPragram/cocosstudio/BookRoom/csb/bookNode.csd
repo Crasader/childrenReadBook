@@ -6,7 +6,7 @@
       <ObjectData Name="Node" Tag="15" ctype="GameNodeObjectData">
         <Size X="0.0000" Y="0.0000" />
         <Children>
-          <AbstractNodeData Name="Book_Background" ActionTag="73547183" Tag="17" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Book_Background" Visible="False" ActionTag="73547183" Tag="17" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
             <Size X="132.0000" Y="176.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position />
@@ -27,7 +27,7 @@
             <PreSize X="0.0000" Y="0.0000" />
             <FileData Type="Normal" Path="other/Book_cover.png" Plist="" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Book_Mask" ActionTag="-542858013" Tag="18" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Book_Mask" Visible="False" ActionTag="-542858013" Tag="18" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
             <Size X="132.0000" Y="176.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position />

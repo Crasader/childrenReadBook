@@ -87,6 +87,7 @@ bool Waiting::init(std::string bookId, bool isView)
 			Index::BackPreviousScene();
 			//保存阅读记录
 			saveReadRecordEnd(bookId, isView);
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 0);
 		});
 		//向前按钮
 		BookParser::getInstance()->setPageUpCallBack([=]() {
@@ -163,6 +164,7 @@ bool Waiting::init(std::string bookId, bool isView)
 				//App::addRentBook(atoi(bookId.c_str()));
 			App::addRecordBookRead(atoi(bookId.c_str()));
 			saveReadRecordStart(bookId, isView);
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 1);
 		}
 	}), NULL));
 	return true;
@@ -339,7 +341,7 @@ bool Waiting::init(std::string bookId, bool isView)
 	 //初始化界面
 	 if (yaoqing) {
 		 yaoqing->setAnchorPoint(Vec2(1, 0));
-		 yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 500));
+		 yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
 		 yaoqing->addClickEventListener([=](Ref* sender) {
 			 if (App::GetInstance()->m_me)
 			 {
@@ -444,11 +446,11 @@ bool Waiting::init(std::string bookId, bool isView)
 	 auto MyComment = (ImageView*)layer->findControl("Image_2");
 	 auto jingcaiText = (Text*)layer->findControl("Text_4");
 	 auto mydeText = (Text*)layer->findControl("Text_4_0");
-	 auto readcount = (Text*)layer->findControl("Text_2");
-	 auto readtime = (Text*)layer->findControl("Text_2_0");
+	 //auto readcount = (Text*)layer->findControl("Text_2");
+	 //auto readtime = (Text*)layer->findControl("Text_2_0");
 	 if (yaoqing) {
 		 yaoqing->setAnchorPoint(Vec2(1, 0));
-		 yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, Director::getInstance()->getVisibleSize().height-150));
+		 yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
 		 yaoqing->addClickEventListener([=](Ref* sender) {
 			 if (App::GetInstance()->m_me)
 			 {
@@ -473,13 +475,13 @@ bool Waiting::init(std::string bookId, bool isView)
 	 }
 	//初始化界面 
 	//阅读记录
-		 int childID = (int)YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
-		 string readtimekey = StringUtils::format("bookid=%d+childid=%d+memberid=%s+readtime", bookid, childID, App::getMemberID().c_str());
-		 string frequencykey = StringUtils::format("bookid=%d+childid=%d+memberid=%s+frequency", bookid, childID, App::getMemberID().c_str());
-		 if (readcount)
-			 readcount->setText(StringUtils::format("%d", (int)YYXStruct::getMapInt64(App::GetInstance()->myData, frequencykey, 1)));
-		 if (readtime)
-			readtime->setText(StringUtils::format("%d", (int)YYXStruct::getMapInt64(App::GetInstance()->myData, readtimekey, 1)));
+		 //int childID = (int)YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
+		 //string readtimekey = StringUtils::format("bookid=%d+childid=%d+memberid=%s+readtime", bookid, childID, App::getMemberID().c_str());
+		 //string frequencykey = StringUtils::format("bookid=%d+childid=%d+memberid=%s+frequency", bookid, childID, App::getMemberID().c_str());
+		 //if (readcount)
+			// readcount->setText(StringUtils::format("%d", (int)YYXStruct::getMapInt64(App::GetInstance()->myData, frequencykey, 1)));
+		 //if (readtime)
+			//readtime->setText(StringUtils::format("%d", (int)YYXStruct::getMapInt64(App::GetInstance()->myData, readtimekey, 1)));
 	//精彩评论
 		if (jingcaiComment) {
 		jingcaiComment->setTag(1);
@@ -533,26 +535,26 @@ bool Waiting::init(std::string bookId, bool isView)
 	 });
 	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenershowCommentListViewend, layer);
 	 //刷新阅读时间
-	 auto listenersumReadTime = EventListenerCustom::create("sumReadTime", [=](EventCustom* e) {
-		 int time = (int)e->getUserData();
-		 if (time <= 0)
-			 time = 3;
-		 readtime->setText(StringUtils::format("%d", time));
-		 string key = StringUtils::format("bookid=%d+childid=%d+memberid=%s+readtime", bookid, 
-			 YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999), App::getMemberID().c_str());
-		 YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, time);
-	 });
-	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenersumReadTime, readtime);
-	 auto listenerfrequency = EventListenerCustom::create("frequency", [=](EventCustom* e) {
-		 int time = (int)e->getUserData();
-		 if (time <= 0)
-			 time = 1;
-		 readcount->setText(StringUtils::format("%d", time));
-		 string key = StringUtils::format("bookid=%d+childid=%d+memberid=%s+frequency", bookid,
-			 YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999), App::getMemberID().c_str());
-		 YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, time);
-	 });
-	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerfrequency, readcount);
+	 //auto listenersumReadTime = EventListenerCustom::create("sumReadTime", [=](EventCustom* e) {
+		// int time = (int)e->getUserData();
+		// if (time <= 0)
+		//	 time = 3;
+		// readtime->setText(StringUtils::format("%d", time));
+		// string key = StringUtils::format("bookid=%d+childid=%d+memberid=%s+readtime", bookid, 
+		//	 YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999), App::getMemberID().c_str());
+		// YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, time);
+	 //});
+	 //Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenersumReadTime, readtime);
+	 //auto listenerfrequency = EventListenerCustom::create("frequency", [=](EventCustom* e) {
+		// int time = (int)e->getUserData();
+		// if (time <= 0)
+		//	 time = 1;
+		// readcount->setText(StringUtils::format("%d", time));
+		// string key = StringUtils::format("bookid=%d+childid=%d+memberid=%s+frequency", bookid,
+		//	 YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999), App::getMemberID().c_str());
+		// YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, time);
+	 //});
+	 //Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerfrequency, readcount);
 	 
 		 
 	
