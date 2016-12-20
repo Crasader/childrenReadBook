@@ -104,18 +104,21 @@ void Load::initData()
 	//初始化Toast
 	Toast::GetInstance()->showToast();
 	// 声音初始化数据
-	if (!YYXLayer::getBoolFromXML("MCGMUSIC"))
-	{
-		initUserData();
-		YYXLayer::setFileValue("MCGMUSIC", "true");
-	}
-	//预加载声音
-	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY);
-	//预加载音效
-	SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_CASTLENEXTPAGE);//铁轨
-	SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_BIRDS);//鸟
-	SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_TRAINWHISTLE);//汽笛
-	SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_BUTTON);//按钮	
+	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
+		App::GetInstance()->isMusicPlay = true;
+	else
+		App::GetInstance()->isMusicPlay = false;
+	if (YYXLayer::getBoolFromXML(SOUND_KEY))
+		App::GetInstance()->isSoundEffect = true;
+	else
+		App::GetInstance()->isSoundEffect = false;
+	////预加载声音
+	//SimpleAudioEngine::getInstance()->preloadBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY);
+	////预加载音效
+	//SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_CASTLENEXTPAGE);//铁轨
+	//SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_BIRDS);//鸟
+	//SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_TRAINWHISTLE);//汽笛
+	//SimpleAudioEngine::getInstance()->preloadEffect(ELLA_SOUND_BUTTON);//按钮	
 	//加载plist大图
 	loadPlistPng();
 	//缓存csb文件
@@ -828,13 +831,6 @@ void Load::httpBookCityInfoAndDownLoad()
 //	}
 //}
 
-void  Load::initUserData()
-{
-	//setBoolToXML(SOUND_KEY, true);
-	//setBoolToXML(MUSIC_KEY, true);
-	YYXLayer::setFileValue(SOUND_KEY, "true");
-	YYXLayer::setFileValue(MUSIC_KEY, "true");
-}
 
 //下载头像
 //void Load::downloadChildAvatar(string strUrl) {

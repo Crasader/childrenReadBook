@@ -1086,11 +1086,6 @@ enum MyEnum
 #define SOUND_KEY "soundClose"      //背景音效
 #define MUSIC_KEY "musicClose"      //背景音乐
 
-//返回按钮
-//#define PLAYBUTTON if (getBoolFromXML(SOUND_KEY)) \
-//{\
-    //SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_BUTTON);\
-//}
 //-----------------------------------------声音-------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 

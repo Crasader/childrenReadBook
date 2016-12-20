@@ -26,18 +26,32 @@ std::string App::m_resource = "android";// "iphone6";
 
 //sqlite3* App::m_db = nullptr;//数据库指针
 
-int App::m_debug = 0;//0=测试版本  1=正式版本
+int App::m_debug = 1;//0=测试版本  1=正式版本
 
 void App::runTestFunction()
 {
-	Toast::create("测试");
-	std::thread([]() {
-		string soursedir = FileUtils::getInstance()->getWritablePath() + "temp";
-		string destdir = NetIntface::getDownloadDir() + "/ellabook";
-		if (soursedir == destdir)
-			destdir = FileUtils::getInstance()->getWritablePath() + "ellabook";
-		YYXLayer::CopyDirectory(soursedir, destdir);
-	}).detach();
+	if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
+	{
+		auto time = App::GetInstance()->m_me->vipTime;
+		if (time > 86400*29)
+		{
+			App::GetInstance()->m_me->vipTime = 86400 * 29;
+		}
+		else
+		{
+			time -= 86400;
+			App::GetInstance()->m_me->vipTime = time;
+		}
+		Toast::create(StringUtils::format("%lld day", App::GetInstance()->m_me->vipTime/86400).c_str());
+		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "debugVipTime", App::GetInstance()->m_me->vipTime);
+	}
+	//std::thread([]() {
+	//	string soursedir = FileUtils::getInstance()->getWritablePath() + "temp";
+	//	string destdir = NetIntface::getDownloadDir() + "/ellabook";
+	//	if (soursedir == destdir)
+	//		destdir = FileUtils::getInstance()->getWritablePath() + "ellabook";
+	//	YYXLayer::CopyDirectory(soursedir, destdir);
+	//}).detach();
 }
 
 MySceneName App::m_RunningScene = LoadScene;
@@ -57,7 +71,6 @@ App::App()   //构造函数是私有的
 	m_read->childrenId = -999;
 	m_read->startTime = "";
 	isBack = true;
-	isMusicPlay = false;
 	CsbCache = *(new map<string, Data>);
 }
 
@@ -273,6 +286,11 @@ void App::httpCheckVIP(int memberID)
 					App::GetInstance()->m_me->vipTime = times;
 					YYXLayer::sendNotify("showVIPRenew");//提示续费
 					YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
+					if (App::m_debug == 0)
+					{
+						auto time = YYXStruct::getMapInt64(App::GetInstance()->myData, "debugVipTime", App::GetInstance()->m_me->vipTime);
+						App::GetInstance()->m_me->vipTime = time;
+					}
 				}
 				else
 				{
@@ -1571,4 +1589,64 @@ string App::replaceChar(string str, string oldChar,string newChar)
 		result = result + n;
 	}
 	return result;
+}
+
+//关闭背景音乐
+void App::stopBackGroundMusic()
+{
+	if (musicID != -999)
+		AudioEngine::stop(musicID);
+}
+
+//暂停背景音乐
+void App::pauseBackGroundMusic()
+{
+	if (musicID != -999) {
+		auto state = AudioEngine::getState(musicID);
+		if (state == AudioEngine::AudioState::PLAYING)
+			AudioEngine::pause(musicID);
+	}
+}
+
+//恢复背景音乐
+void App::resumeBackGroundMusic()
+{
+	if (!isMusicPlay)
+		return;
+	auto isReading = YYXStruct::getMapInt64(App::GetInstance()->myData, "UserIsReadingBook", 0);
+	if (musicID != -999 && isMusicPlay && isReading == 0)
+	{
+		auto state = AudioEngine::getState(musicID);		
+		if(state == AudioEngine::AudioState::PAUSED)
+			AudioEngine::resume(musicID);
+	}
+}
+
+//播放音乐
+void App::playBackGroundMusic()
+{
+	if (!isMusicPlay)
+		return;
+	auto starts = AudioEngine::getState(musicID);
+	if (starts == AudioEngine::AudioState::PLAYING)
+		return;
+	if (starts == AudioEngine::AudioState::PAUSED)
+	{
+		AudioEngine::resume(musicID);
+		return;
+	}
+	if (App::isNight())
+		musicID = AudioEngine::play2d(ELLA_SOUND_BACKMUSIC_DAY_NIGHT, true);
+	else
+		musicID = AudioEngine::play2d(ELLA_SOUND_BACKMUSIC_DAY, true);
+}
+
+//停止记录中的全部音乐ID
+void App::stopOtherVoice()
+{
+	for (auto it : App::GetInstance()->deleteMusicID)
+	{
+		AudioEngine::stop(it);
+	}
+	App::GetInstance()->deleteMusicID.clear();
 }

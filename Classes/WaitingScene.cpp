@@ -88,6 +88,7 @@ bool Waiting::init(std::string bookId, bool isView)
 			//保存阅读记录
 			saveReadRecordEnd(bookId, isView);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 0);
+			App::GetInstance()->playBackGroundMusic();
 		});
 		//向前按钮
 		BookParser::getInstance()->setPageUpCallBack([=]() {
@@ -165,6 +166,7 @@ bool Waiting::init(std::string bookId, bool isView)
 			App::addRecordBookRead(atoi(bookId.c_str()));
 			saveReadRecordStart(bookId, isView);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 1);
+			AudioEngine::stopAll();
 		}
 	}), NULL));
 	return true;
@@ -345,7 +347,8 @@ bool Waiting::init(std::string bookId, bool isView)
 		 yaoqing->addClickEventListener([=](Ref* sender) {
 			 if (App::GetInstance()->m_me)
 			 {
-				 AudioEngine::stopAll();
+				 App::GetInstance()->stopOtherVoice();
+				 YYXLayer::sendNotify("StopAnimation");
 				 string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
 				 NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
 			 }
@@ -380,7 +383,8 @@ bool Waiting::init(std::string bookId, bool isView)
 		 vipDownload->addClickEventListener([=](Ref* sender) {
 			 YYXLayer::controlTouchTime(1, "backCoverGoDownloadTime", [=]() {
 				 //指示书籍详情的动作
-				 AudioEngine::stopAll();
+				 App::GetInstance()->stopOtherVoice();
+				 App::GetInstance()->playBackGroundMusic();
 				 YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ComeFromBookDoSomething", -999, "download");
 				 Index::GoToBookInfo(bookid);
 			 });
@@ -392,7 +396,8 @@ bool Waiting::init(std::string bookId, bool isView)
 		 goBuy->addClickEventListener([=](Ref* sender) {
 			 YYXLayer::controlTouchTime(1, "backCoverGoBuyTime", [=]() {
 				 //指示书籍详情的动作
-				 AudioEngine::stopAll();
+				 App::GetInstance()->stopOtherVoice();
+				 App::GetInstance()->playBackGroundMusic();
 				 YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ComeFromBookDoSomething", -999, "buy");
 				 if (App::GetInstance()->m_me)
 					 Index::GoToBookInfo(bookid);
@@ -431,7 +436,6 @@ bool Waiting::init(std::string bookId, bool isView)
 	 App::httpComment(bookid, []() {
 		 YYXLayer::sendNotify("showCommentListView", "", -1);
 	 });
-	 AudioEngine::stopAll();
 	 map<string, int64String> parameter;
 	 YYXLayer::insertMap4ParaType(parameter, "className", -999, "BookEndPage");
 	 YYXLayer::insertMap4ParaType(parameter, "csb", -999, "Book/csb/BookEndPage.csb");
@@ -454,7 +458,8 @@ bool Waiting::init(std::string bookId, bool isView)
 		 yaoqing->addClickEventListener([=](Ref* sender) {
 			 if (App::GetInstance()->m_me)
 			 {
-				 AudioEngine::stopAll();
+				 App::GetInstance()->stopOtherVoice();
+				 YYXLayer::sendNotify("StopAnimation");
 				 string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
 				 NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
 			 }
@@ -489,7 +494,7 @@ bool Waiting::init(std::string bookId, bool isView)
 		jingcaiComment->setTouchEnabled(true);
 		jingcaiComment->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "jingcaiCommentTime", [=]() {
-				AudioEngine::stopAll();
+				App::GetInstance()->stopOtherVoice();
 				jingcaiComment->setTag(1);
 				jingcaiText->setTextColor(Color4B(187, 93, 39, 255));
 				mydeText->setTextColor(Color4B(255, 255, 255, 255));
@@ -515,11 +520,7 @@ bool Waiting::init(std::string bookId, bool isView)
 	 auto listenerRefersh = EventListenerCustom::create("showCommentListView", [=](EventCustom* e) {
 		 int memberid = (int)e->getUserData();
 		 App::log(" --------------     run showCommentListView()   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^memberid = ", memberid);
-		 AudioEngine::stopAll();
-		 if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-			 SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-		 else
-			 SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+		 App::GetInstance()->stopOtherVoice();
 		 YYXLayer::showCommentListView(listComment, bookid, memberid, 25 * 3, 600, 100 * 3, 500);
 	 });
 	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerRefersh, layer);
@@ -565,7 +566,7 @@ bool Waiting::init(std::string bookId, bool isView)
 		 MyComment->setTouchEnabled(true);
 		 MyComment->addClickEventListener([=](Ref* sender) {
 			 YYXLayer::controlTouchTime(1, "MyCommentTime", [=]() {
-				 AudioEngine::stopAll();
+				 App::GetInstance()->stopOtherVoice();
 				 MyComment->setTag(1);
 				 mydeText->setTextColor(Color4B(187, 93, 39, 255));
 				 jingcaiText->setTextColor(Color4B(255, 255, 255, 255));
@@ -582,7 +583,8 @@ bool Waiting::init(std::string bookId, bool isView)
 		 goComment->setVisible(true);
 		 goComment->addClickEventListener([=](Ref* sender) {
 			 YYXLayer::controlTouchTime(1, "backCoverGoCommentTime", [=]() {
-				 AudioEngine::stopAll();
+				 App::GetInstance()->stopOtherVoice();
+				 YYXLayer::sendNotify("StopAnimation");
 				 Director::getInstance()->getRunningScene()->addChild(SendComment::create(bookid));
 			 });
 		 });
@@ -656,6 +658,8 @@ bool Waiting::init(std::string bookId, bool isView)
 		 BookParser::getInstance()->bookQuit();
 		 App::GetInstance()->popBack();
 		 Index::BackPreviousScene();
+		 YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 0);
+		 App::GetInstance()->playBackGroundMusic();
 	 });
 	 pageQuit->setPosition(-winSize.width / 2, winSize.height / 2);
 	 pageQuit->setScale(highScale*0.8);

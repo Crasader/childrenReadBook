@@ -90,17 +90,7 @@ bool BookRoom::init()
 	//});
 	//2.无登录
 	//if (!App::GetInstance()->m_me) 
-		//return true;
-	//3.音乐
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-	{
-		if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
-			SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-		else
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
-	}
-	else
-		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+		//return true;	
 	//左边树枝
 	auto lefttree = (Sprite*)layer->getChildByName(FIND_SPRITE_BY_NAME_LEFT_TREE);
 	lefttree->setPositionX((1094 - visibleSize.width) / 2);
@@ -645,8 +635,6 @@ void BookRoom::bookClick(Node* book, int bookid)
 				//记录场景
 				string bookmode = StringUtils::format("%d", bookMode);
 				App::GetInstance()->pushScene(BookRoomScene, m_currentPageNumber, bookmode);
-				//暂停背景音乐
-				SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 				//打开试读书本
 				Director::getInstance()->replaceScene(Waiting::createScene(StringUtils::format("%d", bookid), false));
 				//试读不需要上传阅读记录

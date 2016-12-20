@@ -22,11 +22,9 @@ YYX框架
 #include <fstream>
 #include "App.h"
 #include "YYXStruct.h"
-#include "SimpleAudioEngine.h"
 #include "AudioEngine.h"
 
 using namespace experimental;
-using namespace CocosDenshion;
 USING_NS_CC;
 using namespace cocos2d::network; 
 using namespace cocostudio::timeline;

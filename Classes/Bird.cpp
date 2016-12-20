@@ -48,18 +48,9 @@ bool Bird::init()
 	bezier.endPosition = m_P3;
 	GoToBack();
 	auto sequence = Sequence::create(DelayTime::create(m_DelayTime), CallFuncN::create([=](Ref* pSender) {
-
-		static int effect = 1;
 		//音效
-		if (/*getBoolFromXML(SOUND_KEY)&&*/ effect == 1){
-			std::string ks = YYXLayer::getFileValue(SOUND_KEY, "");
-			if (ks != "" && ks == "true")
-			{
-				SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_BIRDS);
-				effect = 0;
-			}
-		}
-
+		if (App::GetInstance()->isSoundEffect)
+			AudioEngine::play2d(ELLA_SOUND_BIRDS, false, 0.3);
 	}), BezierTo::create(m_FlyTime, bezier), CallFuncN::create(CC_CALLBACK_0(Bird::GoToBack, this)), NULL);
 	runAction(RepeatForever::create(sequence));
 	//schedule([this](float f){

@@ -19,10 +19,7 @@
 #include "RestRemind.h"
 #include "WaitingScene.h"
 #include "FileNames.h"
-#include "SimpleAudioEngine.h"
 #include "ShowNotification.h"
-
-using namespace CocosDenshion;
 
 enum ControlMusic { CLOSE = 0, OPEN = 1 };
 

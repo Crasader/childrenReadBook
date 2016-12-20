@@ -113,7 +113,11 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.7.1";//应用版本
+	string version = "1.7.2";//应用版本
+
+	int musicID = -999;//背景音乐ID
+
+	vector<int> deleteMusicID;//记录需要停止的音乐ID
 
 	//int DataBaseVersion = 6;//数据库版本
 
@@ -143,7 +147,9 @@ public:
 
 	bool isOnlyWifi;//是否仅限WiFi下载
 
-	bool isMusicPlay;//背景音是否播放（只播放一次）
+	bool isMusicPlay = true;//背景音是否播放
+
+	bool isSoundEffect = true;//音效是否播放
 
 	map<string, long long> timeMap;//时刻集合
 
@@ -289,6 +295,16 @@ public:
 	static void getLocalRentJson();//读取本地租书json
 	
 	static string replaceChar(string str, string oldChar, string newChar);	//修改字符串, 全部替换
+
+	void stopBackGroundMusic();//关闭
+
+	void pauseBackGroundMusic();//暂停
+
+	void resumeBackGroundMusic();//恢复
+
+	void playBackGroundMusic();//播放背景音乐
+
+	void stopOtherVoice();//关闭所有记录的音乐
 
 	void addTime(string key, long long data); //添加时刻
 	

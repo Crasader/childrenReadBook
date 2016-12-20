@@ -6,8 +6,6 @@
 #include "IndexScene.h"
 #include "App.h"
 #include "FileNames.h"
-#include "SimpleAudioEngine.h"
-using namespace CocosDenshion;
 
 class Load : public cocos2d::Layer
 {

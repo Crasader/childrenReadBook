@@ -2102,7 +2102,6 @@ void NetIntface::share(string filePath, string bookName, string targetUrl, strin
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
-	SimpleAudioEngine::getInstance()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::Share(filePath.c_str(), bookName.c_str() , targetUrl.c_str(), headUrl.c_str(), title.c_str(), runKey.c_str(), errorKey.c_str());
 #endif
@@ -2446,10 +2445,6 @@ void NetIntface::inviteRegister(int memberId, string url , string runKey, functi
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-	else
-		SimpleAudioEngine::getInstance()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::inviteRegister(memberId, url.c_str(), runKey.c_str(), errorKey.c_str());
 #endif

@@ -3,7 +3,6 @@
 #include "FKAudioPlayer.h"
 
 USING_NS_CC;
-USING_NS_FK;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1094, 614);
 //static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
@@ -92,24 +91,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
 // This function will be called when the app is inactive. When comes a phone call,it's be invoked too
 void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
-	AudioPlayer::getInstance()->pauseAllEffect();
+	FK::AudioPlayer::getInstance()->pauseAllEffect();
     // if you use SimpleAudioEngine, it must be pause
-	SimpleAudioEngine::getInstance()->end();
+	App::GetInstance()->stopBackGroundMusic();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
-	AudioPlayer::getInstance()->resumeAllEffect();
+	FK::AudioPlayer::getInstance()->resumeAllEffect();
     // if you use SimpleAudioEngine, it must resume here
-	auto isReading = YYXStruct::getMapInt64(App::GetInstance()->myData, "UserIsReadingBook", 1);
-	if (isReading == 1)
-		return;
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-	{
-		if (App::isNight())
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY_NIGHT, true);
-		else
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
-	}
+	auto isReading = YYXStruct::getMapInt64(App::GetInstance()->myData, "UserIsReadingBook", 0);
+	if (isReading == 0 && App::GetInstance()->isMusicPlay)
+		App::GetInstance()->playBackGroundMusic();
 }

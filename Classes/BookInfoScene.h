@@ -75,8 +75,6 @@ public:
 
 	Layer* initCommonView();//初始化评论界面
 							
-	void closeTime();//停止定时器
-
 	Node* showPay(bool withRedPacket = false);//展示支付界面 是否从选择红包转过来的
 
 	int getMaxRedPacket();
@@ -86,7 +84,9 @@ public:
 	void initHttp();
 
 	void onEnterTransitionDidFinish();
-	void cleanup();
+
+	virtual void cleanup();
+
 	void refreshUI();//刷新界面
 	
 	void startSchedu();//启动活动倒计时
@@ -102,8 +102,6 @@ public:
 	void back();//返回
 
 	void httpGetUserBalance(const char * memberID);//查询余额
-
-	void leave();
 
 	int getOptimalRedPacket();//选出最优红包
 

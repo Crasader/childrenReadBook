@@ -5,8 +5,6 @@
 #include "FileNames.h"
 USING_NS_CC;
 using namespace cocos2d::ui;
-#include "SimpleAudioEngine.h"
-using namespace CocosDenshion;
 
 
 class Bird:public Sprite

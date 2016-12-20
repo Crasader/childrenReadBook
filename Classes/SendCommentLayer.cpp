@@ -165,30 +165,21 @@ bool SendComment::init(int bookId) {
 				NetIntface::httpGetBookIsBuyCallBack(json, [=](string orderid, int types) {
 					auto userAccount = YYXLayer::getFileValue("userAccount", "");
 					int bookid = YYXStruct::getMapInt64(App::GetInstance()->myData, "sendCommentData", -999);
-					if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
-					{
-						SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-						SimpleAudioEngine::getInstance()->pauseAllEffects();
-					}
+					App::GetInstance()->stopOtherVoice();
 					//打开语音界面
 					NetIntface::goToSendRecording(m_bookId, App::GetInstance()->m_me->id, types, userAccount,  orderid, "goToSendRecordingSuccess", [](string json) {
 						//语音成功的回调 - 
 						Toast::create(App::getString("COMMENT_SUCCESS"));
 						YYXLayer::sendNotify("bookinfoSceneHttpSendCommentSuccess");
 						YYXLayer::sendNotify("DeleteSendComment");
-						if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-							SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-						else
-							SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+						App::GetInstance()->playBackGroundMusic();
 					}, "goToSendRecordingFail", [=](string str) {	
 						//语音失败的回调
 						Toast::create(App::getString("COMMENT_FAILED"));
+						App::GetInstance()->playBackGroundMusic();
 					}, "goToSendRecordingCloseButton", [=](string str) {
 						//关闭按钮的回调
-						if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-							SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-						else
-							SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+						App::GetInstance()->playBackGroundMusic();
 					});
 					YYXLayer::sendNotify("DeleteSendComment");
 				}, [](string errorstr) {
@@ -196,10 +187,12 @@ bool SendComment::init(int bookId) {
 					if (errorstr == "")
 						errorstr = App::getString("COMMENT_FAILED");
 					Toast::create(errorstr.c_str());
+					App::GetInstance()->playBackGroundMusic();
 				});
 			}, "goToSendRecordingFail", [](string str) {
 				//orderid 获取的失败回调
 				Toast::create(App::getString("WUFAQIDONGYUYINGPINGLUN"));
+				App::GetInstance()->playBackGroundMusic();
 			});
 		});
 	}
@@ -212,7 +205,7 @@ bool SendComment::init(int bookId) {
 			Toast::create(App::getString("COMMENT_CONTENT_ERROR"));
 			return;
 		}
-		sendComment("version>=1.7.2 , no title", strContent);
+		sendComment("      ", strContent);
 		comment_send->setTouchEnabled(false);
 		this->removeFromParentAndCleanup(true);
 	});

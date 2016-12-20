@@ -94,18 +94,6 @@ bool Index::init()
 	auto plist = PLIST_INDEX;
 	//根据系统时间判断显示白天场景或夜晚场景
 	if (App::isNight()) {
-		//背景音效播放
-		if (!App::GetInstance()->isMusicPlay) {
-			if (YYXLayer::getBoolFromXML(MUSIC_KEY)) {
-				SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY_NIGHT, true);
-			}
-			else
-			{
-				SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY_NIGHT, true);
-				SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-			}
-			App::GetInstance()->isMusicPlay = true;
-		}
 		//天空
 		auto sky = Sprite::create();
 		sky->initWithSpriteFrameName(PICTURE_INDEX_BACKGROUND02);
@@ -192,18 +180,6 @@ bool Index::init()
 	}
 	else
 	{
-		//背景音效播放
-		if (!App::GetInstance()->isMusicPlay) {
-			if (YYXLayer::getBoolFromXML(MUSIC_KEY)) {
-				SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
-			}
-			else
-			{
-				SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
-				SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-			}
-			App::GetInstance()->isMusicPlay = true;
-		}
 		//天空
 		auto sky = Sprite::create();
 		sky->initWithSpriteFrameName(PICTURE_INDEX_BACKGROUND0);
@@ -242,16 +218,7 @@ bool Index::init()
 		auto bird5 = Bird::create(PICTURE_INDEX_REDBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_REDBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width * 0.8, visibleSize.height * 0.8), Vec2(visibleSize.width * 0.5, visibleSize.height * 0.9), Vec2(0, visibleSize.height), 3, 5);
 		addChild(bird5);
 	}
-	
-	
-	// 音乐
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-	{
-		SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-	}
-	else
-		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-
+	App::GetInstance()->playBackGroundMusic();
 	//火车
 	auto listview = ListView::create();
 	addChild(listview);
@@ -348,17 +315,16 @@ bool Index::init()
 	music->setPosition(Vec2(91 * 0.4, 750 * 0.4));
 	music->setTouchEnabled(true);
 	music->addClickEventListener([=](Ref* pSender) {
-		CCLOG("音乐按钮回调函数");
 		YYXLayer::controlTouchTime(1, "setmusicTime", [=]() {
 			if (music->getTag() == OPEN)
 			{
 				music->loadTexture(PICTURE_INDEX_CLOSE_MUSIC, TextureResType::PLIST);
 				music->setTag(CLOSE);
-				YYXLayer::setFileValue(MUSIC_KEY, "false");
-				YYXLayer::setFileValue(SOUND_KEY, "false");
-				SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-				SimpleAudioEngine::getInstance()->stopAllEffects();
-				SimpleAudioEngine::getInstance()->end();
+				YYXLayer::setFileValue(MUSIC_KEY, "false");//背景音乐
+				YYXLayer::setFileValue(SOUND_KEY, "false");//音效音乐
+				App::GetInstance()->isMusicPlay = false;
+				App::GetInstance()->isSoundEffect = false;
+				App::GetInstance()->pauseBackGroundMusic();
 			}
 			else
 			{
@@ -366,10 +332,9 @@ bool Index::init()
 				music->setTag(OPEN);
 				YYXLayer::setFileValue(MUSIC_KEY, "true");
 				YYXLayer::setFileValue(SOUND_KEY, "true");
-				if (App::isNight())
-					SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY_NIGHT, true);
-				else
-					SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
+				App::GetInstance()->isMusicPlay = true;
+				App::GetInstance()->isSoundEffect = true;
+				App::GetInstance()->playBackGroundMusic();
 			}
 		}, []() {
 			Toast::create(App::getString("CAOZUOGUOYUPINGFAN"),false);
@@ -381,6 +346,10 @@ bool Index::init()
 	leftNode->addChild(owl);
 	owl->setPosition(Vec2(351 * 0.4, 1600 * 0.4));
 	owl->setRotation(-10);
+	if (App::m_debug == 0)
+	{
+		owl->setRotation(90);
+	}
 	owl->setScale(4.0 / 6.0);
 	//整体旋转45度
 	leftNode->setRotation(-45);
@@ -485,8 +454,7 @@ bool Index::init()
 	parent->setPosition(Vec2(-176 * 0.4, 1221 * 0.4));
 	parent->setTouchEnabled(false);
 	parent->addClickEventListener([=](Ref *sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		 YYXLayer::PLAYBUTTON;
+		 YYXLayer::PLAYBUTTON();
 		addChild(SelectLayer([]() {
 			App::GetInstance()->pushScene(IndexScene);
 			GoToParentScene();
@@ -510,16 +478,15 @@ bool Index::init()
 
 	//火车移动
 	listview->runAction(Sequence::create(DelayTime::create(1), CallFuncN::create([=](Ref* pSender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_TRAINWHISTLE);
+		if (App::GetInstance()->isSoundEffect)
+			AudioEngine::play2d(ELLA_SOUND_TRAINWHISTLE);
 	}), MoveTo::create(2, Vec2(origin.x + 100 * 0.4, origin.y + 235 * 0.4)), CallFuncN::create([=](Ref* sender) {		
 		listview->setTouchEnabled(true);
 		parent->setTouchEnabled(true);
 		portrait->setTouchEnabled(true);
 		//宝贝中心跳转
 		portrait->addClickEventListener([=](Ref* sender) {
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+			YYXLayer::PLAYBUTTON();
 			App::GetInstance()->pushScene(MySceneName::IndexScene);
 			GoToBabyCenterScene();
 		});
@@ -530,8 +497,8 @@ bool Index::init()
 			door->setVisible(false);
 			Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 			door2->runAction(Sequence::create(CallFuncN::create([=](Ref* pSender) {
-				if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_OPENDOOR);
+				if (App::GetInstance()->isSoundEffect)
+					AudioEngine::play2d(ELLA_SOUND_OPENDOOR);
 			}),
 				FrameAnimation::createAnimate(7, plist, FORMAT_PICTURE_NAME_DOOR, 0.2f), 
 				CallFuncN::create([=](Ref *sender) {
@@ -559,14 +526,19 @@ void Index::InitVIPCard()
 	}
 	//VIP网络请求回来后, 根据情况提示VIP到期时间
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("showVIPRenew", [=](EventCustom* e) {
-		if (App::GetInstance()->getFromScene() != MySceneName::LoadScene)
-			return;
+		if (App::m_debug != 0) {
+			if (App::GetInstance()->getFromScene() != MySceneName::LoadScene)
+				return;
+		}
 		if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
 		{
 			auto runable = [=]() {
 				auto vipRenew = XZLayer::showVIPRenew(nullptr);
 				if (vipRenew)
 					addChild(vipRenew);
+				vector<string> da = { "VIP_WEEK1","VIP_WEEK2","VIP_WEEK3","VIP_DAY1" ,"VIP_DAY2" ,"VIP_DAY3" ,"VIP_DAY4" ,"VIP_DAY5" ,"VIP_DAY6" ,"VIP_DAY7" };
+				for (auto it : da)
+					YYXLayer::deleteFileValue(it);
 			};			
 			if (App::GetInstance()->m_me->vipTime <= 86400 * 30)
 			{
@@ -630,6 +602,12 @@ void Index::InitVIPCard()
 						YYXLayer::setFileValue("VIP_DAY7", "1");
 					}
 				}
+			}
+			else
+			{
+				vector<string> da = { "VIP_WEEK1","VIP_WEEK2","VIP_WEEK3","VIP_DAY1" ,"VIP_DAY2" ,"VIP_DAY3" ,"VIP_DAY4" ,"VIP_DAY5" ,"VIP_DAY6" ,"VIP_DAY7" };
+				for (auto it : da)
+					YYXLayer::deleteFileValue(it);
 			}
 		}		
 	});
@@ -699,9 +677,8 @@ void Index::creatFlows(Vec2 position, const std::string &imageFileName,float tim
 		imageview->runAction(ScaleTo::create(2, 1));
 	}), NULL)));
 	imageview->addClickEventListener([=](cocos2d::Ref * sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_FLOWERS);
-
+		if (App::GetInstance()->isSoundEffect)
+			AudioEngine::play2d(ELLA_SOUND_FLOWERS);
 		imageview->setVisible(false);
 		flow->setVisible(true);
 		flow->runAction(Sequence::create(FrameAnimation::createAnimate(nFrameNumber, c_plist, c_FileNameFormat, delay), CallFuncN::create([=](cocos2d::Ref * sender) {
@@ -720,9 +697,7 @@ void Index::creatFlows(Vec2 position, const std::string &imageFileName,float tim
 //跳转书房
 void Index::GoToBookRoomScene()
 {
-	 
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;
+	YYXLayer::PLAYBUTTON();
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -734,9 +709,7 @@ void Index::GoToBookRoomScene()
 //跳转父母设置
 void Index::GoToParentScene()
 {
-	 
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;
+	YYXLayer::PLAYBUTTON();
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -746,8 +719,7 @@ void Index::GoToParentScene()
 
 //跳转首页
 void Index::GoToIndexScene()
-{
-	 
+{	 
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -760,9 +732,7 @@ void Index::GoToIndexScene()
 //跳转登录
 void Index::GoToLoginScene()
 {
-	 
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;
+	YYXLayer::PLAYBUTTON();
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -773,9 +743,7 @@ void Index::GoToLoginScene()
 //跳转宝贝中心
 void Index::GoToBabyCenterScene()
 {
-	 
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;
+	YYXLayer::PLAYBUTTON();
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -798,8 +766,7 @@ void Index::GoToBookCity()
 
 //跳转书城里的书店
 void Index::GoToBookCityChildStore(int bookStoreId)
-{
-	 
+{	 
 	CocosAndroidJni::stopRequestByTag(-1);
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -811,8 +778,7 @@ void Index::GoToBookCityChildStore(int bookStoreId)
 
 //跳转书籍详情
 void Index::GoToBookInfo(int bookId)
-{
-	 
+{	 
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -823,8 +789,7 @@ void Index::GoToBookInfo(int bookId)
 
 //跳转绘本
 void Index::GoToPictureBook()
-{
-	 
+{	 
 	CocosAndroidJni::stopRequestByTag(-1);
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -835,8 +800,7 @@ void Index::GoToPictureBook()
 
 //跳转咿啦推荐
 void Index::GoToRecommend()
-{
-	 
+{	 
 	CocosAndroidJni::stopRequestByTag(-1);
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -848,8 +812,7 @@ void Index::GoToRecommend()
 
 //跳转限时免费
 void Index::GoToFree()
-{
-	 
+{	 
 	CocosAndroidJni::stopRequestByTag(-1);
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -861,8 +824,7 @@ void Index::GoToFree()
 
 //跳转五星好评
 void Index::GoToGoodReputation()
-{
-	 
+{	 
 	CocosAndroidJni::stopRequestByTag(-1);
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -874,8 +836,7 @@ void Index::GoToGoodReputation()
 
 //跳转咿啦新书
 void Index::GoToNewBook()
-{
-	 
+{	 
 	CocosAndroidJni::stopRequestByTag(-1);
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -887,8 +848,7 @@ void Index::GoToNewBook()
 
 //跳转康轩书店
 void Index::GoToKangXuanStore()
-{
-	 
+{	 
 	CocosAndroidJni::stopRequestByTag(-1);
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -1060,8 +1020,7 @@ Layer* Index::SelectLayer(std::function<void()> fun)
 	bg->setTouchEnabled(true);
 	//关闭按钮点击事件
 	closeButton->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;
+		YYXLayer::PLAYBUTTON();
 		closeButton->setTouchEnabled(false);
 		parentMessageBox->removeFromParent();
 	});
@@ -1236,9 +1195,8 @@ void Index::maskAnimation(Layout* layout, Point point)
 	clipingNode->setStencil(clipSprite);
 	auto scaleTo01 = ScaleTo::create(0.5f, 0.7f);
 	auto scaleTo02 = ScaleTo::create(0.4f, 0);
-	clipSprite->runAction(Sequence::create(CallFuncN::create([=](cocos2d::Ref * sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;
+	clipSprite->runAction(Sequence::create(CallFuncN::create([=](cocos2d::Ref * sender) {		
+		YYXLayer::PLAYBUTTON();
 	}), EaseSineIn::create(scaleTo01), DelayTime::create(0.2f), EaseSineOut::create(scaleTo02), DelayTime::create(0.1f), CallFuncN::create([=](cocos2d::Ref * sender) {
 		switch (layout->getTag())
 		{

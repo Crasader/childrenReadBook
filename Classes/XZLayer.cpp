@@ -159,7 +159,7 @@ YYXLayer * XZLayer::payVip_xufei()
 	if (gopay)
 	{
 		gopay->addClickEventListener([=](Ref* sender) {
-			int m_price = 240000;//充值价格，单位“分”
+			int m_price = 24000;//充值价格，单位“分”
 			if (App::m_debug == 0)
 				m_price = 1;
 			long payCount = m_price;

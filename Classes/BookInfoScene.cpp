@@ -8,14 +8,12 @@
 #include <math.h>
 #include "YYXDownload.h"
 #include <stdio.h>
-#include "SimpleAudioEngine.h"
 #include "AudioEngine.h"
 
 
 using namespace experimental;
 USING_NS_CC;
 using namespace cocostudio::timeline;
-using namespace CocosDenshion;
 USING_NS_CC_EXT;
 using namespace std;
 
@@ -106,21 +104,7 @@ bool BookInfo::init(int bookId)
 			YYXStruct::initMapYYXStruct(m_tag, "touchismove", 1);
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(lister_high, sp);
-	// 音乐
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-	{
-		if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
-		{
-			/*SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);*/
-			SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-			SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.3);
-		}
-		else
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
-	}
-	else
-		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	m_bookId = bookId;
@@ -253,11 +237,8 @@ bool BookInfo::init(int bookId)
 			{
 				//记录场景
 				App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-				//暂停背景音乐
-				SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 				//打开试读书本
 				Director::getInstance()->replaceScene(Waiting::createScene(StringUtils::format("%d", m_bookId), true));
-				leave();
 				//试读不需要上传阅读记录
 			}
 		});
@@ -298,11 +279,8 @@ bool BookInfo::init(int bookId)
 					//书籍存在
 					//记录场景
 					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					//暂停背景音乐
-					SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 					//打开试读书本
 					Director::getInstance()->replaceScene(Waiting::createScene(StringUtils::format("%d", m_bookId), false));
-					leave();
 					//试读不需要上传阅读记录
 				}
 				else
@@ -637,10 +615,7 @@ bool BookInfo::init(int bookId)
 	//页面的切换
 	auto listenEvent = [=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "BookInfoScenelistenEvent", [=]() {
-			YYXLayer::sendNotify("StopAnimation", "", 0);
-			AudioEngine::stopAll();
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXLayer::PLAYBUTTON();
 			introYellow->loadTexture(BOOKINFO_ABSTRACT_PNG, TextureResType::PLIST);
 			commonGray->loadTexture(BOOKINFO_COMMENT_PNG, TextureResType::PLIST);
 
@@ -673,11 +648,8 @@ bool BookInfo::init(int bookId)
 						return;
 					int memberid = (int)e->getUserData();
 					App::log(" --------------     run showCommentListView()   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^memberid = ", memberid);
-					AudioEngine::stopAll();
-					if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-						SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-					else
-						SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+					App::GetInstance()->stopOtherVoice();
+					App::GetInstance()->resumeBackGroundMusic();
 					YYXLayer::showCommentListView(m_listview, m_bookId);
 				});
 				m_listview->jumpToTop();
@@ -898,9 +870,9 @@ void BookInfo::onEnterTransitionDidFinish()
 
 void BookInfo::cleanup()
 {
-	leave();
 	unscheduleAllSelectors();
-	AudioEngine::stopAll();
+	App::GetInstance()->stopOtherVoice();
+	App::GetInstance()->resumeBackGroundMusic();
 }
 
 //刷新界面
@@ -1551,15 +1523,6 @@ Layer* BookInfo::initCommonView()
 	return pinglun;
 }
 
-//停止定时器
-void BookInfo::closeTime()
-{
-	App::log("BookInfo::closeTime");
-	unschedule("EventTimeIsOneSecond");
-	unschedule(BookInfoCountdown);
-	App::log("BookInfo::closeTime---END");
-}
-
 //展示选择红包,支付界面
 Node* BookInfo::showPay(bool withR)
 {
@@ -1888,9 +1851,7 @@ void BookInfo::back()
 {
 	App::log("BookInfo::back");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;
-	leave();
+	YYXLayer::PLAYBUTTON();
 	App::GetInstance()->popBack(MySceneName::BookInfoScene);
 	Index::BackPreviousScene();
 	App::log("BookInfo::back---END");
@@ -1990,20 +1951,6 @@ void BookInfo::httpGetUserBalance(const char* memberID)
 		Toast::create(App::getString("NETEXCEPTION"));
 		YYXLayer::sendNotify("buybookcallback");
 	});
-}
-
-void BookInfo::leave()
-{
-	//App::GetInstance()->RefVector.push(YYXStruct(App::getCurrentTime(),"bookinfo",this));
-	AudioEngine::stopAll();
-	closeTime();
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(StringUtils::format("%dDownloading", m_bookId));
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(StringUtils::format("%dDownload_Success", m_bookId));
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(StringUtils::format("%dDownload_Failed", m_bookId));
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(StringUtils::format("%dUnpress_Success", m_bookId));
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(StringUtils::format("%dviewDownload_Success", m_bookId));
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(StringUtils::format("%dviewDownload_Failed", m_bookId));
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(StringUtils::format("%dviewUnpress_Success", m_bookId));
 }
 
 //选择红包界面

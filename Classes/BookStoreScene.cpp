@@ -77,16 +77,6 @@ bool BookStore::init(int BookStoreId)
 	//};
 	//Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(lister_high, -200);
 	//等待层
-	// 音乐
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-	{
-		if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
-			SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-		else
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
-	}
-	else
-		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();	
 	m_click = true;
@@ -1462,8 +1452,7 @@ void BookStore::back()
 {
 	App::log("BookStore::back");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		YYXLayer::PLAYBUTTON;	
+	YYXLayer::PLAYBUTTON();	
 	App::GetInstance()->popBack();
 	leave();
 	//清除全部的回调函数,只有在这个地方清除影响较小
@@ -1825,8 +1814,8 @@ void BookStore::viewMoveAnimation(Node* node, bool isLeft)
 	if (!gundong)
 		return;
 	m_move = true;
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_CASTLENEXTPAGE);
+	if (App::GetInstance()->isSoundEffect)
+		AudioEngine::play2d(ELLA_SOUND_CASTLENEXTPAGE);
 	Director::getInstance()->getEventDispatcher()->pauseEventListenersForTarget(Director::getInstance()->getRunningScene());
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "BackButtonTouch", 1);
 	getCurrentlyPageBookListInfo(m_bookStoreId, m_selectPageIndex[1]);

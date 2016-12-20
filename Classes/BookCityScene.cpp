@@ -78,21 +78,6 @@ bool BookCityScene::init()
 	//	}
 	//};
 	//_eventDispatcher->addEventListenerWithSceneGraphPriority(androidListener, this);
-	// 音乐
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-	{
-		if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
-		{
-			//SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-			SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-		}
-		else
-			SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-		//SimpleAudioEngine::getInstance()->playBackgroundMusic(ELLA_SOUND_BACKMUSIC_DAY, true);
-	}
-	else
-		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	addChild(LayerColor::create(Color4B::WHITE));

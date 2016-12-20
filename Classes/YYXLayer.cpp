@@ -2251,12 +2251,9 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
 						if (voiceLayer->getTag() == 1)
 						{//停止播放
-							AudioEngine::stopAll();
+							App::GetInstance()->stopOtherVoice();
 							YYXLayer::sendNotify("StopAnimation");
-							if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-								SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-							else
-								SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+							App::GetInstance()->resumeBackGroundMusic();
 						}
 						else
 						{//播放
@@ -2266,35 +2263,21 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 							string paht = FileUtils::getInstance()->getWritablePath() + "voiceComment/" + StringUtils::format("%d.mp3", id);
 							if (!paht.empty() && FileUtils::getInstance()->isFileExist(paht))
 							{
-								if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
-								{
-									SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-									SimpleAudioEngine::getInstance()->pauseAllEffects();
-								}
-								AudioEngine::stopAll();
-								auto AEplay = new AudioEngine();
+								App::GetInstance()->stopOtherVoice();
+								App::GetInstance()->pauseBackGroundMusic();
 								auto animate = FrameAnimation::createAnimate(3, "other/vioceplist.plist", "other/Backcover_vioce%d_736h.png", 0.2f);
 								auto seqDoor = Sequence::create(animate, animate->reverse(), NULL);
 								auto act = RepeatForever::create(seqDoor);
 								auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
 								if (voiceSp)
 									voiceSp->runAction(act);
-								auto playId = AEplay->play2d(paht);
-								AEplay->setFinishCallback(playId, [=](int id, string path) {
+								auto playId = AudioEngine::play2d(paht);
+								App::GetInstance()->deleteMusicID.push_back(playId);
+								AudioEngine::setFinishCallback(playId, [=](int id, string path) {
 									App::log(" music finish " + paht);
 									// 音乐结束回调
-									auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
-									if (voiceSp) {
-										voiceSp->stopAllActions();
-										voiceSp->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("other/Backcover_vioce2_736h.png"));
-									}
-									voiceLayer->setTag(0);
-									if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-										SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-									else
-										SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-									if (AEplay)
-										delete AEplay;
+									YYXLayer::sendNotify("StopAnimation");
+									App::GetInstance()->resumeBackGroundMusic();
 								});
 							}
 							else
@@ -2407,11 +2390,11 @@ void YYXLayer::TraversingJson(string json, map<string, string>& data)
 		App::log("json TraversingJson Error: "+ json);
 }
 
-//返回按钮
+//返回按钮的音效
 void YYXLayer::PLAYBUTTON()
 {
-	if (getBoolFromXML(SOUND_KEY))
-    SimpleAudioEngine::getInstance()->playEffect(ELLA_SOUND_BUTTON);
+	if (App::GetInstance()->isSoundEffect)
+		AudioEngine::play2d(ELLA_SOUND_BUTTON);
 }
 
 //复制文件夹 不替换
