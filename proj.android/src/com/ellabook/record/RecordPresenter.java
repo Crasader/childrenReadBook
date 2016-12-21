@@ -647,6 +647,8 @@ public class RecordPresenter {
 		if (mediaPlayer!=null){
 			mediaPlayer.release();
 		}
+		mAudioRecordView.up();
+		mAudioRecordView.deleteRecorderPath();
 		dialog.dismiss();
 	}
 

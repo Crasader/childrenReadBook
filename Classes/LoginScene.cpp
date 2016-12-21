@@ -1271,8 +1271,6 @@ void Login::getDefaultHeadPortrait(int member_id)
 {
 	//无记录情况下,默认获取第一个孩子的头像作为头像
 	auto runkey = "loginScenehttpGetFirstChildHeadPortraitSuccess";
-	//auto errorkey = "loginScenehttpGetFirstChildHeadPortraitFail";
-	//auto DownLoadImageerrorkey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
 	NetIntface::httpGetFirstChildHeadPortrait(member_id, runkey, [=](string json) {
 		NetIntface::httpGetFirstChildHeadPortraitCallBack(json, [=](int id, string url) {
 			App::log("获取到默认第一个孩子ID", id);

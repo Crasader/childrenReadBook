@@ -50,7 +50,7 @@ bool Bird::init()
 	auto sequence = Sequence::create(DelayTime::create(m_DelayTime), CallFuncN::create([=](Ref* pSender) {
 		//音效
 		if (App::GetInstance()->isSoundEffect)
-			AudioEngine::play2d(ELLA_SOUND_BIRDS, false, 0.3);
+			AudioEngine::play2d(ELLA_SOUND_BIRDS, false, 0.5);
 	}), BezierTo::create(m_FlyTime, bezier), CallFuncN::create(CC_CALLBACK_0(Bird::GoToBack, this)), NULL);
 	runAction(RepeatForever::create(sequence));
 	//schedule([this](float f){

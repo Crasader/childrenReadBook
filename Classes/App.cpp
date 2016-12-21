@@ -27,7 +27,7 @@ std::string App::m_resource = "android";// "iphone6";
 //sqlite3* App::m_db = nullptr;//数据库指针
 
 int App::m_debug = 1;//0=测试版本  1=正式版本
-
+int App::m_PayTest = 0;//0=正式  1=测试  支付价格0.01
 void App::runTestFunction()
 {
 	if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
@@ -1329,9 +1329,9 @@ void App::upLogFiles()
 		if (cocaltionfile == filePath)
 			return;
 		string url = "";
-		if (App::m_debug == 0)
-			url = string("http://192.168.10.10:8089").append(NET_UPLOGFILE);
-		else
+		//if (App::m_debug == 0)
+		//	url = string("http://192.168.10.10:8089").append(NET_UPLOGFILE);
+		//else
 			url = string(IP).append(NET_UPLOGFILE);
 		map<string, string> parater;
 		parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
@@ -1363,9 +1363,9 @@ void App::upLoadingErrorLog()
 		map<string, string> paramter;
 		YYXLayer::TraversingJson(str, paramter);
 		string url = "";
-		if (App::m_debug == 0)
-			url = string("http://192.168.10.10:8089").append(NET_UPERRORLOG);
-		else
+		//if (App::m_debug == 0)
+		//	url = string("http://192.168.10.10:8089").append(NET_UPERRORLOG);
+		//else
 			url = string(IP).append(NET_UPERRORLOG);
 		NetIntface::httpPost(url, paramter, "", [=](string json) {//post成功
 			rapidjson::Document doc;
@@ -1456,30 +1456,20 @@ void App::getMapFromFile(string path, map<string, string>& data)
 
 void App::cancelData()
 {
+	string musicClose = YYXLayer::getFileValue("musicClose", "true");
 	//删除本地及内存账号信息记录
 	if (App::GetInstance()->m_me) {
 		delete App::GetInstance()->m_me;
 		App::GetInstance()->m_me = NULL;
 	}
 	App::GetInstance()->myData.clear();
-	//删除本地用户信息
-	YYXLayer::deleteFileValue("userAccount");
-	YYXLayer::deleteFileValue("userPassword");
-	YYXLayer::deleteFileValue("userId");
-	YYXLayer::deleteFileValue("userSex");
-	YYXLayer::deleteFileValue("userCity");
-	YYXLayer::deleteFileValue("userProvince");
-	YYXLayer::deleteFileValue("userBalance");
-	YYXLayer::deleteFileValue("ShowChildID");
-	YYXLayer::deleteFileValue("ShowChildHeadPortrait");
-	YYXLayer::deleteFileValue("ShowChildName");
-	YYXLayer::deleteFileValue("ShowChildSex");
-	YYXLayer::deleteFileValue("ShowChildBirthday");
 	//删除全部红包
 	App::GetInstance()->m_redPacket.clear();
 	//暂停所有下载任务
 	YYXDownload::GetInstance()->pauseAll();
-	YYXLayer::DeleteDirectory(FileUtils::getInstance()->getWritablePath()+"temp");
+	YYXLayer::DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "temp");
+	//删除本地用户信息
+	YYXLayer::DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "Data");
 	//清空已购列表
 	App::GetInstance()->myBuyBookMap.clear();
 	App::GetInstance()->myBuyBookVector.clear();
@@ -1492,6 +1482,9 @@ void App::cancelData()
 	//创建temp目录
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "temp"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "temp");
+	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "Data"))
+		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "Data");
+	YYXLayer::setFileValue("musicClose", musicClose);
 }
 
 void App::addTime(string key, long long data)

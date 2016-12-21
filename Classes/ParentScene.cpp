@@ -277,12 +277,12 @@ Layer* Parent::initNode_Account()
 		VIPButton->addClickEventListener([=](Ref* sender) {
 			if (App::GetInstance()->m_me->vip)
 			{
-				auto layers = XZLayer::payVip_xufei();
+				auto layers = XZLayer::showVIPRenew(nullptr);
 				if (layers)
 					addChild(layers, 9);
 			}
 			else {				
-				auto layer = XZLayer::payBuyVip();
+				auto layer = XZLayer::OpenVIPCardService(0);
 				if (layer)
 					addChild(layer, 9);
 			}

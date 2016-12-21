@@ -37,11 +37,10 @@ bool Load::init()
 	totalCount = 23;
 	currentCount = 0;
 	Size m_Size = Director::getInstance()->getVisibleSize();
-	auto img = ImageView::create();
-	img->setAnchorPoint(Vec2(0.5, 0.5));
-	img->loadTexture("kaichanglogo.png", TextureResType::LOCAL);
-	img->setPosition(Vec2(m_Size.width/2, m_Size.height/2));
-	addChild(img);
+	addChild(LayerColor::create(Color4B::WHITE));
+	auto bg = Sprite::create("kaichanglogo.png");
+	bg->setPosition(Vec2(m_Size.width/2, m_Size.height/2));
+	addChild(bg);
 	//app打开时间
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "APPOpenTime", YYXLayer::getCurrentTime4Second());
 	//本机信息
@@ -213,6 +212,11 @@ void Load::httpRedPacketActivity()
 		}, []() {}, []() {});
 	}, "", [](string str) {});
 	YYXLayer::loge("Load::httpRedPacketActivity()");
+}
+
+void Load::cleanup()
+{
+	unscheduleAllSelectors();
 }
 
 //获取本地保存的设置并根据视力保护时间开始计时
@@ -701,13 +705,14 @@ void Load::loadPlistPngCallback(Texture2D* sender) {
 	sender->retain();
 	currentCount++;
 	if (currentCount >= totalCount) {
-		App::createDataBase();
-		auto cache = SpriteFrameCache::getInstance();
-		cache->addSpriteFramesWithFile(PLIST_BACKGROUND);
-		cache->addSpriteFramesWithFile(PLIST_INDEX);
-		cache->addSpriteFramesWithFile(PLIST_TRAIN);
-		Director::getInstance()->replaceScene(Index::createScene());
-		return;
+		//App::createDataBase();
+		//auto cache = SpriteFrameCache::getInstance();
+		//cache->addSpriteFramesWithFile(PLIST_BACKGROUND);
+		//cache->addSpriteFramesWithFile(PLIST_INDEX);
+		//cache->addSpriteFramesWithFile(PLIST_TRAIN);
+		//Director::getInstance()->replaceScene(Index::createScene());
+		//return;
+		YYXLayer::sendNotify("NOTIFY_LOAD_PNG_OVER");
 	}
 }
 
@@ -776,23 +781,21 @@ void Load::httpBookCityInfoAndDownLoad()
 			{
 				NetIntface::DownLoadImage(borderUrl, dir, borderfileName, "", [=](string downPath) {}, "", [=](string str) {});
 			}
-			else
-			{
-				m_httpOver = true;
-			}
 			if (!FileUtils::getInstance()->isFileExist(bgpath))
 			{
 				NetIntface::DownLoadImage(bgUrl, dir, bgfileName, "", [=](string downPath) {}, "", [=](string str) {});
 			}
-		}, [](int totalPage) {
+		}, [=](int totalPage) {
 			//书店数量
 			string totalCountKey = StringUtils::format("BookCityTotalPage");
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, totalCountKey, totalPage);
-		}, []() {
+			m_httpOver = true;
+		}, [=]() {
+			m_httpOver = true;	
 		});
-	}, "", [](string str) {
-	});
-	m_httpOver = true;
+	}, "", [=](string str) {
+		m_httpOver = true;
+	});	
 }
 
 ////确定需要展示的头像和孩子ID
