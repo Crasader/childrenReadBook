@@ -2054,7 +2054,7 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 			string timeKey = StringUtils::format("comment_gevalId=%d+commentTime+memberName+memberId", commentID);
 			string titleKey = StringUtils::format("comment_gevalId=%d+title", commentID);
 
-			contentText = YYXStruct::getMapString(App::GetInstance()->myData, contentKey, "");//文字内容
+			contentText = YYXStruct::getMapString(App::GetInstance()->myData, contentKey, "");//文字内容			
 			titileText = YYXStruct::getMapString(App::GetInstance()->myData, titleKey, "");//文字标题
 			memberName = YYXStruct::getMapString(App::GetInstance()->myData, timeKey, "132****1434");//用户名
 			score = YYXStruct::getMapInt64(App::GetInstance()->myData, contentKey, 4);//星级
@@ -2131,9 +2131,10 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 			//item1->addChild(titil);
 			//item1->setContentSize(Size(listviewMaxWidth, titil->getContentSize().height / beishu + 4));
 			//内容
+			//App::log(contentText);
 			auto item3 = Layout::create();
-			if (contentText.length() > contentTextMaxLength)
-				contentText = contentText.substr(0, contentTextMaxLength).append("...");
+			//if (contentText.length() > contentTextMaxLength)
+				//contentText = contentText.substr(0, contentTextMaxLength).append("...");
 			auto content = Label::create(contentText, "wdtyj.TTF", 14 * beishu, Size::ZERO, TextHAlignment::LEFT, TextVAlignment::TOP);
 			content->setAnchorPoint(Vec2(0, 0));
 			content->setTextColor(Color4B(108, 72, 49, 255));

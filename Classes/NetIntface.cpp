@@ -2283,8 +2283,16 @@ void NetIntface::httpGetBookIsBuyCallBack(string json, function<void(string orde
 			if (type == 0 || type == 1)
 			{
 				auto order_id = YYXLayer::getString4Json("", doc, "order_id");
-				if (runable)
-					runable(order_id, type);
+				if (order_id != "")
+				{
+					if (runable)
+						runable(order_id, type);
+				}
+				else
+				{
+					if (errorRun)
+						errorRun(App::getString("FAXIANNINWEICHENGYUEDU"));
+				}
 			}
 		}
 		else

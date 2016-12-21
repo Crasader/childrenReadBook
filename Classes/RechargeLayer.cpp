@@ -152,7 +152,7 @@ bool Recharge::init() {
 	auto pay_btn = (Button*)sprBg->getChildByName("pay_btn");
 	pay_btn->setTouchEnabled(true);
 	pay_btn->addClickEventListener([=](Ref* sender) {
-		if (App::m_debug == 0)
+		if (App::m_PayTest == 1)
 			m_price = 1;
 		long payCount = m_price;
 		string info = App::getString("RECHARGE") + StringUtils::format("%.02f ", m_price / 100.0) + App::getString("YUAN");

@@ -102,7 +102,7 @@ private:
 
 public:
 	static int m_debug ;//0=测试版本  1=正式版本
-
+	static int m_PayTest;//0=正式  1=测试  (支付价格0.01)
 	static void runTestFunction();
 
 	static TTFConfig m_ttf;//公用字体

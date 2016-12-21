@@ -207,15 +207,15 @@ bool Index::init()
 		addChild(ContinuousMove::create(PICTURE_INDEX_TRACK, 1, Vec2(0, 0), Vec2(2736 * 0.4, 0), 30, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.5f, 0, 0, 0));
 
 		//飞鸟
-		auto bird1 = Bird::create(PICTURE_INDEX_YELLOWBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_YELLOWBIRD, Vec2(2800 * 0.4, 1530 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(-200 * 0.4, 1530 * 0.4), 3, 8);
+		auto bird1 = Bird::create(PICTURE_INDEX_YELLOWBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_YELLOWBIRD, Vec2(2800 * 0.4, 1530 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(-200 * 0.4, 1530 * 0.4), 7, 7);
 		addChild(bird1);
-		auto bird2 = Bird::create(PICTURE_INDEX_BLUEBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_BLUEBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width / 2, visibleSize.height * 0.75), Vec2(0, visibleSize.height * 0.75), Vec2(-300, visibleSize.height), 3, 9);
+		auto bird2 = Bird::create(PICTURE_INDEX_BLUEBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_BLUEBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width / 2, visibleSize.height * 0.75), Vec2(0, visibleSize.height * 0.75), Vec2(-300, visibleSize.height), 11, 11);
 		addChild(bird2);
-		auto bird3 = Bird::create(PICTURE_INDEX_CYANBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_CYANBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width, visibleSize.height * 0.75), Vec2(visibleSize.width / 2, visibleSize.height* 0.75), Vec2(0, visibleSize.height), 3, 7);
+		auto bird3 = Bird::create(PICTURE_INDEX_CYANBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_CYANBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width, visibleSize.height * 0.75), Vec2(visibleSize.width / 2, visibleSize.height* 0.75), Vec2(0, visibleSize.height), 13, 13);
 		addChild(bird3);
-		auto bird4 = Bird::create(PICTURE_INDEX_PINKBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_PINKBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(900 * 0.4, 1200 * 0.4), Vec2(visibleSize.width / 3, visibleSize.height* 0.75), Vec2(-300 * 0.4, 1530 * 0.4), 3, 6);
+		auto bird4 = Bird::create(PICTURE_INDEX_PINKBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_PINKBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(900 * 0.4, 1200 * 0.4), Vec2(visibleSize.width / 3, visibleSize.height* 0.75), Vec2(-300 * 0.4, 1530 * 0.4), 17, 17);
 		addChild(bird4);
-		auto bird5 = Bird::create(PICTURE_INDEX_REDBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_REDBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width * 0.8, visibleSize.height * 0.8), Vec2(visibleSize.width * 0.5, visibleSize.height * 0.9), Vec2(0, visibleSize.height), 3, 5);
+		auto bird5 = Bird::create(PICTURE_INDEX_REDBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_REDBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width * 0.8, visibleSize.height * 0.8), Vec2(visibleSize.width * 0.5, visibleSize.height * 0.9), Vec2(0, visibleSize.height), 19, 19);
 		addChild(bird5);
 	}
 	App::GetInstance()->playBackGroundMusic();
@@ -259,9 +259,9 @@ bool Index::init()
 	//listview点击事件
 	listview->addEventListenerListView(this, listvieweventselector(Index::selectedItemEvent));
 	//花
-	creatFlows(Vec2(-100 * 0.4, 70 * 0.4), PICTURE_INDEX_FLOWER3_ENDFRAME, 30, 21, plist, FORMAT_PICTURE_NAME_FLOWER3, 0.2f);
-	creatFlows(Vec2(500 * 0.4, 90 * 0.4), PICTURE_INDEX_FLOWER2_ENDFRAME, 30, 17, plist, FORMAT_PICTURE_NAME_FLOWER2, 0.2f);
-	creatFlows(Vec2(1000 * 0.4, 30 * 0.4), PICTURE_INDEX_FLOWER_ENDFRAME, 30, 17, plist, FORMAT_PICTURE_NAME_FLOWER, 0.2f);
+	creatFlows(Vec2(-200, 28), PICTURE_INDEX_FLOWER3_ENDFRAME, 30, 21, plist, FORMAT_PICTURE_NAME_FLOWER3, 0.2f);
+	creatFlows(Vec2(0, 36), PICTURE_INDEX_FLOWER2_ENDFRAME, 30, 17, plist, FORMAT_PICTURE_NAME_FLOWER2, 0.2f);
+	creatFlows(Vec2(200, 12), PICTURE_INDEX_FLOWER_ENDFRAME, 30, 17, plist, FORMAT_PICTURE_NAME_FLOWER, 0.2f);
 	//左侧节点
 	Node* leftNode = Node::create();
 	addChild(leftNode);

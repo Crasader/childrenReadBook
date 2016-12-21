@@ -26,7 +26,7 @@ public:
 	void httpRedPacketActivity();
 	// implement the "static create()" method manually
     CREATE_FUNC(Load);
-
+	virtual void cleanup();
 	//获取本地保存的设置
 	//void getLocalSetup();
 	//自动登录
