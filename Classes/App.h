@@ -59,7 +59,7 @@ struct MyAccount
 	//std::string memberProvince;//省份
 	//std::string memberCity;//城市
 	int momey=0;//账户余额:单位 (分)
-	//string showPortraitPath ="";//展示的头像全路径	
+	//string showPortraitPath ="";//展示的头像全路径
 	bool vip = false;
 	string startvip = "";
 	string endvip = "";
