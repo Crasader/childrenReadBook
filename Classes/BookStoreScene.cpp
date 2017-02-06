@@ -556,6 +556,11 @@ bool BookStore::init(int BookStoreId)
 	//	}
 	//};
 	//_eventDispatcher->addEventListenerWithSceneGraphPriority(androidListener, this);
+
+
+	_eventDispatcher->addCustomEventListener("showPageNumber", [=](EventCustom* e) {
+		showBookPageNumber();
+	});
 	App::log("BookStore::init--END");
     return true;
 }
@@ -564,8 +569,7 @@ void BookStore::onEnterTransitionDidFinish()
 {
 	App::log("BookStore::onEnterTransitionDidFinish");
 	//App::sqliteClose();	
-	Layer::onEnterTransitionDidFinish();
-	showBookPageNumber();
+	Layer::onEnterTransitionDidFinish();	
 	App::log("当前场景:", App::GetInstance()->m_RunningScene);
 	Toast::GetInstance()->SceneInitToast();
 	if (m_bookStoreId == BOOKSTOREID_TRAIN_8)
@@ -1552,11 +1556,11 @@ void BookStore::getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex)//pa
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, hashBuy, bookPlayUrl,(Ref*)1);
 			else
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, hashBuy, bookPlayUrl);
-			if (BookPlayUrlKey == "bookPlayUrl+bookID=455")
-			{
-				auto isvip = (int)YYXStruct::getMapRef(App::GetInstance()->myData, BookPlayUrlKey, nullptr);
-				App::log(" usvip=", isvip);
-			}
+			//if (BookPlayUrlKey == "bookPlayUrl+bookID=455")
+			//{
+			//	auto isvip = (int)YYXStruct::getMapRef(App::GetInstance()->myData, BookPlayUrlKey, nullptr);
+			//	App::log(" usvip=", isvip);
+			//}
 			//书籍作者+活动倒计时
 			string BookAuthorKey = StringUtils::format("bookAuthor+bookID=%d", bookId);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookAuthorKey, remainTime, bookAuthor);
@@ -1583,6 +1587,7 @@ void BookStore::getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex)//pa
 		}, [=]() {
 			//解析完毕
 			YYXLayer::sendNotify("bookstoreCoverDownloadSuccess");
+			YYXLayer::sendNotify("showPageNumber");
 		}, []() {
 			//解析错误
 			Toast::create(App::getString("SHUJUYICHANG"));

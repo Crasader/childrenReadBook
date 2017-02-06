@@ -256,7 +256,7 @@
     <key>BANBENHEZUO</key>
     <string>版权合作QQ:641631640</string>
     <key>SHAGNWUHEZUO</key>
-    <string>商务合作QQ:258640006</string>
+    <string>商务合作QQ:641631640</string>
     <key>HONGBAOHUOQUSHIBAI</key>
     <string>红包获取失败</string>
     <key>MEIYOUKEYONGHONGBAO</key>
@@ -376,7 +376,7 @@
     <key>NINSHIVIPYONGHUZHIJIEKEYIXIAZAI</key>
     <string>您是VIP用户，可直接下载。</string>
     <key>ZUSHUSHIBAI</key>
-    <string>VIP服务响应失败,请稍后再试</string>
+    <string>包年服务响应失败,请稍后再试</string>
     <key>TIJIAO</key>
     <string>提 交</string>
      <key>HUOQUSHUJIXIANGQINGYICHANG</key>
@@ -387,14 +387,40 @@
     <string>删除评论?</string>
     <key>YUYINGBOFANGSHIBAI</key>
     <string>语音播放失败</string>
-    <key>SHANGWEIDENGLU</key>
-    <string>尚未登录</string>
-    <key>OPENVIP</key>
-    <string>开通年卡服务</string>
-    <key>OPENVIPAGAIN</key>
-    <string>续费年卡服务</string>
-    <key>NIANKAFUWUJIEZHI</key>
-    <string>年卡用户     截止: </string>
-    <key>FAXIANNINWEICHENGYUEDU</key>
-    <string>发现您未曾阅读, 请先阅读再评论! </string>
+  <key>SHANGWEIDENGLU</key>
+  <string>尚未登录</string>
+  <key>OPENVIP</key>
+  <string>开通年卡服务</string>
+  <key>OPENVIPAGAIN</key>
+  <string>续费年卡服务</string>
+  <key>COLLECTSUCCESS</key>
+  <string>收藏成功</string>
+  <key>COLLECTFAIL</key>
+  <string>收藏失败</string>
+  <key>DECOLLECTSUCCESS</key>
+  <string>删除收藏成功</string>
+  <key>DECOLLECTFAIL</key>
+  <string>删除收藏失败</string>
+  <key>GETVIPTFAIL</key>
+  <string>获取包年图书失败</string>
+  <key>GETVIPTSUC</key>
+  <string>获取包年图书成功</string>
+  <key>NIANKAFUWUJIEZHI</key>
+  <string>年卡用户     截止: </string>
+  <key>FAXIANNINWEICHENGYUEDU</key>
+  <string>发现您未曾阅读, 请先阅读再评论! </string>
+  <key>NIHAIMEIYOUPINGLUNGUOCISHU</key>
+  <string>您还没有评论过此书 </string>
+  <key>HAIMEIYOURENPINGLUNGUOCISHU</key>
+  <string>还没有人评论过此书 </string>
+  <key>HUOQUSHUJISHIBAI</key>
+  <string>获取书籍状态信息失败 </string>
+  <key>QINGNINXIANDENGLUCAINENGGOUMAISHUJI</key>
+  <string>请您先登录才能购买书籍 </string>
+  <key>HUOQUBAONIANFUWUXINXISHIBAI</key>
+  <string>获取包年服务信息失败 </string>
+  <key>HUOQUBAONIANSHUJILIEBIAOSHIBAI</key>
+  <string>获取包年书籍列表失败 </string>
+  <key>HUOQUSHOUCANGLIEBIAOSHIBAI</key>
+  <string>获取收藏列表失败 </string>
 </dict> 

@@ -674,6 +674,7 @@ enum MyEnum
 #define SENDCOMMENT_KUANG_COMMENT_STAR3 "star3"//发表评论框-星星3
 #define SENDCOMMENT_KUANG_COMMENT_STAR4 "star4"//发表评论框-星星4
 #define SENDCOMMENT_KUANG_COMMENT_STAR5 "star5"//发表评论框-星星5
+#define SENDCOMMENT_KUANG_COMMENT_EDT "TextField_4"//输入框
 #define SENDCOMMENT_KUANG_COMMENT_SEND_BTN "send_btn"//发表评论框-发表按钮
 
 #define SENDCOMMENT_FINDPIC_STAR1 "BookInfo/res/Comment_star_ipad.png"//发表评论框-星星5
@@ -1022,9 +1023,16 @@ enum MyEnum
 
 #define NET_DELETECOMMENT "/ellabook-server/evaluate/delectGoodsEvaluate"//删除评论
 
+#define NET_BOOK_COLLECT  "/ellabook-server/Study/Collection"
+//书房 收藏/取消收藏
+#define NET_BOOK_COLLECTANDVIPLIST  "/ellabook-server/Study/ShowCollectionAndVip"
+//书房 显示书房收藏和vip书籍
+
 #define NET_UPERRORLOG "/ellabook-server/Error/saveError.do"//上传错误日志
 
 #define NET_UPLOGFILE "/ellabook-server/Error/uploadError.do"//上传日志文件
+
+#define NET_BOOKBETWEENUSER "/ellabook-server/member/whatIsTheRelationshipBetweenUserAndBook"//用户和书籍关系
 
 //-----------------------------------------网络请求-------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
@@ -1108,7 +1116,7 @@ enum MyEnum
 #define  LOADSCENE_FIND_PNG15 "BookCity/res/BookStore_background_b.png"
 #define  LOADSCENE_FIND_PNG16 "BookCity/res/BookStore_background_t.png"
 #define  LOADSCENE_FIND_PNG17 "BookInfo/res/BookInfo_background.png"
-#define  LOADSCENE_FIND_PNG18 "BookRoom/res/BookHome_girl_0022.png"
+#define  LOADSCENE_FIND_PNG18 "BookRoom/res/BookHome_bj_736h.png"
 #define  LOADSCENE_FIND_PNG19 "BookStoreScene/res/Carriage_0003_Body.png"
 #define  LOADSCENE_FIND_PNG20 "BookStoreScene/res/Carriage_0006_background.png"
 #define  LOADSCENE_FIND_PNG21 "LoginScene/res/login_Background_ipad@2x.png"

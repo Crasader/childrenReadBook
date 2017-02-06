@@ -6,7 +6,7 @@
       <ObjectData Name="Node" Tag="15" ctype="GameNodeObjectData">
         <Size X="0.0000" Y="0.0000" />
         <Children>
-          <AbstractNodeData Name="Book_Background" Visible="False" ActionTag="73547183" Tag="17" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Book_Background" ActionTag="73547183" VisibleForFrame="False" Tag="17" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
             <Size X="132.0000" Y="176.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position />
@@ -27,7 +27,7 @@
             <PreSize X="0.0000" Y="0.0000" />
             <FileData Type="Normal" Path="other/Book_cover.png" Plist="" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Book_Mask" Visible="False" ActionTag="-542858013" Tag="18" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Book_Mask" ActionTag="-542858013" VisibleForFrame="False" Tag="18" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
             <Size X="132.0000" Y="176.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position />
@@ -48,16 +48,6 @@
             <PreSize X="0.0000" Y="0.0000" />
             <FileData Type="MarkedSubImage" Path="BookRoom/res/BookInfo_ studyr_vip_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
             <BlendFunc Src="1" Dst="771" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="close" ActionTag="-1352589095" Tag="21" IconVisible="False" LeftMargin="-74.0000" RightMargin="-74.0000" TopMargin="-74.0000" BottomMargin="-74.0000" LeftEage="39" RightEage="39" TopEage="39" BottomEage="39" Scale9OriginX="39" Scale9OriginY="39" Scale9Width="70" Scale9Height="70" ctype="ImageViewObjectData">
-            <Size X="148.0000" Y="148.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position />
-            <Scale ScaleX="0.6660" ScaleY="0.6660" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition />
-            <PreSize X="0.0000" Y="0.0000" />
-            <FileData Type="Normal" Path="other/delete_ipad@2x.png" Plist="" />
           </AbstractNodeData>
           <AbstractNodeData Name="Download" ActionTag="-217620844" Tag="22" IconVisible="False" LeftMargin="-45.0000" RightMargin="-45.0000" TopMargin="-45.0000" BottomMargin="-45.0000" ctype="SpriteObjectData">
             <Size X="90.0000" Y="90.0000" />

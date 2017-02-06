@@ -59,7 +59,7 @@ struct MyAccount
 	//std::string memberProvince;//省份
 	//std::string memberCity;//城市
 	int momey=0;//账户余额:单位 (分)
-	//string showPortraitPath ="";//展示的头像全路径	
+	//string showPortraitPath ="";//展示的头像全路径
 	bool vip = false;
 	string startvip = "";
 	string endvip = "";
@@ -113,7 +113,9 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.7.2";//应用版本
+	string version = "1.7.3";//应用版本
+
+	long long versioncode = 173;
 
 	int musicID = -999;//背景音乐ID
 
@@ -252,47 +254,42 @@ public:
 	//map排序
 	static vector<PAIR> sortMapToVector(map<int, int> mapData);
 
-	//最近下载
-	map<int, int> bookDownLoad;
-
-	static void addRecordBookDownload(int bookid);
+	//已下载
+	map<int, int> bookDownload;//全部下载的书籍和时间
+	static void addDownloadBookRecord(int bookid);
+	static void deleteDownloadBookRecord(int bookid);//本地删除
+	static void loadDownloadBookCache();//本地缓存文件读入内存
 
 	//收藏
 	map<int, int> bookCollect;
+	static void addRecordBookCollect(int bookid);//本地添加,网络上传直接应用在场景中了
+	static void deleteRecordBookCollect(int bookid);//本地删除
+	static void httpGetCollectBook(bool hint = true);//网络获取收藏列表
+	static void loadCollectBookCache();//本地缓存文件读入内存
 
-	static void addRecordBookCollect(int bookid);
+	//VIP包年服务
+	map<int, int> VIPbook;
+	static void addvipBook(int bookid);//写入本地包年图书
+	static void httpCheckVIP(bool hint = true); //获取包年服务信息
+	static void httpGetVipBook(bool hint = true);//获取包年图书列表
+	static void loadvipBookCache();//本地缓存文件读入内存
 
-	//删除
-	map<int, int> bookDelete;
+	//购书列表
+	map<int, int> myBuyBook;//已购列表
+	static void loadBuyBookCache();//本地缓存文件读入内存
+	static void httpGetBuyBook(bool hint = true);//网络获取购书列表
 
-	static void addRecordBookDelete(int bookid);
-
-
-	//最近阅读
-	map<int, int> bookRead;
-
-	//记录阅读记录
-	static void addRecordBookRead(int bookid);
+	map<int, string> myBookURLMap;//我的书籍下载地址(购书+包年)
 
 	static void getMapFromFile(string path, map<string, string>& data);//读出文件里的json, 写入map
+
+	static void preLoad();//离线用户本地信息预加载
+
+	static void loginCallback(bool hint = true, function<void()> runable = nullptr);//登录后的网络信息获取
 
 	static void cancelData();//注销后,内存数据处理
 
 	std::vector<map<string, YYXStruct> > m_redPacket;//红包列表
-
-	vector<int> myBuyBookVector;//已购列表顺序
-
-	map<int, string> myBuyBookMap;//已购列表下载地址
-								 
-	//vector<int> myRentBookVector;//租书列表顺序
-
-	map<int, int> myRentBookMap;//租书列表 租书时间
-
-	static void addRentBook(int bookid);//加入租书列表, 写入本地
-
-	static void deleteRentBook(int bookid);//(删除租书不修改本地, 在loadscene中根据本地书籍调整载入)
-
-	static void getLocalRentJson();//读取本地租书json
 	
 	static string replaceChar(string str, string oldChar, string newChar);	//修改字符串, 全部替换
 
@@ -305,6 +302,8 @@ public:
 	void playBackGroundMusic();//播放背景音乐
 
 	void stopOtherVoice();//关闭所有记录的音乐
+
+	static void whetherForVipDownloadJudgeInCharge(int memberId, int bookId, function<void(int str)> runable, function<void(string error)> errorable);//判断包年用户能否进行vip下载
 
 	void addTime(string key, long long data); //添加时刻
 	
@@ -345,8 +344,6 @@ public:
 	static bool getNetSetAndHintSet();
 
 	static void getVisible();
-
-	static void httpCheckVIP(int memberID);	
 
 	static void httpComment(int bookid, function<void()> runFunction);
 

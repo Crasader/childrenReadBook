@@ -17,12 +17,27 @@ using namespace cocostudio::timeline;
 USING_NS_CC_EXT;
 using namespace std;
 
+//返回 免费=0;
+#define FREEPRICE  0
+//购买=1;
+#define BUYBOOK  1
+//下载=2;
+#define DOWNLOAD  2
+//vip下载=3;
+#define VIPDOWNLOAD  3
+//阅读=4;
+#define READBOOK  4
+//进度=5;
+#define PROGRESSING 5
+//暂停
+#define PAUSE 6
+
 BookInfo::BookInfo() {
 	App::log("BookInfo::BookInfo");
 	isDownloading = false;
 	isDownloaded = false;
 	isUnzip = false;
-	isBuy = false;
+	//isBuy = false;
 	isDamage = false;
 	isViewDownloading = false;
 	isViewDownloaded = false;
@@ -197,7 +212,7 @@ bool BookInfo::init(int bookId)
 					{
 						//下载成功,解压
 						std::thread(&YYXDownload::uncompress, App::getTryReadZipDir(), StringUtils::format("%d", bookid), App::getTryReadDir(), [=](string zipPath) {
-							YYXLayer::sendNotify(taskTag2 + "_tryReadBookProgressing", "", 100);
+							YYXLayer::sendNotify(taskTag2 + "_tryReadBookProgressing", "", 100);							
 						}, [=](string zipPath) {
 							//解压失败
 							string bookNameerror = bookName + App::getString("JIEYACUOWUCHANGXINXIAZAI") + StringUtils::format("%d", bookid);
@@ -216,7 +231,6 @@ bool BookInfo::init(int bookId)
 					}
 				});
 				m_tryReadButton->setTitleText("0%");
-				App::addRecordBookDownload(m_bookId);
 				//任务字符串绑定书名				
 				//书籍信息 原价+书籍名称+ 书页数
 				string BookNameKey = StringUtils::format("bookName+bookID=%d", bookId);
@@ -247,15 +261,10 @@ bool BookInfo::init(int bookId)
 
 	//----------------------------------------------------------完整--------------------------------------------------------------
 	//免费 购买 下载 阅读 按钮
-	isBuy = isBuyThisBook();
+	//isBuy = isBuyThisBook();
 	m_ReadButton = ( Button*)node->getChildByName(BOOKINFO_FIND_BUTTON_RED);
 	m_ReadButton->setTouchEnabled(true);
-	m_ReadButton->setTitleFontSize(36);
-	//string ZipDir = FileUtils::getInstance()->getWritablePath() + "bookZip";
 	string ZipName = StringUtils::format("%d.zip", m_bookId);
-	//string UNZipDir = FileUtils::getInstance()->getWritablePath() + "bookUNZip";
-	//string bookPath = UNZipDir + "/" + StringUtils::format("%d", m_bookId);
-	//string bookjsonPath = UNZipDir + "/" + StringUtils::format("%d", m_bookId) + "/Iphone1334/json.txt";
 	m_ReadButton->addClickEventListener([=](Ref* sender)
 	{		
 		/*
@@ -272,14 +281,76 @@ bool BookInfo::init(int bookId)
 				Index::GoToLoginScene();
 				return;
 			}
-			if (isBuy)
+			auto result = whatIsTheRelationshipBetweenUserAndBook(m_bookStatus);
+			string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", m_bookId);
+			string bookPlayUrl = YYXStruct::getMapString(App::GetInstance()->myData, BookPlayUrlKey, "");
+			string zippath = App::getBookReadZipPath(m_bookId);
+			string taskTag = YYXDownload::getTag(zippath);
+			switch (result)
+			{	//免费=0;				//购买=1;				//下载=2;				//vip下载=3;				//阅读=4;				//进度=5;				//暂停=6;
+			case FREEPRICE:
+				addChild(Index::SelectLayer([=]() {
+					m_ReadButton->setTouchEnabled(false);
+					httpBuyBook();
+				}));
+				break;
+			case BUYBOOK:
+				//请求红包列表
+				httpGetUserRedPackets();
+				addChild(Index::SelectLayer([=]() {
+					m_ReadButton->setTouchEnabled(false);
+					httpGetUserBalance(App::getMemberID().c_str());		//网络请求刷新一次余额				
+				}));
+				break;
+			case DOWNLOAD:	
+				if (bookPlayUrl != "" && App::getNetSetAndHintSet())
+				{
+					showBuyButton(m_ReadButton, PROGRESSING, 0);
+					Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(taskTag + "_BookProgressing");
+					downloadingListener(m_bookId, DownLoadBook(m_bookId, bookPlayUrl, ZipName), m_ReadButton);
+				}
+				break;
+			case VIPDOWNLOAD:
+				httpRentBook([=]() {		
+					if (bookPlayUrl != "" && App::getNetSetAndHintSet())
+					{
+						showBuyButton(m_ReadButton, PROGRESSING, 0);
+						Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(taskTag + "_BookProgressing");
+						downloadingListener(m_bookId, DownLoadBook(m_bookId, bookPlayUrl, ZipName), m_ReadButton);
+					}
+				});
+				break;
+			case READBOOK:
+				//记录场景
+				App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+				//打开书本
+				Director::getInstance()->replaceScene(Waiting::createScene(StringUtils::format("%d", m_bookId), false));
+				break;
+			case PROGRESSING:				
+				if (taskTag != "" && !YYXDownload::GetInstance()->isEnd(taskTag) && !YYXDownload::GetInstance()->isPause(taskTag))
+				{
+					Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(taskTag + "_BookProgressing");
+					YYXDownload::GetInstance()->pause(taskTag);
+					showBuyButton(m_ReadButton, PAUSE);
+				}
+				break;
+			case PAUSE:
+				showBuyButton(m_ReadButton, PROGRESSING, 0);
+				downloadingListener(m_bookId, DownLoadBook(m_bookId, bookPlayUrl, ZipName), m_ReadButton);
+				break;
+			default:
+				break;
+			}
+
+			/*
+			if (isBuyThisBook())
 			{
 				if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(m_bookId)))
 				{
 					//书籍存在
 					//记录场景
 					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					//打开试读书本
+					//打开书本
 					Director::getInstance()->replaceScene(Waiting::createScene(StringUtils::format("%d", m_bookId), false));
 					//试读不需要上传阅读记录
 				}
@@ -293,8 +364,7 @@ bool BookInfo::init(int bookId)
 					{
 						Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(taskTag + "_BookProgressing");
 						YYXDownload::GetInstance()->pause(taskTag);
-						m_ReadButton->setTitleFontSize(36);
-						m_ReadButton->setTitleText(App::getString("ZANTING"));
+						showBuyButton(m_ReadButton, PAUSE);
 					}
 					else
 					{
@@ -314,16 +384,14 @@ bool BookInfo::init(int bookId)
 								auto bookTAG = YYXDownload::getTag(App::getReadZipDir() + "/" + ZipName);
 								if (YYXDownload::GetInstance()->isPause(bookTAG))
 								{
-									m_ReadButton->setTitleFontSize(36);
-									m_ReadButton->setTitleText("0%");
+									showBuyButton(m_ReadButton, PROGRESSING, 0);
 									string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
 									downloadingListener(m_bookId, bookTag, m_ReadButton);
 								}
 								else {
 									httpRentBook([=]() {
-										m_ReadButton->setTitleFontSize(36);
-										m_ReadButton->setTitleText("0%");
-										if (App::GetInstance()->myBuyBookMap.find(m_bookId) == App::GetInstance()->myBuyBookMap.end())
+										showBuyButton(m_ReadButton, PROGRESSING, 0);
+										if (App::GetInstance()->myBuyBookVector.)
 											App::addRentBook(m_bookId);
 										string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
 										downloadingListener(m_bookId, bookTag, m_ReadButton);
@@ -334,8 +402,7 @@ bool BookInfo::init(int bookId)
 							{
 								string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
 								downloadingListener(m_bookId, bookTag, m_ReadButton);
-								m_ReadButton->setTitleFontSize(36);
-								m_ReadButton->setTitleText("0%");
+								showBuyButton(m_ReadButton, PROGRESSING, 0);
 							}
 						}
 					}
@@ -354,54 +421,23 @@ bool BookInfo::init(int bookId)
 				}));
 				return;
 			}
+			*/
 		});
 	});
 	//完整书籍的下载按钮初始化
 	string bookTag = YYXDownload::getTag(App::getBookReadZipPath(m_bookId));
-	if (isBuy)
+	if (isBuyThisBook())
 	{
 		if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(m_bookId)))
 		{
-			m_ReadButton->setTitleText(App::getString("STR_READ"));
 			m_tryReadButton->setVisible(false);
-			if (App::GetInstance()->m_me)
-			{
-				if (App::GetInstance()->m_me->vip)
-					App::addRentBook(m_bookId);
-			}
+			showBuyButton(m_ReadButton, READBOOK);
 		}
 		else
-		{
-			//不存在
-			if (bookTag != "")
-			{
-				m_ReadButton->setTitleFontSize(36);
-				if (YYXDownload::GetInstance()->isPause(bookTag))
-					m_ReadButton->setTitleText(App::getString("ZANTING"));
-				else
-					m_ReadButton->setTitleText("0%");
-			}
-			else
-			{
-				//未下载
-				if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
-				{
-					m_ReadButton->setTitleText(App::getString("VIPXIAZAI"));			
-					m_ReadButton->setTitleFontSize(26);
-				}
-				else
-				{
-					m_ReadButton->setTitleFontSize(36);
-					m_ReadButton->setTitleText(App::getString("STR_DOWNLOAD"));
-				}
-			}			
-		}
+			showBuyButton(m_ReadButton, whatIsTheRelationshipBetweenUserAndBook(m_bookStatus));
 	}
 	else
-	{
-		m_ReadButton->setTitleFontSize(36);
-		m_ReadButton->setTitleText(App::getString("STR_BUY"));
-	}
+		showBuyButton(m_ReadButton, whatIsTheRelationshipBetweenUserAndBook(m_bookStatus));
 	//进度监听
 	if (bookTag != "")
 	{
@@ -409,53 +445,24 @@ bool BookInfo::init(int bookId)
 			auto progressing = (long)e->getUserData();
 			if (progressing < 0)
 				return;
-			m_ReadButton->setTitleFontSize(36);
 			if (progressing <= 99)
-				m_ReadButton->setTitleText(StringUtils::format("%d%%", progressing));
+				showBuyButton(m_ReadButton, PROGRESSING, progressing);
 			else if (progressing == 100)
-				m_ReadButton->setTitleText(App::getString("STR_READ"));
+				showBuyButton(m_ReadButton, READBOOK);
 			else if (progressing == 999)
-				m_ReadButton->setTitleText(App::getString("STR_DOWNLOAD"));
+				showBuyButton(m_ReadButton, DOWNLOAD);
 		});
 		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerButton, m_ReadButton);
 	}
 	//购买刷新
 	auto listenerm_ReadButton = EventListenerCustom::create("isBuyRefersh", [=](EventCustom* e) {
-		isBuy = isBuyThisBook();
-		if (isBuy)
+		if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(m_bookId)))
 		{
-			if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(m_bookId)))
-			{
-				m_tryReadButton->setVisible(false);
-				m_ReadButton->setTitleFontSize(36);
-				m_ReadButton->setTitleText(App::getString("STR_READ"));
-			}
-			else
-			{
-				if (YYXDownload::GetInstance()->isPause(bookTag)) {
-					m_ReadButton->setTitleText(App::getString("ZANTING"));
-					m_ReadButton->setTitleFontSize(36);
-				}
-				else
-				{
-					if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip && App::GetInstance()->myBuyBookMap.find(m_bookId) == App::GetInstance()->myBuyBookMap.end())
-					{
-						m_ReadButton->setTitleText(App::getString("VIPXIAZAI"));
-						m_ReadButton->setTitleFontSize(26);
-					}
-					else
-					{
-						m_ReadButton->setTitleFontSize(36);
-						m_ReadButton->setTitleText(App::getString("STR_DOWNLOAD"));
-					}
-				}
-			}
+			m_tryReadButton->setVisible(false);
+			showBuyButton(m_ReadButton, READBOOK);
 		}
 		else
-		{
-			m_ReadButton->setTitleText(App::getString("STR_BUY"));
-			m_ReadButton->setTitleFontSize(36);
-		}
+			showBuyButton(m_ReadButton, whatIsTheRelationshipBetweenUserAndBook(m_bookStatus));
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerm_ReadButton, m_ReadButton);
 
@@ -497,12 +504,6 @@ bool BookInfo::init(int bookId)
 		cover->loadTexture(PICTURE_BOOKINFO_COVER, TextureResType::PLIST);
 	}
 	initHttp();
-	//---------------------------网络请求--------------------------------------------------------------------
-	//std::thread httpBookinfo(&BookInfo::httpBookInfo,this,m_bookId);
-	//httpBookinfo.detach();
-	//std::thread httpbookcomment(&BookInfo::httpGetBookComment,this,m_bookId);
-	//httpbookcomment.detach();
-	//---------------------------网络请求--------------------------------------------------------------------
 
 	//返回按钮
 	m_createTime = App::getCurrentTime();
@@ -569,23 +570,6 @@ bool BookInfo::init(int bookId)
 	});
 	//-----------------------------接受通知:购书前查询余额的回调END --------------------------------------------------------------------------	
 
-	//-----------------------------接受通知:网络获取评论 --------------------------------------------------------------------------
-	//Director::getInstance()->getEventDispatcher()->addCustomEventListener("httpBookComments", [=](EventCustom* event) {
-		//std::thread httpbookcomment(&BookInfo::httpGetBookComment, this, m_bookId);
-		//httpbookcomment.detach();
-	//});
-	//-----------------------------接受通知:网络获取评论END --------------------------------------------------------------------------
-	
-	// ---------------------------- - 接受通知:判断是否是已购书籍并展示--------------------------------------------------------------------------
-	/*Director::getInstance()->getEventDispatcher()->addCustomEventListener("panduanIsBuy", [=](EventCustom* event) {
-		//查看这本书是否已购买
-		if (SqliteManager::IsRecExist(App::sqliteOpen(), DB_USERBOOKLIST, StringUtils::format("where bookId=%d", m_bookId) + " and member_id=" + App::getMemberID())) {
-			isBuy = true;
-			YYXLayer::sendNotify("bookInfoRemoveHint");
-			m_ReadButton->setTitleText(App::getString("STR_DOWNLOAD"));
-		}
-	});*/
-	//-----------------------------接受通知:判断是否是已购书籍并展示END --------------------------------------------------------------------------
 
 	// ---------------------------- - 接受通知:充值成功后,自动继续购书--------------------------------------------------------------------------
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("CallBackPaySuccessGoToBuyBook", [=](EventCustom* event) {
@@ -593,10 +577,6 @@ bool BookInfo::init(int bookId)
 		httpGetUserBalance(App::getMemberID().c_str());
 	});
 	//-----------------------------接受通知:充值成功后,自动继续购书--END --------------------------------------------------------------------------
-
-	// ---------------------------- - 接受通知:删除等待层--------------------------------------------------------------------------
-
-	//-----------------------------接受通知:删除等待层--END --------------------------------------------------------------------------
 
 	// ---------------------------- - 接受通知:红包购书--------------------------------------------------------------------------
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("buybookwithredpacket", [=](EventCustom* event) {
@@ -731,8 +711,7 @@ void BookInfo::initEvent()
 	});
 	//等待已购列表的刷新判断
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("loginSceneHttpGetUserBuyBooksSuccess", [=](EventCustom* e) {
-		isBuy = isBuyThisBook();
-		if (isBuy)
+		if (isBuyThisBook())
 		{
 			YYXLayer::sendNotify("bookInfoRemoveHint");
 			YYXLayer::sendNotify("isBuyRefersh");
@@ -750,6 +729,12 @@ void BookInfo::initEvent()
 
 void BookInfo::initHttp()
 {
+	//用户和书籍关系
+	if (App::GetInstance()->m_me)
+		App::whetherForVipDownloadJudgeInCharge(App::GetInstance()->m_me->id, m_bookId, [=](int status) {
+		m_bookStatus = status;
+		YYXLayer::sendNotify("isBuyRefersh");
+	}, [](string error) {});
 	//书籍详情
 	string runKey = "bookInfoSceneHttpGetBookInfoSuccess";
 	string errorKey = "bookInfoSceneHttpGetBookInfoFail";
@@ -816,11 +801,16 @@ void BookInfo::onEnterTransitionDidFinish()
 	if (something =="buy")
 	{
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ComeFromBookDoSomething", -999, "NULL");
-		if (isBuyThisBook())
-			return;
-		else {
+		if (!isBuyThisBook())
+		{
 			if(App::GetInstance()->m_me)
 				showPay();
+			else
+			{
+				Toast::create(App::getString("QINGNINXIANDENGLUCAINENGGOUMAISHUJI"));
+				App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+				Index::GoToLoginScene();
+			}
 		}
 	}
 	else if (something == "download")
@@ -828,39 +818,38 @@ void BookInfo::onEnterTransitionDidFinish()
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ComeFromBookDoSomething", -999, "NULL");
 		string strpath = App::getBookRead4Json_txtPath(m_bookId);
 		App::log("                ===============>>>>>>>>>>>>>.    strpath= " + strpath);
-		if (FileUtils::getInstance()->isFileExist(strpath)) {
-			return;
-		}
-		if (isBuyThisBook())
+		if (!FileUtils::getInstance()->isFileExist(strpath))
 		{
 			string ZipName = StringUtils::format("%d.zip", m_bookId);
 			string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", m_bookId);
 			string bookPlayUrl = YYXStruct::getMapString(App::GetInstance()->myData, BookPlayUrlKey, "");
-			if (bookPlayUrl != "" && App::getNetSetAndHintSet()) {
-				if (App::GetInstance()->m_me->vip)
-				{
-					auto bookTAG = YYXDownload::getTag(App::getReadZipDir() + "/" + ZipName);
-					if (YYXDownload::GetInstance()->isPause(bookTAG))
+			auto bookTAG = YYXDownload::getTag(App::getReadZipDir() + "/" + ZipName);
+			if (YYXDownload::GetInstance()->isPause(bookTAG))
+			{
+				showBuyButton(m_ReadButton, PROGRESSING, 0);
+				string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
+				downloadingListener(m_bookId, bookTag, m_ReadButton);
+			}
+			else
+			{
+				if (bookPlayUrl != "" && App::getNetSetAndHintSet()) {
+					if (isBuyThisBook())
 					{
-						m_ReadButton->setTitleFontSize(36);
-						m_ReadButton->setTitleText("0%");
+						showBuyButton(m_ReadButton, PROGRESSING, 0);
 						string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
 						downloadingListener(m_bookId, bookTag, m_ReadButton);
 					}
-					else {
-						httpRentBook([=]() {
-							m_ReadButton->setTitleFontSize(36);
-							m_ReadButton->setTitleText("0%");
-							string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
-							downloadingListener(m_bookId, bookTag, m_ReadButton);
-						});
+					else
+					{
+						if (App::GetInstance()->m_me->vip) 
+						{
+							httpRentBook([=]() {
+								showBuyButton(m_ReadButton, PROGRESSING, 0);
+								string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
+								downloadingListener(m_bookId, bookTag, m_ReadButton);
+							});
+						}
 					}
-				}
-				else {
-					m_ReadButton->setTitleFontSize(36);
-					m_ReadButton->setTitleText("0%");
-					string bookTag = DownLoadBook(m_bookId, bookPlayUrl, ZipName);
-					downloadingListener(m_bookId, bookTag, m_ReadButton);
 				}
 			}
 		}
@@ -870,9 +859,11 @@ void BookInfo::onEnterTransitionDidFinish()
 
 void BookInfo::cleanup()
 {
+	App::log("BookInfo::cleanup");
 	unscheduleAllSelectors();
 	App::GetInstance()->stopOtherVoice();
 	App::GetInstance()->resumeBackGroundMusic();
+	App::log("BookInfo::cleanup-end");
 }
 
 //刷新界面
@@ -914,19 +905,9 @@ void BookInfo::refreshUI()
 	m_listview_Info->pushBackCustomItem(creatItem_bookAuthor());
 
 	m_listview_Info->jumpToTop();
-	//判断是否为免费书籍
-	if (isBuy)
-		return;
-	if (m_Selling100 == 0)
-	{
-		m_ReadButton->setTitleFontSize(36);
-		m_ReadButton->setTitleText(App::getString("STR_FREE"));
-	}
-	else
-	{
-		m_ReadButton->setTitleFontSize(36);
-		m_ReadButton->setTitleText(App::getString("STR_BUY"));
-	}
+
+	showBuyButton(m_ReadButton, whatIsTheRelationshipBetweenUserAndBook(m_bookStatus));
+
 	App::log("BookInfo::refreshUI----END");
 }
 
@@ -1469,7 +1450,7 @@ Layout* BookInfo::creatItem_bookAuthor()
 	auto layout4 = Layout::create();
 	string str = "";
 	string BookAuthorKey = StringUtils::format("bookAuthor+bookID=%d", m_bookId);
-	string author = YYXStruct::getMapString(App::GetInstance()->myData, BookAuthorKey,"");
+	string author = YYXStruct::getMapString(App::GetInstance()->myData, BookAuthorKey, "");
 	if (author.length() !=0 )
 		str = App::getString("STR_BOOKAUTHOE") + author;
 	auto m_text_bookAuthor = Label::create(str, "FZHLJW.TTF",34, Size::ZERO, TextHAlignment::LEFT, TextVAlignment::TOP);
@@ -1477,9 +1458,10 @@ Layout* BookInfo::creatItem_bookAuthor()
 	m_text_bookAuthor->setAnchorPoint(Vec2(0, 0));
 	m_text_bookAuthor->setAdditionalKerning(8);			//字体间距
 	m_text_bookAuthor->setScale(0.5);
-	layout4->setContentSize(m_text_bookAuthor->getContentSize()/2);
+	m_text_bookAuthor->setMaxLineWidth(320*2);
+	layout4->setContentSize(Size(320, m_text_bookAuthor->getContentSize().height/2));
 	layout4->addChild(m_text_bookAuthor);
-	App::log("BookInfo::creatItem_bookAuthor--END");
+	App::log("BookInfo::creatItem_bookAuthor--END "+ str);
 	return layout4;
 }
 
@@ -1509,8 +1491,12 @@ Layer* BookInfo::initCommonView()
 			}
 			//未购买
 			if (!isBuyThisBook()) {
-				Toast::create(App::getString("COMMENT_TIP_BUY"));
-				return;
+				auto show = whatIsTheRelationshipBetweenUserAndBook(m_bookStatus, true);
+				if (show == BUYBOOK || show == FREEPRICE)
+				{
+					Toast::create(App::getString("COMMENT_TIP_BUY"));
+					return;
+				}
 			}
 			auto pScene = Director::getInstance()->getRunningScene();
 			pScene->addChild(SendComment::create(m_bookId));
@@ -1767,81 +1753,16 @@ bool BookInfo::httpBuyBook() {
 	return true;
 }
 
-//获取订单号
-//void BookInfo::getOrderId() {
-	/*App::log("BookInfo::getOrderId");
-	HttpRequest* request = new HttpRequest();
-	request->setRequestType(HttpRequest::Type::POST);
-	request->setUrl(std::string(IP).append(NET_GET_ORDER).c_str());
-
-	auto postData = std::string("memberId=").append(App::getMemberID()).append(StringUtils::format("&bookId=%d&resource=", m_bookId)).append(App::m_resource);
-	request->setRequestData(postData.c_str(), strlen(postData.c_str()));
-
-	App::log(postData);
-
-	//请求的回调函数
-	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
-		if (!response) {
-			Toast::create(App::getString("ORDER_FAILED"));
-			m_ReadButton->setTouchEnabled(true);
-			App::log("BookInfo::getOrderIdCALLBACK 1----END");
-			return;
-		}
-		if (!response->isSucceed()){
-			Toast::create( App::getString("ORDER_FAILED"));
-			m_ReadButton->setTouchEnabled(true);
-			log("error buffer: %s", response->getErrorBuffer());
-			App::log("BookInfo::getOrderIdCALLBACK 2----END");
-			return;
-		}
-		std::vector<char> *buffer = response->getResponseData();
-		std::string str(buffer->begin(), buffer->end());
-		rapidjson::Document doc;
-		doc.Parse<0>(str.c_str());
-		App::log(str);
-		if (doc.HasParseError() || !doc.IsObject() || !doc.HasMember("code") || !doc.HasMember("data")){
-			Toast::create( App::getString("ORDER_FAILED"));
-			m_ReadButton->setTouchEnabled(true);
-			App::log("BookInfo::getOrderIdCALLBACK 3----END");
-			return;
-		}
-		
-		rapidjson::Value &value = doc["code"];
-		if (value.IsInt() && value.GetInt() == 0){//请求正常		
-			rapidjson::Value &data = doc["data"];
-			if (data.IsObject()) {
-				m_orderId = App::analysisJsonInt(data, "orderId");
-				//判断是否为免费书籍
-				if (m_Selling100 == 0)
-				{
-					App::log("BookInfo::getOrderIdCALLBACK 4----END");
-					Toast::create(App::getString("BUY_SCEESSE"));
-					updateBuyBookList(true);//更新后台和本地书籍列表
-				}
-				else
-				{
-					bookPay();
-					m_ReadButton->setTouchEnabled(true);					
-				}
-			}
-		}
-	});
-	cocos2d::network::HttpClient::getInstance()->send(request);
-	request->release();
-	App::log("BookInfo::getOrderId--END");*/
-//}
-
-//更新后台和本地书籍列表
+//购买后更新后台和本地书籍列表
 void BookInfo::updateBuyBookList( ) {
 	App::log("BookInfo::updateBuyBookList");
 	m_ReadButton->setTouchEnabled(true);
 	string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", m_bookId);
 	string bookPlayUrl = YYXStruct::getMapString(App::GetInstance()->myData, BookPlayUrlKey, "");
-	App::GetInstance()->myBuyBookMap[m_bookId] = bookPlayUrl;
-	App::GetInstance()->myBuyBookVector.push_back(m_bookId);
-	m_ReadButton->setTitleFontSize(36);
-	m_ReadButton->setTitleText(App::getString("STR_DOWNLOAD"));
-	isBuy = true;
+	App::GetInstance()->myBookURLMap[m_bookId] = bookPlayUrl;
+	App::GetInstance()->myBuyBook[m_bookId] = (int)YYXLayer::getCurrentTime4Second();
+	showBuyButton(m_ReadButton, DOWNLOAD);
+	m_bookStatus = m_bookStatus | 1 << 3;
 	YYXLayer::sendNotify("bookInfoRemoveHint");
 	YYXLayer::sendNotify("refershVIPText");
 	App::log("BookInfo::updateBuyBookList price---END");
@@ -2263,7 +2184,7 @@ void BookInfo::hint()
 		App::log("红包抵扣提示App::GetInstance()->m_redPacket.size()=", App::GetInstance()->m_redPacket.size());
 		return;
 	}
-	if (isBuy)
+	if (isBuyThisBook())
 	{
 		App::log("红包抵扣提示isBuy= true");
 		return;
@@ -2302,20 +2223,16 @@ void BookInfo::hint()
 	App::log("BookInfo::hint--END");
 }
 
+//查询本地书籍 本书是否购买过
 bool BookInfo::isBuyThisBook()
 {
 	App::log("BookInfo::isBuyThisBook");
 	if (App::GetInstance()->m_me)
 	{
-		if (App::GetInstance()->m_me->vip && IsRentBook())
+		if (App::GetInstance()->myBuyBook.find(m_bookId) != App::GetInstance()->myBuyBook.end()) 
 		{
-			//你是vip 同时必须这书属于租书范围
+			m_bookStatus = m_bookStatus | 1 << 3;
 			return true;
-		}
-		else 
-		{
-			if (App::GetInstance()->myBuyBookMap.find(m_bookId) != App::GetInstance()->myBuyBookMap.end())
-				return true;
 		}
 	}
 	return false;
@@ -2336,16 +2253,12 @@ void BookInfo::initVipText(Node* node)
 		baiwei->setVisible(false);
 		shiwei->setVisible(false);
 		gewei->setVisible(false);
-		if (!IsRentBook())
-		{
-			return;
-		}		
-		if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
+		if(whatIsTheRelationshipBetweenUserAndBook(m_bookStatus, true) == VIPDOWNLOAD)
 		{//vip
 			string path = App::getBookRead4Json_txtPath(m_bookId);
 			if (FileUtils::getInstance()->isFileExist(path))
 			{//下载
-				if (App::GetInstance()->myBuyBookMap.find(m_bookId) == App::GetInstance()->myBuyBookMap.end())
+				if (!isBuyThisBook())
 				{
 					viphintText->setVisible(true);
 					bg->setVisible(true);
@@ -2364,17 +2277,6 @@ void BookInfo::initVipText(Node* node)
 					App::log("           -----------------------------        App::GetInstance()->m_me->vipTime = ", App::GetInstance()->m_me->vipTime);
 				}
 			}
-			else
-			{//未下载
-				//viphintText->setText(App::getString("NINSHIVIPYONGHUZHIJIEKEYIXIAZAI"));
-			}
-		}
-		else
-		{//非vip
-			//if (!isBuy)
-				//viphintText->setText(App::getString("SHENGJIVIPLIJISHENGJI"));
-			//else
-				//viphintText->setVisible(false);
 		}
 	};
 	listener();
@@ -2436,6 +2338,7 @@ void BookInfo::httpRentBook(function<void()> runable)
 				}
 				if (rent)
 				{
+					App::addvipBook(m_bookId);//上传租书记录成功后, 本地也需要记录租书
 					if (runable)
 						runable();
 				}
@@ -2488,7 +2391,8 @@ string BookInfo::DownLoadBook(int bookId, string bookPlayUrl, string ZipName)
 			//下载成功,解压									
 			std::thread(&YYXDownload::uncompress, App::getReadZipDir(), StringUtils::format("%d", bookid), App::getReadDir(), [=](string zipPath) {
 				YYXLayer::sendNotify(taskTag2 + "_BookProgressing", "", 100);
-				YYXLayer::sendNotify("refershVIPText");				
+				App::addDownloadBookRecord(bookid);
+				YYXLayer::sendNotify("refershVIPText");
 			}, [=](string zipPath) {
 				//解压失败
 				string bookNameError = bookName + App::getString("JIEYACUOWUCHANGXINXIAZAI") + StringUtils::format("%d", bookid);
@@ -2509,7 +2413,6 @@ string BookInfo::DownLoadBook(int bookId, string bookPlayUrl, string ZipName)
 			}
 		}
 	});
-	App::addRecordBookDownload(bookId);
 	return bookTag;
 }
 
@@ -2522,16 +2425,151 @@ void BookInfo::downloadingListener(int bookId, string bookTag, Button* m_ReadBut
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, bookTag, bookId, "<<" + taskBookName + ">>");
 	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(bookTag + "_BookProgressing");
 	auto listenerButton = EventListenerCustom::create(bookTag + "_BookProgressing", [=](EventCustom* e) {
-		auto progressing = (long)e->getUserData();
+		auto progressing = (long)e->getUserData();		
 		if (progressing < 0)
 			return;
-		m_ReadButton->setTitleFontSize(36);
 		if (progressing <= 99)
-			m_ReadButton->setTitleText(StringUtils::format("%d%%", progressing));
+			showBuyButton(m_ReadButton, PROGRESSING, progressing);
 		else if (progressing == 100)
-			m_ReadButton->setTitleText(App::getString("STR_READ"));
+			showBuyButton(m_ReadButton, READBOOK);
 		else if (progressing == 999)
-			m_ReadButton->setTitleText(App::getString("STR_DOWNLOAD"));
+			showBuyButton(m_ReadButton, DOWNLOAD);
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerButton, m_ReadButton);
+}
+
+//控制右侧按钮显示  (购买 下载)
+void BookInfo::showBuyButton(Button* button, int show, int progressing)
+{	
+	m_ReadButton->setTitleFontSize(36);
+	switch (show)
+	{	
+	case BUYBOOK://购买
+		m_ReadButton->setTitleText(App::getString("STR_BUY"));
+		break;
+	case FREEPRICE://免费
+		m_ReadButton->setTitleText(App::getString("STR_FREE"));
+		break;
+	case DOWNLOAD://下载
+		m_ReadButton->setTitleText(App::getString("STR_DOWNLOAD"));
+		break;
+	case VIPDOWNLOAD://vip下载
+		m_ReadButton->setTitleText(App::getString("VIPXIAZAI"));
+		m_ReadButton->setTitleFontSize(26);
+		break;
+	case READBOOK://阅读
+		m_ReadButton->setTitleText(App::getString("STR_READ"));
+		break;
+	case PROGRESSING://进度
+		if (progressing >= 0)
+			m_ReadButton->setTitleText(StringUtils::format("%d%%", progressing));
+		break;
+	case PAUSE://暂停
+		m_ReadButton->setTitleText(App::getString("ZANTING"));
+		break;
+	default:
+		break;
+	}
+}
+
+//分析 用户和书籍之间是什么关系
+int BookInfo::whatIsTheRelationshipBetweenUserAndBook(int status, bool zhijieshow)
+{
+	//免费=0;
+	//购买=1;
+	//下载=2;
+	//vip下载=3;
+	//阅读=4;
+	//进度=5;
+	//暂停=6;
+
+	//6.判断书籍是否免费
+	//	A.免费	 1<<5
+	//	B.不免费  0<<5
+	//1.判断包年用户
+	//	A.包年用户	 1 << 4
+	//	B.非包年	 0 << 4
+	//2.判断是否购买过书籍
+	//	A.购买	 1 << 3
+	//	B.未购买	 0 << 3
+	//3.判断是否满365本
+	//	A.满	 1 << 2
+	//	B.未	满	 0 << 2
+	//4.判断是否已经租过
+	//	A.租过	 1 << 1
+	//	B.未租	 0 << 1
+	//5.判断书籍是否属于包年类型书籍
+	//	A.属于	 1
+	//	B.不属于  0
+
+
+	int show = BUYBOOK;
+	auto fun = [&](int c, int re, function<void()> run = nullptr, bool b = true, function<void()> resultrun=nullptr) {
+		auto result = status & c;
+		if (b)
+		{
+			if (result > 0)
+			{
+				show = re;
+				if (resultrun)
+					resultrun();
+			}
+			else
+			{
+				if (run)
+					run();
+			}
+		}
+		else
+		{
+			if (result == 0)
+			{
+				show = re;
+				if (resultrun)
+					resultrun();
+			}
+			else
+			{
+				if (run)
+					run();
+			}
+		}
+	};
+
+	fun(1 << 5, FREEPRICE, [&]() {//免费的1 << 5
+		fun(1 << 3, DOWNLOAD, [&]() {//购买了	 1 << 3
+			fun(1, BUYBOOK, [&]() {//不属于包年图书	 1
+				fun(1 << 4, BUYBOOK, [&]() {//非包年用户	 1 << 4
+					fun(1 << 1, VIPDOWNLOAD, [&]() {//租过	 1 << 1
+						fun(1 << 2, BUYBOOK, [&]() {//满	 1 << 2
+							show = VIPDOWNLOAD;
+						});
+					});
+				}, false);
+			},false);
+		});
+	});
+	if (zhijieshow)
+		return show;
+	if (show == FREEPRICE)
+	{
+		if (isBuyThisBook())
+			show = DOWNLOAD;
+	}
+
+	if (show == DOWNLOAD || show == VIPDOWNLOAD)
+	{
+		if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(m_bookId)))
+			show = READBOOK;
+	}
+	auto tag = YYXDownload::GetInstance()->getTag(App::getBookReadZipPath(m_bookId));
+	if (YYXDownload::GetInstance()->isPause(tag))
+		show = PAUSE;
+	else
+	{
+		if (YYXDownload::GetInstance()->isExitDownloadQueue(tag) || YYXDownload::GetInstance()->isExitReadyQueue(tag))
+			show = PROGRESSING;
+	}
+	App::log("whatIsTheRelationshipBetweenUserAndBook", show);
+	return show;
 }

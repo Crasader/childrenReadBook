@@ -61,17 +61,17 @@
           <Folder Name="res">
             <Image Name="Backcover_comments_736h.png" />
             <Image Name="Backcover_comments_press_736h.png" />
+            <Image Name="Backcover_good-comments_no-comment_736h.png" />
             <Image Name="Backcover_I-want-to-write-reviews_button_736h.png" />
             <Image Name="Backcover_I-want-to-write-reviews_button_press_736h.png" />
             <Image Name="Backcover_reading_book_736h.png" />
             <Image Name="Backcover_try_buy_button_736h.png" />
             <Image Name="Backcover_try_buy_button_press_736h.png" />
-            <Image Name="Backcover_try_good-comments_no-comment_736h.png" />
             <Image Name="Backcover_try_Invitation-to-register_ipad@2x.png" />
             <Image Name="Backcover_vip_button_736h.png" />
             <Image Name="Backcover_vip_button_press_736h.png" />
-            <Image Name="try_background_568h.png" />
             <Image Name="background_568h.png" />
+            <Image Name="try_background_568h.png" />
           </Folder>
         </Folder>
         <Folder Name="BookCity">
@@ -103,6 +103,7 @@
             <Project Name="bookInfo.csd" Type="Layer" />
             <PlistInfo Name="bookInfo.csi" Type="Plist" />
             <Project Name="comment.csd" Type="Layer" />
+            <Project Name="fengdiyuying.csd" Type="Layer" />
             <Project Name="hongbaodikou.csd" Type="Node" />
             <Project Name="jianjie.csd" Type="Layer" />
             <Project Name="pinglun.csd" Type="Layer" />
@@ -141,25 +142,31 @@
             <Image Name="parentsVerification_button_Selected_red_ipad@2x.png" />
             <Image Name="parentsVerification_button_Selected_yellow_ipad@2x.png" />
             <Image Name="parentsVerification_button_yellow_ipad@2x.png" />
-            <Image Name="Voicecomment_star.png" />
-            <Image Name="Voicecomment_star_press.png" />
-            <Image Name="yila_736h.png" />
-            <Image Name="yila2_736h.png" />
             <Image Name="Voicecomment_background_736h.png" />
             <Image Name="Voicecomment_publish_button_736h.png" />
             <Image Name="Voicecomment_publish_button_press_736h.png" />
+            <Image Name="Voicecomment_star.png" />
+            <Image Name="Voicecomment_star_press.png" />
             <Image Name="Voicecomment_Voice button_736h.png" />
             <Image Name="Voicecomment_Voice button_press_736h.png" />
             <Image Name="Voicecomment_word_background_736h.png" />
+            <Image Name="yila_736h.png" />
+            <Image Name="yila2_736h.png" />
           </Folder>
         </Folder>
         <Folder Name="BookRoom">
           <Folder Name="csb">
             <Project Name="bookNode.csd" Type="Node" />
+            <Project Name="bookNodeover.csd" Type="Node" />
             <Project Name="bookroom.csd" Type="Layer" />
             <PlistInfo Name="bookRoom.csi" Type="Plist" />
           </Folder>
           <Folder Name="res">
+            <Image Name="BookHome_bj_736h.png" />
+            <Image Name="BookHome_button_shanchu_736h.png" />
+            <Image Name="BookHome_button_shoucang_736h.png" />
+            <Image Name="BookHome_button_xiazai_736h.png" />
+            <Image Name="BookHome_button_yishoucang_736h.png" />
             <Image Name="BookHome_Delete.png" />
             <Image Name="BookHome_Download.png" />
             <Image Name="BookHome_Download_Background.png" />
@@ -175,7 +182,9 @@
             <Image Name="BookHome_girl_0017.png" />
             <Image Name="BookHome_girl_0018.png" />
             <Image Name="BookHome_girl_0022.png" />
+            <Image Name="BookHome_niaochao_choice_736h.png" />
             <Image Name="BookHome_night_window_ipad.png" />
+            <Image Name="BookHome_winduw_pop_736h.png" />
             <Image Name="BookInfo_ studyr_button_allbook_736h.png" />
             <Image Name="BookInfo_ studyr_button_allbook_press_736h.png" />
             <Image Name="BookInfo_ studyr_button_downloaded_736h.png" />
@@ -186,10 +195,18 @@
             <Image Name="BookInfo_ studyr_button_vip book_press_736h.png" />
             <Image Name="BookInfo_ studyr_shuzhi_736h.png" />
             <Image Name="BookInfo_ studyr_vip_736h.png" />
+            <Image Name="gm_nav_nor_736h.png" />
+            <Image Name="gm_nav_sel_736h.png" />
+            <Image Name="muban_nav_bg_736h.png" />
+            <Image Name="nkts_nav_nor_736h.png" />
+            <Image Name="nkts_nav_sel_736h.png" />
+            <Image Name="sc_nav_nor_736h.png" />
+            <Image Name="sc_nav_sel_736h.png" />
+            <Image Name="ysc_nav_nor_736h.png" />
+            <Image Name="ysc_nav_sel_736h.png" />
             <Image Name="zg1.png" />
             <Image Name="zg2.png" />
             <Image Name="zg3.png" />
-            <Image Name="BookHome_winduw_pop_736h.png" />
           </Folder>
         </Folder>
         <Folder Name="BookStoreScene">
@@ -529,11 +546,16 @@
             <Image Name="commit1.png" />
             <Image Name="commit2.png" />
           </Folder>
-          <Project Name="AAA.csd" Type="Node" />
-          <Image Name="Backcover_vioce_background_736h.png" />
-          <Image Name="Backcover_vioce0_736h.png" />
-          <Image Name="Backcover_vioce1_736h.png" />
-          <Image Name="Backcover_vioce2_736h.png" />
+          <Project Name="AAA.csd" Type="Layer" />
+          <Image Name="Backcover_star1_736h.png" />
+          <Image Name="Backcover_star2_736h.png" />
+          <Image Name="Backcover_star3_736h.png" />
+          <Image Name="Backcover_star4_736h.png" />
+          <Image Name="Backcover_star5_736h.png" />
+          <Image Name="Backcover_voice_background_736h.png" />
+          <Image Name="Backcover_voice_donghua0_736h.png" />
+          <Image Name="Backcover_voice_donghua1_736h.png" />
+          <Image Name="Backcover_voice_donghua2_736h.png" />
           <Image Name="bianji.png" />
           <Image Name="bianji2.png" />
           <Image Name="bianji3.png" />
@@ -562,8 +584,9 @@
           <Image Name="qiehuanhaizi2.png" />
           <Image Name="shufang_button_1_736h.png" />
           <Image Name="shufang_button_2_736h.png" />
+          <Image Name="User_bg_ipad@2x.png" />
           <Image Name="Userinfo_childcenter_close__ipad@2x.png" />
-          <PlistInfo Name="vioceplist.csi" Type="Plist" />
+          <PlistInfo Name="yuying.csi" Type="Plist" />
         </Folder>
         <Folder Name="ParentScene">
           <Folder Name="csb">

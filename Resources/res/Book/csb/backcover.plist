@@ -7,7 +7,7 @@
 			<key>Book/res/Backcover_I-want-to-write-reviews_button_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{329,1},{374,129}}</string>
+				<string>{{1,1},{374,129}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -18,7 +18,7 @@
 			<key>Book/res/Backcover_I-want-to-write-reviews_button_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,236},{356,123}}</string>
+				<string>{{1,377},{356,123}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -29,73 +29,62 @@
 			<key>Book/res/Backcover_reading_book_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{967,1},{45,47}}</string>
+				<string>{{136,876},{45,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{45,47}</string>
 			</dict>
 			<key>Book/res/Backcover_try_buy_button_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{329,132},{374,128}}</string>
+				<string>{{884,1},{374,128}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<false />
+				<true />
 				<key>sourceSize</key>
 				<string>{374,128}</string>
 			</dict>
 			<key>Book/res/Backcover_try_buy_button_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{126,236},{356,123}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{356,123}</string>
-			</dict>
-			<key>Book/res/Backcover_try_good-comments_no-comment_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{1,1},{326,233}}</string>
+				<string>{{1,132},{356,123}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
-				<string>{326,233}</string>
+				<string>{356,123}</string>
 			</dict>
 			<key>Book/res/Backcover_try_Invitation-to-register_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{251,262},{258,133}}</string>
+				<string>{{1,735},{258,133}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<false />
+				<true />
 				<key>sourceSize</key>
 				<string>{258,133}</string>
 			</dict>
 			<key>Book/res/Backcover_vip_button_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{705,1},{374,129}}</string>
+				<string>{{377,1},{374,129}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{374,129}</string>
 			</dict>
 			<key>Book/res/Backcover_vip_button_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{836,1},{374,129}}</string>
+				<string>{{753,1},{374,129}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -106,7 +95,18 @@
 			<key>Book/res/Backcover_comments_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{511,262},{334,99}}</string>
+				<string>{{1,257},{334,99}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{334,99}</string>
+			</dict>
+			<key>Book/res/Backcover_comments_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{126,358},{334,99}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -114,16 +114,16 @@
 				<key>sourceSize</key>
 				<string>{334,99}</string>
 			</dict>
-			<key>Book/res/Backcover_comments_press_736h.png</key>
+			<key>Book/res/Backcover_good-comments_no-comment_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{251,397},{334,99}}</string>
+				<string>{{136,694},{180,179}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<true />
 				<key>sourceSize</key>
-				<string>{334,99}</string>
+				<string>{180,179}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>

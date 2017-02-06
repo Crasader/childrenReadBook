@@ -132,19 +132,23 @@ void NetIntface::httpPost(string url, map<string, string> parameter, string runK
 	string runKey = App::getOnlyKey();
 	string errorKey = App::getOnlyKey();
 	setMapFunction(runKey, [=](string json) {
-		runFunction(json);
+		if(runFunction)
+			runFunction(json);
 		string jsonstr = YYXLayer::getStringFormMap(parameter);
 		App::log(" ( httpPost OK ) " + url +"<"+ jsonstr+ "> => " + json);
 		deleteMapFunction(runKey);
 		deleteMapFunction(errorKey);
 	});
 	setMapFunction(errorKey, [=](string error) {
-		errorRunFunction(error);
+		if(errorRunFunction)
+			errorRunFunction(error);
 		string jsonstr = YYXLayer::getStringFormMap(parameter);
 		string errorstr = url+"("+ jsonstr +")>>> httpPost error => " + error;
 		errorstr = App::replaceChar(errorstr, "&", "___");
 		errorstr = App::replaceChar(errorstr, ",", "___");
 		errorstr = App::replaceChar(errorstr, ":", "=");
+		errorstr = App::replaceChar(errorstr, "{", "=>");
+		errorstr = App::replaceChar(errorstr, "}", "<=");
 		App::log(" ( post error ) "+errorstr);
 		string urlstr = "";
 		if (App::m_debug == 0)
@@ -420,7 +424,7 @@ void NetIntface::httpGetComments(int bookid, string runKey, function<void(string
 	NetIntface::httpPost(strUrl, p, runKey, runFunction, errorKey, errorRunFunction);
 }
 
-void NetIntface::httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void()> runable, const function<void()> errorRunable)
+void NetIntface::httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void()> runable, const function<void()> errorRunable)
 {
 	rapidjson::Document doc;
 	auto result = YYXLayer::getJsonObject4Json(doc, json);
@@ -439,6 +443,7 @@ void NetIntface::httpBookCommentsCallback(std::string json, const function<void(
 				string memberName = YYXLayer::getString4Json("", item, "memberName");//用户名
 				string gevalState = YYXLayer::getString4Json("", item, "gevalState");//0=只评论文字 1=只打分 2=评论文字并打分
 				string memberId = YYXLayer::getString4Json("", item, "memberId");
+				string AvatarUrl = YYXLayer::getString4Json("", item, "AvatarUrl");//头像
 				string commentTime = YYXLayer::getString4Json("", item, "commentTime");//评论时间
 				string title = YYXLayer::getString4Json("", item, "title");//标题
 				string content = YYXLayer::getString4Json("", item, "content");//内容
@@ -446,7 +451,7 @@ void NetIntface::httpBookCommentsCallback(std::string json, const function<void(
 				string gevalTime = YYXLayer::getString4Json("", item, "gevalTime");//语音时间
 				if (itemRun)
 				{
-					itemRun(index, gevalId, gevalType, score, memberName, gevalState, memberId, commentTime, title, content, url, gevalTime);
+					itemRun(index, gevalId, gevalType, score, memberName, gevalState, memberId, commentTime, title, content, url, gevalTime, AvatarUrl);
 				}
 			});
 			if (runable)
@@ -1614,7 +1619,16 @@ void NetIntface::cutTheRounded(string path, string savePath, long width, long he
 	CocosAndroidJni::cutTheRounded(path.c_str(), savePath.c_str(), width, height, runKey.c_str(), errorKey.c_str());
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	CopyFileA(path.c_str(), savePath.c_str(), FALSE);
+	if (CopyFileA(path.c_str(), savePath.c_str(), FALSE))
+	{
+		if (runFunction)
+			runFunction(savePath);
+	}
+	else
+	{
+		if (errorRunFunction)
+			errorRunFunction("");
+	}
 #endif
 }
 
@@ -2476,4 +2490,23 @@ string NetIntface::getPhoneModel(int um)
 	str = "ios";
 #endif	
 	return str;
+}
+void NetIntface::httpBookCollect(int bookId, int type,  function<void(string)> runFunction, function<void(string)> errorRunFunction)
+{
+	string url = string(IP).append(NET_BOOK_COLLECT);
+	map<string, string> parameter;
+	parameter["type"] = StringUtils::format("%d", type);
+	parameter["memberId"] = App::getMemberID();
+	parameter["bookId"] = StringUtils::format("%d", bookId);
+	NetIntface::httpPost(url, parameter, "", runFunction, "", errorRunFunction);
+}
+
+void NetIntface::httpBookCollectAndVipList(int type, function<void(string)> runFunction, function<void(string)> errorRunFunction)
+{
+	string url = string(IP).append(NET_BOOK_COLLECTANDVIPLIST);
+	map<string, string> parameter;
+	parameter["type"] = StringUtils::format("%d", type);
+	parameter["memberId"] = App::getMemberID();
+	parameter["resource"] = App::m_resource;
+	NetIntface::httpPost(url, parameter, "", runFunction, "", errorRunFunction);
 }
