@@ -229,18 +229,18 @@ YYXLayer * YYXLayer::MyMessageBox(string titile, string yesString, function<void
 	auto content = (Text*)messagebox->findControl(FIND_TEXT_SELCETMESSAGEBOX_CONTEXT);
 	if (yes)
 	{
-		yes->addClickEventListener([=](Ref* sender) {
+		yes->addClickEventListener([=](Ref* sender) {		
+			messagebox->removeFromParentAndCleanup(true);
 			if (yesRunable)
 				yesRunable();
-			messagebox->removeFromParentAndCleanup(true);
 		});
 	}
 	if (no)
 	{
-		no->addClickEventListener([=](Ref* sender) {
+		no->addClickEventListener([=](Ref* sender) {			
+			messagebox->removeFromParentAndCleanup(true);
 			if (noRunable)
 				noRunable();
-			messagebox->removeFromParentAndCleanup(true);
 		});
 	}
 	if (yestext && yesString != "")
@@ -437,7 +437,7 @@ void YYXLayer::addSchedule(const string scheduleTimeName,float interval,const st
 
 void YYXLayer::sendNotify(string eventName,string className, int data)
 {	
-	//App::log(className + "::sendNotify = "+eventName ,data);
+	App::log(className + "::sendNotify = "+eventName ,data);
 	if (!&eventName || !&className)
 	{
 		App::log("paramter is error");
@@ -2230,8 +2230,8 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 			{
 				voiceCommentView->setTag(commentID);
 				voiceCommentView->setSwallowTouches(false);
-				int width = (voiceMaxLength - 100) / 30 * voiceLength + 100;
-				voiceCommentView->setSize(Size(width, voiceCommentView->getSize().height));
+				//int width = (voiceMaxLength - 100) / 30 * voiceLength + 100;
+				//voiceCommentView->setSize(Size(width, voiceCommentView->getSize().height));
 				voiceCommentView->setTouchEnabled(true);
 				voiceCommentView->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type) {
 					auto view = (ImageView*)sender;
@@ -2266,7 +2266,7 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 							{
 								App::GetInstance()->stopOtherVoice();
 								App::GetInstance()->pauseBackGroundMusic();
-								auto animate = FrameAnimation::createAnimate(3, "other/vioceplist.plist", "other/Backcover_vioce%d_736h.png", 0.2f);
+								auto animate = FrameAnimation::createAnimate(3, "other/yuying.plist", "other/Backcover_voice_donghua%d_736h.png", 0.2f);
 								auto seqDoor = Sequence::create(animate, animate->reverse(), NULL);
 								auto act = RepeatForever::create(seqDoor);
 								auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
@@ -2345,7 +2345,7 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 					auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
 					if (voiceSp) {
 						voiceSp->stopAllActions();
-						voiceSp->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("other/Backcover_vioce2_736h.png"));
+						voiceSp->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("other/Backcover_voice_donghua2_736h.png"));
 					}
 					voiceLayer->setTag(0);
 				}

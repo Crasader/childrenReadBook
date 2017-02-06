@@ -53,7 +53,7 @@ public:
 	static void installInstallationPackage(string path);
 	////获取评论
 	static void httpGetComments(int bookid, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
-	static void httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void()> runable, const function<void()> errorRunable);
+	static void httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void()> runable, const function<void()> errorRunable);
 	//获取充值红包活动
 	static void httpGetRechargeActivityCallBack(string json, const function<void(int, int)> itemRun, const function<void()> runable, const function<void()> errorRunable);
 	// 支付
@@ -173,9 +173,15 @@ public:
 	static void inviteRegister(int memberId, string url, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	//获取机型
 	static string getPhoneModel(int um);
+	static void httpBookCollect(int bookId, int type, function<void(string)> runFunction, function<void(string)> errorRunFunction);
 	//***********************************************
 	//***********************************************
 	//***********************************************
+
+	//书房 收藏/取消收藏	type 1.代表收藏 2.代表取消收藏
+
+	//显示书房收藏和vip书籍
+	static void httpBookCollectAndVipList( int type, function<void(string)> runFunction, function<void(string)> errorRunFunction);
 };
 
 #endif // __NETINTFACE_SCENE_H__

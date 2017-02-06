@@ -60,17 +60,6 @@
             <EndColor A="255" R="255" G="255" B="255" />
             <ColorVector ScaleY="1.0000" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Sprite_4" ActionTag="1450382555" Tag="1770" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="383.9991" RightMargin="384.0009" TopMargin="255.0696" BottomMargin="125.9304" ctype="SpriteObjectData">
-            <Size X="326.0000" Y="233.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="546.9991" Y="242.4304" />
-            <Scale ScaleX="0.7000" ScaleY="0.7000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.5000" Y="0.3948" />
-            <PreSize X="0.2980" Y="0.3795" />
-            <FileData Type="MarkedSubImage" Path="Book/res/Backcover_try_good-comments_no-comment_736h.png" Plist="Book/csb/backcover.plist" />
-            <BlendFunc Src="1" Dst="771" />
-          </AbstractNodeData>
           <AbstractNodeData Name="Image_1" ActionTag="-688163804" Tag="1774" IconVisible="False" LeftMargin="240.3454" RightMargin="519.6546" TopMargin="106.1669" BottomMargin="408.8331" LeftEage="109" RightEage="109" TopEage="32" BottomEage="32" Scale9OriginX="109" Scale9OriginY="32" Scale9Width="116" Scale9Height="35" ctype="ImageViewObjectData">
             <Size X="334.0000" Y="99.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
@@ -161,6 +150,29 @@
             <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Text_2_1" ActionTag="1278732509" Tag="25" IconVisible="False" LeftMargin="353.4996" RightMargin="352.5004" TopMargin="389.4169" BottomMargin="171.5831" FontSize="40" LabelText="还没有人评论过次书~" HorizontalAlignmentType="HT_Center" VerticalAlignmentType="VT_Center" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="388.0000" Y="53.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="547.4996" Y="198.0831" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="77" G="77" B="77" />
+            <PrePosition X="0.5005" Y="0.3226" />
+            <PreSize X="0.3547" Y="0.0863" />
+            <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Sprite_4" ActionTag="-762244972" Tag="26" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="457.0000" RightMargin="457.0000" TopMargin="245.5233" BottomMargin="189.4767" ctype="SpriteObjectData">
+            <Size X="180.0000" Y="179.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="547.0000" Y="278.9767" />
+            <Scale ScaleX="0.7000" ScaleY="0.7000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.5000" Y="0.4544" />
+            <PreSize X="0.1645" Y="0.2915" />
+            <FileData Type="MarkedSubImage" Path="Book/res/Backcover_good-comments_no-comment_736h.png" Plist="Book/csb/backcover.plist" />
+            <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
         </Children>
       </ObjectData>

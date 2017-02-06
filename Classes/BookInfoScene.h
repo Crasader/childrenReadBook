@@ -19,7 +19,27 @@ using namespace std;
 
 class BookInfo : public Layer
 {
-public:
+private:
+	int m_bookStatus = 0;//书籍和用户关系		
+						 //1.判断包年用户
+						 //	A.包年用户	 1 << 4
+						 //	B.非包年	 0 << 4
+						 //2.判断是否购买过书籍
+						 //	A.购买	 1 << 3
+						 //	B.未购买	 0 << 3
+						 //3.判断是否满365本
+						 //	A.满	 1 << 2
+						 //	B.未	满	 0 << 2
+						 //4.判断是否已经租过
+						 //	A.租过	 1 << 1
+						 //	B.未租	 0 << 1
+						 //5.判断书籍是否属于包年类型书籍
+						 //	A.属于	 1
+						 //	B.不属于  0
+						 //6.判断书籍是否免费
+						 //	A.免费	 1<<5
+						 //	B.不免费  0<<5
+		
 	Layer* node;//背景节点图层 csb导入
 	int m_bookId;
 	int m_orderId;//订单号
@@ -119,13 +139,16 @@ public:
 	void httpRentBook(function<void()> runable);
 	string DownLoadBook(int bookId, string bookPlayUrl, string ZipName);
 	void downloadingListener(int bookId, string bookTag, Button* m_ReadButton);
+	void showBuyButton(Button* button, int show, int prpgressing = 0);
+	int whatIsTheRelationshipBetweenUserAndBook(int status, bool zhijieshow =false);//解析出书籍和用户之间的关系(是否vip下载默认不用知道)
+	
 private:
 	Node* m_show;//记录当前显示的图层
 	
 	bool isDownloading;//完整资源是否正在下载
 	bool isDownloaded;//完整资源是否已下载
 	bool isUnzip;//完整资源是否已解压
-	bool isBuy;//完整资源是否已购买
+	//bool isBuy;//完整资源是否已购买
 	bool isDamage;//完整资源是否损坏
 
 	bool isViewDownloading;//试读资源是否正在下载

@@ -5,6 +5,7 @@
 #include "IndexScene.h"
 #include "App.h"
 #include "FKBookParser.h"
+#include "YYXTableView.h"
 class Waiting : public cocos2d::Layer
 {
 public:

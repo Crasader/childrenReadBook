@@ -37,7 +37,8 @@ void Toast::init(const char* msg, bool show)
 		if (t <= m_showTime)
 			return;
 	}
-	m_dataQueue.push(msg);
+	if(!string(msg).empty())
+		m_dataQueue.push(msg);
 	App::log("m_dataQueue:", m_dataQueue.size());
 	if (m_runing == false)
 	{

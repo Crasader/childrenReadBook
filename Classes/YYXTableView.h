@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
  Copyright (c) 2013-2015 Chukong Technologies Inc.
 
  http://www.cocos2d-x.org
@@ -27,24 +27,45 @@
 
 #include "cocos2d.h"
 #include "extensions/cocos-ext.h"
+#include "App.h"
+#include "ui/UILayout.h"
+#include "FrameAnimation.h"
 
-class YYXTableView : public cocos2d::extension::TableViewDataSource, public cocos2d::extension::TableViewDelegate
+class YYXTableView : public cocos2d::extension::TableViewDataSource, public cocos2d::extension::TableViewDelegate , public Layer
 {
+private:
+	TableView* m_tv;
+	std::vector<map<string, YYXStruct>> m_data;
+	int m_playingVoiceIdx = -999;//正在播放声音的item下标
+	bool m_myVoiceAble = false;//点中的是自己的评论播音区域
+	int m_bookid = -999;
+	int m_memberID = -1;
 public:
-    YYXTableView();
-
+	CREATE_FUNC(YYXTableView);
+	bool init();
     virtual void tableCellTouched(cocos2d::extension::TableView* table, cocos2d::extension::TableViewCell* cell) override;
     virtual cocos2d::extension::TableViewCell* tableCellAtIndex(cocos2d::extension::TableView *table, ssize_t idx) override;
     virtual cocos2d::Size tableCellSizeForIndex(cocos2d::extension::TableView *table, ssize_t idx) override;
     virtual ssize_t numberOfCellsInTableView(cocos2d::extension::TableView *table) override;
 
-    virtual void scrollViewDidScroll(cocos2d::extension::ScrollView* view) override{}
+	vector<map<string, YYXStruct>> loadData(int bookid, int memberId);
+	vector<map<string, YYXStruct>> loadData(int bookid);
+	void loadData(map<string, YYXStruct> dat);
+
+	Layout* createItem(map<string, YYXStruct>  data, int idx);
+	void reuseItem(TableViewCell * item, map<string, YYXStruct> data, int idx);
+	virtual void scrollViewDidScroll(cocos2d::extension::ScrollView* view) override {}
     virtual void scrollViewDidZoom(cocos2d::extension::ScrollView* view) override{}
 
+public:
+	static void stopAllAnimation();
+
 private:
-    //std::vector<std::function<TestBase*()>> _testCallbacks;
-    bool _cellTouchEnabled;
-    bool _shouldRestoreTableOffset;
-    cocos2d::Vec2 _tableOffset;
+	void playVoiceFrameAnimation(Sprite* vsp);
+
+	void showAnimationEnd(Sprite* sp);
+	void handleYourOwnComments(TableView* table, TableViewCell* cell);
+	void soundPlayCompletes();
+	void handleOtherComments(TableView* table, TableViewCell* cell);
 };
 #endif

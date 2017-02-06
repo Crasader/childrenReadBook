@@ -285,6 +285,10 @@ F:\release\work\ellabook_android\proj.android\res\layout-sw550dp-large\umeng_soc
 F:\release\work\ellabook_android\proj.android\res\layout-sw550dp-large\umeng_socialize_oauth_dialog.xml \
 F:\release\work\ellabook_android\proj.android\res\layout-sw550dp-large\umeng_socialize_post_share.xml \
 F:\release\work\ellabook_android\proj.android\res\layout-sw550dp-large\umeng_socialize_titile_bar.xml \
+F:\release\work\ellabook_android\proj.android\res\mipmap-hdpi\ic_launcher.png \
+F:\release\work\ellabook_android\proj.android\res\mipmap-mdpi\ic_launcher.png \
+F:\release\work\ellabook_android\proj.android\res\mipmap-xhdpi\ic_launcher.png \
+F:\release\work\ellabook_android\proj.android\res\mipmap-xxhdpi\ic_launcher.png \
 F:\release\work\ellabook_android\proj.android\res\values\attrs.xml \
 F:\release\work\ellabook_android\proj.android\res\values\facebook_attrs.xml \
 F:\release\work\ellabook_android\proj.android\res\values\facebook_strings.xml \

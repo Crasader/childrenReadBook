@@ -37,6 +37,7 @@ Waiting* Waiting::create(std::string bookId, bool isView)
 
 bool Waiting::init(std::string bookId, bool isView)
 {
+	App::log("Waiting::init");
     if ( !Layer::init() )
     {
         return false;
@@ -88,7 +89,7 @@ bool Waiting::init(std::string bookId, bool isView)
 			//保存阅读记录
 			saveReadRecordEnd(bookId, isView);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 0);
-			App::GetInstance()->playBackGroundMusic();
+			App::GetInstance()->resumeBackGroundMusic();
 		});
 		//向前按钮
 		BookParser::getInstance()->setPageUpCallBack([=]() {
@@ -161,14 +162,13 @@ bool Waiting::init(std::string bookId, bool isView)
 		}
 		else
 		{//阅读成功
-			//if (!isView) 
-				//App::addRentBook(atoi(bookId.c_str()));
-			App::addRecordBookRead(atoi(bookId.c_str()));
 			saveReadRecordStart(bookId, isView);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 1);
-			AudioEngine::stopAll();
+			App::GetInstance()->stopOtherVoice();
+			App::GetInstance()->pauseBackGroundMusic();
 		}
 	}), NULL));
+	App::log("Waiting::init--end");
 	return true;
  }
 
@@ -334,8 +334,9 @@ bool Waiting::init(std::string bookId, bool isView)
 	 layer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
 	 layer->getParentNode()->setPosition(Director::getInstance()->getWinSize() / 2);
 	 auto goBuy = (Button*)layer->findControl("Button_2");
-	 auto vipDownload = (Button*)layer->findControl("Button_2_0");
+	 auto vipDownload = (Button*)layer->findControl("Button_2_0"); 
 	 auto noComment = (Sprite*)layer->findControl("Sprite_4");
+	 auto noCommenttext = (Text*)layer->findControl("Text_2");
 	 auto listComment = (ListView*)layer->findControl("ListView_1");
 	 auto yaoqing = (Button*)layer->findControl("Button_1");
 	 listComment->setVisible(false);
@@ -348,7 +349,7 @@ bool Waiting::init(std::string bookId, bool isView)
 			 if (App::GetInstance()->m_me)
 			 {
 				 App::GetInstance()->stopOtherVoice();
-				 YYXLayer::sendNotify("StopAnimation");
+				 YYXTableView::stopAllAnimation();
 				 string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
 				 NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
 			 }
@@ -356,26 +357,64 @@ bool Waiting::init(std::string bookId, bool isView)
 				 Toast::create(App::getString("SHANGWEIDENGLU"));
 		 });
 	 }	 
-	 auto listenershowCommentListViewend = EventListenerCustom::create("showCommentListViewEND", [=](EventCustom* e) {
-		 App::log("showCommentListViewEND^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-		 int count = (int)e->getUserData();
-		 if (count > 0)
-			 noComment->setVisible(false);
-		 else
-		 {
-			 noComment->setVisible(true);
-			 listComment->setVisible(false);
-		 }
-	 });
-	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenershowCommentListViewend, layer);
-	 YYXLayer::showCommentListView(listComment, bookid, -1, 25 * 3, 600, 100 * 3, 500);
-	 if (listComment->getItems().size() > 0)
-		 noComment->setVisible(false);
-	 else
+	 if (App::GetInstance()->versioncode <= 172)
 	 {
-		 noComment->setVisible(true);
-		 listComment->setVisible(false);
+		 auto listenershowCommentListViewend = EventListenerCustom::create("showCommentListViewEND", [=](EventCustom* e) {
+			 App::log("showCommentListViewEND^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+			 int count = (int)e->getUserData();
+			 if (count > 0)
+			 {
+				 noComment->setVisible(false);
+				 noCommenttext->setVisible(false);
+			 }
+			 else
+			 {
+				 noComment->setVisible(true);
+				 noCommenttext->setVisible(true);
+				 noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
+				 listComment->setVisible(false);
+			 }
+		 });
+		 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenershowCommentListViewend, layer);
 	 }
+	if(App::GetInstance()->versioncode <=172)
+	{
+		YYXLayer::showCommentListView(listComment, bookid, -1, 25 * 3, 600, 100 * 3, 500);
+		if (listComment->getItems().size() > 0)
+		{
+			noComment->setVisible(false);
+			noCommenttext->setVisible(false);
+		}
+		else
+		{
+			noComment->setVisible(true);
+			noCommenttext->setVisible(true);
+			noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
+			listComment->setVisible(false);
+		}
+	}
+	else
+	{
+		listComment->setVisible(false);
+		auto tbview = YYXTableView::create();
+		auto data = tbview->loadData(bookid);
+		listComment->setVisible(false);
+		if (data.size() > 0)
+		{
+			noComment->setVisible(false);
+			noCommenttext->setVisible(false);
+			tbview->setPosition(Vec2(0, 0));
+			tbview->setPosition(listComment->getPosition());
+			tbview->setTag(159);
+			layer->addChild(tbview);
+		}
+		else
+		{
+			noComment->setVisible(true);
+			noCommenttext->setVisible(true);
+			noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
+		}
+	}
 	 //按钮
 	 if (vipDownload)
 	 {
@@ -413,19 +452,12 @@ bool Waiting::init(std::string bookId, bool isView)
 	 if (App::GetInstance()->m_me)
 	 {		
 		 if (App::GetInstance()->m_me->vip)
-		 {
 			 vipDownload->setVisible(true);
-		 }
 		 else
-		 {
-			 if (App::GetInstance()->myBuyBookMap.find(bookid) == App::GetInstance()->myBuyBookMap.end())
-				 goBuy->setVisible(true);
-		 }
+			 goBuy->setVisible(true);			 
 	 }
 	 else
-	 {
 		 goBuy->setVisible(true);
-	 }
 	 return layer;
  }
 
@@ -443,7 +475,8 @@ bool Waiting::init(std::string bookId, bool isView)
 	 layer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
 	 layer->getParentNode()->setPosition(Director::getInstance()->getWinSize() / 2);
 	 auto goComment = (Button*)layer->findControl("Button_2_1");
-	 auto noComment = (Sprite*)layer->findControl("Sprite_4");
+	 auto noComment = (Sprite*)layer->findControl("Sprite_4"); 
+	 auto noCommenttext = (Text*)layer->findControl("Text_2_1"); 
 	 auto listComment = (ListView*)layer->findControl("ListView_1");
 	 auto yaoqing = (Button*)layer->findControl("Button_1");
 	 auto jingcaiComment = (ImageView*)layer->findControl("Image_1");
@@ -459,7 +492,7 @@ bool Waiting::init(std::string bookId, bool isView)
 			 if (App::GetInstance()->m_me)
 			 {
 				 App::GetInstance()->stopOtherVoice();
-				 YYXLayer::sendNotify("StopAnimation");
+				 YYXTableView::stopAllAnimation();
 				 string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
 				 NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
 			 }
@@ -467,17 +500,47 @@ bool Waiting::init(std::string bookId, bool isView)
 				 Toast::create(App::getString("SHANGWEIDENGLU"));
 		 });
 	 }
-	 	 if (listComment) {
-		 listComment->setScrollBarEnabled(false);
-		 YYXLayer::showCommentListView(listComment, bookid, -1, 25 * 3, 600, 100 * 3, 500);
-		 if (listComment->getItems().size() > 0)
+	 if (App::GetInstance()->versioncode <= 172)
+	 {
+		 if (listComment) {
+			 listComment->setScrollBarEnabled(false);
+			 YYXLayer::showCommentListView(listComment, bookid, -1, 25 * 3, 600, 100 * 3, 500);
+			 if (listComment->getItems().size() > 0)
+			 {
+				 noComment->setVisible(false);
+				 noCommenttext->setVisible(false);
+			 }
+			 else
+			 {
+				 noComment->setVisible(true);
+				 noCommenttext->setVisible(true);
+				 noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
+				 listComment->setVisible(false);
+			 }
+		 }
+		 listComment->setVisible(false);
+	 }
+	 else {
+		 listComment->setVisible(false);
+		 auto tbview = YYXTableView::create();
+		 auto data = tbview->loadData(bookid);
+		 listComment->setVisible(false);
+		 if (data.size() > 0)
+		 {
 			 noComment->setVisible(false);
+			 noCommenttext->setVisible(false);
+			 tbview->setPosition(listComment->getPosition());
+			 tbview->setTag(159);
+			 layer->addChild(tbview);
+		 }
 		 else
 		 {
 			 noComment->setVisible(true);
-			 listComment->setVisible(false);
+			 noCommenttext->setVisible(true);
+			 noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
 		 }
 	 }
+	 
 	//初始化界面 
 	//阅读记录
 		 //int childID = (int)YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
@@ -494,14 +557,16 @@ bool Waiting::init(std::string bookId, bool isView)
 		jingcaiComment->setTouchEnabled(true);
 		jingcaiComment->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "jingcaiCommentTime", [=]() {
-				App::GetInstance()->stopOtherVoice();
+				jingcaiComment->loadTexture("Book/res/Backcover_comments_press_736h.png", TextureResType::PLIST);
+				MyComment->loadTexture("Book/res/Backcover_comments_736h.png", TextureResType::PLIST);
 				jingcaiComment->setTag(1);
 				jingcaiText->setTextColor(Color4B(187, 93, 39, 255));
 				mydeText->setTextColor(Color4B(255, 255, 255, 255));
 				MyComment->setTag(0);
-				jingcaiComment->loadTexture("Book/res/Backcover_comments_press_736h.png", TextureResType::PLIST);
-				MyComment->loadTexture("Book/res/Backcover_comments_736h.png", TextureResType::PLIST);
 				noComment->setVisible(false);
+				noCommenttext->setVisible(false);
+				App::GetInstance()->stopOtherVoice();
+				YYXTableView::stopAllAnimation();				
 				YYXLayer::sendNotify("showCommentListView", "444444444444444444", -1);
 			});
 		});
@@ -521,20 +586,54 @@ bool Waiting::init(std::string bookId, bool isView)
 		 int memberid = (int)e->getUserData();
 		 App::log(" --------------     run showCommentListView()   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^memberid = ", memberid);
 		 App::GetInstance()->stopOtherVoice();
-		 YYXLayer::showCommentListView(listComment, bookid, memberid, 25 * 3, 600, 100 * 3, 500);
-	 });
-	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerRefersh, layer);
-	 auto listenershowCommentListViewend = EventListenerCustom::create("showCommentListViewEND", [=](EventCustom* e) {
-		 int count = (int)e->getUserData();
-		 if (count > 0)
-			 noComment->setVisible(false);
+		 YYXTableView::stopAllAnimation();
+		 if (App::GetInstance()->versioncode <= 172)
+		 {
+			 YYXLayer::showCommentListView(listComment, bookid, memberid, 25 * 3, 600, 100 * 3, 500);
+		 }
 		 else
 		 {
-			 noComment->setVisible(true);
-			 listComment->setVisible(false);
+			 auto tbview = (YYXTableView*)layer->getChildByTag(159);
+			 if (tbview == nullptr)
+			 {
+				 tbview = YYXTableView::create();
+				 tbview->setTag(159);
+				 tbview->setPosition(listComment->getPosition());
+				 layer->addChild(tbview);
+			 }
+			 auto data = tbview->loadData(bookid, memberid);
+			 if (data.size() > 0)
+			 {
+				 noComment->setVisible(false);
+				 noCommenttext->setVisible(false);
+			 }
+			 else
+			 {
+				 noComment->setVisible(true);
+				 noCommenttext->setVisible(true);
+				 if (memberid == -1)
+					 noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
+				 else
+					 noCommenttext->setText(App::getString("NIHAIMEIYOUPINGLUNGUOCISHU"));
+			 }
 		 }
 	 });
-	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenershowCommentListViewend, layer);
+	 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerRefersh, layer);
+	 if (App::GetInstance()->versioncode <= 172)
+	 {
+		 auto listenershowCommentListViewend = EventListenerCustom::create("showCommentListViewEND", [=](EventCustom* e) {
+			 int count = (int)e->getUserData();
+
+			 if (count > 0)
+				 noComment->setVisible(false);
+			 else
+			 {
+				 noComment->setVisible(true);
+				 listComment->setVisible(false);
+			 }
+		 });
+		 Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenershowCommentListViewend, layer);
+	 }
 	 //刷新阅读时间
 	 //auto listenersumReadTime = EventListenerCustom::create("sumReadTime", [=](EventCustom* e) {
 		// int time = (int)e->getUserData();
@@ -566,15 +665,16 @@ bool Waiting::init(std::string bookId, bool isView)
 		 MyComment->setTouchEnabled(true);
 		 MyComment->addClickEventListener([=](Ref* sender) {
 			 YYXLayer::controlTouchTime(1, "MyCommentTime", [=]() {
-				 App::GetInstance()->stopOtherVoice();
-				 MyComment->setTag(1);
+				 jingcaiComment->loadTexture("Book/res/Backcover_comments_736h.png", TextureResType::PLIST);
+				 MyComment->loadTexture("Book/res/Backcover_comments_press_736h.png", TextureResType::PLIST);
 				 mydeText->setTextColor(Color4B(187, 93, 39, 255));
 				 jingcaiText->setTextColor(Color4B(255, 255, 255, 255));
 				 jingcaiComment->setTag(0);
-				 jingcaiComment->loadTexture("Book/res/Backcover_comments_736h.png", TextureResType::PLIST);
-				 MyComment->loadTexture("Book/res/Backcover_comments_press_736h.png", TextureResType::PLIST);
+				 MyComment->setTag(1);
 				 noComment->setVisible(false);
-				 YYXLayer::sendNotify("showCommentListView", "3333333333333333333", atoi(App::GetInstance()->getMemberID().c_str()));
+				 App::GetInstance()->stopOtherVoice();
+				 YYXTableView::stopAllAnimation();				
+				 YYXLayer::sendNotify("showCommentListView", "", atoi(App::GetInstance()->getMemberID().c_str()));
 			 });
 		 });
 	 }
@@ -583,9 +683,9 @@ bool Waiting::init(std::string bookId, bool isView)
 		 goComment->setVisible(true);
 		 goComment->addClickEventListener([=](Ref* sender) {
 			 YYXLayer::controlTouchTime(1, "backCoverGoCommentTime", [=]() {
-				 App::GetInstance()->stopOtherVoice();
-				 YYXLayer::sendNotify("StopAnimation");
 				 Director::getInstance()->getRunningScene()->addChild(SendComment::create(bookid));
+				 App::GetInstance()->stopOtherVoice();
+				 YYXTableView::stopAllAnimation();				 
 			 });
 		 });
 		 if (App::GetInstance()->m_me)

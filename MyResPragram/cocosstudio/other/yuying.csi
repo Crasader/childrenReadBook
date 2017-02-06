@@ -1,0 +1,11 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="yuying" Type="Plist" ID="56a96403-46c5-4376-ac53-d49804d1bbcc" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="3" AllowRotation="True" AllowAnySize="False" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="other/Backcover_voice_donghua0_736h.png" />
+      <FilePathData Path="other/Backcover_voice_donghua1_736h.png" />
+      <FilePathData Path="other/Backcover_voice_donghua2_736h.png" />
+    </ImageFiles>
+    <MaxSize Width="128" Height="128" />
+  </Content>
+</PlistInfoProjectFile>

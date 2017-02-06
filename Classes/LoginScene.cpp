@@ -1,5 +1,4 @@
-﻿#pragma execution_character_set("utf-8")
-#include "LoginScene.h"
+﻿#include "LoginScene.h"
 #include "NetIntface.h"
 #include "XZLayer.h"
 
@@ -1142,7 +1141,7 @@ void Login::closeTime()
 void Login::LogIn(string member_name, string member_passwd)
 {
 	if (member_name != "" && member_passwd != "") {
-		NetIntface::httpLogIn(member_name, member_passwd,"LoginSceneHttpLogInSuccess", [=](string json) {
+		NetIntface::httpLogIn(member_name, member_passwd,"", [=](string json) {
 			NetIntface::httpLogInCallBack(json, [=](int memberId, int memberSex, int memberGrade, string memberCity, string memberProvince) {
 				//登陆成功
 				if (App::GetInstance()->m_me == nullptr)
@@ -1160,75 +1159,14 @@ void Login::LogIn(string member_name, string member_passwd)
 				YYXLayer::setFileValue("userSex", StringUtils::format("%d", memberSex));
 				YYXLayer::setFileValue("userCity", memberCity);
 				YYXLayer::setFileValue("userProvince", memberProvince);
-				/*UserDefault::getInstance()->setStringForKey("userAccount", member_name);
-				UserDefault::getInstance()->setStringForKey("userPassword", member_passwd);
-				UserDefault::getInstance()->setIntegerForKey("userId", memberId);
-				UserDefault::getInstance()->setIntegerForKey("userSex", memberSex);
-				UserDefault::getInstance()->setStringForKey("userCity", memberCity);
-				UserDefault::getInstance()->setStringForKey("userProvince", memberProvince);*/
-				//本地读取最近下载 最近阅读
-				string rfilename = "readBook/download_" + StringUtils::format("%d", memberId) + ".json";
-				string dfilename = "downloadBook/download_" + StringUtils::format("%d", memberId) + ".json";
-				string downloadPath = FileUtils::getInstance()->getWritablePath() + dfilename;
-				string readPath = FileUtils::getInstance()->getWritablePath() + rfilename;
-				map<string, string> data;
-				App::getMapFromFile(downloadPath, data);
-				App::GetInstance()->bookDownLoad.clear();
-				for (auto it : data)
-				{
-					int d = atoi(it.first.c_str());
-					if (d != 0)
-						App::GetInstance()->bookDownLoad[d] = atoi(it.second.c_str());
-				}
-				map<string, string> dat;
-				App::getMapFromFile(readPath, dat);
-				App::GetInstance()->bookRead.clear();
-				for (auto its : dat)
-				{
-					int d = atoi(its.first.c_str());
-					if (d != 0)
-						App::GetInstance()->bookRead[d] = atoi(its.second.c_str());
-				}
-				//查询vip
-				App::httpCheckVIP(memberId);
-				//查完从本地读取租书json
-				App::getLocalRentJson();				
-				//确定需要展示的头像和孩子ID
-				getShowIDandShowHeadPortrait(memberId);
-				//获取用户红包
-				httpGetUserRedPackets(memberId);
-				//获取当前用户已购列表
-				//Load::getBuyBook();
-				NetIntface::httpGetUserBuyBooks(memberId, "LoginSceneHttpGetUserBuyBooksSuccess", [=](string json) {	
-					NetIntface::httpGetUserBuyBooksCallBack(json, []() {
-						//json成功, array前执行
-						App::GetInstance()->myBuyBookMap.clear();
-						App::GetInstance()->myBuyBookVector.clear();
-					}, [](int bookId, int orderId, string bookCoverUrl, string bookPlayUrl, string bookName) {
-						//解析过程
-						if (App::GetInstance()->myBuyBookMap.find(bookId) == App::GetInstance()->myBuyBookMap.end())
-						{
-							App::GetInstance()->myBuyBookMap[bookId] = bookPlayUrl;
-							App::GetInstance()->myBuyBookVector.push_back(bookId);
-						}
-					}, [memberId]() {
-						//解析成功
-						YYXLayer::buyBooksJsonWriteFile(App::GetInstance()->myBuyBookVector, memberId, FileUtils::getInstance()->getWritablePath()+"books.json");
-						YYXLayer::sendNotify("loginSceneHttpGetUserBuyBooksSuccess");
-					}, []() {
-						//解析错误
-						Toast::create(App::getString("YIGOUSHUJILIEBIAOGENGXINSHIBAI"));
-					});
-				}, "LoginSceneHttpGetUserBuyBooksFail", [](string str) {
-					//网络错误
-					Toast::create(App::getString("YIGOUSHUJILIEBIAOGENGXINSHIBAI"));
-				});
+				//大量的用户信息请求
+				App::loginCallback();
 				YYXLayer::sendNotify("USER_LOGIN_SUCCESS");
 			}, [](string str) {
 				YYXLayer::sendNotify("USER_LOGIN_FAILED");
 				Toast::create(str.c_str());
 			});
-		}, "LoginSceneHttpLogInFail", [](string str) {
+		}, "", [](string str) {
 			YYXLayer::sendNotify("loginFail");
 			Toast::create(App::getString("NETEXCEPTION"));
 			YYXLayer::sendNotify("USER_LOGIN_FAILED");

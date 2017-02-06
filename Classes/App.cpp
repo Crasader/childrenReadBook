@@ -250,59 +250,6 @@ void App::getVisible()
 	App::log("--------------------------org.y = ", org.y);
 }
 
-void App::httpCheckVIP(int memberID)
-{
-	string url = string(IP).append(NET_CHECHVIP);
-	map<string, string> par;
-	par["memberId"] = StringUtils::format("%d", memberID);
-	NetIntface::httpPost(url, par, "checkVIPSuccess", [=](string json) {
-		/*{
-		"expireTime": 1508947200,
-		"startTime": 1477411200,
-		"errorMessage": "",
-		"id": "",
-		"result": true,
-		"isVip": true,
-		"times": 31536000,
-		"code": 0,
-		"toURL": ""
-		}*/
-		rapidjson::Document doc;
-		if (YYXLayer::getJsonObject4Json(doc, json))
-		{
-			if (YYXLayer::getBoolForJson(false, doc, "result"))
-			{
-				if (YYXLayer::getBoolForJson(false, doc, "isVip"))
-				{
-					if (!App::GetInstance()->m_me)
-						App::GetInstance()->m_me = new MyAccount();
-					App::GetInstance()->m_me->id = memberID;
-					App::GetInstance()->m_me->vip = true;
-					auto startTime = YYXLayer::getInt64ForJson(0, doc, "startTime");
-					auto expireTime = YYXLayer::getInt64ForJson(0, doc, "expireTime");
-					auto times = YYXLayer::getInt64ForJson(0, doc, "times");
-					App::GetInstance()->m_me->startvip = YYXLayer::getStringTimeFromInt64Time(startTime);
-					App::GetInstance()->m_me->endvip = YYXLayer::getStringTimeFromInt64Time(expireTime);
-					App::GetInstance()->m_me->vipTime = times;
-					YYXLayer::sendNotify("showVIPRenew");//提示续费
-					YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
-					if (App::m_debug == 0)
-					{
-						auto time = YYXStruct::getMapInt64(App::GetInstance()->myData, "debugVipTime", App::GetInstance()->m_me->vipTime);
-						App::GetInstance()->m_me->vipTime = time;
-					}
-				}
-				else
-				{
-					App::GetInstance()->m_me->vip = false;
-					string rentpath = FileUtils::getInstance()->getWritablePath() + StringUtils::format("rentBook/RentBook_%d.json", App::GetInstance()->m_me->id);
-					FileUtils::getInstance()->removeFile(rentpath);
-				}
-			}
-		}
-	}, "", [](string str) {});
-}
-
 //获取评论
 void App::httpComment(int bookid, function<void()> runFunction)
 {
@@ -310,7 +257,7 @@ void App::httpComment(int bookid, function<void()> runFunction)
 	string errorkey = "";
 	NetIntface::httpGetComments(bookid, runkey, [=](string json) {
 		NetIntface::httpBookCommentsCallback(json, [=](int index, string gevalId, string gevalType, string score, string memberName, string gevalState,
-			string memberId, string commentTime, string title, string content, string url, string gevalTime) {
+			string memberId, string commentTime, string title, string content, string url, string gevalTime, string AvatarUrl) {
 			int id = atoi(gevalId.c_str());//评论ID
 			int xingji = atoi(score.c_str());//评星
 			time_t icommentTime = atoi(commentTime.c_str());//评论时间
@@ -326,6 +273,8 @@ void App::httpComment(int bookid, function<void()> runFunction)
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, timeKey, icommentTime, memberName, (Ref*)memnerid);
 				string titleKey = StringUtils::format("comment_gevalId=%d+title", id);
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, titleKey, -999, title);
+				string AvatarUrlKey = StringUtils::format("comment_gevalId=%d+memberId+AvatarUrl",id);
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, AvatarUrlKey, memnerid, AvatarUrl);
 			}
 			else if (!url.empty())
 			{//语音评论
@@ -337,6 +286,8 @@ void App::httpComment(int bookid, function<void()> runFunction)
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, voiceKey, xingji, url, (Ref*)voiceLength);
 				string timeKey = StringUtils::format("comment_gevalId=%d+commentTime+memberName+memberId", id);
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, timeKey, icommentTime, memberName, (Ref*)memnerid);
+				string AvatarUrlKey = StringUtils::format("comment_gevalId=%d+memberId+AvatarUrl", id);
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, AvatarUrlKey, memnerid, AvatarUrl);
 				if (!FileUtils::getInstance()->isFileExist(dir + "/" + filename))
 				{
 					NetIntface::DownLoadFile(url, dir, filename, "", [](string path) {}, "", [](string str) {});
@@ -483,7 +434,13 @@ const char* App::getString(const char* key)
 		m_strings = Dictionary::createWithContentsOfFile("strings.xml");
 	m_strings->retain();
 	//读取Hello键中的值 objectForKey根据key，获取对应的string
-	return ((__String*)m_strings->objectForKey(key))->_string.c_str();
+	auto res = ((__String*)m_strings->objectForKey(key))->_string.c_str();
+	if (res == nullptr)
+	{
+		App::log(string(key)+" nothingness in string.xml");
+		res = "";
+	}
+	return res;
 }
 
 //"data":{"memberCity":null, "memberName" : "18888702718", "memberProvince" : null, "memberSex" : "1", "memberId" : 3618}
@@ -1220,44 +1177,10 @@ void App::backWating() {
 	App::GetInstance()->isBack = true;
 }
 
-void App::addRecordBookDownload(int bookid)
-{
-	App::GetInstance()->bookDownLoad[bookid] = (int)YYXLayer::getCurrentTime4Second();
-	if (App::GetInstance()->bookDownLoad.size() > 60)
-	{
-		auto vit = sortMapToVector(App::GetInstance()->bookDownLoad);
-		while (vit.size() > 60)
-		{
-			auto itb = vit.back();
-			App::GetInstance()->bookDownLoad.erase(itb.first);
-			vit.pop_back();
-		}
-	}
-	map<string, string> data;
-	for (auto it : App::GetInstance()->bookDownLoad)
-	{
-		string key = StringUtils::format("%d", it.first);
-		string value = StringUtils::format("%d", it.second);
-		data[key] = value;
-	}
-	string json = YYXLayer::getStringFormMap(data);
-	string filename = "downloadBook/download_"+App::getMemberID()+".json";
-	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
-}
-
 void App::addRecordBookCollect(int bookid)
 {
 	App::GetInstance()->bookCollect[bookid] = (int)YYXLayer::getCurrentTime4Second();
-	if (App::GetInstance()->bookCollect.size() > 60)
-	{
-		auto vit = sortMapToVector(App::GetInstance()->bookCollect);
-		while (vit.size() > 60)
-		{
-			auto itb = vit.back();
-			App::GetInstance()->bookCollect.erase(itb.first);
-			vit.pop_back();
-		}
-	}
+	
 	map<string, string> data;
 	for (auto it : App::GetInstance()->bookCollect)
 	{
@@ -1270,28 +1193,24 @@ void App::addRecordBookCollect(int bookid)
 	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
 }
 
-void App::addRecordBookDelete(int bookid)
+void App::deleteRecordBookCollect(int bookid)
 {
-	App::GetInstance()->bookDelete[bookid] = (int)YYXLayer::getCurrentTime4Second();
+	
+	auto it = App::GetInstance()->bookCollect.find(bookid);
+	
+	//if (it != App::GetInstance()->bookCollect.end) {
+	App::GetInstance()->bookCollect.erase(bookid);
+	//}
 	map<string, string> data;
-	for (auto it : App::GetInstance()->bookDelete)
+	for (auto it : App::GetInstance()->bookCollect)
 	{
 		string key = StringUtils::format("%d", it.first);
 		string value = StringUtils::format("%d", it.second);
 		data[key] = value;
 	}
-	if (App::GetInstance()->bookDelete.size() > 60)
-	{
-		auto vit = sortMapToVector(App::GetInstance()->bookDelete);
-		while (vit.size() > 60)
-		{
-			auto itb = vit.back();
-			App::GetInstance()->bookDelete.erase(itb.first);
-			vit.pop_back();
-		}
-	}
+	
 	string json = YYXLayer::getStringFormMap(data);
-	string filename = "deleteBook/delete_" + App::getMemberID() + ".json";
+	string filename = "collectBook/collect_" + App::getMemberID() + ".json";
 	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
 }
 
@@ -1388,54 +1307,55 @@ vector<PAIR> App::sortMapToVector(map<int , int> mapData)
 	return vec;
 }
 
-//vector<PAIR> App::sortRecordBookDownload()
-//{
-//	vector<PAIR> vec(App::GetInstance()->bookDownLoad.begin(), App::GetInstance()->bookDownLoad.end());
-//	sort(vec.begin(), vec.end(), cmp_by_value);
-//	return vec;
-//}
-
-void App::addRecordBookRead(int bookid)
+void App::addDownloadBookRecord(int bookid)
 {
-	App::GetInstance()->bookRead[bookid] = (int)YYXLayer::getCurrentTime4Second();
+	App::GetInstance()->bookDownload[bookid] = (int)YYXLayer::getCurrentTime4Second();
 	map<string, string> data;
-	for (auto it : App::GetInstance()->bookRead)
+	for (auto it : App::GetInstance()->bookDownload)
+	{
+		string key = StringUtils::format("%d", it.first);
+		data[key] = StringUtils::format("%d", it.second);
+	}
+	string json = YYXLayer::getStringFormMap(data);
+	string filename = StringUtils::format("downloadBook/downloadbook_%d.json", App::GetInstance()->m_me->id);
+	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
+}
+
+void App::deleteDownloadBookRecord(int bookid)
+{
+	auto it = App::GetInstance()->bookDownload.find(bookid);
+	App::GetInstance()->bookDownload.erase(bookid);
+	map<string, string> data;
+	for (auto it : App::GetInstance()->bookDownload)
 	{
 		string key = StringUtils::format("%d", it.first);
 		string value = StringUtils::format("%d", it.second);
 		data[key] = value;
 	}
-	if (App::GetInstance()->bookRead.size() > 60)
-	{
-		auto vit = sortMapToVector(App::GetInstance()->bookRead);
-		while (vit.size() > 60)
-		{
-			auto itb = vit.back();
-			App::GetInstance()->bookRead.erase(itb.first);
-			vit.pop_back();
-		}
-	}
 	string json = YYXLayer::getStringFormMap(data);
-	string filename = "readBook/download_" + App::getMemberID() + ".json";
+	string filename = StringUtils::format("downloadBook/downloadbook_%d.json", App::GetInstance()->m_me->id);
 	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
 }
 
-//vector<PAIR> App::sortRecordBookRead()
-//{
-//	vector<PAIR> vec(App::GetInstance()->bookRead.begin(), App::GetInstance()->bookRead.end());
-//	sort(vec.begin(), vec.end(), cmp_by_value);
-//	return vec;
-//}
-//
-//vector<PAIR> App::sortRecordMyRentBook()
-//{
-//	vector<PAIR> vec(App::GetInstance()->myRentBookMap.begin(), App::GetInstance()->myRentBookMap.end());
-//	sort(vec.begin(), vec.end(), cmp_by_value);
-//	return vec;
-//}
+void App::loadDownloadBookCache()
+{
+	string cfilename = "downloadBook/downloadbook_" + App::getMemberID() + ".json";
+	string path = FileUtils::getInstance()->getWritablePath() + cfilename;
+	map<string, string> data;
+	App::getMapFromFile(path, data);
+	for (auto it : data)
+	{
+		int bookid = atoi(it.first.c_str());
+		int time = atoi(it.second.c_str());
+		if (bookid > 0)
+			App::GetInstance()->bookDownload[bookid] = time;
+	}
+}
 
 void App::getMapFromFile(string path, map<string, string>& data)
 {
+	if (!FileUtils::getInstance()->isFileExist(path))
+		return;
 	ssize_t size = 0;
 	unsigned char* titlech = FileUtils::getInstance()->getFileData(path, "r", &size);
 	if (titlech)
@@ -1454,6 +1374,198 @@ void App::getMapFromFile(string path, map<string, string>& data)
 	}
 }
 
+//离线用户本地信息预加载
+void App::preLoad()
+{	//载入用户 余额 孩子
+	string userAccount = YYXLayer::getFileValue("userAccount", "");
+	if (userAccount != "")	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userAccount", -999, userAccount);
+	auto userPassword = YYXLayer::getFileValue("userPassword", "");
+	if (userPassword != "") YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userPassword", -999, userPassword);
+	auto userIdstr = YYXLayer::getFileValue("userId", "-999");
+	if (userIdstr != "-999")
+	{
+		int userId = atoi(userIdstr.c_str());
+		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userId", userId);
+		if (!App::GetInstance()->m_me)
+			App::GetInstance()->m_me = new MyAccount();
+		App::GetInstance()->m_me->id = userId;
+		//加载vip包年书籍列表
+		loadvipBookCache();
+		//载入购书信息
+		loadBuyBookCache();
+		//载入收藏列表
+		loadCollectBookCache();
+		//载入下载列表
+		loadDownloadBookCache();
+		auto userBalancestr = YYXLayer::getFileValue("userBalance", "");
+		int money = atoi(userBalancestr.c_str());
+		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userBalance", money);
+		App::GetInstance()->m_me->momey = money;
+		auto userSexstr = YYXLayer::getFileValue("userSex", "");
+		if (userSexstr != "") YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userSex", atoi(userSexstr.c_str()));
+		auto userCity = YYXLayer::getFileValue("userCity", "");
+		if (userCity != "") YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userCity", -999, userCity);
+		auto userProvince = YYXLayer::getFileValue("userProvince", "");
+		if (userProvince != "") YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userProvince", -999, userProvince);
+		string ShowChildName = YYXLayer::getFileValue("ShowChildName", "");
+		if (ShowChildName != "") YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildName", -999, ShowChildName);
+		string ShowChildSexstr = YYXLayer::getFileValue("ShowChildSex", "");
+		if (ShowChildSexstr != "") YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildSex", atoi(ShowChildSexstr.c_str()));
+		string ShowChildBirthday = YYXLayer::getFileValue("ShowChildBirthday", "");
+		if (ShowChildBirthday != "") YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildBirthday", -999, ShowChildBirthday);
+		//孩子信息
+		string ShowChildIDstr = YYXLayer::getFileValue("ShowChildID", "");
+		if (ShowChildIDstr != "")
+		{//有孩子ID
+			int ShowChildID = atoi(ShowChildIDstr.c_str());
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildID", ShowChildID);
+			string ShowChildHeadPortrait = YYXLayer::getFileValue("ShowChildHeadPortrait", "");
+			if (ShowChildHeadPortrait != "" && FileUtils::getInstance()->isFileExist(ShowChildHeadPortrait))
+			{//有孩子ID有头像
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, ShowChildHeadPortrait);
+			}
+			else
+			{//有孩子ID无头像
+				string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", ShowChildID);
+				if (FileUtils::getInstance()->isFileExist(savePath))
+					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, savePath);
+			}
+		}
+	}
+
+	//是否仅WiFi下载
+	string result = YYXLayer::getFileValue("IS_ONLY_WIFI", "");
+	if (result == "" || result == "0")
+		App::GetInstance()->isOnlyWifi = true;
+	else
+		App::GetInstance()->isOnlyWifi = false;
+	//获取视力保护时间
+	string PROTECT_TIMEstr = YYXLayer::getFileValue("PROTECT_TIME", "0");
+	App::GetInstance()->protectTime = atoi(PROTECT_TIMEstr.c_str());
+	//获取通知
+	auto doingFunction = [](string key, string typeName) {
+		if (typeName == "INT")
+		{
+			auto number = YYXLayer::getFileValue(key, "-999");
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, atoi(number.c_str()));
+		}
+		else if (typeName == "STRING")
+		{
+			auto valu = YYXLayer::getFileValue(key, "");
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, -999, valu);
+		}
+	};
+	doingFunction("pushId", "INT");
+	doingFunction("pushType", "INT");
+	doingFunction("imageUrl", "STRING");
+	doingFunction("pushUrl", "STRING");
+	doingFunction("pushTitle", "STRING");
+	doingFunction("pushString", "STRING");
+	doingFunction("pushVersion", "STRING");
+}
+
+//登录后的网络信息获取
+void App::loginCallback(bool hint ,function<void ()>  runable)
+{
+	//查询用户包年服务信息
+	httpCheckVIP(hint);
+	//本地读取vip包年图书列表(租书列表),
+	httpGetVipBook(hint);
+	//网络请求收藏列表
+	httpGetCollectBook(hint);
+	//获取用户已购列表
+	httpGetBuyBook(hint);
+	//获取用户红包
+	string url = string(IP).append(NET_USERREDPACKET).append("?memberId=").append(App::getMemberID());
+	NetIntface::httpGet(url, "", [=](string json) {
+		NetIntface::httpGetUserRedPacketsCallBack(json, [=]() {
+			App::GetInstance()->m_redPacket.clear();
+		}, [](int coupon_id, int coupon_amount100, string coupon_expire_time) {
+			if (coupon_id != -999 || coupon_amount100 != -99900) {
+				map<string, YYXStruct> mapresult;
+				YYXStruct::initMapYYXStruct(mapresult, "coupon_id", coupon_id);
+				YYXStruct::initMapYYXStruct(mapresult, "coupon_amount", coupon_amount100);
+				YYXStruct::initMapYYXStruct(mapresult, "coupon_expire_time", 0, coupon_expire_time);
+				App::GetInstance()->m_redPacket.push_back(mapresult);
+			}
+		}, [](int expiring_coupon_count) {
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "expiring_coupon_count", expiring_coupon_count);
+		}, [=]() {
+			if(hint)
+				Toast::create(App::getString("HONGBAOHUOQUSHIBAI"));
+		});
+	}, "", [=](string str) {
+		if (hint)
+			Toast::create(App::getString("HONGBAOHUOQUSHIBAI"));
+	});
+	//获取孩子信息
+	NetIntface::httpGetChildDetails(App::GetInstance()->m_me->id, "", [=](string json) {
+		NetIntface::httpGetChildDetailsCallBack(json, [=](int index, int childrenId, int childrenSex, string childrenName, string childrenBirth, string url, long long uptime) {
+			if (index == 0)
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "firstChildID", childrenId);
+			if (index == 1)
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "secondChildID", childrenId);
+			if (index == 2)
+				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "threeChildID", childrenId);
+			string namekey = StringUtils::format("name+childID=%d", childrenId);
+			string pathkey = StringUtils::format("path+childID=%d", childrenId);
+			string birthdaykey = StringUtils::format("birthday+childID=%d", childrenId);
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, namekey, childrenId, childrenName, nullptr);
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, uptime, "", nullptr);
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, birthdaykey, childrenSex, childrenBirth, nullptr);
+			string urlkey = StringUtils::format("url+childID=%d", childrenId);
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, urlkey, -999, url);
+			string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
+			if (!FileUtils::getInstance()->isFileExist(savePath))
+			{
+				NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("9HeadPortrait_%d.png", childrenId),
+					StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom()), [=](string path) {
+					if (path != "" && FileUtils::getInstance()->isFileExist(path))
+					{
+						string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
+						App::makeRoundImage(path, savePath);
+						string pathkey = StringUtils::format("path+childID=%d", childrenId);
+						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
+						YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
+					}
+				}, "", [](string str) {});
+			}
+		}, [=](int b) {
+			if (b == 1)
+			{
+				auto run = [](string key) {
+					//找出数据
+					auto childrenId = YYXStruct::getMapInt64(App::GetInstance()->myData, key, -999);
+					string namekey = StringUtils::format("name+childID=%d", childrenId);
+					string birthdaykey = StringUtils::format("birthday+childID=%d", childrenId);
+					string childrenName = YYXStruct::getMapString(App::GetInstance()->myData, namekey, "");
+					int childrenSex = YYXStruct::getMapInt64(App::GetInstance()->myData, birthdaykey, 0);
+					string childrenBirth = YYXStruct::getMapString(App::GetInstance()->myData, birthdaykey, "");
+					//赋值
+					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildName", -999, childrenName);
+					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildSex", childrenSex);
+					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildBirthday", -999, childrenBirth);
+					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildID", childrenId);
+				};
+				int ShowChildID = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
+				int childrenId1 = YYXStruct::getMapInt64(App::GetInstance()->myData, "firstChildID", -999);
+				int childrenId2 = YYXStruct::getMapInt64(App::GetInstance()->myData, "secondChildID", -999);
+				int childrenId3 = YYXStruct::getMapInt64(App::GetInstance()->myData, "threeChildID", -999);
+				if (childrenId3 !=-999 && ShowChildID == childrenId3)
+					run("threeChildID");
+				else
+				{
+					if (ShowChildID == childrenId2)
+						run("secondChildID");
+					else
+						run("firstChildID");
+				}
+			}
+		});
+	}, "", [](string stt) {});	
+}
+
+//注销
 void App::cancelData()
 {
 	string musicClose = YYXLayer::getFileValue("musicClose", "true");
@@ -1470,21 +1582,247 @@ void App::cancelData()
 	YYXLayer::DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "temp");
 	//删除本地用户信息
 	YYXLayer::DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "Data");
-	//清空已购列表
-	App::GetInstance()->myBuyBookMap.clear();
-	App::GetInstance()->myBuyBookVector.clear();
-	//清空租书,最近下载 最近阅读
-	App::GetInstance()->myRentBookMap.clear();
-	App::GetInstance()->bookRead.clear();
-	App::GetInstance()->bookDownLoad.clear();
+	//清空已购列表, 收藏 , 包年图书
+	App::GetInstance()->myBookURLMap.clear();
+	App::GetInstance()->myBuyBook.clear();
+	App::GetInstance()->VIPbook.clear();
 	App::GetInstance()->bookCollect.clear();
-	App::GetInstance()->bookDelete.clear();
 	//创建temp目录
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "temp"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "temp");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "Data"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "Data");
 	YYXLayer::setFileValue("musicClose", musicClose);
+}
+
+//获取收藏列表
+void App::httpGetCollectBook(bool hint)
+{
+	NetIntface::httpBookCollectAndVipList(1, [=](string json) {
+		rapidjson::Document doc;
+		auto result = YYXLayer::getJsonObject4Json(doc, json);
+		if (result)
+		{
+			bool result2 = YYXLayer::getBool4Json(false, doc, "result");
+			if (result2) {
+				map<string, string> data;
+				App::GetInstance()->bookCollect.clear();
+				rapidjson::Value arrayData;
+				YYXLayer::getJsonArray4Json(arrayData, doc, "data");
+				YYXLayer::getDataForJsonArray(arrayData, [&](rapidjson::Value & item, int index) {
+					auto bookid = YYXLayer::getInt4Json(-999, item, "bookId");
+					App::GetInstance()->bookCollect[bookid] = (int)YYXLayer::getCurrentTime4Second();
+					data[StringUtils::format("%d", bookid)] = StringUtils::format("%d", (int)YYXLayer::getCurrentTime4Second());
+				});
+				auto stri = YYXLayer::getStringFormMap(data);
+				string path = FileUtils::getInstance()->getWritablePath() + "collectBook/collect_" + App::getMemberID() + ".json";
+				YYXLayer::writeFile(stri, path);
+			}
+		}
+	}, [=](string json) {
+		if (hint)
+			Toast::create(App::getString("HUOQUSHOUCANGLIEBIAOSHIBAI"));
+	});
+}
+
+void App::loadCollectBookCache()
+{
+	string cfilename = "collectBook/collect_" + App::getMemberID() + ".json";
+	string path = FileUtils::getInstance()->getWritablePath() + cfilename;
+	map<string, string> collect_data;
+	App::getMapFromFile(path, collect_data);
+	for (auto it : collect_data)
+	{
+		int bookid = atoi(it.first.c_str());
+		int time = atoi(it.second.c_str());
+		if (bookid > 0)
+			App::GetInstance()->bookCollect[bookid] = time;
+	}
+}
+
+//获取包年服务信息
+void App::httpCheckVIP(bool hint)
+{
+	string url = string(IP).append(NET_CHECHVIP);
+	map<string, string> par;
+	par["memberId"] = App::getMemberID();
+	NetIntface::httpPost(url, par, "", [=](string json) {
+		/*{
+		"expireTime": 1508947200,
+		"startTime": 1477411200,
+		"errorMessage": "",
+		"id": "",
+		"result": true,
+		"isVip": true,
+		"times": 31536000,
+		"code": 0,
+		"toURL": ""
+		}*/
+		rapidjson::Document doc;
+		if (YYXLayer::getJsonObject4Json(doc, json))
+		{
+			if (YYXLayer::getBoolForJson(false, doc, "result"))
+			{
+				if (YYXLayer::getBoolForJson(false, doc, "isVip"))
+				{
+					if (!App::GetInstance()->m_me)
+						App::GetInstance()->m_me = new MyAccount();
+					App::GetInstance()->m_me->id = App::GetInstance()->m_me->id;
+					App::GetInstance()->m_me->vip = true;
+					auto startTime = YYXLayer::getInt64ForJson(0, doc, "startTime");
+					auto expireTime = YYXLayer::getInt64ForJson(0, doc, "expireTime");
+					auto times = YYXLayer::getInt64ForJson(0, doc, "times");
+					App::GetInstance()->m_me->startvip = YYXLayer::getStringTimeFromInt64Time(startTime);
+					App::GetInstance()->m_me->endvip = YYXLayer::getStringTimeFromInt64Time(expireTime);
+					App::GetInstance()->m_me->vipTime = times;
+					YYXLayer::sendNotify("showVIPRenew");//提示续费
+					YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
+					if (App::m_debug == 0)
+					{
+						auto time = YYXStruct::getMapInt64(App::GetInstance()->myData, "debugVipTime", App::GetInstance()->m_me->vipTime);
+						App::GetInstance()->m_me->vipTime = time;
+					}
+				}
+				else
+				{
+					App::GetInstance()->m_me->vip = false;
+					string rentpath = FileUtils::getInstance()->getWritablePath() + StringUtils::format("vipBook/vipbook_%d.json", App::GetInstance()->m_me->id);
+					FileUtils::getInstance()->removeFile(rentpath);
+					App::GetInstance()->VIPbook.clear();
+				}
+			}
+		}
+	}, "", [=](string str) {
+		if (hint)
+			Toast::create(App::getString("HUOQUBAONIANFUWUXINXISHIBAI"));
+	});
+}
+
+//获取包年图书列表
+void App::httpGetVipBook(bool hint)
+{
+	NetIntface::httpBookCollectAndVipList(2, [=](string json) {
+		rapidjson::Document doc;
+		auto result = YYXLayer::getJsonObject4Json(doc, json);
+		if (result)
+		{
+			bool result2 = YYXLayer::getBool4Json(false, doc, "result");
+			if (result2) {
+				App::GetInstance()->VIPbook.clear();
+				rapidjson::Value arrayData;
+				YYXLayer::getJsonArray4Json(arrayData, doc, "data");
+				YYXLayer::getDataForJsonArray(arrayData, [=](rapidjson::Value & item, int index) {
+					auto bookid = YYXLayer::getInt4Json(-999, item, "bookId");
+					auto url = YYXLayer::getString4Json("", item, "bookPlayUrl");
+					auto bookCoverUrl = YYXLayer::getString4Json("", item, "bookCoverUrl");
+					auto bookName = YYXLayer::getString4Json("", item, "bookName");
+					App::GetInstance()->VIPbook[bookid] = (int)YYXLayer::getCurrentTime4Second();
+					App::GetInstance()->myBookURLMap[bookid] = url;
+					//封面下载
+					string fileName = StringUtils::format("%d", bookid) + ".png";
+					if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookid)))
+					{
+						NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
+							YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+						}, "", [=](string str) {
+							if (hint)
+							{
+								string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+								Toast::create(sstr.c_str(), false);
+							}
+						});
+					}
+				});
+				YYXLayer::sendNotify("bookRoomSceneCompileChange", "", -1);
+				map<string, string> data;
+				for (auto it : App::GetInstance()->VIPbook)
+				{
+					data[StringUtils::format("%d", it.first)] = StringUtils::format("%d", it.second);
+				}
+				auto stri = YYXLayer::getStringFormMap(data);
+				string path = FileUtils::getInstance()->getWritablePath() + "vipBook/vipbook_" + App::getMemberID() + ".json";
+				YYXLayer::writeFile(stri, path);
+			}
+		}
+	}, [=](string json) {
+		if (hint)
+			Toast::create(App::getString("HUOQUBAONIANSHUJILIEBIAOSHIBAI"));
+	});
+}
+
+void App::loadvipBookCache()
+{
+	string path = FileUtils::getInstance()->getWritablePath() + "vipBook/vipbook_" + App::getMemberID() + ".json";
+	map<string, string> data;
+	App::getMapFromFile(path, data);
+	for (auto it : data)
+	{
+		int bookid = atoi(it.first.c_str());
+		int time = atoi(it.second.c_str());
+		if (bookid > 0)
+			App::GetInstance()->VIPbook[bookid] = time;
+	}
+}
+
+void App::loadBuyBookCache()
+{
+	//载入购书信息
+	string bookjsonPath = FileUtils::getInstance()->getWritablePath() + "buyBook/buybook_" + App::getMemberID() + ".json";
+	map<string, string> data;
+	App::getMapFromFile(bookjsonPath, data);
+	for (auto it : data)
+	{
+		int bookid = atoi(it.first.c_str());
+		int orderid = atoi(it.second.c_str());
+		if (bookid > 0)
+			App::GetInstance()->myBuyBook[bookid] = orderid;
+	}
+}
+//网络获取购书列表
+void App::httpGetBuyBook(bool hint)
+{
+	NetIntface::httpGetUserBuyBooks(App::GetInstance()->m_me->id, "", [=](string json) {
+		NetIntface::httpGetUserBuyBooksCallBack(json, []() {
+			//json成功, array前执行
+			App::GetInstance()->myBuyBook.clear();
+		}, [=](int bookId, int orderId, string bookCoverUrl, string bookPlayUrl, string bookName) {
+			//解析过程
+			App::GetInstance()->myBookURLMap[bookId] = bookPlayUrl;
+			App::GetInstance()->myBuyBook[bookId] = orderId;
+			//封面下载
+			string fileName = StringUtils::format("%d", bookId) + ".png";
+			if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookId)))
+			{
+				NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
+					YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+				}, "", [=](string str) {
+					if (hint)
+					{
+						string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+						Toast::create(sstr.c_str(), false);
+					}
+				});
+			}
+		}, []() {
+			//解析成功
+			map<string, string> data;
+			for (auto it : App::GetInstance()->myBuyBook)
+			{
+				data[StringUtils::format("%d", it.first)] = StringUtils::format("%d", it.second);
+			}
+			string str = YYXLayer::getStringFormMap(data);
+			YYXLayer::writeFile(str, FileUtils::getInstance()->getWritablePath() + "buyBook/buybook_" + App::getMemberID() + ".json");
+			YYXLayer::sendNotify("loginSceneHttpGetUserBuyBooksSuccess");
+		}, [=]() {
+			//解析错误
+			if (hint)
+				Toast::create(App::getString("YIGOUSHUJILIEBIAOGENGXINSHIBAI"));
+		});
+	}, "", [=](string str) {
+		//网络错误
+		if (hint)
+			Toast::create(App::getString("YIGOUSHUJILIEBIAOGENGXINSHIBAI"));
+	});
 }
 
 void App::addTime(string key, long long data)
@@ -1520,56 +1858,21 @@ void App::makeRoundImage(string path, string savePath)
 	NetIntface::cutTheRounded(path, savePath, 600, 600, "", [=](string path) {}, "", [](string str) {});
 }
 
-void App::addRentBook(int bookid)
+//加入本地包年图片的列表(租书列表)
+void App::addvipBook(int bookid)
 {
-	App::GetInstance()->myRentBookMap[bookid] = YYXLayer::getCurrentTime4Second();
+	App::GetInstance()->VIPbook[bookid] = (int)YYXLayer::getCurrentTime4Second();
 	map<string, string> data;
-	for (auto it : App::GetInstance()->myRentBookMap)
+	for (auto it : App::GetInstance()->VIPbook)
 	{
 		string key = StringUtils::format("%d", it.first);
 		data[key] = StringUtils::format("%d",it.second);
 	}
 	string json = YYXLayer::getStringFormMap(data);
-	string filename = StringUtils::format("rentBook/RentBook_%d.json", App::GetInstance()->m_me->id);
+	string filename = StringUtils::format("vipBook/vipbook_%d.json", App::GetInstance()->m_me->id);
 	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
 }
 
-void App::deleteRentBook(int bookid)
-{
-	App::GetInstance()->myRentBookMap.erase(bookid);
-}
-
-//本地读取租书列举
-void App::getLocalRentJson()
-{
-	if (App::GetInstance()->m_me)
-	{
-		string filename = StringUtils::format("rentBook/RentBook_%d.json", App::GetInstance()->m_me->id);
-		string rentbookjsonpath = FileUtils::getInstance()->getWritablePath() + filename;
-		if (FileUtils::getInstance()->isFileExist(rentbookjsonpath))
-		{
-			//如果存在, 假定是vip 后面通过网络请求刷新
-			App::GetInstance()->m_me->vip = true;
-			App::GetInstance()->m_me->startvip = "";
-			App::GetInstance()->m_me->endvip = "";
-			App::GetInstance()->m_me->vipTime = 0;
-			map<string, string> rentbookdata;
-			App::getMapFromFile(rentbookjsonpath, rentbookdata);
-			App::GetInstance()->myRentBookMap.clear();
-			for (auto it : rentbookdata)
-			{
-				int bookid = atoi(it.first.c_str());
-				int time = atoi(it.second.c_str());
-				if (bookid != 0)
-				{
-					string path = App::getBookRead4Json_txtPath(bookid);
-					if (FileUtils::getInstance()->isFileExist(path))
-						App::GetInstance()->myRentBookMap[bookid] = time;
-				}
-			}
-		}
-	}
-}
 //修改字符串, 全部替换
 string App::replaceChar(string str, string oldChar,string newChar)
 {
@@ -1612,6 +1915,10 @@ void App::resumeBackGroundMusic()
 		auto state = AudioEngine::getState(musicID);		
 		if(state == AudioEngine::AudioState::PAUSED)
 			AudioEngine::resume(musicID);
+		else
+		{
+			playBackGroundMusic();
+		}
 	}
 }
 
@@ -1642,4 +1949,24 @@ void App::stopOtherVoice()
 		AudioEngine::stop(it);
 	}
 	App::GetInstance()->deleteMusicID.clear();
+}
+
+//判断用户和书籍关系
+void App::whetherForVipDownloadJudgeInCharge(int memberId, int bookId, function<void(int status)> runable, function<void(string error)> errorable)
+{
+	string url = string(IP)+ NET_BOOKBETWEENUSER +"?memberId="+StringUtils::format("%d&bookId=%d&resource=", memberId, bookId)+App::m_resource;
+	NetIntface::httpGet(url, "", [=](string json) {
+		rapidjson::Document doc;
+		YYXLayer::getJsonObject4Json(doc, json);
+		if (YYXLayer::getBoolForJson(false, doc, "result"))
+		{
+			auto code = YYXLayer::getIntForJson(0, doc, "code");
+			if (runable)
+				runable(code);
+		}
+		else
+			Toast::create(App::getString("HUOQUSHUJISHIBAI"));
+	}, "", [](string error) {
+		Toast::create(App::getString("HUOQUSHUJISHIBAI"));
+	});
 }

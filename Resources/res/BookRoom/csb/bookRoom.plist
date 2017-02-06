@@ -7,7 +7,7 @@
 			<key>BookRoom/res/BookHome_Delete.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{748,190},{72,72}}</string>
+				<string>{{429,1959},{72,72}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -18,7 +18,7 @@
 			<key>BookRoom/res/BookHome_Download.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{748,2},{90,90}}</string>
+				<string>{{784,1278},{90,90}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -29,7 +29,7 @@
 			<key>BookRoom/res/BookHome_Download_Background.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{748,96},{90,90}}</string>
+				<string>{{784,1372},{90,90}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -40,7 +40,7 @@
 			<key>BookRoom/res/BookHome_girl_0000.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{710,1275},{109,115}}</string>
+				<string>{{665,1278},{109,115}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,11 +51,11 @@
 			<key>BookRoom/res/BookHome_girl_0001.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{481,1024},{197,67}}</string>
+				<string>{{228,1960},{197,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{197,67}</string>
 			</dict>
@@ -81,32 +81,10 @@
 				<key>sourceSize</key>
 				<string>{224,919}</string>
 			</dict>
-			<key>BookRoom/res/BookHome_girl_0006.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{435,483},{112,187}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{112,187}</string>
-			</dict>
-			<key>BookRoom/res/BookHome_girl_0007.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{277,2},{251,286}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{251,286}</string>
-			</dict>
 			<key>BookRoom/res/BookHome_girl_0008.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1988},{45,20}}</string>
+				<string>{{988,2},{45,20}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -114,43 +92,10 @@
 				<key>sourceSize</key>
 				<string>{45,20}</string>
 			</dict>
-			<key>BookRoom/res/BookHome_girl_0009.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{710,1068},{103,203}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{103,203}</string>
-			</dict>
-			<key>BookRoom/res/BookHome_girl_0010.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{435,674},{104,150}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{104,150}</string>
-			</dict>
-			<key>BookRoom/res/BookHome_girl_0017.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{277,861},{264,159}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{264,159}</string>
-			</dict>
 			<key>BookRoom/res/BookHome_girl_0018.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{851,1922},{169,112}}</string>
+				<string>{{505,1052},{169,112}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -161,7 +106,7 @@
 			<key>BookRoom/res/zg1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{851,2},{1010,146}}</string>
+				<string>{{277,2},{1010,146}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -172,7 +117,7 @@
 			<key>BookRoom/res/zg2.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{567,2},{1062,177}}</string>
+				<string>{{714,2},{1062,177}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -191,126 +136,159 @@
 				<key>sourceSize</key>
 				<string>{1030,271}</string>
 			</dict>
-			<key>BookRoom/res/BookHome_night_window_ipad.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{639,1388},{243,174}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{243,174}</string>
-			</dict>
 			<key>BookRoom/res/BookInfo_ studyr_vip_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{481,257},{222,76}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{222,76}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_shuzhi_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{2,1960},{24,845}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{24,845}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_allbook_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{851,1016},{298,154}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{298,154}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_allbook_press_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{851,1318},{298,154}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{298,154}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_downloaded_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{851,1620},{298,154}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{298,154}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_downloaded_press_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{277,257},{298,154}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{298,154}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_reading_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{277,559},{298,154}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{298,154}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_reading_press_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{552,1068},{298,154}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{298,154}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_vip book_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{481,1370},{298,154}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{298,154}</string>
-			</dict>
-			<key>BookRoom/res/BookInfo_ studyr_button_vip book_press_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{481,1672},{298,154}}</string>
+				<string>{{2,1960},{222,76}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
-				<string>{298,154}</string>
+				<string>{222,76}</string>
+			</dict>
+			<key>BookRoom/res/gm_nav_nor_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{427,632},{202,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{202,101}</string>
+			</dict>
+			<key>BookRoom/res/gm_nav_sel_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{427,737},{202,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{202,101}</string>
+			</dict>
+			<key>BookRoom/res/muban_nav_bg_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{895,2},{1438,89}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{1438,89}</string>
+			</dict>
+			<key>BookRoom/res/nkts_nav_sel_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{427,842},{200,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{200,101}</string>
+			</dict>
+			<key>BookRoom/res/sc_nav_sel_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{678,1068},{159,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{159,101}</string>
+			</dict>
+			<key>BookRoom/res/ysc_nav_sel_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{668,1173},{156,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{156,101}</string>
+			</dict>
+			<key>BookRoom/res/nkts_nav_nor_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{505,947},{200,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{200,101}</string>
+			</dict>
+			<key>BookRoom/res/sc_nav_nor_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{505,1168},{159,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{159,101}</string>
+			</dict>
+			<key>BookRoom/res/ysc_nav_nor_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{505,1273},{156,101}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{156,101}</string>
+			</dict>
+			<key>BookRoom/res/BookHome_button_shanchu_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{427,318},{283,153}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{283,153}</string>
+			</dict>
+			<key>BookRoom/res/BookHome_button_shoucang_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{427,2},{283,154}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{283,154}</string>
+			</dict>
+			<key>BookRoom/res/BookHome_button_xiazai_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{427,475},{283,153}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{283,153}</string>
+			</dict>
+			<key>BookRoom/res/BookHome_button_yishoucang_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{427,160},{283,154}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{283,154}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>
