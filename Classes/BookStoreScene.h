@@ -160,7 +160,7 @@ public:
 	void back();
 
 	//离开场景时处理的业务
-	void leave();
+	void cleanup();
 
 	//获取当前页书籍列表信息
 	void getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex);

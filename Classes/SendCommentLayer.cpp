@@ -2,6 +2,7 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "BookInfoScene.h"
+#include "YYXVisitor.h"
 
 USING_NS_CC;
 
@@ -163,7 +164,7 @@ bool SendComment::init(int bookId) {
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "sendCommentData", m_bookId, "", (Ref*)star_score);
 			NetIntface::httpGetBookIsBuy(m_bookId, App::GetInstance()->m_me->id, -1, "bookinfoSceneGetBookIsBuySuccess", [=](string json) {
 				NetIntface::httpGetBookIsBuyCallBack(json, [=](string orderid, int types) {
-					auto userAccount = YYXLayer::getFileValue("userAccount", "");
+					auto userAccount = YYXLayer::getFileValue("userAccount", YYXVisitor::getInstance()->getVisitorName());
 					int bookid = YYXStruct::getMapInt64(App::GetInstance()->myData, "sendCommentData", -999);
 					App::GetInstance()->stopOtherVoice();
 					//打开语音界面

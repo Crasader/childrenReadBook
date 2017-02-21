@@ -3,6 +3,8 @@
 #include "ui/CocosGUI.h"
 #include "NetIntface.h"
 #include "XZLayer.h"
+#include "YYXVisitor.h"
+#include "Charger.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <io.h>
@@ -115,14 +117,13 @@ bool Parent::init()
 	
 	//---------------------------界面--------------------------------------------------------------
 	//场景初始化
-	string member_name = YYXStruct::getMapString(App::GetInstance()->myData, "userAccount", "");
-	if (App::GetInstance()->m_me == nullptr || member_name == "")
-	{
+	//string member_name = YYXStruct::getMapString(App::GetInstance()->myData, "userAccount", "");
+	YYXVisitor::getInstance()->parentSceneInit([=](){
 		App::cancelData();
 		m_show = initNode_Login();
-	}
-	else
-		m_show = initNode_Account();
+	}, [=]() {
+		m_show = initNode_Account(); 
+	});
 	m_parentNode->addChild(m_show);
 
 	//---------------------------按钮点击事件--------------------------------------------------------------------
@@ -469,9 +470,8 @@ Layer* Parent::initNode_Account()
 			// 删除当前图层,添加登陆图层
 			m_parentNode->removeChild(m_show);
 			m_show = initNode_Login();
-			m_parentNode->addChild(m_show);			
-			//SqliteManager::DeleteData(App::sqliteOpen(), DB_USERINFO, "");
-			//App::sqliteClose();			
+			m_parentNode->addChild(m_show);	
+			YYXVisitor::getInstance()->parentSceneLogout();
 		});
 		//取消按钮 添加点击事件
 		b_no->addClickEventListener([=](Ref* sender) {
@@ -609,7 +609,7 @@ Layer* Parent::initNode_Account()
 	});
 	//充值 点击事件
 	rechange->addClickEventListener([=](Ref* sender) {
-		auto recharge = Recharge::create();
+		auto recharge = Charger::create();
 		addChild(recharge);
 	});
 	

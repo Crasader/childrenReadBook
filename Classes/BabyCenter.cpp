@@ -4,6 +4,7 @@
 #include "IndexScene.h"
 #include "platform/android/CCFileUtils-android.h"
 #include "NetIntface.h"
+#include "YYXVisitor.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -36,7 +37,6 @@ bool BabyCenter::init()
 	App::log("BabyCenter::init");
 	if (!Layer::init())
 		return false;
-	 
 	App::m_RunningScene = MySceneName::BabyCenterScene;
 	////删除头像
 	//auto t = App::getCurrentTime() - App::GetInstance()->getTime("deleteTime", 0);
@@ -46,12 +46,17 @@ bool BabyCenter::init()
 	//	App::GetInstance()->addTime("deleteTime", App::getCurrentTime());
 	//}
 	//判断用户是否登录
-	if (App::GetInstance()->m_me == nullptr) {
+	YYXVisitor::getInstance()->babyCenterSceneInit([=]() {
 		initLoginLayer();
-	}
-	else {
+	}, [=]() {
 		initBabyCenter();
-	}
+	});
+	//if (App::GetInstance()->m_me == nullptr) {
+	//	initLoginLayer();
+	//}
+	//else {
+	//	initBabyCenter();
+	//}
 	initHttp();
 	initEvent();
 	App::log("BabyCenter::init---END");

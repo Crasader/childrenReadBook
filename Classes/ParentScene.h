@@ -5,10 +5,7 @@
 #include "IndexScene.h"
 #include "FileNames.h"
 #include "App.h"
-//#include "SqliteManager.h"
 #include "DropBox.h"
-//#include "DownloadRes.h"
-#include "RechargeLayer.h"
 
 class Parent : public cocos2d::Layer
 {

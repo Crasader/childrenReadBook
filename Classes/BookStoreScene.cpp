@@ -1,5 +1,6 @@
 ﻿#include "BookStoreScene.h"
 #include "NetIntface.h"
+#include "YYXVisitor.h"
 
 using namespace cocostudio::timeline;
 
@@ -77,6 +78,7 @@ bool BookStore::init(int BookStoreId)
 	//};
 	//Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(lister_high, -200);
 	//等待层
+	YYXVisitor::getInstance()->bookStoreSceneInit();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();	
 	m_click = true;
@@ -324,7 +326,7 @@ bool BookStore::init(int BookStoreId)
 			addorStartQueue([=]() {
 				App::log("点击书籍跳转bookid = ", bookid);
 				App::GetInstance()->pushScene(m_backScene, m_bookStoreId, StringUtils::format("%d", m_selectPageIndex[1]));
-				leave();
+				//leave();
 				Index::GoToBookInfo(bookid);
 			}, "点击书籍跳转bookid");
 		}
@@ -1458,7 +1460,7 @@ void BookStore::back()
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 	YYXLayer::PLAYBUTTON();	
 	App::GetInstance()->popBack();
-	leave();
+	//leave();
 	//清除全部的回调函数,只有在这个地方清除影响较小
 	NetIntface::m_functionMap.clear();
 	Index::BackPreviousScene();
@@ -1466,16 +1468,16 @@ void BookStore::back()
 }
 
 //离开场景时处理的业务
-void BookStore::leave()
+void BookStore::cleanup()
 {
-	App::log("BookStore::leave");
+	App::log("BookStore::cleanup");
 	while (!runQueue.empty())
 	{
 		runQueue.pop();
 	}
 	//关闭定时器
 	unschedule("bookStoreSceneReferUISchedule");
-	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 	//m_queue->stop();
 	//if (m_queue)
 	//{
@@ -1508,7 +1510,7 @@ void BookStore::leave()
 	//m_book1->release();
 	//m_book2->release();
 	//m_book3->release();
-	App::log("BookStore::leave--END");
+	App::log("BookStore::cleanup--END");
 }
 
 void BookStore::getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex)//pageIndex从0开始
@@ -1677,7 +1679,7 @@ void BookStore::refreshBook(Node* node, int bookId, string path, int price, int 
 	std::string strprice = App::getString("UNKNOEPRICE");
 	if (price > 0 && price < 100000)
 	{
-		strprice = StringUtils::format("%s %.02f", App::getChars("STR_MONEY"), price / 100.0);
+		strprice = StringUtils::format("%s %.02f", App::getString("STR_MONEY"), price / 100.0);
 	}
 	if (price == 0)
 	{
@@ -1947,10 +1949,8 @@ void BookStore::baonianStore()
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "showYouAreVip", 0);
 		auto layer = XZLayer::OpenVIPCardService(1, [=]() {
 			App::GetInstance()->pushScene(m_backScene, m_bookStoreId, StringUtils::format("%d", m_selectPageIndex[1]));
-			leave();
 		});
 		if (layer)
 			addChild(layer, 9);
 	}
-	//
 }

@@ -5,7 +5,7 @@
 #include "cocostudio/CocoStudio.h"
 #include "YYXStruct.h"
 #include "NetIntface.h"
-
+#include "YYXVisitor.h"
 using namespace cocostudio::timeline;
 
 bool BookCityScene::m_isMoved = false;
@@ -37,7 +37,9 @@ bool BookCityScene::init()
 	{
 		return false;
 	}
-	 
+	//游客
+	YYXVisitor::getInstance()->bookCitySceneInit();
+	App::log("setVisitorMode = ");
 	App::m_RunningScene = MySceneName::BookCity;	
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 0);
 	httpBookCityInfo();

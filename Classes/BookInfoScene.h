@@ -105,6 +105,7 @@ public:
 
 	void onEnterTransitionDidFinish();
 
+	void bookCallBack();//书籍内部的回调
 	virtual void cleanup();
 
 	void refreshUI();//刷新界面
@@ -142,6 +143,7 @@ public:
 	void showBuyButton(Button* button, int show, int prpgressing = 0);
 	int whatIsTheRelationshipBetweenUserAndBook(int status, bool zhijieshow =false);//解析出书籍和用户之间的关系(是否vip下载默认不用知道)
 	
+	void log(int stauts);
 private:
 	Node* m_show;//记录当前显示的图层
 	

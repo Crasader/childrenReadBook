@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -90,6 +92,7 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -104,12 +107,14 @@ import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -1949,17 +1954,24 @@ public class AppActivity extends Cocos2dxActivity {
 	}
 
 	//JNI 获取机型,android版本,sdk
-	public static String getPhoneInfo(int num)
-	{
-		switch (num){
-			case 0:
-				return Build.MODEL;
-			case 1:
-				return Build.VERSION.SDK;
-			case 2:
-				return Build.VERSION.RELEASE;
-			default:
-				return "android";
+	public static String getPhoneInfo(int num) {
+		try {
+			switch (num)
+			{
+				case 0:
+					return Build.MODEL;
+				case 1:
+					return Build.VERSION.SDK;
+				case 2:
+					return Build.VERSION.RELEASE;
+				case 3:
+					return getDivierID();
+				default:
+					return "android";
+			}
+		} catch (Exception e) {
+			Log.e("201702151548", e.toString());
+			return "";
 		}
 	}
 	public static String getDEVICE_ID(Context context){
@@ -1970,5 +1982,61 @@ public class AppActivity extends Cocos2dxActivity {
 		}else{
 			return "cant find DEVICE_ID";
 		}
+	}
+
+	public static String getDivierID()
+	{
+		TelephonyManager TelephonyMgr = (TelephonyManager)m_context.getSystemService(TELEPHONY_SERVICE);
+		String szImei = TelephonyMgr.getDeviceId();
+
+		String m_szDevIDShort = "35" + //we make this look like a valid IMEI
+
+				Build.BOARD.length()%10 +
+				Build.BRAND.length()%10 +
+				Build.CPU_ABI.length()%10 +
+				Build.DEVICE.length()%10 +
+				Build.DISPLAY.length()%10 +
+				Build.HOST.length()%10 +
+				Build.ID.length()%10 +
+				Build.MANUFACTURER.length()%10 +
+				Build.MODEL.length()%10 +
+				Build.PRODUCT.length()%10 +
+				Build.TAGS.length()%10 +
+				Build.TYPE.length()%10 +
+				Build.USER.length()%10 ; //13 digits
+
+		String m_szAndroidID = Settings.Secure.getString(m_context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+		WifiManager wm = (WifiManager)m_context.getSystemService(Context.WIFI_SERVICE);
+		String m_szWLANMAC = wm.getConnectionInfo().getMacAddress();
+
+		BluetoothAdapter m_BluetoothAdapter = null; // Local Bluetooth adapter
+		m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		String m_szBTMAC = m_BluetoothAdapter.getAddress();
+
+		String m_szLongID = szImei + m_szDevIDShort
+				+ m_szAndroidID+ m_szWLANMAC + m_szBTMAC;
+// compute md5
+		MessageDigest m = null;
+		try {
+			m = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		m.update(m_szLongID.getBytes(),0,m_szLongID.length());
+// get md5 bytes
+		byte p_md5Data[] = m.digest();
+// create a hex string
+		String m_szUniqueID = new String();
+		for (int i=0;i<p_md5Data.length;i++) {
+			int b =  (0xFF & p_md5Data[i]);
+// if it is a single digit, make sure it have 0 in front (proper padding)
+			if (b <= 0xF)
+				m_szUniqueID+="0";
+// add number to string
+			m_szUniqueID+=Integer.toHexString(b);
+		}   // hex string to uppercase
+		m_szUniqueID = m_szUniqueID.toUpperCase();
+		return m_szUniqueID;
 	}
 }

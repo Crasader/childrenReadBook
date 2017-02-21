@@ -1,4 +1,5 @@
-﻿#include "RestRemind.h"
+﻿/*休息提醒*/
+#include "RestRemind.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 

@@ -2,6 +2,7 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "YYXFunctionQueue.h"
+#include "YYXVisitor.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -33,6 +34,7 @@ bool BookRoom::init()
     {
         return false;
     }
+	YYXVisitor::getInstance()->bookRoomSceneInit();
 	m_offline = !NetIntface::IsNetConnect();
 	YYXFunctionQueue::GetInstance()->clear();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -583,10 +585,7 @@ void BookRoom::down(Node* book, int bookid) {
 							return;
 						if (data.intData <= 99)
 						{
-							YYXLayer::controlTouchTime(0.3, "BookProgressingTime", [=]()
-							{
 								YYXLayer::sendNotify(taskTag + "_BookProgressing", "", data.intData);
-							});
 						}
 						else
 							YYXLayer::sendNotify(taskTag + "_BookProgressing", "", 99);

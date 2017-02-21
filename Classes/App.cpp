@@ -418,16 +418,6 @@ long long App::getCurrentTime()
 	return time(0);
 }
 
-const char* App::getChars(const char* key)
-{
-	if (m_strings == nullptr)
-		m_strings = Dictionary::createWithContentsOfFile("strings.xml");
-	m_strings->retain();
-	//读取Hello键中的值 objectForKey根据key，获取对应的string
-	auto value = ((__String*)m_strings->objectForKey(key))->_string.c_str();
-	return value;
-}
-
 const char* App::getString(const char* key)
 {
 	if(m_strings ==nullptr)

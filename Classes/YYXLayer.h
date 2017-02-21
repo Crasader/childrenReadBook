@@ -145,9 +145,9 @@ public:
 	static string readFile(string path);
 	static void writeFilepp(string str, string path);//追加写文件;
 	//键值对本地存入
-	static void setFileValue(string key , string value);
+	static void setFileValue(string key, string value, string dirPath = "");
 	//键值对本地读出
-	static string getFileValue(string key, string defaultstr);
+	static string getFileValue(string key, string defaultstr, string dirPath = "");
 	//删除键值对本地
 	static void deleteFileValue(string key);
 	//声音宏转换过来的函数 兼容性

@@ -27,8 +27,8 @@
             <PreSize X="0.0000" Y="0.0000" />
             <FileData Type="MarkedSubImage" Path="Pay/res/caidai_an.png" Plist="Pay/csb/paypng.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Text" ActionTag="1877380266" Tag="198" IconVisible="False" LeftMargin="-69.3914" RightMargin="-69.6086" TopMargin="-30.0346" BottomMargin="-17.9654" FontSize="36" LabelText="送 10 元" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
-            <Size X="139.0000" Y="48.0000" />
+          <AbstractNodeData Name="Text" ActionTag="1877380266" Tag="198" IconVisible="False" LeftMargin="-79.3914" RightMargin="-79.6086" TopMargin="-26.0346" BottomMargin="-13.9654" FontSize="30" LabelText="送10元红包" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="159.0000" Y="40.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="0.1086" Y="6.0346" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />

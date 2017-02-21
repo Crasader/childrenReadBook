@@ -1,6 +1,6 @@
 ﻿#include "IndexScene.h"
 #include "NetIntface.h"
-
+#include "YYXVisitor.h"
 USING_NS_CC;
 using namespace cocostudio::timeline;
 
@@ -56,7 +56,8 @@ void Index::onEnterTransitionDidFinish() {
 			}, []() {});
 		}, "", [](string str) {});
 	}
-	Toast::GetInstance()->SceneInitToast();
+	Toast::GetInstance()->SceneInitToast();	
+	YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "indexAnimator");
 }
 
 // on "init" you need to initialize your instance
@@ -170,13 +171,24 @@ bool Index::init()
 		sprLiuxing3->runAction(action3);
 
 		//远山
-		addChild(ContinuousMove::create(PICTURE_INDEX_MOUNTAIN2, 1, Vec2(0, 670 * 0.4), Vec2(2736 * 0.4, 0), 200, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 1.0f, 0.5f, -20, 2));
-		//近山
-		addChild(ContinuousMove::create(PICTURE_INDEX_HILL2, 1, Vec2(0, 286 * 0.4), Vec2(2736 * 0.4, 0), 120, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.8f, 0.5f, -20, 2));
-		//树林
-		addChild(ContinuousMove::create(PICTURE_INDEX_WOODS2, 1, Vec2(0, 158 * 0.4), Vec2(2736 * 0.4, 0), 60, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.6f, 0.3f, 5, 1));
-		//铁轨
-		addChild(ContinuousMove::create(PICTURE_INDEX_TRACK2, 1, Vec2(0, 0), Vec2(2736 * 0.4, 0), 30, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.5f, 0, 0, 0));
+		playAnimator([=]() {
+			addChild(ContinuousMove::create(PICTURE_INDEX_MOUNTAIN2, 1, Vec2(0, 670 * 0.4), Vec2(2736 * 0.4, 0), 200, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 1.0f, 0.5f, -20, 2));
+			//近山
+			addChild(ContinuousMove::create(PICTURE_INDEX_HILL2, 1, Vec2(0, 286 * 0.4), Vec2(2736 * 0.4, 0), 120, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.8f, 0.5f, -20, 2));
+			//树林
+			addChild(ContinuousMove::create(PICTURE_INDEX_WOODS2, 1, Vec2(0, 158 * 0.4), Vec2(2736 * 0.4, 0), 60, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.6f, 0.3f, 5, 1));
+			//铁轨
+			addChild(ContinuousMove::create(PICTURE_INDEX_TRACK2, 1, Vec2(0, 0), Vec2(2736 * 0.4, 0), 30, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.5f, 0, 0, 0));
+		}, [=]() {
+			addChild(ContinuousMove::create(PICTURE_INDEX_MOUNTAIN2, 1, Vec2(0, 670 * 0.4), Vec2(2736 * 0.4, 0), 200, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 1.0f, 0.5f, -20, 2, false));
+			//近山
+			addChild(ContinuousMove::create(PICTURE_INDEX_HILL2, 1, Vec2(0, 286 * 0.4), Vec2(2736 * 0.4, 0), 120, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.8f, 0.5f, -20, 2, false));
+			//树林
+			addChild(ContinuousMove::create(PICTURE_INDEX_WOODS2, 1, Vec2(0, 158 * 0.4), Vec2(2736 * 0.4, 0), 60, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.6f, 0.3f, 5, 1, false));
+			//铁轨
+			addChild(ContinuousMove::create(PICTURE_INDEX_TRACK2, 1, Vec2(0, 0), Vec2(2736 * 0.4, 0), 30, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.5f, 0, 0, 0, false));
+		});
+		
 	}
 	else
 	{
@@ -197,14 +209,26 @@ bool Index::init()
 		addChild(sky1);
 		sky1->setPosition(Vec2(0, origin.y + visibleSize.height));
 
-		//远山
-		addChild(ContinuousMove::create(PICTURE_INDEX_MOUNTAIN, 1, Vec2(0, 670 * 0.4), Vec2(2736 * 0.4, 0), 200, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 1.0f, 0.5f, -20, 2));
-		//近山
-		addChild(ContinuousMove::create(PICTURE_INDEX_HILL, 1, Vec2(0, 286 * 0.4), Vec2(2736 * 0.4, 0), 120, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.8f, 0.5f, -20, 2));
-		//树林
-		addChild(ContinuousMove::create(PICTURE_INDEX_WOODS, 1, Vec2(0, 158 * 0.4), Vec2(2736 * 0.4, 0), 60, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.6f, 0.3f, 5, 1));
-		//铁轨
-		addChild(ContinuousMove::create(PICTURE_INDEX_TRACK, 1, Vec2(0, 0), Vec2(2736 * 0.4, 0), 30, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.5f, 0, 0, 0));
+		playAnimator([=]() {
+			//远山
+			addChild(ContinuousMove::create(PICTURE_INDEX_MOUNTAIN, 1, Vec2(0, 670 * 0.4), Vec2(2736 * 0.4, 0), 200, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 1.0f, 0.5f, -20, 2));
+			//近山
+			addChild(ContinuousMove::create(PICTURE_INDEX_HILL, 1, Vec2(0, 286 * 0.4), Vec2(2736 * 0.4, 0), 120, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.8f, 0.5f, -20, 2));
+			//树林
+			addChild(ContinuousMove::create(PICTURE_INDEX_WOODS, 1, Vec2(0, 158 * 0.4), Vec2(2736 * 0.4, 0), 60, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.6f, 0.3f, 5, 1));
+			//铁轨
+			addChild(ContinuousMove::create(PICTURE_INDEX_TRACK, 1, Vec2(0, 0), Vec2(2736 * 0.4, 0), 30, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.5f, 0, 0, 0));
+		}, [=]() {
+			//远山
+			addChild(ContinuousMove::create(PICTURE_INDEX_MOUNTAIN, 1, Vec2(0, 670 * 0.4), Vec2(2736 * 0.4, 0), 200, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 1.0f, 0.5f, -20, 2, false));
+			//近山
+			addChild(ContinuousMove::create(PICTURE_INDEX_HILL, 1, Vec2(0, 286 * 0.4), Vec2(2736 * 0.4, 0), 120, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.8f, 0.5f, -20, 2, false));
+			//树林
+			addChild(ContinuousMove::create(PICTURE_INDEX_WOODS, 1, Vec2(0, 158 * 0.4), Vec2(2736 * 0.4, 0), 60, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.6f, 0.3f, 5, 1, false));
+			//铁轨
+			addChild(ContinuousMove::create(PICTURE_INDEX_TRACK, 1, Vec2(0, 0), Vec2(2736 * 0.4, 0), 30, Vec2(0, 0), Vec2(1, 0), Vec2(0, -1 * visibleSize.height / 2), 0.5f, 0, 0, 0, false));
+		});
+		
 
 		//飞鸟
 		auto bird1 = Bird::create(PICTURE_INDEX_YELLOWBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_YELLOWBIRD, Vec2(2800 * 0.4, 1530 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(-200 * 0.4, 1530 * 0.4), 7, 7);
@@ -223,8 +247,7 @@ bool Index::init()
 	auto listview = ListView::create();
 	addChild(listview);
 	listview->setDirection(cocos2d::ui::ScrollView::Direction::HORIZONTAL);
-	listview->setSize(Size(1094, 860 * 0.4));
-	listview->setPosition(Vec2(origin.x + 1094, origin.y + 250 * 0.4));
+	listview->setSize(Size(1494, 860 * 0.4));
 	listview->setGravity(ListView::Gravity::BOTTOM);
 	listview->setTouchEnabled(false);
 	listview->setBounceEnabled(true);
@@ -254,7 +277,7 @@ bool Index::init()
 	listview->pushBackCustomItem(createItem(KANGXUANBOOKSTORE, KANGXUANBOOKSTORE_CSB, 0, 90, true, itemSize));
 	//最后一项空白
 	auto layoutend = Layout::create();
-	layoutend->setSize(Size(1000 * 0.4, 1000 * 0.4));
+	layoutend->setSize(Size(2000 * 0.4, 1000 * 0.4));
 	listview->pushBackCustomItem(layoutend);	
 	//listview点击事件
 	listview->addEventListenerListView(this, listvieweventselector(Index::selectedItemEvent));
@@ -351,9 +374,26 @@ bool Index::init()
 		owl->setRotation(90);
 	}
 	owl->setScale(4.0 / 6.0);
-	//整体旋转45度
-	leftNode->setRotation(-45);
-	auto seq = Sequence::create(RotateTo::create(1, 0), CallFuncN::create([=](Ref* pSender) {
+
+	playAnimator([=]() {
+		//整体旋转45度
+		leftNode->setRotation(-45);
+		auto seq = Sequence::create(RotateTo::create(1, 0), CallFuncN::create([=](Ref* pSender) {
+			//整体旋转后灯晃动
+			auto anmi = RotateBy::create(4, 30);
+			auto seq = Sequence::create(anmi, anmi->reverse(), NULL);
+			light->runAction(RepeatForever::create(seq));
+
+			////门的帧动画	
+			auto cache = SpriteFrameCache::getInstance();
+			auto door_animate = FrameAnimation::createAnimate(4, plist, FORMAT_PICTURE_NAME_INDEX_LEFT_DOOR, 0.1f);
+			auto seqDoor = Sequence::create(door_animate, door_animate->reverse(), NULL);
+			door->runAction(RepeatForever::create(seqDoor));
+			//猫头鹰移动
+			owl->runAction(MoveTo::create(0.5f, Vec2(351 * 0.4, 1207 * 0.4)));
+		}), NULL);
+		leftNode->runAction(seq);
+	}, [=]() {
 		//整体旋转后灯晃动
 		auto anmi = RotateBy::create(4, 30);
 		auto seq = Sequence::create(anmi, anmi->reverse(), NULL);
@@ -361,13 +401,13 @@ bool Index::init()
 
 		////门的帧动画	
 		auto cache = SpriteFrameCache::getInstance();
-		auto door_animate = FrameAnimation::createAnimate(4,plist,FORMAT_PICTURE_NAME_INDEX_LEFT_DOOR,0.1f);
+		auto door_animate = FrameAnimation::createAnimate(4, plist, FORMAT_PICTURE_NAME_INDEX_LEFT_DOOR, 0.1f);
 		auto seqDoor = Sequence::create(door_animate, door_animate->reverse(), NULL);
 		door->runAction(RepeatForever::create(seqDoor));
 		//猫头鹰移动
-		owl->runAction(MoveTo::create(0.5f, Vec2(351*0.4, 1207*0.4)));
-	}), NULL);
-	leftNode->runAction(seq);
+		owl->setPosition(Vec2(351 * 0.4, 1207 * 0.4));
+	});
+	
 	auto grass = Sprite::create();
 	grass->initWithSpriteFrameName(PICTURE_INDEX_LEFT_GRASS);
 	grass->setAnchorPoint(Vec2(0, 0));
@@ -401,6 +441,7 @@ bool Index::init()
 	portrait->setScale(4.0 / 6.0);
 	rightNode->addChild(portrait);
 	portrait->setPosition(Vec2(-203 * 0.4, 1471 * 0.4));
+	
 
 	bool findDataSour = false;
 	auto childid = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
@@ -431,11 +472,13 @@ bool Index::init()
 			portrait->loadTexture(PICTURE_INDEX_PORTRAIT, TextureResType::PLIST);
 		}
 	}
+	YYXVisitor::getInstance()->indexSceneInit(portrait);
 	//下载第一个孩子的头像回调
 	auto listenerHeadPortrait = EventListenerCustom::create("IndexSceneReferShowHeadPortrait", [portrait](EventCustom* e) {
 		auto path = YYXStruct::getMapString(App::GetInstance()->myData, "ShowChildHeadPortrait", "");
 		if (portrait && path != "" && FileUtils::getInstance()->isFileExist(path))
 			portrait->loadTexture(path);
+		YYXVisitor::getInstance()->indexSceneInit(portrait);
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerHeadPortrait, portrait);
 	////皇冠
@@ -455,20 +498,32 @@ bool Index::init()
 	parent->setTouchEnabled(false);
 	parent->addClickEventListener([=](Ref *sender) {
 		 YYXLayer::PLAYBUTTON();
+		 if (YYXVisitor::getInstance()->getVisitorMode())
+		 {
+			 GoToParentScene();
+			 return;
+		 }
 		addChild(SelectLayer([]() {
 			App::GetInstance()->pushScene(IndexScene);
 			GoToParentScene();
 		}));
 	});
-	////整体旋转45度
-	rightNode->setRotation(45);
-	auto rseq = Sequence::create(RotateTo::create(1, 0), CallFuncN::create([=](Ref* pSender) {
-		//整体旋转后家长选项晃动
+	playAnimator([=]() {
+		////整体旋转45度
+		rightNode->setRotation(45);
+		auto rseq = Sequence::create(RotateTo::create(1, 0), CallFuncN::create([=](Ref* pSender) {
+			//整体旋转后家长选项晃动
+			auto anmi = RotateBy::create(4, -30);
+			auto seq = Sequence::create(anmi, anmi->reverse(), NULL);
+			parent->runAction(RepeatForever::create(seq));
+		}), NULL);
+		rightNode->runAction(rseq);
+	}, [=]() {
 		auto anmi = RotateBy::create(4, -30);
 		auto seq = Sequence::create(anmi, anmi->reverse(), NULL);
 		parent->runAction(RepeatForever::create(seq));
-	}), NULL);
-	rightNode->runAction(rseq);
+	});
+
 	auto rightGrass = Sprite::create();
 	rightGrass->initWithSpriteFrameName(PICTURE_INDEX_RIGHT_GRASS);
 	rightGrass->setAnchorPoint(Vec2(1, 0));
@@ -477,10 +532,14 @@ bool Index::init()
 	rightGrass->setPosition(origin.x + visibleSize.width, origin.y);
 
 	//火车移动
-	listview->runAction(Sequence::create(DelayTime::create(1), CallFuncN::create([=](Ref* pSender) {
-		if (App::GetInstance()->isSoundEffect)
-			AudioEngine::play2d(ELLA_SOUND_TRAINWHISTLE);
-	}), MoveTo::create(2, Vec2(origin.x + 100 * 0.4, origin.y + 235 * 0.4)), CallFuncN::create([=](Ref* sender) {		
+	playAnimator([=]() {
+		listview->setPosition(Vec2(origin.x + 1094, origin.y + 250 * 0.4));
+		huocheAnimation(listview, parent, portrait, door_img, door, door2, origin, plist);
+	}, [=]() {		
+		listview->setPosition(Vec2(origin.x - 800 * 0.4, origin.y + 235 * 0.4));
+		listview->runAction(Sequence::create(MoveTo::create(0.3, Vec2(origin.x + 100 * 0.4, origin.y + 235 * 0.4)), CallFuncN::create([=](Ref* n) {
+			listview->scrollToItem(2, Vec2(0.05, 0), Vec2(0, 0),1.5);
+		}),NULL));
 		listview->setTouchEnabled(true);
 		parent->setTouchEnabled(true);
 		portrait->setTouchEnabled(true);
@@ -500,14 +559,14 @@ bool Index::init()
 				if (App::GetInstance()->isSoundEffect)
 					AudioEngine::play2d(ELLA_SOUND_OPENDOOR);
 			}),
-				FrameAnimation::createAnimate(7, plist, FORMAT_PICTURE_NAME_DOOR, 0.2f), 
+				FrameAnimation::createAnimate(7, plist, FORMAT_PICTURE_NAME_DOOR, 0.2f),
 				CallFuncN::create([=](Ref *sender) {
 				//跳转书房
 				App::GetInstance()->pushScene(MySceneName::IndexScene);
 				GoToBookRoomScene();
 			}), NULL));
-		});	
-	}), NULL));
+		});
+	});
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("IndexSceneShowRedPacket", [=](EventCustom* e) {
 		showRedPacket();
 		//UserDefault::getInstance()->deleteValueForKey("accountRegisteUserId");
@@ -1385,4 +1444,59 @@ void Index::loadRedPacketData(Node* node, int index)
 		//红包封面
 		auto redPacket = (ImageView*)node->getChildByName(FIND_IMAGEVIE_BY_NAME_EVERYREDPACKET_COVER);
 	}
+}
+
+void Index::playAnimator(function<void()> animator, function<void()> animatorOver)
+{
+	auto ani = YYXStruct::getMapInt64(App::GetInstance()->myData, "indexAnimator", 1);
+	if (ani == 0)
+	{
+		if (animator)
+			animator();
+	}
+	else
+	{
+		if (animatorOver)
+			animatorOver();
+	}
+}
+
+void Index::huocheAnimation(ListView* listview, ImageView* parent, ImageView* portrait, ImageView* door_img,Sprite* door,Sprite* door2, Vec2 origin, const string & plist)
+{
+	listview->runAction(Sequence::create(DelayTime::create(1), CallFuncN::create([=](Ref* pSender) {
+		if (App::GetInstance()->isSoundEffect)
+			AudioEngine::play2d(ELLA_SOUND_TRAINWHISTLE);
+	}), MoveTo::create(2, Vec2(origin.x +100 * 0.4, origin.y + 235 * 0.4)), CallFuncN::create([=](Ref* sender) {
+		listview->setTouchEnabled(true);
+		listview->scrollToItem(2, Vec2(0.05, 0), Vec2(0, 0), 3);
+		parent->setTouchEnabled(true);
+		portrait->setTouchEnabled(true);
+		//宝贝中心跳转
+		portrait->addClickEventListener([=](Ref* sender) {
+			YYXLayer::PLAYBUTTON();
+			App::GetInstance()->pushScene(MySceneName::IndexScene);
+			GoToBabyCenterScene();
+		});
+		door_img->setTouchEnabled(true);
+		//点击门跳转书房
+		door_img->addClickEventListener([=](Ref* sender) {
+			door_img->setVisible(false);
+			door->setVisible(false);
+			Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+			door2->runAction(Sequence::create(CallFuncN::create([=](Ref* pSender) {
+				if (App::GetInstance()->isSoundEffect)
+					AudioEngine::play2d(ELLA_SOUND_OPENDOOR);
+			}),
+				FrameAnimation::createAnimate(7, plist, FORMAT_PICTURE_NAME_DOOR, 0.2f),
+				CallFuncN::create([=](Ref *sender) {
+				//跳转书房
+				App::GetInstance()->pushScene(MySceneName::IndexScene);
+				GoToBookRoomScene();
+			}), NULL));
+		});
+	}), NULL));
+}
+
+Index::Index()
+{
 }

@@ -4,7 +4,8 @@
 #include "NetIntface.h"
 #include "YYXLayer.h"
 #include "YYXTableView.h"
-
+#include "YYXVisitor.h"
+#include "Charger.h"
 USING_NS_CC;
 
 using namespace cocostudio::timeline;
@@ -44,6 +45,8 @@ bool Load::init()
 	addChild(bg);
 	//app打开时间
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "APPOpenTime", YYXLayer::getCurrentTime4Second());
+	//游客
+	YYXVisitor::getInstance()->loadSceneInit();
 	//本机信息
 	getPhoneInfo();
 	//通知异步加载图片完成
@@ -90,6 +93,7 @@ void Load::onEnterTransitionDidFinish()
 		YYXLayer::CopyDirectory(FileUtils::getInstance()->getWritablePath()+"unzip", FileUtils::getInstance()->getWritablePath()+"bookUNZip");
 	}).detach();
 	initHttp();
+	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "indexAnimator", 0);
 }
 
 void Load::initData()
@@ -125,7 +129,7 @@ void Load::initHttp()
 	//书城
 	httpBookCityInfoAndDownLoad();
 	//红包活动
-	httpRedPacketActivity();
+	Charger::httpChargerInfo();
 	//请求最新版本号
 	getEllaVersion();
 	//请求消息推送
@@ -168,21 +172,6 @@ void Load::initDir()
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "collectBook");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "downloadBook"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "downloadBook");
-}
-
-//获取到充值送红包的活动内容
-void Load::httpRedPacketActivity()
-{
-	YYXLayer::logb("Load::httpRedPacketActivity()");
-	string url = string(IP) + NET_GETCHARGEACITIVITY;
-	string runkey = "httpRedPacketActivitySuccess";
-	NetIntface::httpGet(url, runkey, [](string json) {
-		NetIntface::httpGetRechargeActivityCallBack(json, [](int index, int redPacketCount) {
-			string redPacketActivityKey = StringUtils::format("RechargeIndex=%d", index);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, redPacketActivityKey, redPacketCount);
-		}, []() {}, []() {});
-	}, "", [](string str) {});
-	YYXLayer::loge("Load::httpRedPacketActivity()");
 }
 
 void Load::cleanup()

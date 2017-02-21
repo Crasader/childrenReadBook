@@ -33,6 +33,7 @@ public:
 	EventListenerTouchAllAtOnce* m_lister;//进入父母设置,双指右滑
 
 public:
+	Index();
 	~Index();
 
     static cocos2d::Scene* createScene();
@@ -129,6 +130,10 @@ public:
 
 	//加载红包数据到节点上
 	void loadRedPacketData(Node* node, int index);
+	//控制第一次播放动画 之后不再播放动画
+	void playAnimator(function<void()> animator, function<void()> animatorOver);
+	//火车动画
+	void huocheAnimation(ListView* listview, ImageView* parent, ImageView* portrait, ImageView* door_img, Sprite* door, Sprite* door2, Vec2 origin, const string & plist);
 };
 
 #endif // __Index_SCENE_H__

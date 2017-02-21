@@ -423,4 +423,16 @@
   <string>获取包年书籍列表失败 </string>
   <key>HUOQUSHOUCANGLIEBIAOSHIBAI</key>
   <string>获取收藏列表失败 </string>
+  <key>YOUKE</key>
+  <string>游 客 </string>
+  <key>BEIJING</key>
+  <string>北京 </string>
+  <key>CHAXUNDANGQIANZHANGHUEYUSHIBAI</key>
+  <string>查询当前账户余额失败 </string>
+  <key>SHIFOUJIXUSHIYONGYOUKEZHANGHAO</key>
+  <string>是否继续使用游客账号 </string>
+  <key>MIANFEISHIDU</key>
+  <string>免费试读 </string>
+  <key>RENMINBI</key>
+  <string>人民币 </string>
 </dict> 

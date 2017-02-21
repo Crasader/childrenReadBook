@@ -2,7 +2,7 @@
 #include <string>   
 #include "XZLayer.h"
 #include "App.h"
-
+#include "YYXVisitor.h"
 
 //展示分享红包
 void XZLayer::showShareRedPacket(string redCount)
@@ -227,13 +227,6 @@ YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave)
 		bkground->addClickEventListener([=](Ref* sender) {
 		});
 	}
-	auto bkground1 = (ImageView*)viphint->findControl("Image_2");
-	if (bkground1)
-	{
-		bkground1->addClickEventListener([=](Ref* sender) {
-
-		});
-	}
 	auto bclose = (Button*)viphint->findControl("Button_1");
 	if (bclose)
 	{
@@ -245,19 +238,28 @@ YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave)
 	if (pay)
 	{
 		pay->addClickEventListener([=](Ref* sender) {
-			if (App::GetInstance()->m_me)
-			{
-				viphint->removeFromParent();
-				auto paylayer = XZLayer::payBuyVip();
-				if (paylayer)
-					Director::getInstance()->getRunningScene()->addChild(paylayer);
-			}
-			else
-			{				//未登录跳转登录
-				if (runleave)
-					runleave();
-				Index::GoToLoginScene();
-			}
+			viphint->removeFromParent();
+			Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=](){
+				if (YYXVisitor::getInstance()->getVisitorMode())
+				{
+					if (runleave)
+						runleave();
+					Index::GoToLoginScene();
+					return;
+				}
+				if (App::GetInstance()->m_me)
+				{
+					auto paylayer = XZLayer::payBuyVip();
+					if (paylayer)
+						Director::getInstance()->getRunningScene()->addChild(paylayer);
+				}
+				else
+				{
+					if (runleave)
+						runleave();
+					Index::GoToLoginScene();
+				}
+			}));
 		});
 	}
 	return viphint;
@@ -289,6 +291,10 @@ YYXLayer * XZLayer::payBuyVip()
 	if (phonenum)
 	{
 		string userAccount = YYXLayer::getFileValue("userAccount", "");
+		if (YYXVisitor::getInstance()->getVisitorMode())
+		{
+			userAccount = YYXVisitor::getInstance()->getVisitorName();
+		}		
 		phonenum->setText(userAccount);
 	}
 	auto datenum = (Text*)viphint->findControl("Text_15");

@@ -1,0 +1,18 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="num" Type="Plist" ID="2571426a-de3c-452e-bb12-f090fed01cf4" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="1" AllowRotation="False" AllowAnySize="True" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="Pay/res/ApplePay_0_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_1_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_2_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_3_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_4_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_5_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_6_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_7_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_8_667h.png" />
+      <FilePathData Path="Pay/res/ApplePay_9_667h.png" />
+    </ImageFiles>
+    <MaxSize Width="1024" Height="128" />
+  </Content>
+</PlistInfoProjectFile>
