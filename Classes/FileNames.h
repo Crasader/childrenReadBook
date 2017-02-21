@@ -1013,7 +1013,7 @@ enum MyEnum
 
 #define  NET_GETSHAREREDPACKET "/ellabook-server/coupon_samuel/ShareCoupon" //获取分享成功的红包
 
-#define NET_GETCHARGEACITIVITY "/ellabook-server/order/queryAmountList.do"// 获取充值红包活动
+#define NET_GETCHARGEACITIVITY "/ellabook-server/order/NewQueryAmountList.do"// 获取充值红包活动
 
 #define NET_ADDDOWNLOADRECODE "/ellabook-server/book/adddownloadrecord.do"//上传下载记录
 

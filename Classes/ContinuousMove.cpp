@@ -1,7 +1,7 @@
 ﻿#include "ContinuousMove.h"
 
 
-ContinuousMove::ContinuousMove(float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_Offset, float f_MoveTime, Vec2 Show4AnchorPoint, Vec2 Shadow4AnchorPoint, Vec2 MoveUpStart, float MoveUpTime, float ShakeTime, float JumpHeight,int Jumps)
+ContinuousMove::ContinuousMove(float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_Offset, float f_MoveTime, Vec2 Show4AnchorPoint, Vec2 Shadow4AnchorPoint, Vec2 MoveUpStart, float MoveUpTime, float ShakeTime, float JumpHeight,int Jumps, bool completeAnimation)
 {
 	m_Scale = f_Scale;
 	m_AnchorPoint = vec2_AnchorPoint;
@@ -14,6 +14,7 @@ ContinuousMove::ContinuousMove(float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_O
 	m_ShakeTime = ShakeTime;
 	m_JumpHeight = JumpHeight;
 	m_Jumps = Jumps;
+	m_completeAnimation = completeAnimation;
 }
 
 
@@ -32,10 +33,12 @@ ContinuousMove* ContinuousMove::create(const std::string& c_FileName
 	, float MoveUpTime
 	, float ShakeTime
 	, float JumpHeight
-	, int Jumps)
-{
-	
-	ContinuousMove *node = new (std::nothrow) ContinuousMove(f_Scale, vec2_AnchorPoint, vec2_Offset, f_MoveTime, Show4AnchorPoint, Shadow4AnchorPoint, MoveUpStart, MoveUpTime, ShakeTime,  JumpHeight,  Jumps);
+	, int Jumps
+	, bool completeAnimation)
+{	
+	ContinuousMove *node = new (std::nothrow) ContinuousMove(f_Scale, vec2_AnchorPoint, vec2_Offset
+		, f_MoveTime, Show4AnchorPoint, Shadow4AnchorPoint, MoveUpStart, MoveUpTime, ShakeTime
+		,  JumpHeight,  Jumps, completeAnimation);
 	auto cache = SpriteFrameCache::getInstance();
 	node->m_Cloud = Sprite::create();
 	node->m_Cloud->initWithSpriteFrameName(c_FileName);
@@ -68,21 +71,36 @@ bool ContinuousMove::init()
 	m_Cloud1->setAnchorPoint(m_Shadow4AnchorPoint);
 	addChild(m_Cloud1);
 	m_Cloud1->setPosition(m_AnchorPoint);
-
-	m_Cloud->runAction(Sequence::create(MoveTo::create(m_MoveUpTime, m_AnchorPoint), EaseOut::create(JumpBy::create(m_ShakeTime, Vec2(0, 0), m_JumpHeight, m_Jumps),1), CallFuncN::create([&](Ref *pSender)
+	if (m_completeAnimation)
 	{
+		m_Cloud->runAction(Sequence::create(MoveTo::create(m_MoveUpTime, m_AnchorPoint), EaseOut::create(JumpBy::create(m_ShakeTime, Vec2(0, 0), m_JumpHeight, m_Jumps), 1), CallFuncN::create([&](Ref *pSender)
+		{
+			m_Cloud->runAction(RepeatForever::create(Sequence::create(MoveBy::create(m_MoveTime, m_Offset), CallFuncN::create([=](Ref *pSender)
+			{
+				//CCLOG("m_Cloud = %f / %f", ((Sprite*)pSender)->getPosition().x, ((Sprite*)pSender)->getPosition().y);
+				((Sprite*)pSender)->setPosition(m_AnchorPoint);
+			}), NULL)));
+			m_Cloud1->runAction(RepeatForever::create(Sequence::create(MoveBy::create(m_MoveTime, m_Offset), CallFuncN::create([=](Ref *pSender)
+			{
+				//CCLOG("m_Cloud1 = %f / %f", ((Sprite*)pSender)->getPosition().x, ((Sprite*)pSender)->getPosition().y);
+				((Sprite*)pSender)->setPosition(m_AnchorPoint);
+			}), NULL)));
+		}), NULL));
+	}
+	else
+	{
+		CloudBack();
 		m_Cloud->runAction(RepeatForever::create(Sequence::create(MoveBy::create(m_MoveTime, m_Offset), CallFuncN::create([=](Ref *pSender)
 		{
 			//CCLOG("m_Cloud = %f / %f", ((Sprite*)pSender)->getPosition().x, ((Sprite*)pSender)->getPosition().y);
-			((Sprite*)pSender)->setPosition(m_AnchorPoint);				
-		}), NULL)));			
+			((Sprite*)pSender)->setPosition(m_AnchorPoint);
+		}), NULL)));
 		m_Cloud1->runAction(RepeatForever::create(Sequence::create(MoveBy::create(m_MoveTime, m_Offset), CallFuncN::create([=](Ref *pSender)
 		{
 			//CCLOG("m_Cloud1 = %f / %f", ((Sprite*)pSender)->getPosition().x, ((Sprite*)pSender)->getPosition().y);
 			((Sprite*)pSender)->setPosition(m_AnchorPoint);
 		}), NULL)));
-	}), NULL));
-	
+	}
 	return true;
 }
 

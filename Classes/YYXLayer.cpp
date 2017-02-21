@@ -1622,9 +1622,10 @@ void YYXLayer::writeFilepp (string str, string path)//追加写文件
 	return ;
 }
 
-void YYXLayer::setFileValue(string key, string value)
+void YYXLayer::setFileValue(string key, string value, string dirPath)
 {
-	string dirPath = FileUtils::getInstance()->getWritablePath() + "Data";
+	if (dirPath == "")
+		dirPath = FileUtils::getInstance()->getWritablePath() + "Data";
 	if (!FileUtils::getInstance()->isDirectoryExist(dirPath))
 	{
 		FileUtils::getInstance()->createDirectory(dirPath);
@@ -1635,9 +1636,10 @@ void YYXLayer::setFileValue(string key, string value)
 	writeFile(value, path);
 }
 
-std::string YYXLayer::getFileValue(string key, string defaultstr)
+std::string YYXLayer::getFileValue(string key, string defaultstr, string dirPath)
 {
-	string dirPath = FileUtils::getInstance()->getWritablePath() + "Data";
+	if (dirPath == "")
+		dirPath = FileUtils::getInstance()->getWritablePath() + "Data";
 	string path = dirPath + "/" + key;
 	if (FileUtils::getInstance()->isFileExist(path))
 	{
@@ -2398,7 +2400,7 @@ void YYXLayer::PLAYBUTTON()
 		AudioEngine::play2d(ELLA_SOUND_BUTTON);
 }
 
-//复制文件夹 不替换
+//复制文件夹 不替换 删除源文件
 void YYXLayer::CopyDirectory(string sourceDir, string destDir)
 {
 	App::log("YYXLayer::CopyDirectory " + sourceDir + " == >>>" + destDir);
@@ -2408,9 +2410,13 @@ void YYXLayer::CopyDirectory(string sourceDir, string destDir)
 		string destpath = destDir + "/" + filename;
 		if (!FileUtils::getInstance()->isFileExist(destpath))
 		{
-			App::copyFile(filepath, destpath);
+			auto res = App::copyFile(filepath, destpath);
 			App::log("copyFile=  " + filepath + "   ======>>" + destpath);
+			if (res)
+				FileUtils::getInstance()->removeFile(filepath);
 		}
+		else
+			FileUtils::getInstance()->removeFile(filepath);
 	}, [destDir](string dirpath, string dirname) {
 		CopyDirectory(dirpath, destDir + "/" + dirname);
 	});

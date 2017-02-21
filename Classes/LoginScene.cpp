@@ -1,6 +1,8 @@
 ﻿#include "LoginScene.h"
 #include "NetIntface.h"
 #include "XZLayer.h"
+#include "YYXVisitor.h"
+#include "Charger.h"
 
 Scene* Login::createScene()
 {
@@ -61,6 +63,12 @@ void Login::onEnterTransitionDidFinish()
 	App::log("Login::onEnterTransitionDidFinish---END");
 }
 
+void Login::cleanup()
+{
+	unschedule("LoginSuccessToast");
+	unschedule("LoginSuccess");
+}
+
 //忘记密码 对话框初始化
 Layer* Login::forgetPasswordInit()
 {
@@ -106,7 +114,7 @@ Layer* Login::forgetPasswordInit()
 		schedule([=](float f) {
 			int times = App::getCurrentTime() - App::GetInstance()->m_Time;
 			char str[100];
-			sprintf(str, "%d%s", 60 - times, App::getChars("seconds"));
+			sprintf(str, "%d%s", 60 - times, App::getString("seconds"));
 			b_getCode->setTitleText(str);
 			if (times > 60)
 			{
@@ -358,7 +366,7 @@ Layer* Login::registerInit()
 					//4.获取用户红包
 					httpGetUserRedPackets(memberId);
 					//5.获取红包活动
-					httpRedPacketActivity();
+					Charger::httpChargerInfo();
 					//3.确定孩子头像
 					App::log("注册成功,请求孩子", memberId);
 					getChildList(memberId, []() {
@@ -434,19 +442,6 @@ Layer* Login::registerInit()
 		});
 	});
 	return (Layer*)regiserLayer;
-}
-
-//获取到充值送红包的活动内容
-void Login::httpRedPacketActivity()
-{
-	string url = string(IP) + NET_GETCHARGEACITIVITY;
-	string runkey = "httpRedPacketActivitySuccess";
-	NetIntface::httpGet(url, runkey, [](string json) {
-		NetIntface::httpGetRechargeActivityCallBack(json, [](int index, int redPacketCount) {
-			string redPacketActivityKey = StringUtils::format("RechargeIndex=%d", index);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, redPacketActivityKey, redPacketCount);
-		}, []() {}, []() {});
-	}, "", [](string str) {});
 }
 
 //添加宝贝 对话框初始化
@@ -580,9 +575,15 @@ Layer* Login::loginInit()
 	_eventDispatcher->removeCustomEventListeners("USER_LOGIN_SUCCESS");
 	auto listenLoginSuccess = EventListenerCustom::create("USER_LOGIN_SUCCESS", [=](EventCustom* event) {
 		App::log("************************YYXLayer::sendNotify(USER_LOGIN_SUCCESS);");
-		//验证成功,返回前场景
-		App::GetInstance()->popBack();
-		Index::BackPreviousScene();
+		Director::getInstance()->getRunningScene()->addChild(YYXLayer::WaitLayer());
+		scheduleOnce([](float f) {
+			Toast::create(App::getString("DENGLUCHENGGONG"));
+		}, 2.0f, "LoginSuccessToast");
+		scheduleOnce([](float f) {
+			//验证成功,返回前场景
+			App::GetInstance()->popBack();
+			Index::BackPreviousScene();
+		}, 5.0f, "LoginSuccess");
 	});
 	_eventDispatcher->addEventListenerWithFixedPriority(listenLoginSuccess, 1);
 
@@ -1143,6 +1144,7 @@ void Login::LogIn(string member_name, string member_passwd)
 	if (member_name != "" && member_passwd != "") {
 		NetIntface::httpLogIn(member_name, member_passwd,"", [=](string json) {
 			NetIntface::httpLogInCallBack(json, [=](int memberId, int memberSex, int memberGrade, string memberCity, string memberProvince) {
+				YYXVisitor::getInstance()->logoutVisitor();
 				//登陆成功
 				if (App::GetInstance()->m_me == nullptr)
 					App::GetInstance()->m_me = new MyAccount();
@@ -1151,7 +1153,6 @@ void Login::LogIn(string member_name, string member_passwd)
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userSex", memberSex);
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userCity", -999, memberCity);
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userProvince", -999, memberProvince);
-				Toast::create(App::getString("DENGLUCHENGGONG"));
 				//用户信息存储本地
 				YYXLayer::setFileValue("userAccount", member_name);
 				YYXLayer::setFileValue("userPassword", member_passwd);
@@ -1160,7 +1161,7 @@ void Login::LogIn(string member_name, string member_passwd)
 				YYXLayer::setFileValue("userCity", memberCity);
 				YYXLayer::setFileValue("userProvince", memberProvince);
 				//大量的用户信息请求
-				App::loginCallback();
+				App::loginCallback();				
 				YYXLayer::sendNotify("USER_LOGIN_SUCCESS");
 			}, [](string str) {
 				YYXLayer::sendNotify("USER_LOGIN_FAILED");

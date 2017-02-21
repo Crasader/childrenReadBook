@@ -55,7 +55,7 @@ public:
 	static void httpGetComments(int bookid, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	static void httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void()> runable, const function<void()> errorRunable);
 	//获取充值红包活动
-	static void httpGetRechargeActivityCallBack(string json, const function<void(int, int)> itemRun, const function<void()> runable, const function<void()> errorRunable);
+	static void httpGetRechargeActivityCallBack(string json, const function<void(int, int, int)> hongbaoList, const function<void(int, int)> chargerList, const function<void()> runable, const function<void()> errorRunable);
 	// 支付
 	static void httpPay(int memberId, int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	//开通包年服务

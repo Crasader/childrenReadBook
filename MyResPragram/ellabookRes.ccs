@@ -489,6 +489,7 @@
         <Folder Name="MessageBox">
           <Folder Name="csb">
             <Project Name="fxz_box.csd" Type="Layer" />
+            <Project Name="hintVisitorLogin.csd" Type="Layer" />
             <PlistInfo Name="message.csi" Type="Plist" />
             <Project Name="messagebox2.csd" Type="Layer" />
             <Project Name="toast.csd" Type="Node" />
@@ -504,9 +505,12 @@
             <Image Name="push_image_bg_2.png" />
             <Image Name="push_image_bg_3.png" />
             <Image Name="push_image_bg1.png" />
+            <Image Name="tishi_736h.png" />
             <Image Name="toast (2).png" />
             <Image Name="yila.png" />
             <Image Name="Z_ipad.png" />
+            <Image Name="zhijiegoumai_736h.png" />
+            <Image Name="zhucekedegoushuhongbao_736h.png" />
           </Folder>
         </Folder>
         <Folder Name="Notification">
@@ -700,12 +704,14 @@
             <Project Name="isPay.csd" Type="Layer" />
             <Project Name="item.csd" Type="Layer" />
             <Project Name="paylayer.csd" Type="Layer" />
+            <Project Name="payment.csd" Type="Layer" />
             <PlistInfo Name="paypng.csi" Type="Plist" />
             <Project Name="piaodai.csd" Type="Node" />
             <Project Name="redpacket.csd" Type="Node" />
             <Project Name="redpacketmessage.csd" Type="Layer" />
             <Project Name="selectredpacket.csd" Type="Layer" />
             <Project Name="whetherToPay.csd" Type="Layer" />
+            <Project Name="chargeritem.csd" Type="Node" />
           </Folder>
           <Folder Name="res">
             <Image Name="ApplePay_0_667h.png" />
@@ -718,12 +724,23 @@
             <Image Name="ApplePay_7_667h.png" />
             <Image Name="ApplePay_8_667h.png" />
             <Image Name="ApplePay_9_667h.png" />
+            <Image Name="ApplePay_background_667h.png" />
+            <Image Name="ApplePay_background1_667h.png" />
+            <Image Name="ApplePay_background2_667h.png" />
+            <Image Name="ApplePay_buy_off_667h.png" />
+            <Image Name="ApplePay_buy_selected_667h.png" />
             <Image Name="ApplePay_close_off_667h.png" />
             <Image Name="ApplePay_close_selected_667h.png" />
             <Image Name="ApplePay_coin_667h.png" />
             <Image Name="ApplePay_coin_selected_667h.png" />
+            <Image Name="ApplePay_deposit_off_667h.png" />
+            <Image Name="ApplePay_deposit_selected_667h.png" />
             <Image Name="ApplePay_frame_667h.png" />
             <Image Name="ApplePay_gotopay_background_667h.png" />
+            <Image Name="ApplePay_gotopay_off_667h.png" />
+            <Image Name="ApplePay_gotopay_selected_667h.png" />
+            <Image Name="ApplePay_title_667h.png" />
+            <Image Name="ApplePay_title2_667h.png" />
             <Image Name="ApplePay_weixin_667h.png" />
             <Image Name="ApplePay_weixin_sel_667h.png" />
             <Image Name="ApplePay_zhifubao_667h.png" />
@@ -741,17 +758,86 @@
             <Image Name="HBSRedpacket_HYJJX_667h.png" />
             <Image Name="HBSRedpacket_HYJJX_736h.png" />
             <Image Name="HBSRedpacket_JT_736h.png" />
+            <Image Name="HBSRedpacket_JT_FH_667h.png" />
+            <Image Name="HBSRedpacket_JT_FH_ZZ_667h.png" />
+            <Image Name="HBSRedpacket_JT_JR_667h.png" />
             <Image Name="HBSRedpacket_JT_JR_736h.png" />
             <Image Name="HBSRedpacket_M_736h.png" />
             <Image Name="HBSRedpacket_WDHB_736h.png" />
             <Image Name="HBSRedpacket_XDB_667h.png" />
+            <Image Name="HBSRedpacket_XX_667h.png" />
             <Image Name="HBSRedpacket_YJJX_667h.png" />
             <Image Name="HBSRedpacket_YLHB_736h.png" />
             <Image Name="HBSRedpacket_ZHYE_667h.png" />
+            <Image Name="num.png" />
             <Image Name="push_image_bg_4.png" />
+            <Image Name="push_image_bg_quxiao.png" />
+            <Image Name="push_image_bg_quxiao2.png" />
             <Image Name="weixin_667h.png" />
             <Image Name="zhifubao_667h.png" />
           </Folder>
+        </Folder>
+        <Folder Name="res">
+          <Image Name="ApplePay_0_667h.png" />
+          <Image Name="ApplePay_1_667h.png" />
+          <Image Name="ApplePay_2_667h.png" />
+          <Image Name="ApplePay_3_667h.png" />
+          <Image Name="ApplePay_4_667h.png" />
+          <Image Name="ApplePay_5_667h.png" />
+          <Image Name="ApplePay_6_667h.png" />
+          <Image Name="ApplePay_7_667h.png" />
+          <Image Name="ApplePay_8_667h.png" />
+          <Image Name="ApplePay_9_667h.png" />
+          <Image Name="ApplePay_background_667h.png" />
+          <Image Name="ApplePay_background1_667h.png" />
+          <Image Name="ApplePay_background2_667h.png" />
+          <Image Name="ApplePay_buy_off_667h.png" />
+          <Image Name="ApplePay_buy_selected_667h.png" />
+          <Image Name="ApplePay_close_off_667h.png" />
+          <Image Name="ApplePay_close_selected_667h.png" />
+          <Image Name="ApplePay_coin_667h.png" />
+          <Image Name="ApplePay_coin_selected_667h.png" />
+          <Image Name="ApplePay_deposit_off_667h.png" />
+          <Image Name="ApplePay_deposit_selected_667h.png" />
+          <Image Name="ApplePay_frame_667h.png" />
+          <Image Name="ApplePay_gotopay_background_667h.png" />
+          <Image Name="ApplePay_gotopay_off_667h.png" />
+          <Image Name="ApplePay_gotopay_selected_667h.png" />
+          <Image Name="ApplePay_title_667h.png" />
+          <Image Name="ApplePay_title2_667h.png" />
+          <Image Name="ApplePay_weixin_667h.png" />
+          <Image Name="ApplePay_weixin_sel_667h.png" />
+          <Image Name="ApplePay_zhifubao_667h.png" />
+          <Image Name="ApplePay_zhifubao_sel_667h.png" />
+          <Image Name="block.png" />
+          <Image Name="caidai_an.png" />
+          <Image Name="caidai_liang.png" />
+          <Image Name="HBSRedpacket_BSYHB_736h.png" />
+          <Image Name="HBSRedpacket_BSYHBXZ_736h.png" />
+          <Image Name="HBSRedpacket_CHDT_736h.png" />
+          <Image Name="HBSRedpacket_DDB_667h.png" />
+          <Image Name="HBSRedpacket_DG_736h.png" />
+          <Image Name="HBSRedpacket_HB_736h.png" />
+          <Image Name="HBSRedpacket_HDT_736h.png" />
+          <Image Name="HBSRedpacket_HYJJX_667h.png" />
+          <Image Name="HBSRedpacket_HYJJX_736h.png" />
+          <Image Name="HBSRedpacket_JT_736h.png" />
+          <Image Name="HBSRedpacket_JT_FH_667h.png" />
+          <Image Name="HBSRedpacket_JT_FH_ZZ_667h.png" />
+          <Image Name="HBSRedpacket_JT_JR_667h.png" />
+          <Image Name="HBSRedpacket_JT_JR_736h.png" />
+          <Image Name="HBSRedpacket_M_736h.png" />
+          <Image Name="HBSRedpacket_WDHB_736h.png" />
+          <Image Name="HBSRedpacket_XDB_667h.png" />
+          <Image Name="HBSRedpacket_XX_667h.png" />
+          <Image Name="HBSRedpacket_YJJX_667h.png" />
+          <Image Name="HBSRedpacket_YLHB_736h.png" />
+          <Image Name="HBSRedpacket_ZHYE_667h.png" />
+          <Image Name="push_image_bg_4.png" />
+          <Image Name="push_image_bg_quxiao.png" />
+          <Image Name="push_image_bg_quxiao2.png" />
+          <Image Name="weixin_667h.png" />
+          <Image Name="zhifubao_667h.png" />
         </Folder>
         <Folder Name="RestRemind">
           <Folder Name="csb">

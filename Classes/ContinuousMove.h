@@ -21,11 +21,16 @@ protected:
 	float m_ShakeTime;//抖动时间
 	float m_JumpHeight;//跳的高度
 	int m_Jumps;//跳的次数
+	bool m_completeAnimation;//true = 完整动画 false = 直接滚动
 
 public:
-	ContinuousMove(float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_Offset, float f_MoveTime, Vec2 Show4AnchorPoint, Vec2 Shadow4AnchorPoint, Vec2 MoveUpStart, float MoveUpTime, float Shake, float JumpHeight, int Jumps);
+	ContinuousMove(float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_Offset, float f_MoveTime, Vec2 Show4AnchorPoint
+		, Vec2 Shadow4AnchorPoint, Vec2 MoveUpStart, float MoveUpTime, float Shake
+		, float JumpHeight, int Jumps,bool completeAnimation=true);
 	virtual ~ContinuousMove();
-	static ContinuousMove* create(const std::string& c_FileName, float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_Offset, float f_MoveTime, Vec2 Show4AnchorPoint, Vec2 Shadow4AnchorPoint, Vec2 MoveUpStart, float MoveUpTime, float Shake, float JumpHeight, int Jumps);
+	static ContinuousMove* create(const std::string& c_FileName, float f_Scale, Vec2 vec2_AnchorPoint, Vec2 vec2_Offset
+		, float f_MoveTime, Vec2 Show4AnchorPoint, Vec2 Shadow4AnchorPoint, Vec2 MoveUpStart, float MoveUpTime
+		, float Shake, float JumpHeight, int Jumps, bool completeAnimation = true);
 	virtual bool init();
 
 

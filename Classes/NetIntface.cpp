@@ -472,7 +472,7 @@ void NetIntface::httpBookCommentsCallback(std::string json, const function<void(
 }
 
 //获取充值送红包活动
-void NetIntface::httpGetRechargeActivityCallBack(string json, const function<void(int, int)> itemRun, const function<void()> runable, const function<void()> errorRunable)
+void NetIntface::httpGetRechargeActivityCallBack(string json, const function<void(int, int,int)> hongbaoList, const function<void(int, int)> chargerList, const function<void()> runable, const function<void()> errorRunable)
 {
 	rapidjson::Document doc;
 	auto result = YYXLayer::getJsonObject4Json(doc, json);
@@ -485,8 +485,15 @@ void NetIntface::httpGetRechargeActivityCallBack(string json, const function<voi
 			YYXLayer::getJsonArray4Json(arrayData, doc, "Coupon");
 			YYXLayer::getDataForJsonArray(arrayData, [=](rapidjson::Value & item, int index) {
 				int coupon_amount = YYXLayer::getInt4Json(-999, item, "coupon_amount");
-				if (itemRun)
-					itemRun(index, coupon_amount);
+				int coupon_id = YYXLayer::getInt4Json(-999, item, "coupon_id");
+				if (hongbaoList)
+					hongbaoList(index, coupon_id, coupon_amount);
+			});
+			YYXLayer::getJsonArray4Json(arrayData, doc, "data");
+			YYXLayer::getDataForJsonArray(arrayData, [=](rapidjson::Value & item, int index) {
+				int real_price = YYXLayer::getInt4Json(-999, item, "real_price");
+				if (chargerList)
+					chargerList(index,  real_price);
 			});
 			if (runable)
 				runable();
@@ -498,98 +505,7 @@ void NetIntface::httpGetRechargeActivityCallBack(string json, const function<voi
 			errorRunable();
 	}
 }
-/*{
-	"result": true,
-	"totalCount": 0,
-	"data": [],
-	"Coupon": [
-		{
-			"coupon_id": 0,
-			"member_id": null,
-			"coupon_event_id": null,
-			"src_member_id": null,
-			"coupon_type": 0,
-			"coupon_amount": 0,
-			"coupon_discount": 0,
-			"coupon_receive_time": null,
-			"coupon_consume_time": null,
-			"coupon_expire_time": null,
-			"coupon_state": 0,
-			"order_id": 0
-		},
-		{
-			"coupon_id": 1,
-			"member_id": null,
-			"coupon_event_id": null,
-			"src_member_id": null,
-			"coupon_type": 0,
-			"coupon_amount": 0,
-			"coupon_discount": 0,
-			"coupon_receive_time": null,
-			"coupon_consume_time": null,
-			"coupon_expire_time": null,
-			"coupon_state": 0,
-			"order_id": 0
-		},
-		{
-			"coupon_id": 2,
-			"member_id": null,
-			"coupon_event_id": null,
-			"src_member_id": null,
-			"coupon_type": 0,
-			"coupon_amount": 0,
-			"coupon_discount": 0,
-			"coupon_receive_time": null,
-			"coupon_consume_time": null,
-			"coupon_expire_time": null,
-			"coupon_state": 0,
-			"order_id": 0
-		},
-		{
-			"coupon_id": 3,
-			"member_id": null,
-			"coupon_event_id": null,
-			"src_member_id": null,
-			"coupon_type": 0,
-			"coupon_amount": 5,
-			"coupon_discount": 0,
-			"coupon_receive_time": null,
-			"coupon_consume_time": null,
-			"coupon_expire_time": null,
-			"coupon_state": 0,
-			"order_id": 0
-		},
-		{
-			"coupon_id": 4,
-			"member_id": null,
-			"coupon_event_id": null,
-			"src_member_id": null,
-			"coupon_type": 0,
-			"coupon_amount": 10,
-			"coupon_discount": 0,
-			"coupon_receive_time": null,
-			"coupon_consume_time": null,
-			"coupon_expire_time": null,
-			"coupon_state": 0,
-			"order_id": 0
-		},
-		{
-			"coupon_id": 5,
-			"member_id": null,
-			"coupon_event_id": null,
-			"src_member_id": null,
-			"coupon_type": 0,
-			"coupon_amount": 30,
-			"coupon_discount": 0,
-			"coupon_receive_time": null,
-			"coupon_consume_time": null,
-			"coupon_expire_time": null,
-			"coupon_state": 0,
-			"order_id": 0
-		}
-	],
-	"CouponCode": 0
-}*/
+
 //支付
 void NetIntface::httpPay(int memberId,  int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
@@ -2477,18 +2393,17 @@ void NetIntface::inviteRegister(int memberId, string url , string runKey, functi
 
 string NetIntface::getPhoneModel(int um)
 {//0=机型 1=sdk版本 2=android版本
-	string str="";
+	string str = "";
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	str = "android";
 	CocosAndroidJni::getPhoneInfo(um, str);
-	str = "android " + str;
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	str = "win32";
+	str = "X2P5T15C26001580";
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	str = "ios";
 #endif	
+	App::log("PhoneModel = " + str);
 	return str;
 }
 void NetIntface::httpBookCollect(int bookId, int type,  function<void(string)> runFunction, function<void(string)> errorRunFunction)

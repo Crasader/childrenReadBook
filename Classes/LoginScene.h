@@ -28,6 +28,7 @@ public:
     virtual bool init();
 
 	void onEnterTransitionDidFinish();
+	void cleanup();
 	// implement the "static create()" method manually
     CREATE_FUNC(Login);
 
@@ -69,8 +70,6 @@ public:
 	void getChildList(int member_id, function<void()> downloadHeadPortrait);
 
 	void httpGetUserRedPackets(int memberId);
-
-	void httpRedPacketActivity();
 };
 
 #endif // __Login_SCENE_H__

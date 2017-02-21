@@ -25,6 +25,14 @@ using namespace std;
 
 typedef pair<int, int> PAIR;
 
+struct chargerDataStruct
+{
+	int index;
+	int money;
+	int hongbao;
+	int hongbaoId;
+};
+
 enum MySceneName {
 	LoadScene//加载场景
 	,BookRoomScene//书房
@@ -59,7 +67,7 @@ struct MyAccount
 	//std::string memberProvince;//省份
 	//std::string memberCity;//城市
 	int momey=0;//账户余额:单位 (分)
-	//string showPortraitPath ="";//展示的头像全路径
+	//string showPortraitPath ="";//展示的头像全路径	
 	bool vip = false;
 	string startvip = "";
 	string endvip = "";
@@ -113,9 +121,9 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.7.3";//应用版本
+	string version = "1.7.13";//应用版本
 
-	long long versioncode = 173;
+	long long versioncode = 175;
 
 	int musicID = -999;//背景音乐ID
 
@@ -158,6 +166,7 @@ public:
 	std::queue<YYXStruct> RefVector;//需要释放的界面集合
 
 	map<string, YYXStruct> myData;//数据临时存储
+
 	/*
 	//APP版本数据
 	<key> netVersion <value>(A+B+C, versionNum, nullptr);
@@ -363,7 +372,6 @@ public:
 	//获取系统时间，格式，例：2016-04-06 18:06:48
 	static bool isNight();//根据系统时间判断白天或夜晚
 	static const char* getString(const char* key);
-	static const char* getChars(const char* key);//获取字符串
 	//static bool analysisMemberInfo(rapidjson::Value &data);//解析data节点
 	static std::string analysisJsonString(rapidjson::Value &data, std::string key);//解析单个节点的key对应的值
 	static int analysisJsonInt(rapidjson::Value &data, std::string key);

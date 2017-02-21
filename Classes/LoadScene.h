@@ -23,7 +23,6 @@ public:
 	void initHttp();//初始化网络请求
 	void initMemberHttp();//根据memberID进行网络初始化
 	void initDir();//初始化创建文件夹
-	void httpRedPacketActivity();
 	// implement the "static create()" method manually
     CREATE_FUNC(Load);
 	virtual void cleanup();
