@@ -40,6 +40,12 @@ public:
 	void showImageView(int status, ImageView* view1, ImageView* view2, ImageView* view3, ImageView* view4);
 	//长按的效果是 一个背景图片盖住 上面一个书籍节点移动不同的位置 覆盖下面的书籍
 	void changLongClickBookPosition(ImageView* backgro, Node* booknode, int position);
+	//判断这书是否是我的包年图书
+	bool bookIsMyVipBooks(int bookid);
+	//判断用户是否是vip
+	bool userIsVip();
+	bool bookIsMyBuyBooks(int bookid);
+	bool bookIsSuo(int bookid);
 	//刷新当前页书籍
 	void refershPage(int status);
 	//刷新book节点信息
@@ -56,6 +62,7 @@ public:
 	void down(Node* book, int bookid);
 	//void roolingAn(Node* node);
 private:
+	Layer* layer;
 	Label *moveCircle;//第几/几页
 	Node* pageCircle;
 	int m_currentPageNumber;
@@ -69,6 +76,7 @@ private:
 	bool m_click = true;
 	//展示模式 //购书列表 = 3 已收藏 = 2 已下载  = 0 包年图书 = 4	
 	int bookMode = 0;
+	//bool shangsuo = false;//过期上锁 点击失效
 	map<int , bool> canLongClinck;
 	int longClickId = -999;
 	Node* longClickNode ;

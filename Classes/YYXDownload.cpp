@@ -30,24 +30,9 @@ std::string YYXDownload::download(string url, string dir, string fileName, strin
 		App::log("YYXDownload::download / " + dir);
 		FileUtils::getInstance()->createDirectory(dir);
 	}
-	//判断是否重复任务
-	auto urltag = YYXStruct::getMapString(data, url, "");
-	auto pathtag = YYXStruct::getMapString(data, dir + "/" + fileName, "");
-	string taskTag = "";
-	if (urltag == "" && pathtag == "")
-	{
-		//生成下载任务的唯一标识符
-		taskTag = StringUtils::format("%s_downloadTag_%d", fileName.c_str(),(int)YYXLayer::getRandom());
-		YYXStruct::initMapYYXStruct(data, url, -999, taskTag);
-		YYXStruct::initMapYYXStruct(data, dir + "/" + fileName, -999, taskTag);
-	}
-	else
-	{
-		if (urltag == "")
-			taskTag = pathtag;
-		else
-			taskTag = urltag;
-	}	
+	auto taskTag = getTaskTag(dir, fileName);
+	string statusKey = taskTag + "+status";
+	YYXStruct::initMapYYXStruct(data, statusKey, 1);
 	std::thread([=]() {
 		setMapFunction(beginstr, beginFunction);
 		setMapFunction(downloadingstr, downloadingFunction);
@@ -173,6 +158,21 @@ std::string YYXDownload::getTag(string path)
 {
 	auto pathtag = YYXStruct::getMapString(YYXDownload::GetInstance()->data, path, "");
 	return pathtag;
+}
+
+string YYXDownload::getTaskTag(string dir, string fileName)
+{
+	//判断是否重复任务
+	auto taskTag = YYXStruct::getMapString(data, dir + "/" + fileName, "");
+	if (taskTag == "")
+	{
+		//生成下载任务的唯一标识符
+		taskTag = StringUtils::format("%s_downloadTag_%d", fileName.c_str(), (int)YYXLayer::getRandom());
+		YYXStruct::initMapYYXStruct(data, dir + "/" + fileName, -999, taskTag);
+		string statusKey = taskTag + "+status";
+		YYXStruct::initMapYYXStruct(data, statusKey, -1);
+	}
+	return taskTag;
 }
 
 void YYXDownload::setMapFunction(string key, function<void(YYXStruct)> runFunction)
@@ -624,6 +624,28 @@ bool YYXDownload::isEnd(string taskTag)
 		return false;
 	}
 }
+
+bool YYXDownload::isDownloading(string taskTag)
+{
+	string statusKey = taskTag + "+status";
+	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey, -1);
+	if (status == 0 || status == 1)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+int YYXDownload::getTaskStatus(string taskTag)
+{
+	string statusKey = taskTag + "+status";
+	int status = YYXStruct::getMapInt64(data, statusKey, -1);
+	return status;
+}
+
 //
 //void YYXDownload::getReadyQueueFrontPushDownloadQueue()
 //{

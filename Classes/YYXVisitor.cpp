@@ -417,16 +417,16 @@ void YYXVisitor::loadLocationVisitorData()
 	}
 }
 
-void YYXVisitor::hintLogin(function<void()> youke, function<void()> toLogin, function<void()> user)
+void YYXVisitor::hintLogin(function<void()> youke, function<void()> toLogin, function<void()> user,string visitorStr, bool Notime)
 {
 	if (getVisitorMode())
 	{
 		auto time = YYXStruct::getMapInt64(App::GetInstance()->myData, "hintLoginTime", 0);
 		auto nowtime = YYXLayer::getCurrentTime4Second() - time;
-		if (nowtime < 60)
+		if (nowtime < 30 && Notime)
 		{
-			if (user)
-				user();
+			if (youke)
+				youke();
 			return;
 		}
 		map<string, int64String> parameter;
@@ -435,6 +435,7 @@ void YYXVisitor::hintLogin(function<void()> youke, function<void()> toLogin, fun
 		auto layer = YYXLayer::create(parameter);
 		if (!layer)
 			return;
+
 		auto background = (ImageView*)layer->findControl("Image_1");
 		background->setTouchEnabled(true);
 		if (background)
@@ -444,6 +445,10 @@ void YYXVisitor::hintLogin(function<void()> youke, function<void()> toLogin, fun
 			});
 		}
 		auto visitor = (Button*)layer->findControl("Button_1");
+		if (visitorStr != "")
+		{
+			visitor->setTitleText(visitorStr);
+		}
 		if (visitor)
 			visitor->addClickEventListener([=](Ref* sender) {
 			layer->removeFromParentAndCleanup(true);

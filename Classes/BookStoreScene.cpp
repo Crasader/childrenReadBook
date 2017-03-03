@@ -319,8 +319,8 @@ bool BookStore::init(int BookStoreId)
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(touchlistener, 1);
 	//通知点击书籍跳转详情
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("bookStoreSceneClickBook", [=](EventCustom* e) {
-		auto data = (YYXStruct*)e->getUserData();
-		auto bookid = data->getInt64Data(*data, -999);
+		auto bookid = (int)e->getUserData();
+		//auto bookid = data->getInt64Data(*data, -999);
 		if (bookid != -999)
 		{
 			addorStartQueue([=]() {
@@ -330,8 +330,8 @@ bool BookStore::init(int BookStoreId)
 				Index::GoToBookInfo(bookid);
 			}, "点击书籍跳转bookid");
 		}
-		if (data)
-			delete data;
+		//if (data)
+			//delete data;
 	});
 	//通知下载封面完成
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("bookstoreCoverDownloadSuccess", [=](EventCustom* e) {
@@ -1670,7 +1670,7 @@ void BookStore::refreshBook(Node* node, int bookId, string path, int price, int 
 				if(m_click)
 					App::log("点击书籍", bookId);
 				if (bookId != -999 && m_click)
-					YYXLayer::sendNotify4YYXStruct("bookStoreSceneClickBook", bookId);
+					YYXLayer::sendNotify("bookStoreSceneClickBook", "",bookId);
 			});
 		});
 	}

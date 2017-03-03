@@ -391,6 +391,61 @@
             <FileData Type="Normal" Path="other/User_bg_ipad@2x.png" Plist="" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
+          <AbstractNodeData Name="Sprite_2" ActionTag="203410928" Tag="384" IconVisible="False" LeftMargin="152.0000" RightMargin="102.0000" TopMargin="297.0000" BottomMargin="77.0000" ctype="SpriteObjectData">
+            <Size X="600.0000" Y="106.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="452.0000" Y="130.0000" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.5293" Y="0.2708" />
+            <PreSize X="0.7026" Y="0.2208" />
+            <FileData Type="Normal" Path="other/Backcover_kaitongniankafuwu_ipad@2x.png" Plist="" />
+            <BlendFunc Src="1" Dst="771" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Sprite_3" ActionTag="-1430148590" Tag="713" IconVisible="False" LeftMargin="543.3319" RightMargin="281.6681" TopMargin="309.0619" BottomMargin="134.9381" ctype="SpriteObjectData">
+            <Size X="29.0000" Y="36.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="557.8319" Y="152.9381" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.6532" Y="0.3186" />
+            <PreSize X="0.0340" Y="0.0750" />
+            <FileData Type="Normal" Path="other/wodeshufang-niankasuoding_736h.png" Plist="" />
+            <BlendFunc Src="1" Dst="771" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Sprite_4" ActionTag="-1120809103" Tag="714" IconVisible="False" LeftMargin="543.3319" RightMargin="281.6681" TopMargin="309.0619" BottomMargin="134.9381" ctype="SpriteObjectData">
+            <Size X="29.0000" Y="36.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="557.8319" Y="152.9381" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.6532" Y="0.3186" />
+            <PreSize X="0.0340" Y="0.0750" />
+            <FileData Type="Normal" Path="other/wodeshufang-niankasuoding-mr_736h.png" Plist="" />
+            <BlendFunc Src="1" Dst="771" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Backcover_goumaichenggong_736h_1" ActionTag="236786048" Tag="117" IconVisible="False" LeftMargin="165.0613" RightMargin="237.9387" TopMargin="270.6447" BottomMargin="86.3554" ctype="SpriteObjectData">
+            <Size X="451.0000" Y="123.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="390.5613" Y="147.8554" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.4573" Y="0.3080" />
+            <PreSize X="0.5281" Y="0.2562" />
+            <FileData Type="MarkedSubImage" Path="Book/res/Backcover_goumaichenggong_736h.png" Plist="Book/csb/backcover.plist" />
+            <BlendFunc Src="1" Dst="771" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Backcover_goumaichenggong_tuxing_736h_2" ActionTag="-1655132108" Tag="118" IconVisible="False" LeftMargin="164.0613" RightMargin="236.9387" TopMargin="167.1447" BottomMargin="-17.1446" ctype="SpriteObjectData">
+            <Size X="453.0000" Y="330.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="390.5613" Y="147.8554" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.4573" Y="0.3080" />
+            <PreSize X="0.5304" Y="0.6875" />
+            <FileData Type="MarkedSubImage" Path="Book/res/Backcover_goumaichenggong_tuxing_736h.png" Plist="Book/csb/backcover.plist" />
+            <BlendFunc Src="1" Dst="771" />
+          </AbstractNodeData>
         </Children>
       </ObjectData>
     </Content>

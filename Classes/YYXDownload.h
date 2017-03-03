@@ -15,10 +15,19 @@
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "curl/include/android/curl/curl.h"
 #endif
-
+//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束 -1=提前创建任务标示
 USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace std;
+
+enum YYXDownloadStatus
+{
+	_download = 0,
+	_ready = 1,
+	_pause=2,
+	_over=3,
+	_null=-1
+};
 
 class YYXDownload:public Ref
 {
@@ -44,6 +53,7 @@ public:
 	int getDownloadMaxCount();
 	//获取任务标记字符串
 	static string getTag(string path);
+	string getTaskTag(string dir, string fileName);
 	//解压一个文件
 	static bool uncompress(string zipDir, string zipName, string unzipDirPath, function<void(string str)> successRun, function<void(string str)> failRun);
 	//查询任务是否在准备队列中
@@ -52,6 +62,10 @@ public:
 	bool isPause(string taskTag);
 	//判断任务是否结束
 	bool isEnd(string taskTag);
+	//判断任务准备或者进行下载
+	bool isDownloading(string taskTag);
+	//获取状态
+	int getTaskStatus(string taskTag);
 	//开始所有下载线程
 	void startAll();
 	//判断是否在下载队列中

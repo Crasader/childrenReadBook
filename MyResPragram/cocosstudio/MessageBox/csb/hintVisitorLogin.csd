@@ -26,19 +26,17 @@
             <PreSize X="0.5338" Y="0.9935" />
             <FileData Type="Normal" Path="other/BookInfo_book-details_-Popover_background_667h.png" Plist="" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Button_1" ActionTag="1586069265" Tag="47" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="452.0000" RightMargin="452.0000" TopMargin="494.8281" BottomMargin="92.1719" TouchEnable="True" FontSize="20" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="160" Scale9Height="5" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="190.0000" Y="27.0000" />
+          <AbstractNodeData Name="Button_1" ActionTag="1586069265" Tag="47" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="397.0000" RightMargin="397.0000" TopMargin="473.3281" BottomMargin="70.6719" TouchEnable="True" FontSize="40" ButtonText="直接购买&gt;&gt;&gt;" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="160" Scale9Height="5" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="300.0000" Y="70.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="547.0000" Y="105.6719" />
             <Scale ScaleX="0.7000" ScaleY="0.7000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.5000" Y="0.1721" />
-            <PreSize X="0.1737" Y="0.0440" />
-            <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
+            <PreSize X="0.2742" Y="0.1140" />
+            <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
             <TextColor A="255" R="10" G="112" B="255" />
             <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="Normal" Path="MessageBox/res/zhijiegoumai_736h.png" Plist="" />
-            <NormalFileData Type="Normal" Path="MessageBox/res/zhijiegoumai_736h.png" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
@@ -69,7 +67,7 @@
             <FileData Type="Normal" Path="MessageBox/res/zhucekedegoushuhongbao_736h.png" Plist="" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Button_5" ActionTag="1922484539" Tag="51" IconVisible="False" LeftMargin="667.3011" RightMargin="350.6989" TopMargin="91.5247" BottomMargin="456.4754" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="46" Scale9Height="44" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+          <AbstractNodeData Name="Button_5" ActionTag="1922484539" Tag="51" IconVisible="False" LeftMargin="667.3011" RightMargin="350.6989" TopMargin="91.5246" BottomMargin="456.4754" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="46" Scale9Height="44" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="76.0000" Y="66.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="705.3011" Y="489.4754" />

@@ -761,6 +761,7 @@ Layer* Parent::initNode_Account()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenModifyFailed, account);
 	//网络刷新余额
 	getUserMoney();
+	App::httpCheckVIP();
 	//通知 展示余额
 	auto listenshowyue = EventListenerCustom::create("ParentScenehttpGetUserBalanceReferBalance", [=](EventCustom* sender) {
 		App::log("展示余额", App::GetInstance()->m_me->momey);

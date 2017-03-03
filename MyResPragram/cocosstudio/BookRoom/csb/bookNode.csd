@@ -27,6 +27,16 @@
             <PreSize X="0.0000" Y="0.0000" />
             <FileData Type="Normal" Path="other/Book_cover.png" Plist="" />
           </AbstractNodeData>
+          <AbstractNodeData Name="suo1" ActionTag="-148814202" Tag="410" IconVisible="False" LeftMargin="-60.5000" RightMargin="-60.5000" TopMargin="-60.5000" BottomMargin="-60.5000" LeftEage="35" RightEage="35" TopEage="19" BottomEage="19" Scale9OriginX="35" Scale9OriginY="19" Scale9Width="51" Scale9Height="83" ctype="ImageViewObjectData">
+            <Size X="121.0000" Y="121.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position />
+            <Scale ScaleX="0.6000" ScaleY="0.6000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition />
+            <PreSize X="0.0000" Y="0.0000" />
+            <FileData Type="Normal" Path="BookRoom/res/wodeshufang-shubensuoding_736h.png" Plist="" />
+          </AbstractNodeData>
           <AbstractNodeData Name="Book_Mask" ActionTag="-542858013" VisibleForFrame="False" Tag="18" IconVisible="False" LeftMargin="-66.0000" RightMargin="-66.0000" TopMargin="-88.0000" BottomMargin="-88.0000" ctype="SpriteObjectData">
             <Size X="132.0000" Y="176.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />

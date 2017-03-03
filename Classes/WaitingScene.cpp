@@ -4,6 +4,9 @@
 #include "XZLayer.h"
 #include "SendCommentLayer.h"
 #include "FKPageLayer.h"
+#include "YYXBuyBook.h"
+#include "YYXRentBook.h"
+#include "YYXBookOver.h"
 
 USING_NS_CC;
 USING_NS_FK;
@@ -42,6 +45,7 @@ bool Waiting::init(std::string bookId, bool isView)
     {
         return false;
     }
+	int m_bookId = atoi(bookId.c_str());
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -64,24 +68,15 @@ bool Waiting::init(std::string bookId, bool isView)
 	layer->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
 	addChild(layer);
 	this->runAction(Sequence::create(DelayTime::create(0.1f), CallFuncN::create([=](Node* n) {
+		YYXBookOver::getInstance()->init(m_bookId, App::GetInstance()->m_me->id, isView);
 		string bookPath, drawPath;
-		if (isView) {
-			//试读
-			App::GetInstance()->m_read->bookId = -999;
-			bookPath = FileUtils::getInstance()->getWritablePath() + "bookTryReadUNZip/" + bookId + "/Iphone1334_view";
-			drawPath = "bookTryReadUNZip/" + bookId + "/";
-		}
-		else
-		{
-			bookPath = FileUtils::getInstance()->getWritablePath() + "bookUNZip/" + bookId + "/Iphone1334";
-			drawPath = "bookUNZip/" + bookId + "/";
-		}
-		if (App::getMemberID() == "5656")
-		{
-			BookParser::getInstance()->setBookPlayModeState(AUTOPLAY);
-		}
+		bookPath = FileUtils::getInstance()->getWritablePath() + "bookUNZip/" + bookId + "/Iphone1334";
+		drawPath = "bookUNZip/" + bookId + "/";
+		//if (App::getMemberID() == "5656")
+		//{
+		//	BookParser::getInstance()->setBookPlayModeState(AUTOPLAY);
+		//}
 		BookParser::getInstance()->setDrawFilePath(drawPath);
-		//BookParser::getInstance()->setScreenShotPath(StringUtils::format("temp/share%d.png", (int)YYXLayer::getRandom()));
 		//退出按钮
 		BookParser::getInstance()->setPageQuitCallBack([=]() {
 			App::GetInstance()->popBack();
@@ -95,53 +90,52 @@ bool Waiting::init(std::string bookId, bool isView)
 		BookParser::getInstance()->setPageUpCallBack([=]() {
 			YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
 				BookParser::getInstance()->pageUp();
-				saveReadRecording(bookId, isView);
+				//saveReadRecording(bookId, isView);
+				saveReadRecording(bookId);
 			});			
 		});
 		//向后按钮
 		BookParser::getInstance()->setPageDownCallBack([=]() {
 			YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
 				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-					if (BookParser::getInstance()->pageDown() == 0)
+					if (BookParser::getInstance()->getCurrentPage() == 4)
 					{
-						Layer* it;
-						if (isView)
-							it = tryReadBackCover(atoi(bookId.c_str()));
+						if (YYXBookOver::getInstance()->UserBuy() || YYXBookOver::getInstance()->UserVip())
+						{
+							BookParser::getInstance()->pageDown();
+							saveReadRecording(bookId);
+						}
 						else
-							it = BackCover(atoi(bookId.c_str()));
-						initResource(it);
-						auto scene = Scene::create();
-						scene->addChild(it);
-						Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, scene, false));
+						{
+							BookParser::getInstance()->pausePlay();
+							Layer* it = YYXBookOver::getInstance()->tryReadBookOverLayer();
+							initResource(it);
+							auto scene = Scene::create();
+							scene->addChild(it);
+							Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, scene, false));
+						}					
 					}
-					saveReadRecording(bookId, isView);
+					else
+					{
+						if (BookParser::getInstance()->pageDown() == 0)
+						{
+							BookParser::getInstance()->pausePlay();
+							Layer* it = YYXBookOver::getInstance()->readBookOverLayer();
+							initResource(it);
+							auto scene = Scene::create();
+							scene->addChild(it);
+							Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, scene, false));
+							saveReadRecording(bookId);
+						}
+					}
 				});
 			});
 		});
 		//分享
 		BookParser::getInstance()->setBookShareCallBack([=](RenderTexture* img) {
-			YYXLayer::controlTouchTime(3, "ClickShareTime", [=]() {
-				string fileName = StringUtils::format("temp/share_%d.png", (int)YYXLayer::getRandom());
-				string dir = FileUtils::getInstance()->getWritablePath() + "temp";
-				if (!FileUtils::getInstance()->isFileExist(dir))
-					FileUtils::getInstance()->createDirectory(dir);
-				bool savebool = img->saveToFile(fileName, false, [=](RenderTexture* r, string savepath) {
-					App::log("saveToFile path = " + savepath);
-					string bookinfoRunKey = "waitingSceneHttpGetBookInfoSuccess";
-					string bookinfoErrorKey = "waitingSceneHttpGetBookInfoFail";
-					NetIntface::httpGetBookInfo(atoi(bookId.c_str()), bookinfoRunKey, [=](string json) {
-						//获取书名然后分享
-						Share(json, savepath);
-					}, bookinfoErrorKey, [](string str) {
-						Toast::create(App::getString("NETEXCEPTION"));
-					});
-				});
-				if (!savebool)
-				{
-					App::log("save is error");
-					Toast::create(App::getString("JIETUSHIBAI"));
-					return;
-				}
+			YYXLayer::controlTouchTime(3, "ClickShareTime", [=]()
+			{
+				ShareBook(img, m_bookId);
 			}, []() {
 				Toast::create(App::getString("CAOZUOGUOYUPINGFAN"));
 			});
@@ -162,7 +156,7 @@ bool Waiting::init(std::string bookId, bool isView)
 		}
 		else
 		{//阅读成功
-			saveReadRecordStart(bookId, isView);
+			saveReadRecordStart(bookId);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "UserIsReadingBook", 1);
 			App::GetInstance()->stopOtherVoice();
 			App::GetInstance()->pauseBackGroundMusic();
@@ -170,6 +164,75 @@ bool Waiting::init(std::string bookId, bool isView)
 	}), NULL));
 	App::log("Waiting::init--end");
 	return true;
+ }
+
+ //新分享
+ void Waiting::ShareBook(RenderTexture* img, int bookId)
+ {
+	 string fileName = StringUtils::format("temp/share_%d.png", (int)YYXLayer::getRandom());
+	 string dir = FileUtils::getInstance()->getWritablePath() + "temp";
+	 if (!FileUtils::getInstance()->isFileExist(dir))
+		 FileUtils::getInstance()->createDirectory(dir);
+	 bool savebool = img->saveToFile(fileName, false, [=](RenderTexture* r, string savepath) {
+		 App::log("saveToFile path = " + savepath);
+		 NetIntface::httpGetBookInfo(bookId, "", [=](string json) {
+			 //获取书名然后分享
+			 string path = savepath;
+			 if (path == "" || !FileUtils::getInstance()->isFileExist(path))
+			 {
+				 App::log(path + " is error");
+				 Toast::create(App::getString("FENXIANGSHIBAI"));
+				 return;
+			 }
+			 rapidjson::Document doc;
+			 YYXLayer::getJsonObject4Json(doc, json);
+			 int code = YYXLayer::getIntForJson(-999, doc, "code");
+			 string name = "";
+			 if (code == 0)
+				 name = YYXLayer::getStringForJson("", doc, "data", "bookName");
+			 if (name == "")
+				 name = App::getString("TEBIEHAOKANDESHU");
+			 //分享
+			 auto headpath = YYXStruct::getMapString(App::GetInstance()->myData, "ShowChildHeadPortrait", "");
+			 const char* headstr = "";
+			 if (headpath != "" && FileUtils::getInstance()->isFileExist(headpath))
+				 headstr = headpath.c_str();
+			 NetIntface::share(path.c_str(), name.c_str(), "http://www.ellabook.cn", headstr, "", "", [](string json) {
+				 //分享成功
+				 int memberID = -999;
+				 if (App::GetInstance()->m_me)
+					 memberID = App::GetInstance()->m_me->id;
+				 if (memberID <= 0)
+				 {
+					 Toast::create(App::getString("DENGLUHOUFENXIANGKEHUODEYILAHONGBAO"));
+				 }
+				 NetIntface::httpShareWithCoupon(memberID, "", [](string json) {
+					 //分享得红包 网络请求成功
+					 NetIntface::httpShareWithCouponCallBack(json, [](int coupon_amount) {
+						 //解析成功 红包数值
+						 XZLayer::showShareRedPacket(StringUtils::format("%d", coupon_amount / 100) + App::getString("YUAN"));
+					 }, []() {
+						 //解析成功后
+					 }, []() {
+						 //解析失败
+					 });
+				 }, "", [](string str) {
+					 //网络请求失败
+				 });
+			 }, "", [](string str) {
+				 //分享失败或者取消
+			 });
+			 return;
+		 }, "", [](string str) {
+			 Toast::create(App::getString("NETEXCEPTION"));
+		 });
+	 });
+	 if (!savebool)
+	 {
+		 App::log("save is error");
+		 Toast::create(App::getString("JIETUSHIBAI"));
+		 return;
+	 }
  }
 
  void Waiting::Share(string json, string path)
@@ -656,8 +719,6 @@ bool Waiting::init(std::string bookId, bool isView)
 	 //});
 	 //Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerfrequency, readcount);
 	 
-		 
-	
 	 //我的评论
 	 if (MyComment) {
 		 MyComment->setTag(0);
@@ -729,13 +790,14 @@ bool Waiting::init(std::string bookId, bool isView)
  void Waiting::initResource(Layer* layer)
  {
 	 Size winSize = Director::getInstance()->getWinSize();
-	 CCLOG("屏幕分辨率 ＝ %.0f*%.0f", winSize.width, winSize.height);
 	 float highScale = winSize.height / 1536;
 	 auto pageUp = MenuItemImage::create("ReadBook_PageUp_ipad.png",
 		 "ReadBook_PageUp_Selected_ipad.png",
 		 [=](Ref* sender) {
 		 YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
-			 Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), true));
+			 //Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), true));
+			 Director::getInstance()->popScene();
+			 BookParser::getInstance()->pageUp();
 		 });
 	 });
 	 pageUp->setPosition(-winSize.width / 2, -winSize.height / 2);
@@ -744,13 +806,16 @@ bool Waiting::init(std::string bookId, bool isView)
 	 pageUp->setTag(BUTTON_TAG_PAGE_UP);
 
 
-	 //auto pageDown = MenuItemImage::create("ReadBook_PageDown_ipad.png",
-		// "ReadBook_PageDown_Selected_ipad.png",
-		// [](Ref* sender) {});
-	 //pageDown->setPosition(winSize.width / 2, 2 - winSize.height / 2);
-	 //pageDown->setScale(highScale*0.63);
-	 //pageDown->setAnchorPoint(Vec2(1.0f, 0));
-	 //pageDown->setTag(BUTTON_TAG_PAGE_DOWN);
+	 auto pageDown = MenuItemImage::create("ReadBook_PageDown_ipad.png",
+		 "ReadBook_PageDown_Selected_ipad.png",
+		 [](Ref* sender) {
+		 Director::getInstance()->popScene();
+		 BookParser::getInstance()->pageDown();
+	 });
+	 pageDown->setPosition(winSize.width / 2,  - winSize.height / 2);
+	 pageDown->setScale(highScale*0.63);
+	 pageDown->setAnchorPoint(Vec2(1.0f, 0));
+	 pageDown->setTag(BUTTON_TAG_PAGE_DOWN);
 
 	 auto pageQuit = MenuItemImage::create("Common_Return_ipad@2x.png",
 		 "Common_Return_Selected_ipad@2x.png",
@@ -766,16 +831,164 @@ bool Waiting::init(std::string bookId, bool isView)
 	 pageQuit->setAnchorPoint(Vec2(0, 1.0f));
 	 pageQuit->setTag(BUTTON_TAG_PAGE_QUIT);
 
-	 //auto pageShare = MenuItemImage::create("ReadBook_Share.png",
-		// "ReadBook_Share_Selected.png",
-		// [](Ref* sender) {});
-	 //pageShare->setPosition(winSize.width / 2, winSize.height / 2);
-	 //pageShare->setScale(highScale*0.8);
-	 //pageShare->setAnchorPoint(Vec2(1.0f, 1.0f));
-	 //pageShare->setTag(BUTTON_TAG_PAGE_SHARE);
-
 	 Menu *menuPage = Menu::create(pageUp,  pageQuit,  NULL);
-	 //Menu *menuPage = Menu::create(pageUp, pageDown, pageQuit,  NULL);
 	 layer->addChild(menuPage, 100, 10000);
 	 BookParser::getInstance()->setPageMenu(menuPage);
+ }
+
+ //新试读封底
+ Layer* Waiting::newTryCover(int bookid)
+ {
+	 App::httpComment(bookid, []() {
+		 YYXLayer::sendNotify("showCommentListView", "", -1);
+	 });
+	 map<string, int64String> parameter;
+	 YYXLayer::insertMap4ParaType(parameter, "className", -999, "tryReadBackCover");
+	 YYXLayer::insertMap4ParaType(parameter, "csb", -999, "Book/csb/tryReadBookEndPage.csb");
+	 auto layer = YYXLayer::create(parameter);
+	 layer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
+	 layer->getParentNode()->setPosition(Director::getInstance()->getWinSize() / 2);
+	 auto goBuy = (Button*)layer->findControl("Button_2");
+	 auto vipDownload = (Button*)layer->findControl("Button_2_0");
+	 auto noComment = (Sprite*)layer->findControl("Sprite_4");
+	 auto noCommenttext = (Text*)layer->findControl("Text_2");
+	 auto listComment = (ListView*)layer->findControl("ListView_1");
+	 auto yaoqing = (Button*)layer->findControl("Button_1");
+	 auto goumaiwanzhengban = (Button*)layer->findControl("Button_4");
+	 auto jixuyuedu = (Button*)layer->findControl("Button_7");
+	 auto goumainianka = (Button*)layer->findControl("Button_5");
+	 auto shimeshinianka = (Button*)layer->findControl("Button_6");
+	 //购买完整版
+	 if (goumaiwanzhengban)
+	 {
+		 goumaiwanzhengban->addClickEventListener([=](Ref* sender) {
+			 YYXBuyBook::GetInstance()->newBuyBook(bookid, App::GetInstance()->m_me->id, [=](int bookid) {
+				//购买成功后
+				 buySuccessMessageBox();
+			 }, [=]() {
+				 App::GetInstance()->pushScene(BookInfoScene, bookid);
+			 });
+		 });
+	 }
+	
+	//邀请注册
+	 if (yaoqing) {
+		 yaoqing->setAnchorPoint(Vec2(1, 0));
+		 yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
+		 yaoqing->addClickEventListener([=](Ref* sender) {
+			 if (App::GetInstance()->m_me)
+			 {
+				 App::GetInstance()->stopOtherVoice();
+				 YYXTableView::stopAllAnimation();
+				 yaoqingzhuce();
+			 }
+			 else
+				 Toast::create(App::getString("SHANGWEIDENGLU"));
+		 });
+	 }
+
+	//评论
+	 listComment->setVisible(false);
+	 listComment->setScrollBarEnabled(false);
+	 auto tbview = YYXTableView::create();
+	 auto data = tbview->loadData(bookid);
+	 if (data.size() > 0)
+	 {
+		 noComment->setVisible(false);
+		 noCommenttext->setVisible(false);
+		 tbview->setPosition(Vec2(0, 0));
+		 tbview->setPosition(listComment->getPosition());
+		 tbview->setTag(159);
+		 layer->addChild(tbview);
+	 }
+	 else
+	 {
+		 noComment->setVisible(true);
+		 noCommenttext->setVisible(true);
+		 noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
+	 }
+
+	 //购买年卡
+	 if (goumainianka)
+	 {
+		 goumainianka->addClickEventListener([=](Ref* sender) {
+			 Director::getInstance()->getRunningScene()->addChild(XZLayer::payBuyVip(
+				 [=]() {
+				 if (App::GetInstance()->m_me)
+				 {
+					 YYXRentBook::getInstance()->backgroundThreadRentBook(bookid, App::GetInstance()->m_me->id, [=]() {
+						 buySuccessMessageBox();
+					 });
+				 }
+			 }));
+		 });
+	 }
+
+	 //什么是年卡
+	 if (shimeshinianka)
+	 {
+		 shimeshinianka->addClickEventListener([=](Ref* sender) {
+			 Director::getInstance()->getRunningScene()->addChild(
+			 XZLayer::OpenVIPCardService(2, [=]() {
+				 App::GetInstance()->pushScene(BookInfoScene, bookid);
+			 }, [=]() {
+				 if (App::GetInstance()->m_me)
+				 {
+					 YYXRentBook::getInstance()->backgroundThreadRentBook(bookid, App::GetInstance()->m_me->id, [=]() {
+						 buySuccessMessageBox();
+					 });
+				 }
+			 }));
+		 });
+	 }
+
+	 if (jixuyuedu)
+	 {
+		 Director::getInstance()->popScene();
+		 BookParser::getInstance()->pageDown();
+	 }
+	 return layer;
+ }
+
+
+
+ //查询本地书籍 本书是否购买过
+ bool Waiting::isBuyThisBook(int bookid)
+ {
+	 App::log("BookInfo::isBuyThisBook");
+	 if (App::GetInstance()->m_me)
+	 {
+		 if (App::GetInstance()->myBuyBook.find(bookid) != App::GetInstance()->myBuyBook.end())
+		 {
+			 return true;
+		 }
+	 }
+	 return false;
+ }
+
+ void Waiting::yaoqingzhuce()
+ {
+	 string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
+	 NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
+ }
+
+ void Waiting::buySuccessMessageBox()
+ {
+	 map<string, int64String> paramter;
+	 YYXLayer::insertMap4ParaType(paramter, "className", -999, "buyBook");
+	 YYXLayer::insertMap4ParaType(paramter, "csb", -999, "Book/csb/goumaichenggong.csb");
+	 auto messageLayer = YYXLayer::create(paramter);
+	 auto jixuyuedu = (Button*)messageLayer->findControl("Button_1");
+	 auto closed = (Button*)messageLayer->findControl("Button_2");
+	 jixuyuedu->addClickEventListener([](Ref* sneder) {
+		 Director::getInstance()->popScene();
+		 BookParser::getInstance()->pageDown();
+	 });
+	 closed->addClickEventListener([=](Ref* sneder) {
+		 messageLayer->removeFromParentAndCleanup(true);
+	 });
+	 messageLayer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
+	 Size visibleSize = Director::getInstance()->getVisibleSize();
+	 messageLayer->setPosition(visibleSize / 2);
+	 Director::getInstance()->getRunningScene()->addChild(messageLayer);
  }

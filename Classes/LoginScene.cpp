@@ -600,6 +600,7 @@ Layer* Login::loginInit()
 		//登录按钮
 	b_login->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "LoginSceneb_loginTime", [=]() {			
+			App::log("===============================>>> LoginClick");
 			auto phone = account->getString();
 			auto _password = password->getString();
 			if (phone == "888" && _password == "debug")

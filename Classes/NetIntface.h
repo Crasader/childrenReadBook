@@ -53,7 +53,7 @@ public:
 	static void installInstallationPackage(string path);
 	////获取评论
 	static void httpGetComments(int bookid, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
-	static void httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void()> runable, const function<void()> errorRunable);
+	static void httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void(int)> runable, const function<void()> errorRunable);
 	//获取充值红包活动
 	static void httpGetRechargeActivityCallBack(string json, const function<void(int, int, int)> hongbaoList, const function<void(int, int)> chargerList, const function<void()> runable, const function<void()> errorRunable);
 	// 支付
@@ -136,7 +136,8 @@ public:
 	//获取书籍详情
 	static void httpGetBookInfo(int bookInfoID, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	static void WIN32_httpGetBookInfo(int bookInfoID, string runKey, string errorKey);
-	static void httpGetBookInfoCallBack(string json, const function<void(bool, int, int, int, int, int, string, string, string, string, string, string, string, string)> runable, const function<void()> errorRunable);
+	//static void httpGetBookInfoCallBack(string json, const function<void(bool, int, int, int, int, int, string, string, string, string, string, string, string, string)> runable, const function<void()> errorRunable);
+	static void httpGetBookInfoCallBack(string json, const function<void(float, bool, int, int, int, int, int, string, string, string, string, string, string, string, string)> runable, const function<void()> errorRunable);
 	//分享
 	static void share(string filePath, string bookName, string targetUrl, string headUrl, string title, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	//获取用户有效红包列表

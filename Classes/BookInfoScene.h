@@ -12,6 +12,7 @@
 #include "App.h"
 #include "Toast.h"
 #include "YYXStruct.h"
+#include "BookInfoControl.h"
 
 using namespace std;
 
@@ -54,8 +55,8 @@ private:
 	ListView* m_listview_Info;//简介控件
 	Layer* m_View_Info; //简介图层 控件
 	Layer* m_View_Comment;//评论 控件
-	Button* m_tryReadButton;//试读按钮
-	Button* m_ReadButton;//阅读按钮
+	//Button* m_tryReadButton;//试读按钮
+	//Button* m_ReadButton;//阅读按钮
 	Text* m_price_z;//售价整数部分
 	Text* m_price_x;//售价小数部分
 	Text* m_originalPrice;//原价
@@ -114,7 +115,7 @@ public:
 
 	bool httpBuyBook();//网络请求 余额结算购书
 
-	void updateBuyBookList();//更新后台及本地已购书籍表
+	//void updateBuyBookList();//更新后台及本地已购书籍表
 
 	void recharge();
 
@@ -133,17 +134,20 @@ public:
 	void loadRedPacketData(Node* node, int index);  //加载红包数据到节点上
 
 	void httpGetUserRedPackets();//获取红包列表
-	void hint();
-	bool isBuyThisBook();
-	void initVipText(Node* node);
+	void hintHongbao();
+	//void hint();
+	//bool isBuyThisBook();
+	//void initVipText(Node* node);
 	bool IsRentBook();
 	void httpRentBook(function<void()> runable);
 	string DownLoadBook(int bookId, string bookPlayUrl, string ZipName);
-	void downloadingListener(int bookId, string bookTag, Button* m_ReadButton);
-	void showBuyButton(Button* button, int show, int prpgressing = 0);
-	int whatIsTheRelationshipBetweenUserAndBook(int status, bool zhijieshow =false);//解析出书籍和用户之间的关系(是否vip下载默认不用知道)
+	void downloadingListener(int bookId, string bookTag, Button* button);
+	//void downloadingListener(int bookId, string bookTag, Button* m_ReadButton);
+	//void showBuyButton(Button* button, int show, int prpgressing = 0);
+	//int whatIsTheRelationshipBetweenUserAndBook(int status, bool zhijieshow = false);//解析出书籍和用户之间的关系(是否vip下载默认不用知道)
 	
 	void log(int stauts);
+	void ButtonControl();//按钮的控制逻辑
 private:
 	Node* m_show;//记录当前显示的图层
 	
@@ -157,6 +161,28 @@ private:
 	bool isViewDownloaded;//试读资源是否已下载
 	bool isViewUnzip;//试读资源是否已解压
 	bool isViewDamage;//试读资源是否损坏
+
+private:
+	int m_xingji=4;//书籍评分
+	BookInfoControl* m_relation;//控制和解析人跟书的关系
+	void showBuyButtons(int val);//展示按钮组合
+
+	void visitorNoBuyNoRent();
+	void userNoBuyNoRent();
+	void visitorRent();
+	void userBuy();
+	void onClickLister();
+	void readBook();
+	void sendDownloadBookAndReadBook();
+	void buyBook(function<void()> callback = nullptr);
+	void callBackBuyBook();
+	void rentBook(function<void()> callback = nullptr);
+	void hintIsBuyIsRent();
+	void gotoLogin();
+	void addDownloadListener(Button* button);
+	void showXingji();
+	void showCommentCount(int count);
+	void readbook_download_pause_tryreadbook(Button* bt);
 };
 
 #endif //  __BOOKINFO_SCENE_H__

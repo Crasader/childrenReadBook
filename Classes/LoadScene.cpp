@@ -204,7 +204,7 @@ void Load::loadPlistPng() {
 	cache->addImageAsync(LOADSCENE_FIND_PNG20, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
 	cache->addImageAsync(LOADSCENE_FIND_PNG21, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
 	cache->addImageAsync(LOADSCENE_FIND_PNG22, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
-	cache->addImageAsync(LOADSCENE_FIND_Toast, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
+	cache->addImageAsync(LOADSCENE_FIND_Toast, CC_CALLBACK_1(Load::loadPlistPngCallback, this));	
 }
 
 void Load::loadPlistPngCallback(Texture2D* sender) {

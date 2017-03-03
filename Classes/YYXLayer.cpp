@@ -310,15 +310,15 @@ void YYXLayer::stringHttpRequest(HttpRequest::Type type,string url,map<string,st
 
 Ref* YYXLayer::findControl(string controlName)
 {
-	//App::log(className+"::findControl()" );
+	App::log(className+"::findControl("+ controlName +")" );
 	if (parentNode == nullptr)
 	{
-		//App::log("parentNode is null");
+		App::log("parentNode is null");
 		return nullptr;
 	}
 	if (!&controlName && controlName.empty())
 	{
-		//App::log("controlName is empty");
+		App::log("controlName is empty");
 		return nullptr;
 	}
 	if (controls.find(controlName) == controls.end())
@@ -326,13 +326,13 @@ Ref* YYXLayer::findControl(string controlName)
 		auto control = parentNode->getChildByName(controlName);
 		if (control == nullptr)
 		{
-			//App::log("controlName is null");
+			App::log("controlName is null");
 			return nullptr;
 		}
 		else
 		{
 			controls[controlName] = control;
-			//App::log(className + "::findControl---END");
+			App::log(className + "::findControl---END");
 			return control;
 		}
 	}
@@ -341,12 +341,12 @@ Ref* YYXLayer::findControl(string controlName)
 		auto control = controls[controlName];
 		if (control)
 		{
-			//App::log(className+ "::findControl---END");
+			App::log(className+ "::findControl---END");
 			return control;
 		}
 		else
 		{
-			//App::log("controlName is null");
+			App::log("controlName is null");
 			return nullptr;
 		}
 	}

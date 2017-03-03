@@ -292,10 +292,13 @@ void App::httpComment(int bookid, function<void()> runFunction)
 				{
 					NetIntface::DownLoadFile(url, dir, filename, "", [](string path) {}, "", [](string str) {});
 				}
-			}
+			}			
+		},  [=](int count) {
 			string commentCountKey = StringUtils::format("comment_bookid=%d", bookid);//book评论的数量
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, commentCountKey, index + 1);
-		}, runFunction, []() {});
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, commentCountKey, count);
+			if(runFunction)
+				runFunction();
+		}, []() {});
 	}, errorkey, [](string str) {});
 }
 
@@ -1208,6 +1211,16 @@ bool cmp_by_value(const PAIR& lhs, const PAIR& rhs) {
 	return lhs.second > rhs.second;
 }
 
+int App::getMemberId()
+{
+	int memberid = -999;
+	if (m_me)
+	{
+		memberid = m_me->id;
+	}
+	return memberid;
+}
+
 string App::getOnlyKey()
 {
 	auto str = StringUtils::format("%lld", YYXLayer::getRandom());
@@ -1469,6 +1482,7 @@ void App::loginCallback(bool hint ,function<void ()>  runable)
 	string url = string(IP).append(NET_USERREDPACKET).append("?memberId=").append(App::getMemberID());
 	NetIntface::httpGet(url, "", [=](string json) {
 		NetIntface::httpGetUserRedPacketsCallBack(json, [=]() {
+			App::log("==================================>>>httpGetUserRedPackets");
 			App::GetInstance()->m_redPacket.clear();
 		}, [](int coupon_id, int coupon_amount100, string coupon_expire_time) {
 			if (coupon_id != -999 || coupon_amount100 != -99900) {
@@ -1589,6 +1603,7 @@ void App::cancelData()
 void App::httpGetCollectBook(bool hint)
 {
 	NetIntface::httpBookCollectAndVipList(1, [=](string json) {
+		App::log("==================================>>>httpGetCollectBook");
 		rapidjson::Document doc;
 		auto result = YYXLayer::getJsonObject4Json(doc, json);
 		if (result)
@@ -1648,6 +1663,7 @@ void App::httpCheckVIP(bool hint)
 		"code": 0,
 		"toURL": ""
 		}*/
+		App::log("==================================>>>httpCheckVIP");
 		rapidjson::Document doc;
 		if (YYXLayer::getJsonObject4Json(doc, json))
 		{
@@ -1672,6 +1688,7 @@ void App::httpCheckVIP(bool hint)
 						auto time = YYXStruct::getMapInt64(App::GetInstance()->myData, "debugVipTime", App::GetInstance()->m_me->vipTime);
 						App::GetInstance()->m_me->vipTime = time;
 					}
+					YYXLayer::sendNotify("refershMemberIDVIP");
 				}
 				else
 				{
@@ -1692,6 +1709,7 @@ void App::httpCheckVIP(bool hint)
 void App::httpGetVipBook(bool hint)
 {
 	NetIntface::httpBookCollectAndVipList(2, [=](string json) {
+		App::log("==================================>>>httpGetVipBook");
 		rapidjson::Document doc;
 		auto result = YYXLayer::getJsonObject4Json(doc, json);
 		if (result)
@@ -1773,6 +1791,7 @@ void App::httpGetBuyBook(bool hint)
 {
 	NetIntface::httpGetUserBuyBooks(App::GetInstance()->m_me->id, "", [=](string json) {
 		NetIntface::httpGetUserBuyBooksCallBack(json, []() {
+			App::log("==================================>>>httpGetBuyBook");
 			//json成功, array前执行
 			App::GetInstance()->myBuyBook.clear();
 		}, [=](int bookId, int orderId, string bookCoverUrl, string bookPlayUrl, string bookName) {
@@ -1783,15 +1802,18 @@ void App::httpGetBuyBook(bool hint)
 			string fileName = StringUtils::format("%d", bookId) + ".png";
 			if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookId)))
 			{
-				NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
-					YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
-				}, "", [=](string str) {
-					if (hint)
-					{
-						string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
-						Toast::create(sstr.c_str(), false);
-					}
-				});
+				thread([=]() {
+					ccsleep(6000);
+					NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
+						YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+					}, "", [=](string str) {
+						if (hint)
+						{
+							string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+							Toast::create(sstr.c_str(), false);
+						}
+					});
+				}).detach();				
 			}
 		}, []() {
 			//解析成功

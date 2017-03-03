@@ -29,7 +29,7 @@
 			<key>BookInfo/res/BookInfo_btn_Comment.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1778,862},{197,47}}</string>
+				<string>{{1828,1237},{197,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -40,7 +40,7 @@
 			<key>BookInfo/res/BookInfo_btn_Previews.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1454,832},{141,67}}</string>
+				<string>{{1427,1195},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,7 +51,7 @@
 			<key>BookInfo/res/BookInfo_btn_Previews_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1282,865},{141,67}}</string>
+				<string>{{1791,1095},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -62,7 +62,7 @@
 			<key>BookInfo/res/BookInfo_btn_Read.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1026,930},{141,67}}</string>
+				<string>{{1791,1166},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -73,7 +73,7 @@
 			<key>BookInfo/res/BookInfo_btn_Read_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1778,791},{141,67}}</string>
+				<string>{{1683,1237},{141,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -172,7 +172,7 @@
 			<key>BookInfo/res/BookInfo_top_bg_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1473,643},{276,77}}</string>
+				<string>{{1330,898},{276,77}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -194,7 +194,7 @@
 			<key>BookInfo/res/parentsVerification_button_blue_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1346,649},{104,104}}</string>
+				<string>{{1467,979},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -205,7 +205,7 @@
 			<key>BookInfo/res/parentsVerification_button_red_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1454,724},{104,104}}</string>
+				<string>{{1575,1024},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -216,7 +216,7 @@
 			<key>BookInfo/res/parentsVerification_button_Selected_blue_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1346,757},{104,104}}</string>
+				<string>{{1467,1087},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -227,7 +227,7 @@
 			<key>BookInfo/res/parentsVerification_button_Selected_red_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1174,795},{104,104}}</string>
+				<string>{{1319,1127},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -238,7 +238,7 @@
 			<key>BookInfo/res/parentsVerification_button_Selected_yellow_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1562,724},{104,104}}</string>
+				<string>{{1683,1095},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -249,7 +249,7 @@
 			<key>BookInfo/res/parentsVerification_button_yellow_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1670,791},{104,104}}</string>
+				<string>{{1575,1132},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -260,7 +260,7 @@
 			<key>BookInfo/res/BookInfo_btn_Comment_push.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1427,903},{197,47}}</string>
+				<string>{{1828,1288},{197,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -271,7 +271,7 @@
 			<key>BookInfo/res/Voicecomment_star.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1026,785},{144,141}}</string>
+				<string>{{1174,908},{144,141}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -282,7 +282,7 @@
 			<key>BookInfo/res/Voicecomment_star_press.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1198,649},{144,142}}</string>
+				<string>{{1026,908},{144,142}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -293,7 +293,7 @@
 			<key>BookInfo/res/yila_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1301,437},{168,208}}</string>
+				<string>{{1347,572},{168,208}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -304,7 +304,7 @@
 			<key>BookInfo/res/yila2_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1026,573},{168,208}}</string>
+				<string>{{1794,769},{168,208}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -326,7 +326,7 @@
 			<key>BookInfo/res/mupai_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1026,437},{271,132}}</string>
+				<string>{{1519,648},{271,132}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -337,7 +337,7 @@
 			<key>BookInfo/res/Voicecomment_word_background_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1171,954},{632,167}}</string>
+				<string>{{2,1017},{632,167}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -359,7 +359,7 @@
 			<key>BookInfo/res/Voicecomment_publish_button_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1473,529},{270,110}}</string>
+				<string>{{1347,784},{270,110}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -370,7 +370,7 @@
 			<key>BookInfo/res/Voicecomment_publish_button_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1747,529},{270,110}}</string>
+				<string>{{1713,981},{270,110}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -381,7 +381,7 @@
 			<key>BookInfo/res/Voicecomment_Voice button_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1753,643},{141,144}}</string>
+				<string>{{1322,979},{141,144}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -392,13 +392,90 @@
 			<key>BookInfo/res/Voicecomment_Voice button_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1898,643},{141,144}}</string>
+				<string>{{1174,1053},{141,144}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
 				<string>{141,144}</string>
+			</dict>
+			<key>BookInfo/res/pager_hongbao_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1026,810},{300,94}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{300,94}</string>
+			</dict>
+			<key>BookInfo/res/pager_jiagebaidi_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1026,437},{529,131}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{529,131}</string>
+			</dict>
+			<key>BookInfo/res/pager_yigou_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1880,529},{88,236}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{88,236}</string>
+			</dict>
+			<key>BookInfo/res/yjgou.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1621,784},{88,236}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{88,236}</string>
+			</dict>
+			<key>BookInfo/res/vipzu_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1559,529},{317,115}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{317,115}</string>
+			</dict>
+			<key>BookInfo/res/Details pager_mianfeiyueduvip_Button_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1026,572},{317,115}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{317,115}</string>
+			</dict>
+			<key>BookInfo/res/Details pager_mianfeiyueduvip_Button_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1026,691},{317,115}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{317,115}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>
