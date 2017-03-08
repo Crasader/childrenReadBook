@@ -121,9 +121,9 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.7.13";//应用版本
+	string version = "1.8.0";//应用版本
 
-	long long versioncode = 175;
+	long long versioncode = 176;
 
 	int musicID = -999;//背景音乐ID
 
@@ -248,6 +248,8 @@ public:
 	readMemberId
 	readChildrenId
 	*/
+	int getMemberId();
+
 	//获取唯一字符串标记
 	static string getOnlyKey();
 

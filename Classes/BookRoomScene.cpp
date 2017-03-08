@@ -36,11 +36,14 @@ bool BookRoom::init()
     }
 	YYXVisitor::getInstance()->bookRoomSceneInit();
 	m_offline = !NetIntface::IsNetConnect();
+	if (App::m_debug == 0)
+	{
+		m_offline = true;
+	}
 	YYXFunctionQueue::GetInstance()->clear();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	App::m_RunningScene = MySceneName::BookRoomScene;
-	Layer* layer;
 	Data data;
 	if (App::GetInstance()->getData(BOOKROOM_CSB, data))
 		layer = (Layer*)CSLoader::createNode(data);
@@ -318,6 +321,19 @@ void BookRoom::initHttp()
 void BookRoom::refershPage(int status)
 {	//购书列表 = 3 已收藏 = 2 已下载  = 0 包年图书 = 4	
 	vector<int> bookidData;
+	auto suo = (ImageView*)layer->getChildByName("Image_4");
+	if (App::GetInstance()->m_me && userIsVip() == true)
+	{
+		suo->setVisible(false);
+	}
+	else
+	{
+		suo->setVisible(true);
+		if (bookMode == 4)
+			suo->loadTexture("other/wodeshufang-niankasuoding_736h.png");
+		else
+			suo->loadTexture("other/wodeshufang-niankasuoding-mr_736h.png");
+	}
 	if (status == 3)//购书列表
 	{
 		bookidData = getCurrentPageBookID4BuyBook();
@@ -334,6 +350,7 @@ void BookRoom::refershPage(int status)
 	{
 		bookidData = getCurrentPageBookID4VIP();
 	}
+
 	//YYXLayer::sendNotify("showName", "", status);
 	for (int i = 0; i < 6; i++)
 	{
@@ -352,7 +369,7 @@ void BookRoom::refershPage(int status)
 void BookRoom::refershBookNode(Node* book, int bookid)
 {
 	App::log("--------------------------refershBookNode", bookid);
-	scheduleUpdate();
+	//scheduleUpdate();
 	book->setVisible(true);
 	Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(book);
 	if (bookid < 0)
@@ -361,33 +378,27 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 		return;
 	}	
 	//离线模式
-	if (m_offline && !FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
-	{
-		book->setVisible(false);
-		return;
-	}
+	//if (m_offline && !FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
+	//{
+		//book->setVisible(false);
+		//return;
+	//}
 	//vip包年标签
 	auto vip = (Sprite*)book->getChildByName("Sprite_1");
+	//锁
+	auto _suo = (ImageView*)book->getChildByName("suo1");
+	//提示下载
+	auto download = (Sprite*)book->getChildByName("Download");
+	//文字背景
+	auto textbg = (Sprite*)book->getChildByName("DownloadBackground");
+	//文字
+	auto text = (Text*)book->getChildByName("Text");
 	if (vip)
 	{
 		vip->setVisible(false);
-		string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", bookid);
-		auto isvip = (int)YYXStruct::getMapRef(App::GetInstance()->myData, BookPlayUrlKey, nullptr);
-		if (BookPlayUrlKey == "bookPlayUrl+bookID=455")
-		{
-			auto isvip = (int)YYXStruct::getMapRef(App::GetInstance()->myData, BookPlayUrlKey, nullptr);
-			//App::log(" usvip=", isvip);
-		}
-		if (App::GetInstance()->m_me)
-		{
-			if (App::GetInstance()->m_me->vip)
-			{
-				
-					if (App::GetInstance()->VIPbook.count(bookid)>0)
-					{
-						vip->setVisible(true);
-					}				
-			}
+		if (bookMode == 2 || bookMode == 4) {
+			if (App::GetInstance()->m_me && userIsVip() && App::GetInstance()->VIPbook.count(bookid) > 0)
+				vip->setVisible(true);
 		}
 	}
 	//监听 刷新状态 传bookid
@@ -416,12 +427,6 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerCoverBook, book);
 
-	//提示下载
-	auto download = (Sprite*)book->getChildByName("Download");
-	//文字背景
-	auto textbg = (Sprite*)book->getChildByName("DownloadBackground");
-	//文字
-	auto text = (Text*)book->getChildByName("Text");
 	string zippath = App::getBookReadZipPath(bookid);
 	string taskTag = YYXDownload::getTag(zippath);
 	if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
@@ -460,6 +465,22 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 		else
 			showStauts(9000, download, textbg, text);
 	}
+	if (bookIsSuo(bookid))
+	{//vip过期包年图书上锁
+		if (_suo)
+			_suo->setVisible(true);
+		if (download)
+			download->setVisible(false);
+		if (textbg)
+			textbg->setVisible(false);
+		if (text)
+			text->setVisible(false);
+	}
+	else
+	{
+		if (_suo)
+			_suo->setVisible(false);
+	}
 	bookClick(book, bookid);
 	bookLongClick(book, bookid);
 }
@@ -475,6 +496,11 @@ void BookRoom::bookClick(Node* book, int bookid)
 	//文字
 	auto text = (Text*)book->getChildByName("Text");
 	cover->addClickEventListener([=](Ref* sender) {
+		if (bookIsSuo(bookid))
+		{
+			Toast::create(App::getString("QINGNINKAITONGNIANKAFUWU"), false);
+			return;
+		}
 		if (!m_click || m_compile)
 			return;
 		YYXLayer::controlTouchTime(1, "BookRoomSceneClickCoverTime", [=]() {
@@ -502,6 +528,8 @@ void BookRoom::bookLongClick(Node* book, int bookid)
 	cover->setTouchEnabled(true);
 	cover->setSwallowTouches(false);	
 	cover->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type) {
+		if (bookIsSuo(bookid))
+			return;
 		auto t1 = App::GetInstance()->getTime("longAnEditModeTime", NetIntface::getMillsTime());
 		switch (type)
 		{
@@ -756,6 +784,21 @@ vector<int> BookRoom::getCurrentPageBookID4BuyBookDownload()
 vector<int> BookRoom::getCurrentPageBookID4BuyBook()
 {	
 	vector<int> v_boosSort;
+	if (m_offline)
+	{
+		vector<int> deletelist;
+		for (auto it  : App::GetInstance()->myBuyBook)
+		{
+			int bookid = it.first;
+			string path = App::getBookRead4Json_txtPath(bookid);
+			if (!FileUtils::getInstance()->isFileExist(path))
+				deletelist.push_back(bookid);
+		}
+		for (auto he : deletelist)
+		{
+			App::GetInstance()->myBuyBook.erase(he);
+		}
+	}
 	auto sortDat = App::sortMapToVector(App::GetInstance()->myBuyBook);
 	bookSum = sortDat.size();
 	int pagesum = ceil(bookSum / 6.0);
@@ -866,6 +909,21 @@ void BookRoom::onEnterTransitionDidFinish()
 vector<int> BookRoom::getCurrentPageBookID4Collect()
 {
 	vector<int> v_boosSort;
+	if (m_offline)
+	{
+		vector<int> deletelist;
+		for (auto it : App::GetInstance()->bookCollect)
+		{
+			int bookid = it.first;
+			string path = App::getBookRead4Json_txtPath(bookid);
+			if (!FileUtils::getInstance()->isFileExist(path))
+				deletelist.push_back(bookid);
+		}
+		for (auto he : deletelist)
+		{
+			App::GetInstance()->bookCollect.erase(he);
+		}
+	}
 	auto booksum = App::GetInstance()->bookCollect.size();
 	int pagesum = ceil(booksum / 6.0);
 	if (m_currentPageNumber < 0)
@@ -894,6 +952,21 @@ vector<int> BookRoom::getCurrentPageBookID4Collect()
 vector<int> BookRoom::getCurrentPageBookID4VIP()
 {
 	vector<int> v_boosSort;
+	if (m_offline)
+	{
+		vector<int> deletelist;
+		for (auto it : App::GetInstance()->VIPbook)
+		{
+			int bookid = it.first;
+			string path = App::getBookRead4Json_txtPath(bookid);
+			if (!FileUtils::getInstance()->isFileExist(path))
+				deletelist.push_back(bookid);
+		}
+		for (auto he : deletelist)
+		{
+			App::GetInstance()->VIPbook.erase(he);
+		}
+	}
 	auto booksum = App::GetInstance()->VIPbook.size();
 	int pagesum = ceil(booksum / 6.0);
 	if (m_currentPageNumber < 0)
@@ -1076,4 +1149,53 @@ void BookRoom::changLongClickBookPosition(ImageView* backgro ,Node* booknode, in
 			booknode->setVisible(false);
 		}
 	}
+}
+
+bool BookRoom::bookIsMyVipBooks(int bookid)
+{
+	if (App::GetInstance()->VIPbook.count(bookid) > 0)
+		return true;
+	else
+		return false;
+}
+
+bool BookRoom::userIsVip()
+{
+	if (m_offline)
+	{
+		auto vip = YYXLayer::getFileValue("vip","false");
+		if (vip == "true")
+			return true;
+		else
+			return false;
+	}
+	if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
+		return true;
+	else
+		return false;
+}
+
+bool BookRoom::bookIsMyBuyBooks(int bookid)
+{
+	if (App::GetInstance()->myBuyBook.count(bookid) > 0)
+		return true;
+	else
+		return false;
+}
+
+//是否要上锁
+bool BookRoom::bookIsSuo(int bookid)
+{
+	auto uservip = userIsVip();
+	auto buy = bookIsMyBuyBooks(bookid);
+	auto rent = bookIsMyVipBooks(bookid);
+	if (!uservip)
+	{
+		if (rent)
+		{
+			if (!buy)
+				return true;
+		}
+	}
+	return false;
 }

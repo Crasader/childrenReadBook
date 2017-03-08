@@ -1,6 +1,7 @@
 ﻿#include "ShowNotification.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
+#include "YYXDownloadImages.h"
 
 USING_NS_CC;
 
@@ -344,9 +345,12 @@ void ShowNotification::downloadPic() {
 		auto dir = FileUtils::getInstance()->getWritablePath() + "temp";
 		int pushId = YYXStruct::getMapInt64(App::GetInstance()->myData, "pushId", -999);
 		auto fileName = StringUtils::format("notification_%d.png", pushId);
-		NetIntface::DownLoadImage(imageUrl, dir, fileName, "Download_Success_Show_Notification", [](string path) {
+		YYXDownloadImages::GetInstance()->newDownloadImage(imageUrl, dir, fileName, high, 0, [](string path) {
 			YYXLayer::sendNotify4YYXStruct("Download_Success_Show_Notification", -999, path);
-		}, "", [](string st) {});
+		});
+		/*NetIntface::DownLoadImage(imageUrl, dir, fileName, "Download_Success_Show_Notification", [](string path) {
+			YYXLayer::sendNotify4YYXStruct("Download_Success_Show_Notification", -999, path);
+		}, "", [](string st) {});*/
 	}
 	//if (App::GetInstance()->m_notification == nullptr || App::GetInstance()->m_notification->imageUrl.length() == 0) {
 	//	return;

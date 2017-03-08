@@ -1,5 +1,6 @@
 #include "YYXImageView.h"
 #include "NetIntface.h"
+#include "YYXDownloadImages.h"
 
 YYXImageView* YYXImageView::create(string url, int memberId,string defaultPath)
 {
@@ -86,7 +87,17 @@ void YYXImageView::downloadImage()
 {
 	if (url == "" || memberId == -999)
 		return;
-	NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("user%d.png", memberId), "", [=](string path) {
+	YYXDownloadImages::GetInstance()->newDownloadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("user%d.png", memberId), 
+		normal, 0, [=](string path) {
+		string yuanPath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("user_%d.png", memberId);
+		FileUtils::getInstance()->removeFile(yuanPath);
+		NetIntface::cutTheRounded(path, yuanPath, 140, 140, "", [=](string yuandepath) {
+			YYXLayer::sendNotify(StringUtils::format("NotifyUserImage%d", memberId));
+		}, "",[=](string str) {
+			YYXLayer::sendNotify(StringUtils::format("NotifyUserImage%d", memberId));
+		});
+	});
+	/*NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("user%d.png", memberId), "", [=](string path) {
 		string yuanPath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("user_%d.png", memberId);
 		FileUtils::getInstance()->removeFile(yuanPath);
 		NetIntface::cutTheRounded(path, yuanPath, 140, 140, "", [=](string yuandepath) {
@@ -94,7 +105,7 @@ void YYXImageView::downloadImage()
 		}, "", [=](string str) {
 			YYXLayer::sendNotify(StringUtils::format("NotifyUserImage%d", memberId));
 		});
-	}, "", [](string error) {});
+	}, "", [](string error) {});*/
 }
 
 void YYXImageView::setUrl(string url)

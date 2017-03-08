@@ -6,6 +6,7 @@
 #include "YYXTableView.h"
 #include "YYXVisitor.h"
 #include "Charger.h"
+#include "YYXDownloadImages.h"
 USING_NS_CC;
 
 using namespace cocostudio::timeline;
@@ -204,7 +205,7 @@ void Load::loadPlistPng() {
 	cache->addImageAsync(LOADSCENE_FIND_PNG20, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
 	cache->addImageAsync(LOADSCENE_FIND_PNG21, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
 	cache->addImageAsync(LOADSCENE_FIND_PNG22, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
-	cache->addImageAsync(LOADSCENE_FIND_Toast, CC_CALLBACK_1(Load::loadPlistPngCallback, this));
+	cache->addImageAsync(LOADSCENE_FIND_Toast, CC_CALLBACK_1(Load::loadPlistPngCallback, this));	
 }
 
 void Load::loadPlistPngCallback(Texture2D* sender) {
@@ -253,11 +254,13 @@ void Load::httpBookCityInfoAndDownLoad()
 			}
 			if (!FileUtils::getInstance()->isFileExist(borderpath))
 			{
-				NetIntface::DownLoadImage(borderUrl, dir, borderfileName, "", [=](string downPath) {}, "", [=](string str) {});
+				YYXDownloadImages::GetInstance()->newDownloadImage(borderUrl, dir, borderfileName, low);
+				//NetIntface::DownLoadImage(borderUrl, dir, borderfileName, "", [=](string downPath) {}, "", [=](string str) {});
 			}
 			if (!FileUtils::getInstance()->isFileExist(bgpath))
 			{
-				NetIntface::DownLoadImage(bgUrl, dir, bgfileName, "", [=](string downPath) {}, "", [=](string str) {});
+				YYXDownloadImages::GetInstance()->newDownloadImage(bgUrl, dir, bgfileName, low);
+				//NetIntface::DownLoadImage(bgUrl, dir, bgfileName, "", [=](string downPath) {}, "", [=](string str) {});
 			}
 		}, [=](int totalPage) {
 			//书店数量

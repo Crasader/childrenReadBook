@@ -169,10 +169,10 @@ YYXLayer * XZLayer::payVip_xufei()
 				paytype = "weixinpay";
 			App::log("支付启动");
 			if (App::GetInstance()->m_me)
-				NetIntface::httpVIPPay(App::GetInstance()->m_me->id, payCount, m_price, paytype, info, "httpVIPPaySuccess", [](string str) {
+				NetIntface::httpVIPPay(App::GetInstance()->getMemberId(), payCount, m_price, paytype, info, "httpVIPPaySuccess", [](string str) {
 				//续费成功
 				Toast::create(App::getString("CHONGZHICHENGGONG"), false);
-				App::httpCheckVIP(App::GetInstance()->m_me->id);
+				App::httpCheckVIP(App::GetInstance()->getMemberId());
 				vector<string> da = { "VIP_WEEK1","VIP_WEEK2","VIP_WEEK3","VIP_DAY1" ,"VIP_DAY2" ,"VIP_DAY3" ,"VIP_DAY4" ,"VIP_DAY5" ,"VIP_DAY6" ,"VIP_DAY7" };
 				for(auto it : da)
 					YYXLayer::deleteFileValue(it);
@@ -200,21 +200,29 @@ YYXLayer * XZLayer::payVip_xufei()
 }
 
 //开通年卡服务  (您进入的是年卡书店)   i=0在父母设置界面(去掉您进入的是年卡书店)  i=1 在书店
-YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave)
+YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave, const function<void()>& callback)
 {
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "showYouAreVip", 0);
 	map<string, int64String> paramter;
 	YYXLayer::insertMap4ParaType(paramter, "className", -999, "bookstoreShowUserIsVip");
 	YYXLayer::insertMap4ParaType(paramter, "csb", -999, "VIP/csb/youarenotvip.csb");
 	auto viphint = YYXLayer::create(paramter);
+	auto text = (ImageView*)viphint->findControl("Image_6");
+	auto content = (ImageView*)viphint->findControl("Image_5");
 	if (i == 0)
 	{
-		auto text = (ImageView*)viphint->findControl("Image_6");
 		if (text)
 			text->setVisible(false);
-		auto content = (ImageView*)viphint->findControl("Image_5");
 		if (content)
 			content->setPosition(content->getPosition() + Vec2(0, 40));
+	}
+	if (i == 2)
+	{
+		if (text)
+		{
+			text->setSize(Size(600, 106));
+			text->loadTexture("other/Backcover_kaitongniankafuwu_ipad@2x.png");
+		}
 	}
 	auto pNode = viphint->getParentNode();
 	pNode->setAnchorPoint(Vec2(0.5, 0.5));
@@ -238,35 +246,29 @@ YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave)
 	if (pay)
 	{
 		pay->addClickEventListener([=](Ref* sender) {
-			viphint->removeFromParent();
-			Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=](){
-				if (YYXVisitor::getInstance()->getVisitorMode())
-				{
-					if (runleave)
-						runleave();
-					Index::GoToLoginScene();
-					return;
-				}
-				if (App::GetInstance()->m_me)
-				{
-					auto paylayer = XZLayer::payBuyVip();
+			YYXVisitor::getInstance()->hintLogin([=]() {
+				if (runleave)
+					runleave();
+				Index::GoToLoginScene();
+			}, [=]() {
+				if (runleave)
+					runleave();
+				Index::GoToLoginScene();
+			}, [=]() {
+				viphint->removeFromParent();
+				Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=]() {
+					auto paylayer = XZLayer::payBuyVip(callback);
 					if (paylayer)
 						Director::getInstance()->getRunningScene()->addChild(paylayer);
-				}
-				else
-				{
-					if (runleave)
-						runleave();
-					Index::GoToLoginScene();
-				}
-			}));
+				}));				
+			}, "  ");
 		});
 	}
 	return viphint;
 }
 
 //购买包年服务
-YYXLayer * XZLayer::payBuyVip()
+YYXLayer * XZLayer::payBuyVip(const function<void()>& callback)
 {
 	map<string, int64String> paramter;
 	YYXLayer::insertMap4ParaType(paramter, "className", -999, "payVip");
@@ -331,9 +333,12 @@ YYXLayer * XZLayer::payBuyVip()
 				paytype = "weixinpay";
 			App::log("支付启动");
 			if (App::GetInstance()->m_me)
-				NetIntface::httpVIPPay(App::GetInstance()->m_me->id, payCount, m_price, paytype, info, "httpVIPPaySuccess", [](string str) {
+				NetIntface::httpVIPPay(App::GetInstance()->getMemberId(), payCount, m_price, paytype, info, "httpVIPPaySuccess", [=](string str) {
 				Toast::create(App::getString("CHONGZHICHENGGONG"), false);
-				App::httpCheckVIP(App::GetInstance()->m_me->id);
+				App::httpCheckVIP(App::GetInstance()->getMemberId());
+				YYXLayer::sendNotify("initHttp","bookinfo");
+				if (callback)
+					callback();
 			}, "httpVIPPayError", [](string error) {
 				Toast::create(error.c_str());
 			});

@@ -3,6 +3,7 @@
 #include "XZLayer.h"
 #include "YYXVisitor.h"
 #include "Charger.h"
+#include "YYXDownloadImages.h"
 
 Scene* Login::createScene()
 {
@@ -600,6 +601,7 @@ Layer* Login::loginInit()
 		//登录按钮
 	b_login->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "LoginSceneb_loginTime", [=]() {			
+			App::log("===============================>>> LoginClick");
 			auto phone = account->getString();
 			auto _password = password->getString();
 			if (phone == "888" && _password == "debug")
@@ -1216,7 +1218,17 @@ void Login::getDefaultHeadPortrait(int member_id)
 			App::GetInstance()->m_read->childrenId = id;
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildID", id);
 			YYXLayer::setFileValue("ShowChildID", StringUtils::format("%d", id));
-			NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("3headportrait_%d.png", id),
+			YYXDownloadImages::GetInstance()->newDownloadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("3headportrait_%d.png", id),
+				high, 0, [=](string path) {
+				if (path != "")
+				{
+					string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", id);
+					App::makeRoundImage(path, savePath);
+					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, savePath);
+					YYXLayer::setFileValue("ShowChildHeadPortrait", savePath);
+				}
+			});
+			/*NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("3headportrait_%d.png", id),
 				StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom()), [=](string path) {
 				if (path != "")
 				{
@@ -1225,7 +1237,7 @@ void Login::getDefaultHeadPortrait(int member_id)
 					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, savePath);
 					YYXLayer::setFileValue("ShowChildHeadPortrait", savePath);
 				}
-			}, "", [](string str) {});
+			}, "", [](string str) {});*/
 		}, []() {});
 	}, "", [](string str) {});
 }
@@ -1250,7 +1262,18 @@ void Login::getChildList(int member_id, function<void()> downloadHeadPortrait)
 			string urlkey = StringUtils::format("url+childID=%d", childrenId);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, urlkey, -999, url);
 			//手动登录 全部重新下载 不判断是否存在头像
-			NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("9HeadPortrait_%d.png", childrenId),
+			YYXDownloadImages::GetInstance()->newDownloadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("9HeadPortrait_%d.png", childrenId),
+				high, 0, [=](string path) {
+				if (path != "" && FileUtils::getInstance()->isFileExist(path))
+				{
+					string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
+					App::makeRoundImage(path, savePath);
+					string pathkey = StringUtils::format("path+childID=%d", childrenId);
+					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
+					YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
+				}
+			});
+			/*NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("9HeadPortrait_%d.png", childrenId),
 				StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom()), [=](string path) {
 				if (path != "" && FileUtils::getInstance()->isFileExist(path))
 				{
@@ -1260,7 +1283,7 @@ void Login::getChildList(int member_id, function<void()> downloadHeadPortrait)
 					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
 					YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
 				}
-			}, "", [](string str) {});
+			}, "", [](string str) {});*/
 		}, [=](int b) {
 			if (b == 1)
 			{

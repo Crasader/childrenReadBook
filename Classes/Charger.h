@@ -17,6 +17,7 @@ private:
 	int m_payType;//微信0 支付宝1
 	int m_payIndex;//点击充值金额的位置
 	Layer* pLayer;
+	function<void()> m_callback=nullptr;//充值成功的回调
 public:
 	static Charger* create();
 	bool init();
@@ -40,6 +41,7 @@ public:
 	virtual void cleanup();
 	float PayPrice() const { return m_payPrice; }
 	void PayPrice(float val) { m_payPrice = val; }
+	void setCallback(const function<void()>& val) { m_callback = val; }
 };
 
 #endif

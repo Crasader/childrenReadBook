@@ -62,15 +62,30 @@
             <Image Name="Backcover_comments_736h.png" />
             <Image Name="Backcover_comments_press_736h.png" />
             <Image Name="Backcover_good-comments_no-comment_736h.png" />
+            <Image Name="Backcover_goumaichenggong_736h.png" />
+            <Image Name="Backcover_goumaichenggong_tuxing_736h.png" />
+            <Image Name="Backcover_goumainianka_736h.png" />
+            <Image Name="Backcover_goumainianka_press_736h.png" />
+            <Image Name="Backcover_goumaiwanzhengban_736h.png" />
+            <Image Name="Backcover_goumaiwanzhengban_press_736h.png" />
             <Image Name="Backcover_I-want-to-write-reviews_button_736h.png" />
             <Image Name="Backcover_I-want-to-write-reviews_button_press_736h.png" />
+            <Image Name="Backcover_jixuyuedu_736h.png" />
+            <Image Name="Backcover_jixuyuedu_press_736h.png" />
             <Image Name="Backcover_reading_book_736h.png" />
+            <Image Name="Backcover_shenmeshinianka-moren_736h.png" />
+            <Image Name="Backcover_shenmeshinianka-press_736h.png" />
             <Image Name="Backcover_try_buy_button_736h.png" />
             <Image Name="Backcover_try_buy_button_press_736h.png" />
+            <Image Name="Backcover_try_good-comments_no-comment_736h.png" />
             <Image Name="Backcover_try_Invitation-to-register_ipad@2x.png" />
             <Image Name="Backcover_vip_button_736h.png" />
             <Image Name="Backcover_vip_button_press_736h.png" />
             <Image Name="background_568h.png" />
+            <Image Name="block.png" />
+            <Image Name="BookInfo_book-details_-Popover_background_667h.png" />
+            <Image Name="Common_Popup_Close_ipad@2x.png" />
+            <Image Name="Common_Popup_Close_Selected_ipad@2x.png" />
             <Image Name="try_background_568h.png" />
           </Folder>
         </Folder>
@@ -134,14 +149,20 @@
             <Image Name="BookInfo_star_s.png" />
             <Image Name="BookInfo_Time.png" />
             <Image Name="BookInfo_top_bg_736h.png" />
+            <Image Name="Details pager_mianfeiyueduvip_Button_736h.png" />
+            <Image Name="Details pager_mianfeiyueduvip_Button_press_736h.png" />
             <Image Name="hand_736h.png" />
             <Image Name="mupai_736h.png" />
+            <Image Name="pager_hongbao_736h.png" />
+            <Image Name="pager_jiagebaidi_736h.png" />
+            <Image Name="pager_yigou_736h.png" />
             <Image Name="parentsVerification_button_blue_ipad@2x.png" />
             <Image Name="parentsVerification_button_red_ipad@2x.png" />
             <Image Name="parentsVerification_button_Selected_blue_ipad@2x.png" />
             <Image Name="parentsVerification_button_Selected_red_ipad@2x.png" />
             <Image Name="parentsVerification_button_Selected_yellow_ipad@2x.png" />
             <Image Name="parentsVerification_button_yellow_ipad@2x.png" />
+            <Image Name="vipzu_736h.png" />
             <Image Name="Voicecomment_background_736h.png" />
             <Image Name="Voicecomment_publish_button_736h.png" />
             <Image Name="Voicecomment_publish_button_press_736h.png" />
@@ -152,6 +173,7 @@
             <Image Name="Voicecomment_word_background_736h.png" />
             <Image Name="yila_736h.png" />
             <Image Name="yila2_736h.png" />
+            <Image Name="yjgou.png" />
           </Folder>
         </Folder>
         <Folder Name="BookRoom">
@@ -202,6 +224,7 @@
             <Image Name="nkts_nav_sel_736h.png" />
             <Image Name="sc_nav_nor_736h.png" />
             <Image Name="sc_nav_sel_736h.png" />
+            <Image Name="wodeshufang-shubensuoding_736h.png" />
             <Image Name="ysc_nav_nor_736h.png" />
             <Image Name="ysc_nav_sel_736h.png" />
             <Image Name="zg1.png" />
@@ -507,6 +530,7 @@
             <Image Name="push_image_bg1.png" />
             <Image Name="tishi_736h.png" />
             <Image Name="toast (2).png" />
+            <Image Name="try_background_568h.png" />
             <Image Name="yila.png" />
             <Image Name="Z_ipad.png" />
             <Image Name="zhijiegoumai_736h.png" />
@@ -551,6 +575,7 @@
             <Image Name="commit2.png" />
           </Folder>
           <Project Name="AAA.csd" Type="Layer" />
+          <Image Name="Backcover_kaitongniankafuwu_ipad@2x.png" />
           <Image Name="Backcover_star1_736h.png" />
           <Image Name="Backcover_star2_736h.png" />
           <Image Name="Backcover_star3_736h.png" />
@@ -590,6 +615,8 @@
           <Image Name="shufang_button_2_736h.png" />
           <Image Name="User_bg_ipad@2x.png" />
           <Image Name="Userinfo_childcenter_close__ipad@2x.png" />
+          <Image Name="wodeshufang-niankasuoding_736h.png" />
+          <Image Name="wodeshufang-niankasuoding-mr_736h.png" />
           <PlistInfo Name="yuying.csi" Type="Plist" />
         </Folder>
         <Folder Name="ParentScene">
@@ -700,6 +727,7 @@
         </Folder>
         <Folder Name="Pay">
           <Folder Name="csb">
+            <Project Name="chargeritem.csd" Type="Node" />
             <Project Name="gongxihuodehongbao.csd" Type="Layer" />
             <Project Name="isPay.csd" Type="Layer" />
             <Project Name="item.csd" Type="Layer" />
@@ -711,7 +739,6 @@
             <Project Name="redpacketmessage.csd" Type="Layer" />
             <Project Name="selectredpacket.csd" Type="Layer" />
             <Project Name="whetherToPay.csd" Type="Layer" />
-            <Project Name="chargeritem.csd" Type="Node" />
           </Folder>
           <Folder Name="res">
             <Image Name="ApplePay_0_667h.png" />

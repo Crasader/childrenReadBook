@@ -128,6 +128,12 @@ bool Charger::init()
 		App::log(paytype+StringUtils::format(" paymoney = %f",PayPrice()*100));
 		if (App::GetInstance()->m_me)
 			NetIntface::httpPay(App::GetInstance()->m_me->id, payCount, PayPrice() * 100, paytype, info, "", [=](string str) {
+			if (m_callback)
+			{
+				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+					m_callback();
+				});
+			}
 			YYXLayer::sendNotify("refershBalanceAndShowRedPacket");
 			YYXLayer::sendNotify("CallBackPaySuccessGoToBuyBook");
 			auto value = YYXLayer::getFileValue("chargerSelectIndex", "0");

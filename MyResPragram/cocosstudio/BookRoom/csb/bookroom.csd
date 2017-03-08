@@ -266,7 +266,7 @@
             <PreSize X="0.1453" Y="0.1645" />
             <FileData Type="MarkedSubImage" Path="BookRoom/res/sc_nav_nor_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Image_14_2" ActionTag="435710017" Tag="1136" IconVisible="False" LeftMargin="245.7498" RightMargin="692.2501" TopMargin="17.9723" BottomMargin="495.0277" LeftEage="52" RightEage="52" TopEage="13" BottomEage="13" Scale9OriginX="52" Scale9OriginY="13" Scale9Width="52" Scale9Height="75" ctype="ImageViewObjectData">
+          <AbstractNodeData Name="Image_14_2" ActionTag="435710017" Tag="1136" IconVisible="False" LeftMargin="245.7498" RightMargin="692.2502" TopMargin="17.9723" BottomMargin="495.0277" LeftEage="52" RightEage="52" TopEage="13" BottomEage="13" Scale9OriginX="52" Scale9OriginY="13" Scale9Width="52" Scale9Height="75" ctype="ImageViewObjectData">
             <Size X="156.0000" Y="101.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="323.7498" Y="545.5277" />
@@ -275,6 +275,16 @@
             <PrePosition X="0.2959" Y="0.8885" />
             <PreSize X="0.1426" Y="0.1645" />
             <FileData Type="MarkedSubImage" Path="BookRoom/res/ysc_nav_sel_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Image_4" ActionTag="-896176070" Tag="513" IconVisible="False" LeftMargin="699.7916" RightMargin="365.2084" TopMargin="51.1115" BottomMargin="526.8885" LeftEage="9" RightEage="9" TopEage="11" BottomEage="11" Scale9OriginX="9" Scale9OriginY="11" Scale9Width="11" Scale9Height="14" ctype="ImageViewObjectData">
+            <Size X="29.0000" Y="36.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="714.2916" Y="544.8885" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.6529" Y="0.8874" />
+            <PreSize X="0.0265" Y="0.0586" />
+            <FileData Type="Normal" Path="other/wodeshufang-niankasuoding-mr_736h.png" Plist="" />
           </AbstractNodeData>
           <AbstractNodeData Name="Image_3" ActionTag="-144673813" VisibleForFrame="False" Tag="170" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" PercentWidthEnable="True" PercentHeightEnable="True" PercentWidthEnabled="True" PercentHeightEnabled="True" LeftEage="35" RightEage="35" TopEage="19" BottomEage="19" Scale9OriginX="35" Scale9OriginY="19" Scale9Width="39" Scale9Height="22" ctype="ImageViewObjectData">
             <Size X="1094.0000" Y="614.0000" />
