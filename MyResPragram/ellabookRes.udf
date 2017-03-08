@@ -31,14 +31,9 @@
     <Item Key="TabsParamsKey">
       <Value ctype="TabsInfo">
         <OpenedDocuments>
-          <FilePathData Path="Book/csb/BookEndPage.csd" />
-          <FilePathData Path="Book/csb/backcover.csi" />
           <FilePathData Path="Book/csb/tryReadBookEndPage.csd" />
-          <FilePathData Path="BookRoom/csb/bookNode.csd" />
-          <FilePathData Path="BookRoom/csb/bookNodeover.csd" />
-          <FilePathData Path="BookRoom/csb/bookroom.csd" />
         </OpenedDocuments>
-        <ActiveDocument Path="BookRoom/csb/bookroom.csd" />
+        <ActiveDocument Path="Book/csb/tryReadBookEndPage.csd" />
       </Value>
     </Item>
   </Properties>

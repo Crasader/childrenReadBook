@@ -1,6 +1,7 @@
 ﻿#include "BookStoreScene.h"
 #include "NetIntface.h"
 #include "YYXVisitor.h"
+#include "YYXDownloadImages.h"
 
 using namespace cocostudio::timeline;
 
@@ -1575,16 +1576,20 @@ void BookStore::getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex)//pa
 			auto path = dir + "/" + fileName;
 			if (!FileUtils::getInstance()->isFileExist(path))
 			{
-				//string DownLoadImageRunKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				//string DownLoadImageErrorKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				string DownLoadImageRunKey = "BookStoreSceneDownLoadImageSuccess";
+				YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, dir, fileName, high, 0, [=](string downPath) {
+					YYXLayer::sendNotify("bookstoreCoverDownloadSuccess");
+				},  [=](string str) {
+					string sstr = string(bookName).append(App::getString("FENGMIANXIAZAISHIBAI"));
+					Toast::create(sstr.c_str(), false);
+				});
+				/*string DownLoadImageRunKey = "BookStoreSceneDownLoadImageSuccess";
 				string DownLoadImageErrorKey = "BookStoreSceneDownLoadImageFail";
 				NetIntface::DownLoadImage(bookCoverUrl, dir, fileName, DownLoadImageRunKey, [=](string downPath) {
 					YYXLayer::sendNotify("bookstoreCoverDownloadSuccess");
 				}, DownLoadImageErrorKey, [=](string str) {
 					string sstr = string(bookName).append(App::getString("FENGMIANXIAZAISHIBAI"));
 					Toast::create(sstr.c_str(), false);
-				});
+				});*/
 			}
 		}, [=]() {
 			//解析完毕

@@ -97,18 +97,18 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Button_6" ActionTag="-1209929624" Tag="211" IconVisible="False" LeftMargin="757.2411" RightMargin="129.7589" TopMargin="62.7949" BottomMargin="520.2051" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="177" Scale9Height="9" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="207.0000" Y="31.0000" />
+          <AbstractNodeData Name="Button_6" ActionTag="-1209929624" Tag="211" IconVisible="False" LeftMargin="758.1853" RightMargin="100.8147" TopMargin="23.8611" BottomMargin="477.1389" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="205" Scale9Height="91" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="235.0000" Y="113.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="860.7411" Y="535.7051" />
-            <Scale ScaleX="0.6000" ScaleY="0.6000" />
+            <Position X="875.6853" Y="533.6389" />
+            <Scale ScaleX="0.6600" ScaleY="0.6600" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.7868" Y="0.8725" />
-            <PreSize X="0.1892" Y="0.0505" />
+            <PrePosition X="0.8004" Y="0.8691" />
+            <PreSize X="0.2148" Y="0.1840" />
             <TextColor A="255" R="65" G="65" B="70" />
             <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="MarkedSubImage" Path="Book/res/Backcover_shenmeshinianka_736h.png" Plist="Book/csb/backcover.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="Book/res/Backcover_shenmeshinianka_736h.png" Plist="Book/csb/backcover.plist" />
+            <PressedFileData Type="MarkedSubImage" Path="Book/res/Backcover_shenmeshinianka-press_736h.png" Plist="Book/csb/backcover.plist" />
+            <NormalFileData Type="MarkedSubImage" Path="Book/res/Backcover_shenmeshinianka-moren_736h.png" Plist="Book/csb/backcover.plist" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
@@ -130,7 +130,7 @@
           <AbstractNodeData Name="Image_2" ActionTag="-721859176" Tag="158" IconVisible="False" LeftMargin="1453.0000" RightMargin="-1453.0000" LeftEage="35" RightEage="35" TopEage="19" BottomEage="19" Scale9OriginX="35" Scale9OriginY="19" Scale9Width="39" Scale9Height="22" ctype="ImageViewObjectData">
             <Size X="1094.0000" Y="614.0000" />
             <Children>
-              <AbstractNodeData Name="Sprite_1" ActionTag="202610862" Tag="153" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="255.0000" RightMargin="255.0000" TopMargin="0.7559" BottomMargin="3.2442" ctype="SpriteObjectData">
+              <AbstractNodeData Name="Sprite_1" ActionTag="202610862" Tag="153" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="255.0000" RightMargin="255.0000" TopMargin="0.7558" BottomMargin="3.2442" ctype="SpriteObjectData">
                 <Size X="584.0000" Y="610.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="547.0000" Y="308.2442" />

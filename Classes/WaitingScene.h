@@ -27,11 +27,6 @@ public:
 
 private:
 	void ShareBook(RenderTexture* img, int bookId);//分享
-	Layer* newTryCover(int bookid);
-	static bool isBuyThisBook(int bookid);
-	void yaoqingzhuce();
-	void buySuccessMessageBox();
-	void httpRentBook(int bookId, const function<void()> runable);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

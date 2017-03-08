@@ -174,7 +174,7 @@ private:
 	void onClickLister();
 	void readBook();
 	void sendDownloadBookAndReadBook();
-	void buyBook(function<void()> callback = nullptr);
+	void buyBook(function<void()> mianfeimaishu = nullptr);//
 	void callBackBuyBook();
 	void rentBook(function<void()> callback = nullptr);
 	void hintIsBuyIsRent();

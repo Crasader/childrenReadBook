@@ -283,7 +283,7 @@ Layer* Parent::initNode_Account()
 					addChild(layers, 9);
 			}
 			else {				
-				auto layer = XZLayer::OpenVIPCardService(0);
+				auto layer = XZLayer::OpenVIPCardService(2);
 				if (layer)
 					addChild(layer, 9);
 			}

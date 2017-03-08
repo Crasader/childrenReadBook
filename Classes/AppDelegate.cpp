@@ -1,7 +1,9 @@
 ﻿#include "AppDelegate.h"
 #include "LoadScene.h"
 #include "FKAudioPlayer.h"
-
+#include "YYXBookOver.h"
+#include "FKBookParser.h"
+USING_NS_FK;
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1094, 614);
@@ -98,8 +100,14 @@ void AppDelegate::applicationDidEnterBackground() {
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
+	if (YYXBookOver::getInstance()->BookCover())
+	{
+		FK::AudioPlayer::getInstance()->stopAllEffect();
+		App::log("=====>>> AppDelegate::applicationWillEnterForeground()  ++  BookParser::getInstance()->pausePlay();");
+	}
     Director::getInstance()->startAnimation();
 	FK::AudioPlayer::getInstance()->resumeAllEffect();
+
     // if you use SimpleAudioEngine, it must resume here
 	auto isReading = YYXStruct::getMapInt64(App::GetInstance()->myData, "UserIsReadingBook", 0);
 	if (isReading == 0 && App::GetInstance()->isMusicPlay)

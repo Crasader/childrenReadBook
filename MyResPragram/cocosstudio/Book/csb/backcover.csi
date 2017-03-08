@@ -10,7 +10,6 @@
       <FilePathData Path="Book/res/Backcover_good-comments_no-comment_736h.png" />
       <FilePathData Path="Book/res/Backcover_goumainianka_736h.png" />
       <FilePathData Path="Book/res/Backcover_goumaiwanzhengban_736h.png" />
-      <FilePathData Path="Book/res/Backcover_shenmeshinianka_736h.png" />
       <FilePathData Path="Book/res/Backcover_goumaichenggong_736h.png" />
       <FilePathData Path="Book/res/Backcover_goumaichenggong_tuxing_736h.png" />
       <FilePathData Path="Book/res/Backcover_jixuyuedu_736h.png" />
@@ -27,6 +26,8 @@
       <FilePathData Path="Book/res/Backcover_try_buy_button_press_736h.png" />
       <FilePathData Path="Book/res/Backcover_vip_button_736h.png" />
       <FilePathData Path="Book/res/Backcover_vip_button_press_736h.png" />
+      <FilePathData Path="Book/res/Backcover_shenmeshinianka-moren_736h.png" />
+      <FilePathData Path="Book/res/Backcover_shenmeshinianka-press_736h.png" />
     </ImageFiles>
     <MaxSize Width="1024" Height="2048" />
   </Content>

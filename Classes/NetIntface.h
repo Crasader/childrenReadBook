@@ -75,7 +75,7 @@ public:
 	//用户书籍的已购列表
 	static void httpGetUserBuyBooks(long memberID, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	static void WIN32_httpGetUserBuyBooks(int memberID, string runKey, string errorKey);
-	static void httpGetUserBuyBooksCallBack(string json, function<void()> beginable, const function<void(int, int, string, string, string)> itemable, function<void()> runableSuccessOver, const function<void()> errorRunable);
+	static void httpGetUserBuyBooksCallBack(string json, function<void()> beginable, const function<void(int, int, int, string, string, string)> itemable, function<void()> runableSuccessOver, const function<void()> errorRunable);
 	//获取用户安卓的账户余额
 	static void httpGetUserBalance(long memberID, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	static void WIN32_httpGetUserBalance(int memberID, string runKey, string errorKey);

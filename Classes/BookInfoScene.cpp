@@ -11,6 +11,8 @@
 #include "YYXVisitor.h"
 #include "Charger.h"
 #include "YYXRentBook.h"
+#include "YYXBuyBook.h"
+#include "YYXDownloadImages.h"
 
 using namespace experimental;
 USING_NS_CC;
@@ -452,7 +454,7 @@ void BookInfo::initHttp()
 	string runKey = "bookInfoSceneHttpGetBookInfoSuccess";
 	string errorKey = "bookInfoSceneHttpGetBookInfoFail";
 	NetIntface::httpGetBookInfo(m_bookId, runKey, [](string json) {
-		NetIntface::httpGetBookInfoCallBack(json, [](float avgScore,bool isvip, int bookId, int bookPage, int bookPrice100, int bookmarketPrice100, int remainTime, string bookAuthor,
+		NetIntface::httpGetBookInfoCallBack(json, [](float avgScore, bool isvip, int bookId, int bookPage, int bookPrice100, int bookmarketPrice100, int remainTime, string bookAuthor,
 			string bookSize, string bookPress, string bookIntroduction, string bookName, string bookPlayUrl, string bookCoverUrl, string bookViewUrl) {
 			//解析正常
 			//书籍信息 原价+书籍名称+ 书页数
@@ -461,6 +463,11 @@ void BookInfo::initHttp()
 			//现价+封面url+新书标记
 			string BookPriceKey = StringUtils::format("bookPrice+bookID=%d", bookId);
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPriceKey, bookPrice100, bookCoverUrl);
+			//下载封面
+			string dir = App::getCoverDir();
+			string filename = StringUtils::format("%d", bookId) + ".png";
+			if (!FileUtils::getInstance()->isFileExist(dir + "/" + filename))
+				YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, dir, filename, high);
 			//购书标记+下载URL + 	是否是vip书籍
 			string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", bookId);
 			if (isvip)
@@ -2488,7 +2495,7 @@ void BookInfo::visitorRent()
 		goumainianka->setVisible(true);
 	goumai->setVisible(true);
 
-	if (m_relation->IsBookExit())
+	if (m_relation->IsBookRent())
 	{
 		yuedu->setVisible(true);
 		mianfeiyuedu->setVisible(false);
@@ -2524,10 +2531,7 @@ void BookInfo::userBuy()
 
 	mianfeishidu->setVisible(false);
 	goumaihong->setVisible(false);
-	if (m_relation->IsMemberVIP())
-		goumainianka->setVisible(false);
-	else
-		goumainianka->setVisible(true);
+	goumainianka->setVisible(false);
 	goumai->setVisible(false);
 	mianfeiyuedu->setVisible(false);
 	yuedu->setVisible(false);
@@ -2633,7 +2637,14 @@ void BookInfo::onClickLister()
 		});
 	});
 	yuedu->addClickEventListener([=](Ref*) {
-		readbook_download_pause_tryreadbook(yuedu);
+		if (m_relation->IsMemberVIP())
+		{
+			YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
+				readbook_download_pause_tryreadbook(yuedu);
+			});
+		}
+		else
+			readbook_download_pause_tryreadbook(yuedu);
 	});
 
 	duliyuedu->addClickEventListener([=](Ref*) {
@@ -2646,14 +2657,18 @@ void BookInfo::onClickLister()
 		{
 			YYXVisitor::getInstance()->hintLogin([=]() {
 				//游客
-				buyBook();
+				YYXBuyBook::GetInstance()->newBuyFreeBook(m_bookId, App::GetInstance()->getMemberId(), [](int bookid) {
+					YYXLayer::sendNotify("pay");
+				});
 			}, [=]() {
 				//去登陆
 				gotoLogin();
 			}, [=]() {
 				//正常流程
-				buyBook();
-			});
+				YYXBuyBook::GetInstance()->newBuyFreeBook(m_bookId, App::GetInstance()->getMemberId(), [](int bookid) {
+					YYXLayer::sendNotify("pay");
+				});
+			}, App::getString("ZHIJIEYUEDU"));
 		}
 		else
 		{
@@ -2690,13 +2705,14 @@ void BookInfo::sendDownloadBookAndReadBook()
 	DownLoadBook(m_bookId, bookPlayUrl, ZipName);
 }
 
-void BookInfo::buyBook(function<void ()> callback)
+void BookInfo::buyBook(function<void ()> mianfeimaishu)
 {
-	httpGetUserBalance(App::getMemberID().c_str());
-	if (callback)
+	if (mianfeimaishu)
 	{
-		callback();
+		mianfeimaishu();
+		return;
 	}
+	httpGetUserBalance(App::getMemberID().c_str());
 }
 
 //购书成功的回调
@@ -2709,10 +2725,13 @@ void BookInfo::callBackBuyBook()
 	App::GetInstance()->myBuyBook[m_bookId] = (int)YYXLayer::getCurrentTime4Second();
 	m_relation->IsBookBuy(true);
 	ButtonControl();
-	if (m_relation->IsBookExit())
-		readBook();
-	else
-		sendDownloadBookAndReadBook();
+	if (m_relation->IsBookFree())
+	{
+		if (m_relation->IsBookExit())
+			readBook();
+		else
+			sendDownloadBookAndReadBook();
+	}
 	//阅读
 	auto duliyuedu = (Button*)node->getChildByName("duliyuedu");
 	string ZipName = StringUtils::format("%d.zip", m_bookId);
@@ -2824,6 +2843,14 @@ void BookInfo::showCommentCount(int count)
 	if (count < 0 || count > 999)
 		count = 0;
 	auto pinglunshuliang = (Text*)node->getChildByName("pinglunshuliang");
+	if (count==0)
+	{
+		pinglunshuliang->setVisible(false);
+	}
+	else
+	{
+		pinglunshuliang->setVisible(true);
+	}
 	pinglunshuliang->setText(StringUtils::format("(%d)", count));
 }
 

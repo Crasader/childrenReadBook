@@ -441,6 +441,8 @@
   <string>免费阅读 </string>
   <key>ZHIJIESHIDU</key>
   <string>直接试读 </string>
+   <key>ZHIJIEYUEDU</key>
+  <string>直接阅读>>> </string>
    <key>NINDANGQIANSHIYOUKESHENGFUQINGDENGLUHOUKAITONGFUWU</key>
     <string>您当前是游客身份, 请登录后开通服务 </string>
     <key>QINGNINKAITONGNIANKAFUWU</key>

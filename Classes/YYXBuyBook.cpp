@@ -125,8 +125,8 @@ void YYXBuyBook::httpBuyBook()
 				//购书成功
 				if (m_buyBookSuccessCallBack)
 					m_buyBookSuccessCallBack(m_bookId);
-				httpRedPacket();
-				httpMoney();
+				//httpRedPacket();
+				//httpMoney();
 				//Toast::create(App::getString("BUY_SCEESSE"));
 			}, []() {
 				//余额不足
@@ -511,6 +511,13 @@ void YYXBuyBook::init(int bookid, int memberid)
 {
 	m_bookId = bookid;
 	m_memberId = memberid;
+}
+
+void YYXBuyBook::newBuyFreeBook(int bookid, int memberid, const function<void(int)>& buyBookCallBack)
+{
+	init(bookid, memberid);
+	m_buyBookSuccessCallBack = buyBookCallBack;
+	httpBuyBook();
 }
 
 void YYXBuyBook::loadRedPacketData(Node* node, int index)

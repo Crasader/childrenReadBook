@@ -52,7 +52,8 @@ void NetIntface::deleteMapFunction(string key)
 {
 	if (&key && key != "")
 	{
-		NetIntface::m_functionMap.erase(key);
+		if (NetIntface::m_functionMap.count(key) > 0)
+			NetIntface::m_functionMap.erase(key);
 	}
 }
 
@@ -1006,7 +1007,7 @@ void NetIntface::WIN32_httpGetUserBuyBooks(int memberID, string runKey, string e
 	});
 }
 
-void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> beginable, const function<void(int, int, string, string, string)> itemable, function<void()> runableSuccessOver, const function<void()> errorRunable)
+void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> beginable, const function<void(int ,int, int, string, string, string)> itemable, function<void()> runableSuccessOver, const function<void()> errorRunable)
 {
 	rapidjson::Document doc;
 	bool result = YYXLayer::getJsonObject4Json(doc, json);
@@ -1021,7 +1022,17 @@ void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> begina
 			if (YYXLayer::getJsonArray4Json(jsonarray, doc, "data"))
 			{
 				map<string, YYXStruct> itemMap;
-				YYXLayer::getData4JsonArray(jsonarray, itemMap, [=](rapidjson::Value & item, map<string, YYXStruct>& mapresult) {
+				YYXLayer::getDataForJsonArray(jsonarray, [=](rapidjson::Value & item, int idx) {
+					auto bookId = YYXLayer::getInt4Json(-999, item, "bookId");
+					auto orderId = YYXLayer::getInt4Json(-999, item, "orderId");
+					auto bookCoverUrl = YYXLayer::getString4Json("", item, "bookCoverUrl");
+					auto bookPlayUrl = YYXLayer::getString4Json("", item, "bookPlayUrl");
+					auto bookName = YYXLayer::getString4Json("", item, "bookName");
+					if (itemable)
+						itemable(idx, bookId, orderId, bookCoverUrl, bookPlayUrl, bookName);
+				});
+
+				/*YYXLayer::getData4JsonArray(jsonarray, itemMap, [=](rapidjson::Value & item, map<string, YYXStruct>& mapresult) {
 					auto bookId = YYXLayer::getInt4Json(-999, item, "bookId");
 					auto orderId = YYXLayer::getInt4Json(-999, item, "orderId");
 					auto bookCoverUrl = YYXLayer::getString4Json("", item, "bookCoverUrl");
@@ -1029,7 +1040,7 @@ void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> begina
 					auto bookName= YYXLayer::getString4Json("", item, "bookName");
 					if (itemable)
 						itemable(bookId, orderId, bookCoverUrl, bookPlayUrl, bookName);
-				});
+				});*/
 				if (runableSuccessOver)
 					runableSuccessOver();
 			}
@@ -2428,5 +2439,7 @@ void NetIntface::httpBookCollectAndVipList(int type, function<void(string)> runF
 	parameter["type"] = StringUtils::format("%d", type);
 	parameter["memberId"] = App::getMemberID();
 	parameter["resource"] = App::m_resource;
+	parameter["page"] = "1";
+	parameter["pageSize"] = "1000";
 	NetIntface::httpPost(url, parameter, "", runFunction, "", errorRunFunction);
 }

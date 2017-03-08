@@ -8,6 +8,7 @@
 #include "curl/include/android/curl/curl.h"
 #endif
 #include "NetIntface.h"
+#include "YYXDownloadImages.h"
 
 using namespace std;
 /*
@@ -1522,7 +1523,18 @@ void App::loginCallback(bool hint ,function<void ()>  runable)
 			string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
 			if (!FileUtils::getInstance()->isFileExist(savePath))
 			{
-				NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("9HeadPortrait_%d.png", childrenId),
+				YYXDownloadImages::GetInstance()->newDownloadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("9HeadPortrait_%d.png", childrenId),
+					high, 0, [=](string path) {
+					if (path != "" && FileUtils::getInstance()->isFileExist(path))
+					{
+						string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
+						App::makeRoundImage(path, savePath);
+						string pathkey = StringUtils::format("path+childID=%d", childrenId);
+						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
+						YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
+					}
+				}, [](string error) {});
+				/*NetIntface::DownLoadImage(url, FileUtils::getInstance()->getWritablePath() + "temp", StringUtils::format("9HeadPortrait_%d.png", childrenId),
 					StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom()), [=](string path) {
 					if (path != "" && FileUtils::getInstance()->isFileExist(path))
 					{
@@ -1532,7 +1544,7 @@ void App::loginCallback(bool hint ,function<void ()>  runable)
 						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
 						YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
 					}
-				}, "", [](string str) {});
+				}, "", [](string str) {});*/
 			}
 		}, [=](int b) {
 			if (b == 1)
@@ -1675,6 +1687,7 @@ void App::httpCheckVIP(bool hint)
 						App::GetInstance()->m_me = new MyAccount();
 					App::GetInstance()->m_me->id = App::GetInstance()->m_me->id;
 					App::GetInstance()->m_me->vip = true;
+					YYXLayer::setFileValue("vip", "true");
 					auto startTime = YYXLayer::getInt64ForJson(0, doc, "startTime");
 					auto expireTime = YYXLayer::getInt64ForJson(0, doc, "expireTime");
 					auto times = YYXLayer::getInt64ForJson(0, doc, "times");
@@ -1693,6 +1706,7 @@ void App::httpCheckVIP(bool hint)
 				else
 				{
 					App::GetInstance()->m_me->vip = false;
+					YYXLayer::setFileValue("vip", "false");
 					string rentpath = FileUtils::getInstance()->getWritablePath() + StringUtils::format("vipBook/vipbook_%d.json", App::GetInstance()->m_me->id);
 					FileUtils::getInstance()->removeFile(rentpath);
 					App::GetInstance()->VIPbook.clear();
@@ -1730,7 +1744,19 @@ void App::httpGetVipBook(bool hint)
 					string fileName = StringUtils::format("%d", bookid) + ".png";
 					if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookid)))
 					{
-						NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
+						YYXDownloadImagesPriority priority = low;
+						if (index < 6)
+							priority = high;
+						YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, App::getCoverDir(), fileName, priority, 2000,[=](string downPath) {
+							YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+						},  [=](string str) {
+							if (hint)
+							{
+								string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+								Toast::create(sstr.c_str(), false);
+							}
+						});
+						/*NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
 							YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
 						}, "", [=](string str) {
 							if (hint)
@@ -1738,7 +1764,7 @@ void App::httpGetVipBook(bool hint)
 								string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
 								Toast::create(sstr.c_str(), false);
 							}
-						});
+						});*/
 					}
 				});
 				YYXLayer::sendNotify("bookRoomSceneCompileChange", "", -1);
@@ -1794,7 +1820,7 @@ void App::httpGetBuyBook(bool hint)
 			App::log("==================================>>>httpGetBuyBook");
 			//json成功, array前执行
 			App::GetInstance()->myBuyBook.clear();
-		}, [=](int bookId, int orderId, string bookCoverUrl, string bookPlayUrl, string bookName) {
+		}, [=](int idx, int bookId, int orderId, string bookCoverUrl, string bookPlayUrl, string bookName) {
 			//解析过程
 			App::GetInstance()->myBookURLMap[bookId] = bookPlayUrl;
 			App::GetInstance()->myBuyBook[bookId] = orderId;
@@ -1802,18 +1828,31 @@ void App::httpGetBuyBook(bool hint)
 			string fileName = StringUtils::format("%d", bookId) + ".png";
 			if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookId)))
 			{
-				thread([=]() {
-					ccsleep(6000);
-					NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
-						YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
-					}, "", [=](string str) {
-						if (hint)
-						{
-							string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
-							Toast::create(sstr.c_str(), false);
-						}
-					});
-				}).detach();				
+				YYXDownloadImagesPriority priority = low;
+				if (idx < 6)
+					priority = high;
+				YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, App::getCoverDir(), fileName, priority, 2000, [](string downpath) {
+					YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+					App::log("httpGetBuyBook ===>>>" + downpath);
+				}, [=](string error) {
+					if (hint)
+					{
+						string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+						Toast::create(sstr.c_str(), false);
+					}
+				});
+				/*				thread([=]() {
+									ccsleep(6000);
+									NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
+										YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+									}, "", [=](string str) {
+										if (hint)
+										{
+											string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+											Toast::create(sstr.c_str(), false);
+										}
+									});
+								}).detach();	*/
 			}
 		}, []() {
 			//解析成功

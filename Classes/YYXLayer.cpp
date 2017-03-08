@@ -352,11 +352,6 @@ Ref* YYXLayer::findControl(string controlName)
 	}
 }
 
-void YYXLayer::leave()
-{
-	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-}
-
 void YYXLayer::controlTouchTime(float outTime, string keyOfSaveTime, std::function<void()> runable, std::function<void()> unTouchRun)
 {
 	if (!&keyOfSaveTime && outTime>0)
@@ -2086,7 +2081,10 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 		double beishu = 3;
 		//评分+账号+日期 800*80
 		auto item2 = Layout::create();
-		memberName.replace(3, 4, "****");
+		if (memberName.size() >= 7)
+		{
+			memberName.replace(3, 4, "****");
+		}
 		Data dataCSB;
 		Layer* scorelayer;
 		if (App::GetInstance()->getData(BOOKINFO_SCORE_CSB, dataCSB))
@@ -2420,4 +2418,13 @@ void YYXLayer::CopyDirectory(string sourceDir, string destDir)
 	}, [destDir](string dirpath, string dirname) {
 		CopyDirectory(dirpath, destDir + "/" + dirname);
 	});
+}
+
+void YYXLayer::cleanup()
+{
+	App::log("YYXLayer::cleanup");
+	if (m_runable.find("cleanup") != m_runable.end())
+	{
+		m_runable["cleanup"](this);
+	}
 }

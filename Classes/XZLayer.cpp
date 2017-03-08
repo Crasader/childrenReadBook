@@ -245,23 +245,23 @@ YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave, const fun
 	auto pay = (Button*)viphint->findControl("Button_3");
 	if (pay)
 	{
-		pay->addClickEventListener([=](Ref* sender) {			
-			Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=](){
-				YYXVisitor::getInstance()->hintLogin([=]() {
-					if (runleave)
-						runleave();
-					Index::GoToLoginScene();
-				}, [=]() {
-					if (runleave)
-						runleave();
-					Index::GoToLoginScene();
-				}, [=]() {
-					viphint->removeFromParent();
+		pay->addClickEventListener([=](Ref* sender) {
+			YYXVisitor::getInstance()->hintLogin([=]() {
+				if (runleave)
+					runleave();
+				Index::GoToLoginScene();
+			}, [=]() {
+				if (runleave)
+					runleave();
+				Index::GoToLoginScene();
+			}, [=]() {
+				viphint->removeFromParent();
+				Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=]() {
 					auto paylayer = XZLayer::payBuyVip(callback);
 					if (paylayer)
 						Director::getInstance()->getRunningScene()->addChild(paylayer);
-				},"  ");				
-			}));
+				}));				
+			}, "  ");
 		});
 	}
 	return viphint;

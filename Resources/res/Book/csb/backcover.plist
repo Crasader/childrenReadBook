@@ -51,7 +51,7 @@
 			<key>Book/res/Backcover_comments_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1377},{334,99}}</string>
+				<string>{{241,1377},{334,99}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -91,17 +91,6 @@
 				<false />
 				<key>sourceSize</key>
 				<string>{332,113}</string>
-			</dict>
-			<key>Book/res/Backcover_shenmeshinianka_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{2,1313},{207,31}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{207,31}</string>
 			</dict>
 			<key>Book/res/Backcover_goumaichenggong_736h.png</key>
 			<dict>
@@ -278,6 +267,28 @@
 				<false />
 				<key>sourceSize</key>
 				<string>{374,129}</string>
+			</dict>
+			<key>Book/res/Backcover_shenmeshinianka-moren_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,1313},{235,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{235,113}</string>
+			</dict>
+			<key>Book/res/Backcover_shenmeshinianka-press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,1430},{235,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{235,113}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>

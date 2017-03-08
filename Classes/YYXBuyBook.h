@@ -55,6 +55,7 @@ public:
 	void newBuyBook(int bookid, int memberid, const function<void(int)>& buyBookCallBack = nullptr, const function<void()>& goToLoginCallBack = nullptr);
 
 	void init(int bookid, int memberid);
+	void newBuyFreeBook(int bookid, int memberid, const function<void(int)>& buyBookCallBack = nullptr);
 	void buyBook(const function<void(int)>& buyBookCallBack = nullptr, const function<void()>& goToLoginCallBack = nullptr);
 	void setOutScene(const function<void()>& goToLoginCallBack = nullptr);
 	int BookId() const { return m_bookId; }

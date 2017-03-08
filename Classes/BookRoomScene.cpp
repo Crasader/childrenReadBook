@@ -36,6 +36,10 @@ bool BookRoom::init()
     }
 	YYXVisitor::getInstance()->bookRoomSceneInit();
 	m_offline = !NetIntface::IsNetConnect();
+	if (App::m_debug == 0)
+	{
+		m_offline = true;
+	}
 	YYXFunctionQueue::GetInstance()->clear();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -318,7 +322,7 @@ void BookRoom::refershPage(int status)
 {	//购书列表 = 3 已收藏 = 2 已下载  = 0 包年图书 = 4	
 	vector<int> bookidData;
 	auto suo = (ImageView*)layer->getChildByName("Image_4");
-	if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip == true)
+	if (App::GetInstance()->m_me && userIsVip() == true)
 	{
 		suo->setVisible(false);
 	}
@@ -374,11 +378,11 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 		return;
 	}	
 	//离线模式
-	if (m_offline && !FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
-	{
-		book->setVisible(false);
-		return;
-	}
+	//if (m_offline && !FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
+	//{
+		//book->setVisible(false);
+		//return;
+	//}
 	//vip包年标签
 	auto vip = (Sprite*)book->getChildByName("Sprite_1");
 	//锁
@@ -392,22 +396,9 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 	if (vip)
 	{
 		vip->setVisible(false);
-		string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", bookid);
-		auto isvip = (int)YYXStruct::getMapRef(App::GetInstance()->myData, BookPlayUrlKey, nullptr);
-		if (BookPlayUrlKey == "bookPlayUrl+bookID=455")
-		{
-			auto isvip = (int)YYXStruct::getMapRef(App::GetInstance()->myData, BookPlayUrlKey, nullptr);
-			//App::log(" usvip=", isvip);
-		}
-		if (App::GetInstance()->m_me)
-		{
-			if (App::GetInstance()->m_me->vip)
-			{				
-					if (App::GetInstance()->VIPbook.count(bookid)>0)
-					{
-						vip->setVisible(true);
-					}				
-			}			
+		if (bookMode == 2 || bookMode == 4) {
+			if (App::GetInstance()->m_me && userIsVip() && App::GetInstance()->VIPbook.count(bookid) > 0)
+				vip->setVisible(true);
 		}
 	}
 	//监听 刷新状态 传bookid
@@ -793,6 +784,21 @@ vector<int> BookRoom::getCurrentPageBookID4BuyBookDownload()
 vector<int> BookRoom::getCurrentPageBookID4BuyBook()
 {	
 	vector<int> v_boosSort;
+	if (m_offline)
+	{
+		vector<int> deletelist;
+		for (auto it  : App::GetInstance()->myBuyBook)
+		{
+			int bookid = it.first;
+			string path = App::getBookRead4Json_txtPath(bookid);
+			if (!FileUtils::getInstance()->isFileExist(path))
+				deletelist.push_back(bookid);
+		}
+		for (auto he : deletelist)
+		{
+			App::GetInstance()->myBuyBook.erase(he);
+		}
+	}
 	auto sortDat = App::sortMapToVector(App::GetInstance()->myBuyBook);
 	bookSum = sortDat.size();
 	int pagesum = ceil(bookSum / 6.0);
@@ -903,6 +909,21 @@ void BookRoom::onEnterTransitionDidFinish()
 vector<int> BookRoom::getCurrentPageBookID4Collect()
 {
 	vector<int> v_boosSort;
+	if (m_offline)
+	{
+		vector<int> deletelist;
+		for (auto it : App::GetInstance()->bookCollect)
+		{
+			int bookid = it.first;
+			string path = App::getBookRead4Json_txtPath(bookid);
+			if (!FileUtils::getInstance()->isFileExist(path))
+				deletelist.push_back(bookid);
+		}
+		for (auto he : deletelist)
+		{
+			App::GetInstance()->bookCollect.erase(he);
+		}
+	}
 	auto booksum = App::GetInstance()->bookCollect.size();
 	int pagesum = ceil(booksum / 6.0);
 	if (m_currentPageNumber < 0)
@@ -931,6 +952,21 @@ vector<int> BookRoom::getCurrentPageBookID4Collect()
 vector<int> BookRoom::getCurrentPageBookID4VIP()
 {
 	vector<int> v_boosSort;
+	if (m_offline)
+	{
+		vector<int> deletelist;
+		for (auto it : App::GetInstance()->VIPbook)
+		{
+			int bookid = it.first;
+			string path = App::getBookRead4Json_txtPath(bookid);
+			if (!FileUtils::getInstance()->isFileExist(path))
+				deletelist.push_back(bookid);
+		}
+		for (auto he : deletelist)
+		{
+			App::GetInstance()->VIPbook.erase(he);
+		}
+	}
 	auto booksum = App::GetInstance()->VIPbook.size();
 	int pagesum = ceil(booksum / 6.0);
 	if (m_currentPageNumber < 0)
@@ -1125,6 +1161,14 @@ bool BookRoom::bookIsMyVipBooks(int bookid)
 
 bool BookRoom::userIsVip()
 {
+	if (m_offline)
+	{
+		auto vip = YYXLayer::getFileValue("vip","false");
+		if (vip == "true")
+			return true;
+		else
+			return false;
+	}
 	if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
 		return true;
 	else

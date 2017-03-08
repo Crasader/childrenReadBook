@@ -33,6 +33,7 @@ void YYXBookOver::init(int bookId, int memberId, bool isTry)
 {
 	m_bookId = bookId;
 	m_memberId = memberId;
+	m_isBookCover = false;
 	if (isTry)
 	{
 		m_isUserBuy = false;
@@ -53,7 +54,11 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	map<string, int64String> parameter;
 	YYXLayer::insertMap4ParaType(parameter, "className", -999, "tryReadBackCover");
 	YYXLayer::insertMap4ParaType(parameter, "csb", -999, "Book/csb/tryReadBookEndPage.csb");
-	auto layer = YYXLayer::create(parameter);
+	map<string, function<void(YYXLayer*)>> runmap;
+	runmap["cleanup"] = [=](YYXLayer* sender) {
+		m_isBookCover = false;
+	};
+	auto layer = YYXLayer::create(parameter, runmap);
 	layer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
 	layer->getParentNode()->setPosition(Director::getInstance()->getWinSize() / 2);
 	auto goBuy = (Button*)layer->findControl("Button_2");
@@ -85,9 +90,8 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	{
 		App::log("buySuccessMessageBox44444");
 		jixuyueduBox->setTitleColor(Color3B::WHITE);
-		jixuyueduBox->addClickEventListener([](Ref* sneder) {
-			BookParser::getInstance()->resumePlay();
-			Director::getInstance()->popScene();
+		jixuyueduBox->addClickEventListener([=](Ref* sneder) {
+			//Director::getInstance()->popScene();
 			BookParser::getInstance()->pageDown();
 		});
 	}
@@ -104,24 +108,28 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		goumaiwanzhengban->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "goumaiwanzhengbanTime", [=]() {
 				YYXVisitor::getInstance()->hintLogin([=]() {
-					YYXBuyBook::GetInstance()->newBuyBook(m_bookId, App::GetInstance()->getMemberId(), [=](int bookid) {
-						//购买成功后
-						m_isUserBuy = true;
-						buySuccessMessageBox(goumaichenggong);
-					}, [=]() {
-						App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					});
+					Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=]() {
+						YYXBuyBook::GetInstance()->newBuyBook(m_bookId, App::GetInstance()->getMemberId(), [=](int bookid) {
+							//购买成功后
+							m_isUserBuy = true;
+							buySuccessMessageBox(goumaichenggong);
+						}, [=]() {
+							App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+						});
+					}));
 				}, [=]() {
 					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
 					Index::GoToLoginScene();
 				}, [=]() {
-					YYXBuyBook::GetInstance()->newBuyBook(m_bookId, App::GetInstance()->getMemberId(), [=](int bookid) {
-						//购买成功后
-						m_isUserBuy = true;
-						buySuccessMessageBox(goumaichenggong);
-					}, [=]() {
-						App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					});
+					Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=]() {
+						YYXBuyBook::GetInstance()->newBuyBook(m_bookId, App::GetInstance()->getMemberId(), [=](int bookid) {
+							//购买成功后
+							m_isUserBuy = true;
+							buySuccessMessageBox(goumaichenggong);
+						}, [=]() {
+							App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+						});
+					}));
 				});
 			}, []() {});
 		});
@@ -176,15 +184,18 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
 					Index::GoToLoginScene();
 				}, [=]() {
-					Director::getInstance()->getRunningScene()->addChild(XZLayer::payBuyVip(
+					Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer(
 						[=]() {
-						if (App::GetInstance()->m_me)
-						{
-							YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-								m_isUserVip = true;
-								buySuccessMessageBox(goumaichenggong);
-							});
-						}
+						Director::getInstance()->getRunningScene()->addChild(XZLayer::payBuyVip(
+							[=]() {
+							if (App::GetInstance()->m_me)
+							{
+								YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
+									m_isUserVip = true;
+									buySuccessMessageBox(goumaichenggong);
+								});
+							}
+						}));
 					}));
 				}, "  ", false);
 			}, []() {});
@@ -196,34 +207,26 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	{
 		shimeshinianka->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "shimeshinainkaTime", [=]() {
-				YYXVisitor::getInstance()->hintLogin([=]() {
+				Director::getInstance()->getRunningScene()->addChild(
+					XZLayer::OpenVIPCardService(2, [=]() {
 					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					Index::GoToLoginScene();
 				}, [=]() {
-					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					Index::GoToLoginScene();
-				}, [=]() {
-					Director::getInstance()->getRunningScene()->addChild(
-						XZLayer::OpenVIPCardService(2, [=]() {
-						App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					}, [=]() {
-						if (App::GetInstance()->m_me)
-						{
-							YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-								m_isUserVip = true;
-								buySuccessMessageBox(goumaichenggong);
-							});
-						}
-					}));
-				},"  ",false);
-			}, []() {});
+					if (App::GetInstance()->m_me)
+					{
+						YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
+							m_isUserVip = true;
+							buySuccessMessageBox(goumaichenggong);
+						});
+					}
+				}));
+			});
 		});
 	}
 
 	if (jixuyuedu)
 	{
-		jixuyuedu->addClickEventListener([](Ref* sender) {
-			Director::getInstance()->popScene();
+		jixuyuedu->addClickEventListener([=](Ref* sender) {
+			//Director::getInstance()->popScene();
 			BookParser::getInstance()->pageDown();
 		});
 	}
@@ -262,6 +265,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(changeListener, layer);
 	goumaichenggong->removeFromParent();
 	layer->addChild(goumaichenggong);
+	m_isBookCover = true;
 	return layer;
 }
 
@@ -425,7 +429,7 @@ void YYXBookOver::buySuccessMessageBox(ImageView* goumaichenggongLayer)
 	goumaichenggongLayer->setAnchorPoint(Vec2(0.5, 0.5));
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	goumaichenggongLayer->setPosition(Vec2(1094+ visibleSize.width, 614+ visibleSize.height) / 4);
-	goumaichenggongLayer->setVisible(true);
+	goumaichenggongLayer->setVisible(true);	
 }
 
 void YYXBookOver::yaoqingzhuce()

@@ -27,33 +27,33 @@
             <FileData Type="MarkedSubImage" Path="BookInfo/res/pager_jiagebaidi_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
-          <AbstractNodeData Name="introYellow" ActionTag="382213722" CallBackType="Click" Tag="64" IconVisible="False" LeftMargin="698.0525" RightMargin="311.9475" TopMargin="-9.3483" BottomMargin="539.3483" TouchEnable="True" LeftEage="46" RightEage="46" TopEage="46" BottomEage="46" Scale9OriginX="38" Scale9OriginY="38" Scale9Width="8" Scale9Height="8" ctype="ImageViewObjectData">
+          <AbstractNodeData Name="introYellow" ActionTag="382213722" CallBackType="Click" Tag="64" IconVisible="False" LeftMargin="700.0000" RightMargin="310.0000" TopMargin="-13.0000" BottomMargin="543.0000" TouchEnable="True" LeftEage="46" RightEage="46" TopEage="46" BottomEage="46" Scale9OriginX="38" Scale9OriginY="38" Scale9Width="8" Scale9Height="8" ctype="ImageViewObjectData">
             <Size X="84.0000" Y="84.0000" />
             <AnchorPoint />
-            <Position X="698.0525" Y="539.3483" />
+            <Position X="700.0000" Y="543.0000" />
             <Scale ScaleX="0.6660" ScaleY="0.6660" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.6381" Y="0.8784" />
+            <PrePosition X="0.6399" Y="0.8844" />
             <PreSize X="0.0768" Y="0.1368" />
             <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_abstract_s.png" Plist="BookInfo/csb/bookInfo.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="commonGray" ActionTag="-1456570291" CallBackType="Click" Tag="65" IconVisible="False" LeftMargin="796.2968" RightMargin="213.7032" TopMargin="-18.7227" BottomMargin="554.7227" TouchEnable="True" LeftEage="46" RightEage="46" TopEage="46" BottomEage="46" Scale9OriginX="38" Scale9OriginY="32" Scale9Width="8" Scale9Height="14" ctype="ImageViewObjectData">
+          <AbstractNodeData Name="commonGray" ActionTag="-1456570291" CallBackType="Click" Tag="65" IconVisible="False" LeftMargin="790.7400" RightMargin="219.2600" TopMargin="-8.0500" BottomMargin="544.0500" TouchEnable="True" LeftEage="46" RightEage="46" TopEage="46" BottomEage="46" Scale9OriginX="38" Scale9OriginY="32" Scale9Width="8" Scale9Height="14" ctype="ImageViewObjectData">
             <Size X="84.0000" Y="78.0000" />
             <AnchorPoint />
-            <Position X="796.2968" Y="554.7227" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="790.7400" Y="544.0500" />
+            <Scale ScaleX="0.6660" ScaleY="0.6660" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.7279" Y="0.9035" />
+            <PrePosition X="0.7228" Y="0.8861" />
             <PreSize X="0.0768" Y="0.1270" />
             <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_Comment.png" Plist="BookInfo/csb/bookInfo.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="pinglunshuliang" ActionTag="-1921713625" Tag="99" IconVisible="False" LeftMargin="773.4854" RightMargin="232.5146" TopMargin="41.2292" BottomMargin="536.7708" FontSize="36" LabelText="(999)" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="pinglunshuliang" ActionTag="-1921713625" Tag="99" IconVisible="False" LeftMargin="773.4854" RightMargin="232.5146" TopMargin="46.2300" BottomMargin="531.7700" FontSize="36" LabelText="(999)" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="88.0000" Y="36.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="817.4854" Y="554.7708" />
-            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <Position X="817.4854" Y="549.7700" />
+            <Scale ScaleX="0.3000" ScaleY="0.3000" />
             <CColor A="255" R="12" G="168" B="137" />
-            <PrePosition X="0.7472" Y="0.9035" />
+            <PrePosition X="0.7472" Y="0.8954" />
             <PreSize X="0.0804" Y="0.0586" />
             <FontResource Type="Normal" Path="wdtyj.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
@@ -440,13 +440,13 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="hongbaodikou" ActionTag="1420485088" Tag="103" IconVisible="False" LeftMargin="825.3755" RightMargin="-31.3755" TopMargin="357.9819" BottomMargin="162.0181" FontSize="34" ButtonText="红包可抵扣888元" Scale9Enable="True" LeftEage="41" RightEage="41" TopEage="12" BottomEage="12" Scale9OriginX="41" Scale9OriginY="12" Scale9Width="218" Scale9Height="70" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+          <AbstractNodeData Name="hongbaodikou" ActionTag="1420485088" Tag="103" IconVisible="False" LeftMargin="839.3787" RightMargin="-45.3787" TopMargin="357.9823" BottomMargin="162.0177" FontSize="34" ButtonText="红包可抵扣888元" Scale9Enable="True" LeftEage="41" RightEage="41" TopEage="12" BottomEage="12" Scale9OriginX="41" Scale9OriginY="12" Scale9Width="218" Scale9Height="70" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="300.0000" Y="94.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="975.3755" Y="209.0181" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="989.3787" Y="209.0177" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.8916" Y="0.3404" />
+            <PrePosition X="0.9044" Y="0.3404" />
             <PreSize X="0.2742" Y="0.1531" />
             <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
             <TextColor A="255" R="255" G="255" B="255" />

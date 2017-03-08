@@ -98,7 +98,7 @@ bool Waiting::init(std::string bookId, bool isView)
 		BookParser::getInstance()->setPageDownCallBack([=]() {
 			YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
 				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-					if (BookParser::getInstance()->getCurrentPage() == 4)
+					if (BookParser::getInstance()->getCurrentPage() == 5)
 					{
 						if (YYXBookOver::getInstance()->UserBuy() || YYXBookOver::getInstance()->UserVip())
 						{
@@ -107,24 +107,26 @@ bool Waiting::init(std::string bookId, bool isView)
 						}
 						else
 						{
-							BookParser::getInstance()->pausePlay();
+							AudioPlayer::getInstance()->stopAllEffect();
 							Layer* it = YYXBookOver::getInstance()->tryReadBookOverLayer();
 							initResource(it);
 							auto scene = Scene::create();
 							scene->addChild(it);
-							Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, scene, false));
+							//Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, scene, false));1
+							Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, scene, false));
 						}					
 					}
 					else
 					{
 						if (BookParser::getInstance()->pageDown() == 0)
 						{
-							BookParser::getInstance()->pausePlay();
+							AudioPlayer::getInstance()->stopAllEffect();
 							Layer* it = YYXBookOver::getInstance()->readBookOverLayer();
 							initResource(it);
 							auto scene = Scene::create();
 							scene->addChild(it);
-							Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, scene, false));
+							//Director::getInstance()->pushScene(TransitionPageTurn::create(1.0f, scene, false));1
+							Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, scene, false));
 							saveReadRecording(bookId);
 						}
 					}
@@ -795,9 +797,9 @@ bool Waiting::init(std::string bookId, bool isView)
 		 "ReadBook_PageUp_Selected_ipad.png",
 		 [=](Ref* sender) {
 		 YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
-			 //Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), true));
-			 Director::getInstance()->popScene();
-			 BookParser::getInstance()->pageUp();
+			 Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), true));
+			 //Director::getInstance()->popScene();
+			 //BookParser::getInstance()->pageUp();
 		 });
 	 });
 	 pageUp->setPosition(-winSize.width / 2, -winSize.height / 2);
@@ -809,7 +811,7 @@ bool Waiting::init(std::string bookId, bool isView)
 	 auto pageDown = MenuItemImage::create("ReadBook_PageDown_ipad.png",
 		 "ReadBook_PageDown_Selected_ipad.png",
 		 [](Ref* sender) {
-		 Director::getInstance()->popScene();
+		 //Director::getInstance()->popScene();
 		 BookParser::getInstance()->pageDown();
 	 });
 	 pageDown->setPosition(winSize.width / 2,  - winSize.height / 2);
@@ -834,161 +836,4 @@ bool Waiting::init(std::string bookId, bool isView)
 	 Menu *menuPage = Menu::create(pageUp,  pageQuit,  NULL);
 	 layer->addChild(menuPage, 100, 10000);
 	 BookParser::getInstance()->setPageMenu(menuPage);
- }
-
- //新试读封底
- Layer* Waiting::newTryCover(int bookid)
- {
-	 App::httpComment(bookid, []() {
-		 YYXLayer::sendNotify("showCommentListView", "", -1);
-	 });
-	 map<string, int64String> parameter;
-	 YYXLayer::insertMap4ParaType(parameter, "className", -999, "tryReadBackCover");
-	 YYXLayer::insertMap4ParaType(parameter, "csb", -999, "Book/csb/tryReadBookEndPage.csb");
-	 auto layer = YYXLayer::create(parameter);
-	 layer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
-	 layer->getParentNode()->setPosition(Director::getInstance()->getWinSize() / 2);
-	 auto goBuy = (Button*)layer->findControl("Button_2");
-	 auto vipDownload = (Button*)layer->findControl("Button_2_0");
-	 auto noComment = (Sprite*)layer->findControl("Sprite_4");
-	 auto noCommenttext = (Text*)layer->findControl("Text_2");
-	 auto listComment = (ListView*)layer->findControl("ListView_1");
-	 auto yaoqing = (Button*)layer->findControl("Button_1");
-	 auto goumaiwanzhengban = (Button*)layer->findControl("Button_4");
-	 auto jixuyuedu = (Button*)layer->findControl("Button_7");
-	 auto goumainianka = (Button*)layer->findControl("Button_5");
-	 auto shimeshinianka = (Button*)layer->findControl("Button_6");
-	 //购买完整版
-	 if (goumaiwanzhengban)
-	 {
-		 goumaiwanzhengban->addClickEventListener([=](Ref* sender) {
-			 YYXBuyBook::GetInstance()->newBuyBook(bookid, App::GetInstance()->m_me->id, [=](int bookid) {
-				//购买成功后
-				 buySuccessMessageBox();
-			 }, [=]() {
-				 App::GetInstance()->pushScene(BookInfoScene, bookid);
-			 });
-		 });
-	 }
-	
-	//邀请注册
-	 if (yaoqing) {
-		 yaoqing->setAnchorPoint(Vec2(1, 0));
-		 yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
-		 yaoqing->addClickEventListener([=](Ref* sender) {
-			 if (App::GetInstance()->m_me)
-			 {
-				 App::GetInstance()->stopOtherVoice();
-				 YYXTableView::stopAllAnimation();
-				 yaoqingzhuce();
-			 }
-			 else
-				 Toast::create(App::getString("SHANGWEIDENGLU"));
-		 });
-	 }
-
-	//评论
-	 listComment->setVisible(false);
-	 listComment->setScrollBarEnabled(false);
-	 auto tbview = YYXTableView::create();
-	 auto data = tbview->loadData(bookid);
-	 if (data.size() > 0)
-	 {
-		 noComment->setVisible(false);
-		 noCommenttext->setVisible(false);
-		 tbview->setPosition(Vec2(0, 0));
-		 tbview->setPosition(listComment->getPosition());
-		 tbview->setTag(159);
-		 layer->addChild(tbview);
-	 }
-	 else
-	 {
-		 noComment->setVisible(true);
-		 noCommenttext->setVisible(true);
-		 noCommenttext->setText(App::getString("HAIMEIYOURENPINGLUNGUOCISHU"));
-	 }
-
-	 //购买年卡
-	 if (goumainianka)
-	 {
-		 goumainianka->addClickEventListener([=](Ref* sender) {
-			 Director::getInstance()->getRunningScene()->addChild(XZLayer::payBuyVip(
-				 [=]() {
-				 if (App::GetInstance()->m_me)
-				 {
-					 YYXRentBook::getInstance()->backgroundThreadRentBook(bookid, App::GetInstance()->m_me->id, [=]() {
-						 buySuccessMessageBox();
-					 });
-				 }
-			 }));
-		 });
-	 }
-
-	 //什么是年卡
-	 if (shimeshinianka)
-	 {
-		 shimeshinianka->addClickEventListener([=](Ref* sender) {
-			 Director::getInstance()->getRunningScene()->addChild(
-			 XZLayer::OpenVIPCardService(2, [=]() {
-				 App::GetInstance()->pushScene(BookInfoScene, bookid);
-			 }, [=]() {
-				 if (App::GetInstance()->m_me)
-				 {
-					 YYXRentBook::getInstance()->backgroundThreadRentBook(bookid, App::GetInstance()->m_me->id, [=]() {
-						 buySuccessMessageBox();
-					 });
-				 }
-			 }));
-		 });
-	 }
-
-	 if (jixuyuedu)
-	 {
-		 Director::getInstance()->popScene();
-		 BookParser::getInstance()->pageDown();
-	 }
-	 return layer;
- }
-
-
-
- //查询本地书籍 本书是否购买过
- bool Waiting::isBuyThisBook(int bookid)
- {
-	 App::log("BookInfo::isBuyThisBook");
-	 if (App::GetInstance()->m_me)
-	 {
-		 if (App::GetInstance()->myBuyBook.find(bookid) != App::GetInstance()->myBuyBook.end())
-		 {
-			 return true;
-		 }
-	 }
-	 return false;
- }
-
- void Waiting::yaoqingzhuce()
- {
-	 string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
-	 NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
- }
-
- void Waiting::buySuccessMessageBox()
- {
-	 map<string, int64String> paramter;
-	 YYXLayer::insertMap4ParaType(paramter, "className", -999, "buyBook");
-	 YYXLayer::insertMap4ParaType(paramter, "csb", -999, "Book/csb/goumaichenggong.csb");
-	 auto messageLayer = YYXLayer::create(paramter);
-	 auto jixuyuedu = (Button*)messageLayer->findControl("Button_1");
-	 auto closed = (Button*)messageLayer->findControl("Button_2");
-	 jixuyuedu->addClickEventListener([](Ref* sneder) {
-		 Director::getInstance()->popScene();
-		 BookParser::getInstance()->pageDown();
-	 });
-	 closed->addClickEventListener([=](Ref* sneder) {
-		 messageLayer->removeFromParentAndCleanup(true);
-	 });
-	 messageLayer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
-	 Size visibleSize = Director::getInstance()->getVisibleSize();
-	 messageLayer->setPosition(visibleSize / 2);
-	 Director::getInstance()->getRunningScene()->addChild(messageLayer);
  }

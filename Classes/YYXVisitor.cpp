@@ -1,6 +1,7 @@
 ﻿#include "YYXVisitor.h"
 #include "NetIntface.h"
 #include "App.h"
+#include "YYXDownloadImages.h"
 
 YYXVisitor* YYXVisitor::instance = nullptr;
 
@@ -157,7 +158,19 @@ void YYXVisitor::httpGetVipBook(bool hint)
 					string fileName = StringUtils::format("%d", bookid) + ".png";
 					if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookid)))
 					{
-						NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
+						YYXDownloadImagesPriority priority = low;
+						if (index < 6)
+							priority = high;
+						YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, App::getCoverDir(), fileName, priority, 0, [=](string downPath) {
+							YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+						},  [=](string str) {
+							if (hint)
+							{
+								string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+								Toast::create(sstr.c_str(), false);
+							}
+						});
+						/*NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
 							YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
 						}, "", [=](string str) {
 							if (hint)
@@ -165,7 +178,7 @@ void YYXVisitor::httpGetVipBook(bool hint)
 								string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
 								Toast::create(sstr.c_str(), false);
 							}
-						});
+						});*/
 					}
 				});
 				YYXLayer::sendNotify("bookRoomSceneCompileChange", "", -1);
@@ -222,7 +235,7 @@ void YYXVisitor::httpGetBuyBook(bool hint)
 		NetIntface::httpGetUserBuyBooksCallBack(json, []() {
 			//json成功, array前执行
 			App::GetInstance()->myBuyBook.clear();
-		}, [=](int bookId, int orderId, string bookCoverUrl, string bookPlayUrl, string bookName) {
+		}, [=](int idx, int bookId, int orderId, string bookCoverUrl, string bookPlayUrl, string bookName) {
 			//解析过程
 			App::GetInstance()->myBookURLMap[bookId] = bookPlayUrl;
 			App::GetInstance()->myBuyBook[bookId] = orderId;
@@ -230,7 +243,20 @@ void YYXVisitor::httpGetBuyBook(bool hint)
 			string fileName = StringUtils::format("%d", bookId) + ".png";
 			if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookId)))
 			{
-				NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
+				YYXDownloadImagesPriority priority = low;
+				if (idx < 6)
+					priority = high;
+				YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, App::getCoverDir(), fileName, priority, 2000, [](string downpath) {
+					YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+					App::log("httpGetBuyBook ===>>>" + downpath);
+				}, [=](string error) {
+					if (hint)
+					{
+						string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+						Toast::create(sstr.c_str(), false);
+					}
+				});
+				/*NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
 					YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
 				}, "", [=](string str) {
 					if (hint)
@@ -238,7 +264,7 @@ void YYXVisitor::httpGetBuyBook(bool hint)
 						string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
 						Toast::create(sstr.c_str(), false);
 					}
-				});
+				});*/
 			}
 		}, []() {
 			//解析成功
@@ -284,7 +310,18 @@ void YYXVisitor::httpGetChildren(bool hint)
 			string savePath = m_dirpath + StringUtils::format("/childHead_%d.png", childrenId);
 			if (!FileUtils::getInstance()->isFileExist(savePath))
 			{
-				NetIntface::DownLoadImage(url, m_dirpath, StringUtils::format("9HeadPortrait_%d.png", childrenId),
+				YYXDownloadImages::GetInstance()->newDownloadImage(url, m_dirpath, StringUtils::format("9HeadPortrait_%d.png", childrenId),
+					high, 0, [=](string path) {
+					if (path != "" && FileUtils::getInstance()->isFileExist(path))
+					{
+						string savePath = m_dirpath + StringUtils::format("/childHead_%d.png", childrenId);
+						App::makeRoundImage(path, savePath);
+						string pathkey = StringUtils::format("path+childID=%d", childrenId);
+						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
+						YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
+					}
+				}, [](string str) {});
+				/*NetIntface::DownLoadImage(url, m_dirpath, StringUtils::format("9HeadPortrait_%d.png", childrenId),
 					"", [=](string path) {
 					if (path != "" && FileUtils::getInstance()->isFileExist(path))
 					{
@@ -294,7 +331,7 @@ void YYXVisitor::httpGetChildren(bool hint)
 						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
 						YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
 					}
-				}, "", [](string str) {});
+				}, "", [](string str) {});*/
 			}
 		}, [=](int b) {
 			if (b == 1)
