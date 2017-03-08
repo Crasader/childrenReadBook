@@ -6,6 +6,7 @@
 #include "YYXStruct.h"
 #include "NetIntface.h"
 #include "YYXVisitor.h"
+#include "YYXDownloadImages.h"
 using namespace cocostudio::timeline;
 
 bool BookCityScene::m_isMoved = false;
@@ -274,33 +275,57 @@ void BookCityScene::httpBookCityInfo()
 			}
 			if (!FileUtils::getInstance()->isFileExist(borderpath))
 			{
-				string DownLoadImageRunKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				string DownLoadImageErrorKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				NetIntface::DownLoadImage(borderUrl, dir, borderfileName, DownLoadImageRunKey, [=](string downPath) {
-					//下载成功
-					YYXLayer::deleteLoadingLayer(1);
-					string listenerKey = StringUtils::format("bookcity+castleId=%d", castleId);
-					YYXLayer::sendNotify(listenerKey);
-				}, DownLoadImageErrorKey, [=](string str) {
-					string sstr = string(castleName).append(App::getString("SHUDIANTUBIAOXIAZAISHIBAI"));
-					Toast::create(sstr.c_str(), false);
-					YYXLayer::deleteLoadingLayer(1);
-				});
+				YYXDownloadImagesPriority priority = normal;
+				if (index < 6)
+					priority = high;
+				YYXDownloadImages::GetInstance()->newDownloadImage(borderUrl, dir, borderfileName, priority, 0, [=](string downPath) {
+						YYXLayer::deleteLoadingLayer(1);
+						string listenerKey = StringUtils::format("bookcity+castleId=%d", castleId);
+						YYXLayer::sendNotify(listenerKey);
+					},  [=](string str) {
+						string sstr = string(castleName).append(App::getString("SHUDIANTUBIAOXIAZAISHIBAI"));
+						Toast::create(sstr.c_str(), false);
+						YYXLayer::deleteLoadingLayer(1);
+					});
+				//string DownLoadImageRunKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
+				//string DownLoadImageErrorKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
+				//NetIntface::DownLoadImage(borderUrl, dir, borderfileName, DownLoadImageRunKey, [=](string downPath) {
+				//	//下载成功
+				//	YYXLayer::deleteLoadingLayer(1);
+				//	string listenerKey = StringUtils::format("bookcity+castleId=%d", castleId);
+				//	YYXLayer::sendNotify(listenerKey);
+				//}, DownLoadImageErrorKey, [=](string str) {
+				//	string sstr = string(castleName).append(App::getString("SHUDIANTUBIAOXIAZAISHIBAI"));
+				//	Toast::create(sstr.c_str(), false);
+				//	YYXLayer::deleteLoadingLayer(1);
+				//});
 			}
 			if (!FileUtils::getInstance()->isFileExist(bgpath))
 			{
-				string DownLoadImageRunKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				string DownLoadImageErrorKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				NetIntface::DownLoadImage(bgUrl, dir, bgfileName, DownLoadImageRunKey, [=](string downPath) {
-					//下载成功
+				YYXDownloadImagesPriority priority = normal;
+				if (index < 6)
+					priority = high;
+				YYXDownloadImages::GetInstance()->newDownloadImage(bgUrl, dir, bgfileName, priority, 0, [=](string downPath) {
 					YYXLayer::deleteLoadingLayer(1);
 					string listenerKey = StringUtils::format("bookcity+castleId=%d", castleId);
 					YYXLayer::sendNotify(listenerKey);
-				}, DownLoadImageErrorKey, [=](string str) {
+				}, [=](string str) {
 					string sstr = string(castleName).append(App::getString("SHUDIANTUBIAOXIAZAISHIBAI"));
 					Toast::create(sstr.c_str(), false);
 					YYXLayer::deleteLoadingLayer(1);
 				});
+				//string DownLoadImageRunKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
+				//string DownLoadImageErrorKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
+				//NetIntface::DownLoadImage(bgUrl, dir, bgfileName, DownLoadImageRunKey, [=](string downPath) {
+				//	//下载成功
+				//	YYXLayer::deleteLoadingLayer(1);
+				//	string listenerKey = StringUtils::format("bookcity+castleId=%d", castleId);
+				//	YYXLayer::sendNotify(listenerKey);
+				//}, DownLoadImageErrorKey, [=](string str) {
+				//	string sstr = string(castleName).append(App::getString("SHUDIANTUBIAOXIAZAISHIBAI"));
+				//	Toast::create(sstr.c_str(), false);
+				//	YYXLayer::deleteLoadingLayer(1);
+				//});
 			}
 		}, [](int totalPage) {
 			//书店数量

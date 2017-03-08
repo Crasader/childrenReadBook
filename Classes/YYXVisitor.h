@@ -33,7 +33,7 @@ public:
 	void httpGetBalance(bool hint);//获取游客余额
 	void loadLocationVisitorData();//本地加载游客信息
 
-	void hintLogin(function<void()> youke, function<void()> toLogin = nullptr, function<void()> user = nullptr);//提示选择游客购买还是登陆后购买
+	void hintLogin(function<void()> youke, function<void()> toLogin = nullptr, function<void()> user = nullptr, string visitorStr="", bool Notime=true);//提示选择游客购买还是登陆后购买
 	void indexSceneInit(ImageView* portrait);//首页初始化游客
 	void bookRoomSceneInit();//书房初始化游客
 	void bookCitySceneInit();//书城初始化游客

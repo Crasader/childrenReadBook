@@ -1,6 +1,7 @@
 ﻿#include "BookStoreScene.h"
 #include "NetIntface.h"
 #include "YYXVisitor.h"
+#include "YYXDownloadImages.h"
 
 using namespace cocostudio::timeline;
 
@@ -319,8 +320,8 @@ bool BookStore::init(int BookStoreId)
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(touchlistener, 1);
 	//通知点击书籍跳转详情
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("bookStoreSceneClickBook", [=](EventCustom* e) {
-		auto data = (YYXStruct*)e->getUserData();
-		auto bookid = data->getInt64Data(*data, -999);
+		auto bookid = (int)e->getUserData();
+		//auto bookid = data->getInt64Data(*data, -999);
 		if (bookid != -999)
 		{
 			addorStartQueue([=]() {
@@ -330,8 +331,8 @@ bool BookStore::init(int BookStoreId)
 				Index::GoToBookInfo(bookid);
 			}, "点击书籍跳转bookid");
 		}
-		if (data)
-			delete data;
+		//if (data)
+			//delete data;
 	});
 	//通知下载封面完成
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("bookstoreCoverDownloadSuccess", [=](EventCustom* e) {
@@ -1575,16 +1576,20 @@ void BookStore::getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex)//pa
 			auto path = dir + "/" + fileName;
 			if (!FileUtils::getInstance()->isFileExist(path))
 			{
-				//string DownLoadImageRunKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				//string DownLoadImageErrorKey = StringUtils::format("DownLoadImage%d", (int)YYXLayer::getRandom());
-				string DownLoadImageRunKey = "BookStoreSceneDownLoadImageSuccess";
+				YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, dir, fileName, high, 0, [=](string downPath) {
+					YYXLayer::sendNotify("bookstoreCoverDownloadSuccess");
+				},  [=](string str) {
+					string sstr = string(bookName).append(App::getString("FENGMIANXIAZAISHIBAI"));
+					Toast::create(sstr.c_str(), false);
+				});
+				/*string DownLoadImageRunKey = "BookStoreSceneDownLoadImageSuccess";
 				string DownLoadImageErrorKey = "BookStoreSceneDownLoadImageFail";
 				NetIntface::DownLoadImage(bookCoverUrl, dir, fileName, DownLoadImageRunKey, [=](string downPath) {
 					YYXLayer::sendNotify("bookstoreCoverDownloadSuccess");
 				}, DownLoadImageErrorKey, [=](string str) {
 					string sstr = string(bookName).append(App::getString("FENGMIANXIAZAISHIBAI"));
 					Toast::create(sstr.c_str(), false);
-				});
+				});*/
 			}
 		}, [=]() {
 			//解析完毕
@@ -1670,7 +1675,7 @@ void BookStore::refreshBook(Node* node, int bookId, string path, int price, int 
 				if(m_click)
 					App::log("点击书籍", bookId);
 				if (bookId != -999 && m_click)
-					YYXLayer::sendNotify4YYXStruct("bookStoreSceneClickBook", bookId);
+					YYXLayer::sendNotify("bookStoreSceneClickBook", "",bookId);
 			});
 		});
 	}

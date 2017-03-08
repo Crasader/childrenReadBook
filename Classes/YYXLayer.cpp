@@ -310,15 +310,15 @@ void YYXLayer::stringHttpRequest(HttpRequest::Type type,string url,map<string,st
 
 Ref* YYXLayer::findControl(string controlName)
 {
-	//App::log(className+"::findControl()" );
+	App::log(className+"::findControl("+ controlName +")" );
 	if (parentNode == nullptr)
 	{
-		//App::log("parentNode is null");
+		App::log("parentNode is null");
 		return nullptr;
 	}
 	if (!&controlName && controlName.empty())
 	{
-		//App::log("controlName is empty");
+		App::log("controlName is empty");
 		return nullptr;
 	}
 	if (controls.find(controlName) == controls.end())
@@ -326,13 +326,13 @@ Ref* YYXLayer::findControl(string controlName)
 		auto control = parentNode->getChildByName(controlName);
 		if (control == nullptr)
 		{
-			//App::log("controlName is null");
+			App::log("controlName is null");
 			return nullptr;
 		}
 		else
 		{
 			controls[controlName] = control;
-			//App::log(className + "::findControl---END");
+			App::log(className + "::findControl---END");
 			return control;
 		}
 	}
@@ -341,20 +341,15 @@ Ref* YYXLayer::findControl(string controlName)
 		auto control = controls[controlName];
 		if (control)
 		{
-			//App::log(className+ "::findControl---END");
+			App::log(className+ "::findControl---END");
 			return control;
 		}
 		else
 		{
-			//App::log("controlName is null");
+			App::log("controlName is null");
 			return nullptr;
 		}
 	}
-}
-
-void YYXLayer::leave()
-{
-	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
 
 void YYXLayer::controlTouchTime(float outTime, string keyOfSaveTime, std::function<void()> runable, std::function<void()> unTouchRun)
@@ -2086,7 +2081,10 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 		double beishu = 3;
 		//评分+账号+日期 800*80
 		auto item2 = Layout::create();
-		memberName.replace(3, 4, "****");
+		if (memberName.size() >= 7)
+		{
+			memberName.replace(3, 4, "****");
+		}
 		Data dataCSB;
 		Layer* scorelayer;
 		if (App::GetInstance()->getData(BOOKINFO_SCORE_CSB, dataCSB))
@@ -2420,4 +2418,13 @@ void YYXLayer::CopyDirectory(string sourceDir, string destDir)
 	}, [destDir](string dirpath, string dirname) {
 		CopyDirectory(dirpath, destDir + "/" + dirname);
 	});
+}
+
+void YYXLayer::cleanup()
+{
+	App::log("YYXLayer::cleanup");
+	if (m_runable.find("cleanup") != m_runable.end())
+	{
+		m_runable["cleanup"](this);
+	}
 }

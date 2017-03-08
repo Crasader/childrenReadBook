@@ -7,7 +7,7 @@
 			<key>Book/res/Backcover_I-want-to-write-reviews_button_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,1},{374,129}}</string>
+				<string>{{590,239},{374,129}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -18,40 +18,7 @@
 			<key>Book/res/Backcover_I-want-to-write-reviews_button_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,377},{356,123}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{356,123}</string>
-			</dict>
-			<key>Book/res/Backcover_reading_book_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{136,876},{45,47}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{45,47}</string>
-			</dict>
-			<key>Book/res/Backcover_try_buy_button_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{884,1},{374,128}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{374,128}</string>
-			</dict>
-			<key>Book/res/Backcover_try_buy_button_press_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{1,132},{356,123}}</string>
+				<string>{{459,897},{356,123}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -62,40 +29,18 @@
 			<key>Book/res/Backcover_try_Invitation-to-register_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,735},{258,133}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{258,133}</string>
-			</dict>
-			<key>Book/res/Backcover_vip_button_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{377,1},{374,129}}</string>
+				<string>{{698,1080},{258,133}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
-				<string>{374,129}</string>
-			</dict>
-			<key>Book/res/Backcover_vip_button_press_736h.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{753,1},{374,129}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<true />
-				<key>sourceSize</key>
-				<string>{374,129}</string>
+				<string>{258,133}</string>
 			</dict>
 			<key>Book/res/Backcover_comments_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,257},{334,99}}</string>
+				<string>{{674,1334},{334,99}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -106,24 +51,244 @@
 			<key>Book/res/Backcover_comments_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{126,358},{334,99}}</string>
+				<string>{{241,1377},{334,99}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{334,99}</string>
 			</dict>
 			<key>Book/res/Backcover_good-comments_no-comment_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{136,694},{180,179}}</string>
+				<string>{{819,897},{180,179}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{180,179}</string>
+			</dict>
+			<key>Book/res/Backcover_goumainianka_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{338,1143},{332,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{332,113}</string>
+			</dict>
+			<key>Book/res/Backcover_goumaiwanzhengban_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,1196},{332,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{332,113}</string>
+			</dict>
+			<key>Book/res/Backcover_goumaichenggong_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{459,770},{451,123}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{451,123}</string>
+			</dict>
+			<key>Book/res/Backcover_goumaichenggong_tuxing_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,616},{453,330}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{453,330}</string>
+			</dict>
+			<key>Book/res/Backcover_jixuyuedu_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{362,1024},{332,115}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{332,115}</string>
+			</dict>
+			<key>Book/res/Backcover_try_good-comments_no-comment_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{590,2},{326,233}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{326,233}</string>
+			</dict>
+			<key>Book/res/block.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{459,616},{109,60}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{109,60}</string>
+			</dict>
+			<key>Book/res/BookInfo_book-details_-Popover_background_667h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,2},{584,610}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{584,610}</string>
+			</dict>
+			<key>Book/res/Common_Popup_Close_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{920,2},{76,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{76,66}</string>
+			</dict>
+			<key>Book/res/Common_Popup_Close_Selected_ipad@2x.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{920,72},{76,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{76,66}</string>
+			</dict>
+			<key>Book/res/Backcover_goumainianka_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{674,1217},{332,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{332,113}</string>
+			</dict>
+			<key>Book/res/Backcover_goumaiwanzhengban_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{338,1260},{332,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{332,113}</string>
+			</dict>
+			<key>Book/res/Backcover_jixuyuedu_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,1077},{332,115}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{332,115}</string>
+			</dict>
+			<key>Book/res/Backcover_reading_book_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{920,142},{45,47}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{45,47}</string>
+			</dict>
+			<key>Book/res/Backcover_try_buy_button_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{572,638},{374,128}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{374,128}</string>
+			</dict>
+			<key>Book/res/Backcover_try_buy_button_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,950},{356,123}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{356,123}</string>
+			</dict>
+			<key>Book/res/Backcover_vip_button_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{590,372},{374,129}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{374,129}</string>
+			</dict>
+			<key>Book/res/Backcover_vip_button_press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{590,505},{374,129}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{374,129}</string>
+			</dict>
+			<key>Book/res/Backcover_shenmeshinianka-moren_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,1313},{235,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{235,113}</string>
+			</dict>
+			<key>Book/res/Backcover_shenmeshinianka-press_736h.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,1430},{235,113}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{235,113}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>
@@ -135,14 +300,14 @@
 			<key>realTextureFileName</key>
 			<string>backcover.png</string>
 			<key>size</key>
-			<string>{1024,1024}</string>
+			<string>{1024,2048}</string>
 		</dict>
 		<key>texture</key>
 		<dict>
 			<key>width</key>
 			<integer>1024</integer>
 			<key>height</key>
-			<integer>1024</integer>
+			<integer>2048</integer>
 		</dict>
 	</dict>
 </plist>

@@ -52,7 +52,8 @@ void NetIntface::deleteMapFunction(string key)
 {
 	if (&key && key != "")
 	{
-		NetIntface::m_functionMap.erase(key);
+		if (NetIntface::m_functionMap.count(key) > 0)
+			NetIntface::m_functionMap.erase(key);
 	}
 }
 
@@ -424,13 +425,15 @@ void NetIntface::httpGetComments(int bookid, string runKey, function<void(string
 	NetIntface::httpPost(strUrl, p, runKey, runFunction, errorKey, errorRunFunction);
 }
 
-void NetIntface::httpBookCommentsCallback(std::string json, const function<void(int, string, string, string, string, string, string, string, string, string, string, string, string)> itemRun, const function<void()> runable, const function<void()> errorRunable)
+void NetIntface::httpBookCommentsCallback(std::string json,
+	const function<void(int, string, string, string, string, string, string, string, string, string, string, string, string)> itemRun, 
+	const function<void(int)> runable, const function<void()> errorRunable)
 {
 	rapidjson::Document doc;
 	auto result = YYXLayer::getJsonObject4Json(doc, json);
 	if (result)
 	{
-		int code = YYXLayer::getIntForJson(-999, doc, "code");
+		int code = YYXLayer::getIntForJson(-999, doc, "code"); 
 		if (code == 0)
 		{
 			rapidjson::Value arrayData;
@@ -456,7 +459,8 @@ void NetIntface::httpBookCommentsCallback(std::string json, const function<void(
 			});
 			if (runable)
 			{
-				runable();
+				int count = YYXLayer::getIntForJson(-999, doc, "count");
+				runable(count);
 			}
 		}
 		else
@@ -1003,7 +1007,7 @@ void NetIntface::WIN32_httpGetUserBuyBooks(int memberID, string runKey, string e
 	});
 }
 
-void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> beginable, const function<void(int, int, string, string, string)> itemable, function<void()> runableSuccessOver, const function<void()> errorRunable)
+void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> beginable, const function<void(int ,int, int, string, string, string)> itemable, function<void()> runableSuccessOver, const function<void()> errorRunable)
 {
 	rapidjson::Document doc;
 	bool result = YYXLayer::getJsonObject4Json(doc, json);
@@ -1018,7 +1022,17 @@ void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> begina
 			if (YYXLayer::getJsonArray4Json(jsonarray, doc, "data"))
 			{
 				map<string, YYXStruct> itemMap;
-				YYXLayer::getData4JsonArray(jsonarray, itemMap, [=](rapidjson::Value & item, map<string, YYXStruct>& mapresult) {
+				YYXLayer::getDataForJsonArray(jsonarray, [=](rapidjson::Value & item, int idx) {
+					auto bookId = YYXLayer::getInt4Json(-999, item, "bookId");
+					auto orderId = YYXLayer::getInt4Json(-999, item, "orderId");
+					auto bookCoverUrl = YYXLayer::getString4Json("", item, "bookCoverUrl");
+					auto bookPlayUrl = YYXLayer::getString4Json("", item, "bookPlayUrl");
+					auto bookName = YYXLayer::getString4Json("", item, "bookName");
+					if (itemable)
+						itemable(idx, bookId, orderId, bookCoverUrl, bookPlayUrl, bookName);
+				});
+
+				/*YYXLayer::getData4JsonArray(jsonarray, itemMap, [=](rapidjson::Value & item, map<string, YYXStruct>& mapresult) {
 					auto bookId = YYXLayer::getInt4Json(-999, item, "bookId");
 					auto orderId = YYXLayer::getInt4Json(-999, item, "orderId");
 					auto bookCoverUrl = YYXLayer::getString4Json("", item, "bookCoverUrl");
@@ -1026,7 +1040,7 @@ void NetIntface::httpGetUserBuyBooksCallBack(string json,function<void()> begina
 					auto bookName= YYXLayer::getString4Json("", item, "bookName");
 					if (itemable)
 						itemable(bookId, orderId, bookCoverUrl, bookPlayUrl, bookName);
-				});
+				});*/
 				if (runableSuccessOver)
 					runableSuccessOver();
 			}
@@ -1939,7 +1953,8 @@ void NetIntface::WIN32_httpGetBookInfo(int bookInfoID, string runKey, string err
 	});
 }
 /*{"desc":"success","data":{"bookId":347,"bookAuthor":"霍君尧","bookPage":16,"bookSize":"22.24M","bookPress":"郑州大学出版社","bookAge":-3,"bookIntroduction":"丑小鸭一出生就与别的兄弟姐妹不一样，它们都嫌弃他，不愿意和他玩玩。丑小鸭伤心地离开了家。他后来都遭遇了哪些人、哪些事呢？他能找到让自己变“漂亮”的办法吗？让我们一起看看这本书，一探究竟吧！","avgScore":5.0,"bookPrice":1.00,"bookmarketPrice":8.00,"bookName":"丑小鸭","orderId":0,"bookListenUrl":null,"bookReadUrl":null,"bookPlayUrl":"http://book.ellabook.cn/08c463ba5bf24d19a6c6e378890b6ff1?Expires=1475896136&OSSAccessKeyId=wCSYOmYFgJmttmWs&Signature=6BmjmzCltO9eGsfDt9hoogJLMxw%3D","bookMakeUrl":null,"bookCoverUrl":"http://book.ellabook.cn/3ed744e2cbb14f3e9933dff5b6e9c35a?Expires=1475896136&OSSAccessKeyId=wCSYOmYFgJmttmWs&Signature=LL%2BxiGmKt2JaDDGTYniCaA4SsGI%3D","bookViewUrl":"http://book.ellabook.cn/36bee3ec9d80402ea7fc9ce20b111d65?Expires=1475896136&OSSAccessKeyId=wCSYOmYFgJmttmWs&Signature=BNcAzS80PhczpujxXA6KblJ%2BCj0%3D","goodsState":1,"goodsVerify":1,"osskeyList":{},"ossbucket":"ellabook-book","osskey":"08c463ba5bf24d19a6c6e378890b6ff1","iosPriceId":"com.diandu.ellabook.bookprice_347_3","bookDownloadSize":23319420,"pressId":47,"gcId":1109,"remainTime":-14727871},"code":0}*/
-void NetIntface::httpGetBookInfoCallBack(string json, const function<void(bool,int, int, int, int, int, string, string, string, string, string, string, string, string)> runable,  const function<void()> errorRunable)
+void NetIntface::httpGetBookInfoCallBack(string json, const function<void(float ,bool,int, int, int, int, int,  string, string, string, string, string, string, string, string)> runable,
+	const function<void()> errorRunable)
 {
 	rapidjson::Document doc;
 	auto result = YYXLayer::getJsonObject4Json(doc, json);
@@ -1962,11 +1977,12 @@ void NetIntface::httpGetBookInfoCallBack(string json, const function<void(bool,i
 			auto bookName = YYXLayer::getStringForJson("", doc, "data", "bookName");
 			auto bookPlayUrl = YYXLayer::getStringForJson("", doc, "data", "bookPlayUrl");
 			auto bookCoverUrl = YYXLayer::getStringForJson("", doc, "data", "bookCoverUrl");
-			auto bookViewUrl = YYXLayer::getStringForJson("", doc, "data", "bookViewUrl");
+			auto bookViewUrl = YYXLayer::getStringForJson("", doc, "data", "bookViewUrl"); 
 			auto remainTime = YYXLayer::getIntForJson(-999, doc, "data", "remainTime");
+			float avgScore = YYXLayer::getDoubleForJson(4, doc, "data", "avgScore");
 			if (runable)
 			{
-				runable(isvip, bookId, bookPage, bookPrice100, bookmarketPrice100, remainTime, bookAuthor, bookSize, bookPress, bookIntroduction, bookName, bookPlayUrl, bookCoverUrl, bookViewUrl);
+				runable(avgScore, isvip, bookId, bookPage, bookPrice100, bookmarketPrice100, remainTime, bookAuthor, bookSize, bookPress, bookIntroduction, bookName, bookPlayUrl, bookCoverUrl, bookViewUrl);
 			}
 		}
 		else
@@ -2423,5 +2439,7 @@ void NetIntface::httpBookCollectAndVipList(int type, function<void(string)> runF
 	parameter["type"] = StringUtils::format("%d", type);
 	parameter["memberId"] = App::getMemberID();
 	parameter["resource"] = App::m_resource;
+	parameter["page"] = "1";
+	parameter["pageSize"] = "1000";
 	NetIntface::httpPost(url, parameter, "", runFunction, "", errorRunFunction);
 }

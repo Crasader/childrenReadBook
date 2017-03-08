@@ -163,10 +163,10 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Sprite_4" ActionTag="-762244972" Tag="26" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="457.0000" RightMargin="457.0000" TopMargin="245.5233" BottomMargin="189.4767" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Sprite_4" ActionTag="-762244972" Tag="26" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="457.0000" RightMargin="457.0000" TopMargin="245.4984" BottomMargin="189.5016" ctype="SpriteObjectData">
             <Size X="180.0000" Y="179.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="547.0000" Y="278.9767" />
+            <Position X="547.0000" Y="279.0016" />
             <Scale ScaleX="0.7000" ScaleY="0.7000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.5000" Y="0.4544" />

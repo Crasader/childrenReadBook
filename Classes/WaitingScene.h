@@ -17,13 +17,16 @@ public:
 	//解析出bookName 进行分享
 	void Share(string json, string path);
 	//void saveReadRecord();
-	void saveReadRecordStart(string bookid, bool isView);
-	void saveReadRecording(string bookid, bool isView);
-	void saveReadRecordEnd(string bookid, bool isView);
+	void saveReadRecordStart(string bookid, bool isView=false);
+	void saveReadRecording(string bookid, bool isView=false);
+	void saveReadRecordEnd(string bookid, bool isView=false);
 	Layer* tryReadBackCover(int bookid);
 	Layer* BackCover(int bookid);
 	void httpGetReadTime(int bookId);
 	void initResource(Layer* layer);
+
+private:
+	void ShareBook(RenderTexture* img, int bookId);//分享
 };
 
 #endif // __HELLOWORLD_SCENE_H__

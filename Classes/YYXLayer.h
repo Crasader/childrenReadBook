@@ -55,7 +55,7 @@ public:
 	//获取控件
 	Ref* findControl(string controlName);
 	//离开场景
-	virtual void leave();
+	virtual void cleanup();
 	virtual void onEnterTransitionDidFinish();
 
 	Node * getParentNode();

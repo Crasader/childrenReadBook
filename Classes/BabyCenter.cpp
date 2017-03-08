@@ -5,6 +5,7 @@
 #include "platform/android/CCFileUtils-android.h"
 #include "NetIntface.h"
 #include "YYXVisitor.h"
+#include "YYXDownloadImages.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -1137,7 +1138,7 @@ void BabyCenter::setNodeChild(Node* node, int index)
 					{
 						auto dir = FileUtils::getInstance()->getWritablePath() + "temp";
 						auto fileName = StringUtils::format("7HeadPortrait_%d.png", id);
-						NetIntface::DownLoadImage(url, dir, fileName, StringUtils::format("Download%d", (int)YYXLayer::getRandom()), [=](string path) {							
+						YYXDownloadImages::GetInstance()->newDownloadImage(url, dir, fileName, high, 0, [=](string path) {
 							if (path != "" && FileUtils::getInstance()->isFileExist(path))
 							{
 								string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", id);
@@ -1147,7 +1148,18 @@ void BabyCenter::setNodeChild(Node* node, int index)
 								YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathKey, YYXLayer::getCurrentTime4Second(), savePath);
 								YYXLayer::sendNotify(key);
 							}
-						}, "", [](string str) {});
+						});
+						/*NetIntface::DownLoadImage(url, dir, fileName, StringUtils::format("Download%d", (int)YYXLayer::getRandom()), [=](string path) {
+							if (path != "" && FileUtils::getInstance()->isFileExist(path))
+							{
+								string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", id);
+								App::makeRoundImage(path, savePath);
+								auto key = StringUtils::format("childID=%d_ChangeChildSceneDownLoadSuccess", id);
+								string pathKey = StringUtils::format("path+childID=%d", id);
+								YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathKey, YYXLayer::getCurrentTime4Second(), savePath);
+								YYXLayer::sendNotify(key);
+							}
+						}, "", [](string str) {});*/
 					}
 					else
 					{
@@ -1598,7 +1610,7 @@ void BabyCenter::getChildDetailsBusinessLogic(string json,function<void()> error
 				string fileName = StringUtils::format("6HeadPortrait_%d.png", childrenId);
 				if (!FileUtils::getInstance()->isFileExist(dir + "/" + fileName))
 				{
-					NetIntface::DownLoadImage(url, dir, fileName, StringUtils::format("DownLoadImage%d", YYXLayer::getRandom()), [=](string path) {
+					YYXDownloadImages::GetInstance()->newDownloadImage(url, dir, fileName, high, 0, [=](string path) {
 						if (path != "" && FileUtils::getInstance()->isFileExist(path))
 						{
 							string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
@@ -1609,7 +1621,19 @@ void BabyCenter::getChildDetailsBusinessLogic(string json,function<void()> error
 							string pathKey = StringUtils::format("path+childID=%d", childrenId);
 							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathKey, YYXLayer::getCurrentTime4Second(), savePath);
 						}
-					}, "", [](string str) {});
+					});
+					/*NetIntface::DownLoadImage(url, dir, fileName, StringUtils::format("DownLoadImage%d", YYXLayer::getRandom()), [=](string path) {
+						if (path != "" && FileUtils::getInstance()->isFileExist(path))
+						{
+							string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
+							App::makeRoundImage(path, savePath);
+							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, savePath);
+							YYXLayer::setFileValue("ShowChildHeadPortrait", savePath);
+							YYXLayer::sendNotify("BaByCenterSceneChildInfoReferHeadPortrait");
+							string pathKey = StringUtils::format("path+childID=%d", childrenId);
+							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathKey, YYXLayer::getCurrentTime4Second(), savePath);
+						}
+					}, "", [](string str) {});*/
 				}
 			}
 			else
