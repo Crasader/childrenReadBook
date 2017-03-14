@@ -777,25 +777,24 @@ Layer* Parent::initNode_Account()
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenshowyue, momey);
 	//通知 升级VIP
-	_eventDispatcher->addCustomEventListener("refershMemberIDVIP", [=](EventCustom* sender) {
-		App::log("升级VIP成功后刷新界面");
-	
-			if (App::GetInstance()->m_me)
+	auto listner = EventListenerCustom::create("refershMemberIDVIP", [=](EventCustom* e) {
+		if (App::GetInstance()->m_me)
+		{
+			if (App::GetInstance()->m_me->vip)
 			{
-				if (App::GetInstance()->m_me->vip)
-				{
-					if(VIPButton)
-						VIPButton->setTitleText(App::getString("OPENVIPAGAIN"));
-					if (viptext)
-						viptext->setText(App::getString("NIANKAFUWUJIEZHI") + App::GetInstance()->m_me->endvip);
-				}
-				else
-				{
-					if (VIPButton)
-						VIPButton->setTitleText(App::getString("OPENVIP"));
-				}				
+				if (VIPButton)
+					VIPButton->setTitleText(App::getString("OPENVIPAGAIN"));
+				if (viptext)
+					viptext->setText(App::getString("NIANKAFUWUJIEZHI") + App::GetInstance()->m_me->endvip);
 			}
+			else
+			{
+				if (VIPButton)
+					VIPButton->setTitleText(App::getString("OPENVIP"));
+			}
+		}
 	});
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listner, VIPButton);
 	//网络请求用户信息可以不刷新,登录会自动获取到,刷新意义不大
 	return (Layer*)account;
 }

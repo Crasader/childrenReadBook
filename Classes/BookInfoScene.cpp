@@ -2561,6 +2561,7 @@ void BookInfo::onClickLister()
 	addDownloadListener(mianfeishidu);
 	addDownloadListener(duliyuedu);
 	addDownloadListener(mianfeiyuedu);
+	addDownloadListener(yuedu);
 
 	mianfeishidu->addClickEventListener([=](Ref*) {
 		string ZipName = StringUtils::format("%d.zip", m_bookId);
@@ -2633,14 +2634,18 @@ void BookInfo::onClickLister()
 			return;
 		}
 		YYXRentBook::getInstance()->newRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-			readbook_download_pause_tryreadbook(mianfeiyuedu);
+			Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+				readbook_download_pause_tryreadbook(mianfeiyuedu);
+			});
 		});
 	});
 	yuedu->addClickEventListener([=](Ref*) {
 		if (m_relation->IsMemberVIP())
 		{
 			YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-				readbook_download_pause_tryreadbook(yuedu);
+				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+					readbook_download_pause_tryreadbook(mianfeiyuedu);
+				});
 			});
 		}
 		else

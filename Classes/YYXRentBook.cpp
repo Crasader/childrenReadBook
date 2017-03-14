@@ -22,6 +22,7 @@ void YYXRentBook::httpRentBook()
 		if (rent)
 		{
 			App::addvipBook(m_bookId);//上传租书记录成功后, 本地也需要记录租书
+			App::log("============httpRentBook>>>>addvipBook");
 			if (m_callback)
 				m_callback();
 		}
