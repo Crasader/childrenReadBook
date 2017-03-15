@@ -2644,7 +2644,7 @@ void BookInfo::onClickLister()
 		{
 			YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
 				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-					readbook_download_pause_tryreadbook(mianfeiyuedu);
+					readbook_download_pause_tryreadbook(yuedu);
 				});
 			});
 		}

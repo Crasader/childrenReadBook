@@ -60,11 +60,18 @@ public:
 	void RollingAnimation(Node* node1, Node* node2, function<void()> callback);
 	void showBookPageNumber();
 	void down(Node* book, int bookid);
+	int getCurrentPageNumber() const { return m_currentPageNumber; }
+	void setCurrentPageNumber(int val) { 
+		_mutex.lock();
+		m_currentPageNumber = val; 
+		_mutex.unlock();
+	}
 	//void roolingAn(Node* node);
 private:
 	Layer* layer;
 	Label *moveCircle;//第几/几页
 	Node* pageCircle;
+	mutex _mutex;
 	int m_currentPageNumber;
 	//6本书
 	vector<Node*> books;

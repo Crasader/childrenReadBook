@@ -52,16 +52,16 @@ bool BookRoom::init()
 	layer->setAnchorPoint(Vec2(0.5f, 0.5f));
 	layer->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	addChild(layer);
-	m_currentPageNumber = 0;
-	m_currentPageNumber = App::GetInstance()->m_showSceneData.intData;
+	setCurrentPageNumber(0);
+	setCurrentPageNumber(App::GetInstance()->m_showSceneData.intData);
 	string bookmode = App::GetInstance()->m_showSceneData.stringData;
 	bookMode = atoi(bookmode.c_str());
 	if (bookMode == 0 || bookMode == 2 || bookMode == 3 || bookMode == 4)
 		App::log("                             bookmode= " + bookmode);
 	else
 		bookMode = 0;
-	if (m_currentPageNumber < 0 || m_currentPageNumber >1000)
-		m_currentPageNumber = 0;
+	if (getCurrentPageNumber() < 0 || getCurrentPageNumber() >1000)
+		setCurrentPageNumber(0);
 	//1.展示白天或者黑夜
 	if (!App::isNight()) {
 		//auto sprNight = (Sprite*)layer->getChildByName(FIND_SPRITE_BY_NAME_NIGHT_PIC);
@@ -208,7 +208,7 @@ bool BookRoom::init()
 		if (moveLocation.x > 160 || moveLocation.y < -80)
 		{				//向右
 			YYXLayer::controlTouchTime(2, key, [=]() {
-				++m_currentPageNumber;
+				setCurrentPageNumber(getCurrentPageNumber() + 1);
 				RollingAnimation(shang3ben, xia3ben, [=]() {
 					refershPage(bookMode);
 				});
@@ -217,7 +217,7 @@ bool BookRoom::init()
 		else if (moveLocation.x < -160 || moveLocation.y > 80)
 		{				//向左
 			YYXLayer::controlTouchTime(2, key, [=]() {
-				--m_currentPageNumber;
+				setCurrentPageNumber(getCurrentPageNumber() - 1);
 				RollingAnimation(shang3ben, xia3ben, [=]() {
 					refershPage(bookMode);
 				});
@@ -241,7 +241,7 @@ bool BookRoom::init()
 	auto runFc = [=](int modeNumber) {
 		bookMode = modeNumber;
 		showImageView(bookMode, Button_first, Button_second, Button_three, Button_fourth);
-		m_currentPageNumber = 0;
+		setCurrentPageNumber(0);
 		refershPage(bookMode);
 		showBookPageNumber();
 	};
@@ -350,8 +350,6 @@ void BookRoom::refershPage(int status)
 	{
 		bookidData = getCurrentPageBookID4VIP();
 	}
-
-	//YYXLayer::sendNotify("showName", "", status);
 	for (int i = 0; i < 6; i++)
 	{
 		if (i < bookidData.size())
@@ -369,14 +367,14 @@ void BookRoom::refershPage(int status)
 void BookRoom::refershBookNode(Node* book, int bookid)
 {
 	App::log("--------------------------refershBookNode", bookid);
-	//scheduleUpdate();
-	book->setVisible(true);
-	Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(book);
+	//scheduleUpdate();	
 	if (bookid < 0)
 	{
 		book->setVisible(false);
 		return;
 	}	
+	book->setVisible(true);
+	Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(book);
 	//离线模式
 	//if (m_offline && !FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
 	//{
@@ -510,7 +508,7 @@ void BookRoom::bookClick(Node* book, int bookid)
 					return;
 				//记录场景
 				string bookmode = StringUtils::format("%d", bookMode);
-				App::GetInstance()->pushScene(BookRoomScene, m_currentPageNumber, bookmode);
+				App::GetInstance()->pushScene(BookRoomScene, getCurrentPageNumber(), bookmode);
 				//打开试读书本
 				Director::getInstance()->replaceScene(Waiting::createScene(StringUtils::format("%d", bookid), false));
 				//试读不需要上传阅读记录
@@ -680,7 +678,7 @@ void BookRoom::down(Node* book, int bookid) {
 				{
 					//记录场景
 					string bookmode = StringUtils::format("%d", bookMode);
-					App::GetInstance()->pushScene(BookRoomScene, m_currentPageNumber, bookmode);
+					App::GetInstance()->pushScene(BookRoomScene, getCurrentPageNumber(), bookmode);
 					Index::GoToBookInfo(bookid);
 				}
 				else
@@ -742,6 +740,8 @@ void BookRoom::showStauts(int stauts, Sprite* download, Sprite* textbg, Text* te
 vector<int> BookRoom::getCurrentPageBookID4BuyBookDownload()
 {
 	vector<int> v_boosSort;
+	if (App::GetInstance()->myBuyBook.size() == 0)
+		return v_boosSort;
 	map<int, int >data;
 	for (auto it : App::GetInstance()->myBuyBook)
 	{
@@ -758,21 +758,25 @@ vector<int> BookRoom::getCurrentPageBookID4BuyBookDownload()
 	auto sortDat = App::sortMapToVector(data);
 	bookSum = sortDat.size();
 	int pagesum = ceil(bookSum / 6.0);
-	if (m_currentPageNumber < 0)
+	if (getCurrentPageNumber() < 0)
 	{
-		m_currentPageNumber = pagesum - 1;
+		if (pagesum <= 0)
+			setCurrentPageNumber(0);
+		else
+			setCurrentPageNumber(pagesum - 1);
 	}
-	else if (m_currentPageNumber > pagesum - 1)
+	else
 	{
-		m_currentPageNumber = 0;
+		if (getCurrentPageNumber() > pagesum - 1)
+			setCurrentPageNumber(0);
 	}
 	int begin;//第一本书的sort
 	int end;//最后一本书的sort
-	begin = m_currentPageNumber * 6;
-	end = m_currentPageNumber * 6 + 5;
+	begin = getCurrentPageNumber() * 6;
+	end = getCurrentPageNumber() * 6 + 6;
 	if (end >= bookSum)
-		end = bookSum - 1;
-	for (int i = begin; i <= end; i++)
+		end = bookSum ;
+	for (int i = begin; i < end; i++)
 	{
 		auto bookid = sortDat[i].first;
 		v_boosSort.push_back(bookid);
@@ -784,6 +788,8 @@ vector<int> BookRoom::getCurrentPageBookID4BuyBookDownload()
 vector<int> BookRoom::getCurrentPageBookID4BuyBook()
 {	
 	vector<int> v_boosSort;
+	if (App::GetInstance()->myBuyBook.size() == 0)
+		return v_boosSort;
 	if (m_offline)
 	{
 		vector<int> deletelist;
@@ -802,20 +808,24 @@ vector<int> BookRoom::getCurrentPageBookID4BuyBook()
 	auto sortDat = App::sortMapToVector(App::GetInstance()->myBuyBook);
 	bookSum = sortDat.size();
 	int pagesum = ceil(bookSum / 6.0);
-	if (m_currentPageNumber < 0)
+	if (getCurrentPageNumber() < 0)
 	{
-		m_currentPageNumber = pagesum - 1;
+		if (pagesum <= 0)
+			setCurrentPageNumber(0);
+		else
+			setCurrentPageNumber(pagesum - 1);
 	}
-	else if (m_currentPageNumber > pagesum - 1)
+	else
 	{
-		m_currentPageNumber = 0;
+		if (getCurrentPageNumber() > pagesum - 1)
+			setCurrentPageNumber(0);
 	}
 	int begin;//第一本书的sort
 	int end;//最后一本书的sort
-	begin = m_currentPageNumber * 6;
-	end = m_currentPageNumber * 6 + 5;
+	begin = getCurrentPageNumber() * 6;
+	end = getCurrentPageNumber() * 6 + 6;
 	if (end >= bookSum)
-		end = bookSum - 1;
+		end = bookSum;
 	for (int i = begin; i <= end; i++)
 	{
 		auto bookid = sortDat[i].first;
@@ -875,7 +885,7 @@ void BookRoom::showBookPageNumber()
 		pLabel->setColor(ccc3(120, 120, 120));
 		pageCircle->addChild(pLabel, 0, i);
 	}
-	auto p = pageCircle->getChildByTag(m_currentPageNumber);
+	auto p = pageCircle->getChildByTag(getCurrentPageNumber());
 	if(p)
 		moveCircle->setPosition(p->getPosition());
 	App::log("BookRoom::showBookPageNumber--- END", bookSum);
@@ -909,6 +919,8 @@ void BookRoom::onEnterTransitionDidFinish()
 vector<int> BookRoom::getCurrentPageBookID4Collect()
 {
 	vector<int> v_boosSort;
+	if (App::GetInstance()->bookCollect.size() == 0)
+		return v_boosSort;
 	if (m_offline)
 	{
 		vector<int> deletelist;
@@ -926,20 +938,24 @@ vector<int> BookRoom::getCurrentPageBookID4Collect()
 	}
 	auto booksum = App::GetInstance()->bookCollect.size();
 	int pagesum = ceil(booksum / 6.0);
-	if (m_currentPageNumber < 0)
+	if (getCurrentPageNumber() < 0)
 	{
-		m_currentPageNumber = pagesum - 1;
+		if (pagesum <= 0)
+			setCurrentPageNumber(0);
+		else
+			setCurrentPageNumber(pagesum - 1);
 	}
-	else if (m_currentPageNumber > pagesum - 1)
+	else
 	{
-		m_currentPageNumber = 0;
+		if (getCurrentPageNumber() > pagesum - 1)
+			setCurrentPageNumber(0);
 	}
 	int begin;//第一本书的sort
 	int end;//最后一本书的sort
-	begin = m_currentPageNumber * 6;
-	end = m_currentPageNumber * 6 + 5;
+	begin = getCurrentPageNumber() * 6;
+	end = getCurrentPageNumber() * 6 + 6;
 	if (end >= booksum)
-		end = booksum - 1;
+		end = booksum ;
 	auto vcdata = App::sortMapToVector(App::GetInstance()->bookCollect);
 	for (int i = begin; i <= end; i++)
 	{
@@ -952,6 +968,8 @@ vector<int> BookRoom::getCurrentPageBookID4Collect()
 vector<int> BookRoom::getCurrentPageBookID4VIP()
 {
 	vector<int> v_boosSort;
+	if (App::GetInstance()->VIPbook.size() == 0)
+		return v_boosSort;
 	if (m_offline)
 	{
 		vector<int> deletelist;
@@ -969,22 +987,24 @@ vector<int> BookRoom::getCurrentPageBookID4VIP()
 	}
 	auto booksum = App::GetInstance()->VIPbook.size();
 	int pagesum = ceil(booksum / 6.0);
-	if (m_currentPageNumber < 0)
+	if (getCurrentPageNumber() < 0)
 	{
-		m_currentPageNumber = pagesum - 1;
-		if (m_currentPageNumber < 0)
-			m_currentPageNumber = 0;
+		if (pagesum <= 0)
+			setCurrentPageNumber(0);
+		else
+			setCurrentPageNumber(pagesum - 1);
 	}
-	else if (m_currentPageNumber > pagesum - 1)
+	else
 	{
-		m_currentPageNumber = 0;
+		if (getCurrentPageNumber() > pagesum - 1)
+			setCurrentPageNumber(0);
 	}
 	int begin;//第一本书的sort
 	int end;//最后一本书的sort
-	begin = m_currentPageNumber * 6;
-	end = m_currentPageNumber * 6 + 5;
+	begin = getCurrentPageNumber() * 6;
+	end = getCurrentPageNumber() * 6 + 6;
 	if (end >= booksum)
-		end = booksum - 1;
+		end = booksum;
 	auto vcdata = App::sortMapToVector(App::GetInstance()->VIPbook);
 	for (int i = begin; i <= end; i++)
 	{
