@@ -3,6 +3,7 @@
 #include "ui/CocosGUI.h"
 #include "BookInfoScene.h"
 #include "YYXVisitor.h"
+#include "YYXSound.h"
 
 USING_NS_CC;
 
@@ -166,21 +167,21 @@ bool SendComment::init(int bookId) {
 				NetIntface::httpGetBookIsBuyCallBack(json, [=](string orderid, int types) {
 					auto userAccount = YYXLayer::getFileValue("userAccount", YYXVisitor::getInstance()->getVisitorName());
 					int bookid = YYXStruct::getMapInt64(App::GetInstance()->myData, "sendCommentData", -999);
-					App::GetInstance()->stopOtherVoice();
+					YYXSound::getInstance()->stopAll();
 					//打开语音界面
 					NetIntface::goToSendRecording(m_bookId, App::GetInstance()->m_me->id, types, userAccount,  orderid, "goToSendRecordingSuccess", [](string json) {
 						//语音成功的回调 - 
 						Toast::create(App::getString("COMMENT_SUCCESS"));
-						YYXLayer::sendNotify("bookinfoSceneHttpSendCommentSuccess");
+						YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
 						YYXLayer::sendNotify("DeleteSendComment");
-						App::GetInstance()->playBackGroundMusic();
+						YYXSound::getInstance()->playBackGroundMusic();
 					}, "goToSendRecordingFail", [=](string str) {	
 						//语音失败的回调
 						Toast::create(App::getString("COMMENT_FAILED"));
-						App::GetInstance()->playBackGroundMusic();
+						YYXSound::getInstance()->playBackGroundMusic();
 					}, "goToSendRecordingCloseButton", [=](string str) {
 						//关闭按钮的回调
-						App::GetInstance()->playBackGroundMusic();
+						YYXSound::getInstance()->playBackGroundMusic();
 					});
 					YYXLayer::sendNotify("DeleteSendComment");
 				}, [](string errorstr) {
@@ -188,12 +189,12 @@ bool SendComment::init(int bookId) {
 					if (errorstr == "")
 						errorstr = App::getString("COMMENT_FAILED");
 					Toast::create(errorstr.c_str());
-					App::GetInstance()->playBackGroundMusic();
+					YYXSound::getInstance()->playBackGroundMusic();
 				});
 			}, "goToSendRecordingFail", [](string str) {
 				//orderid 获取的失败回调
 				Toast::create(App::getString("WUFAQIDONGYUYINGPINGLUN"));
-				App::GetInstance()->playBackGroundMusic();
+				YYXSound::getInstance()->playBackGroundMusic();
 			});
 		});
 	}
@@ -262,7 +263,7 @@ void SendComment::sendComment(string title, string content) {
 					string desc = App::getString("COMMENT_SUCCESS");
 					if (YYXLayer::getBoolForJson(false, doc, "result"))
 					{
-						YYXLayer::sendNotify("bookinfoSceneHttpSendCommentSuccess");
+						YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
 					}
 					else
 					{

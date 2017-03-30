@@ -21,16 +21,16 @@ using namespace cocostudio::timeline;
 class Login : public cocos2d::Layer
 {
 public:
+	~Login();
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
-    static cocos2d::Scene* createScene();
-
+    static cocos2d::Scene* createScene(SceneInfo *sceneInfo = nullptr);
+	static Login* create(SceneInfo* data = nullptr);
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
-    virtual bool init();
+    virtual bool init(SceneInfo *sceneInfo = nullptr);
 
 	void onEnterTransitionDidFinish();
 	void cleanup();
-	// implement the "static create()" method manually
-    CREATE_FUNC(Login);
+	// implement the "static create()" method manually 
 
 	//预加载
 	//static void prestrain();

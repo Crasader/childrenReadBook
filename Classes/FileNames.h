@@ -1034,6 +1034,9 @@ enum MyEnum
 
 #define NET_BOOKBETWEENUSER "/ellabook-server/member/whatIsTheRelationshipBetweenUserAndBook"//用户和书籍关系
 
+#define NET_USERBUYANDRENTBOOKS "/ellabook-server/Study/newStudyBuyOrRent"//购买的书和租的书 按时间倒序返回
+
+
 //-----------------------------------------网络请求-------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
 
@@ -1142,3 +1145,21 @@ enum MyEnum
 #define  LOADSCENE_FIND_PLIST_Toast "MessageBox/csb/toast.plist"
 //-----------------------------------------Plist文件-------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+
+//消息
+#define TAG_PINGLUNCOUNT "send_pinglunshuliang"
+#define TAG_READBOOK "readBook"
+#define TAG_BUTTONCONTROL "isBuyRefersh"
+#define TAG_BUYSUCCESSCALLBACK "pay"
+#define TAG_PAYSUCCESSGOTOBUG "CallBackPaySuccessGoToBuyBook"
+#define TAG_DIKOUHONGBAO "addHint"
+#define TAG_SENDCOMMENTSUCCESS "HttpSendCommentSuccess"
+#define TAG_BOOKINFOREFERUI "bookinfoscene_referui"
+
+#define TAG_RECOVERBOOKSTORE "huifuyuanyang"
+
+#define TAG_STOPCOMMENT_SOUND_ANIMATION "stopCommentVoice"
+
+#define TAG_BOOKROOMBOOKISEXIT "BookDeleteOrDownloadInBookRoom"
+#define TAG_BOOKCOVERDOWNLOAD "BookCoverDownloadInBookRoom"
+#define TAG_CHILDHEADDOWNLOADOVER "ChildHeadDownloadSuccess"

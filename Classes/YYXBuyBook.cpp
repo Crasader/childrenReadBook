@@ -2,12 +2,20 @@
 #include "NetIntface.h"
 #include "YYXVisitor.h"
 #include "Charger.h"
+#include "BuyBook.h"
 
 YYXBuyBook* YYXBuyBook::instance = nullptr;
 
+#define TAG1 "httpMoneyOver"
+#define TAG2 "httpRedPacketOver"
+
 void YYXBuyBook::buyBook(const function<void(int)>& buyBookCallBack, const function<void()>& goToLoginCallBack)
 {
-	m_buyBookSuccessCallBack = buyBookCallBack;
+	m_buyBookSuccessCallBack = [=](int bookid) {
+		BuyBook::getInstance()->addBook(bookid, (int)YYXLayer::getCurrentTime4Second());
+		if (buyBookCallBack)
+			buyBookCallBack(bookid);
+	};
 	setOutScene(goToLoginCallBack);
 	httpMoney();
 	httpRedPacket();
@@ -33,7 +41,7 @@ void YYXBuyBook::httpMoney()
 				YYXLayer::setFileValue("visitorBalance", StringUtils::format("%d", userBalance), YYXVisitor::getInstance()->m_dirpath);
 			else
 				YYXLayer::setFileValue("userBalance", StringUtils::format("%d", userBalance));
-			YYXLayer::sendNotify("showyue");
+			YYXLayer::sendNotify(TAG1);
 		}, []() {
 			//返回错误,或者解析错误
 			Toast::create(App::getString("NETEXCEPTION"),false);
@@ -60,7 +68,7 @@ void YYXBuyBook::httpRedPacket()
 			}
 		}, [](int expiring_coupon_count) {
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "expiring_coupon_count", expiring_coupon_count);
-			YYXLayer::sendNotify("referRedPackets");
+			YYXLayer::sendNotify(TAG2);
 		}, []() {
 			Toast::create(App::getString("HONGBAOHUOQUSHIBAI"),false);
 		});
@@ -128,9 +136,12 @@ void YYXBuyBook::httpBuyBook()
 				//httpRedPacket();
 				//httpMoney();
 				//Toast::create(App::getString("BUY_SCEESSE"));
-			}, []() {
+			}, [=]() {
 				//余额不足
-				YYXLayer::sendNotify("yuebuzuAddMessagebox");
+				//YYXLayer::sendNotify("yuebuzuAddMessagebox");
+				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+					feeCharging();
+				});
 			}, []() {
 				//购书失败
 				Toast::create(App::getString("BUY_FAIL"));
@@ -269,7 +280,7 @@ Layer* YYXBuyBook::selectRedPacke()
 			});
 		});
 	}
-	auto eventListene = EventListenerCustom::create("referRedPackets", [=](EventCustom* e) {
+	auto eventListene = EventListenerCustom::create(TAG2, [=](EventCustom* e) {
 		//展示红包
 		listViewShowRedPacket(listview);
 		Toast::create(App::getString("SHUAXINHONGBAO"));
@@ -296,6 +307,8 @@ Layer* YYXBuyBook::selectRedPacke()
 
 Layer* YYXBuyBook::buyBookFirst()
 {
+	if (!m_show)
+		return nullptr;
 	map<string, int64String> paramter;
 	YYXLayer::insertMap4ParaType(paramter, "className", -999, "showpay");
 	YYXLayer::insertMap4ParaType(paramter, "csb", -999, PAY_WHETHERTOPAY_CSB);
@@ -313,6 +326,7 @@ Layer* YYXBuyBook::buyBookFirst()
 		payLayer->removeFromParentAndCleanup(true);
 		//打开选择红包界面
 		selectRedPacke();
+		m_show = true;
 	};
 	if (selcetRedPacket1 && selcetRedPacket2)
 	{
@@ -327,7 +341,7 @@ Layer* YYXBuyBook::buyBookFirst()
 		bookprice->setText(StringUtils::format("%.02f", m_bookPrice / 100.0) + App::getString("YUAN"));
 	if (balance)
 		balance->setText(StringUtils::format("%.02f", m_myMoney / 100.0) + App::getString("YUAN"));
-	auto balanceChangeListener = EventListenerCustom::create("showyue", [=](EventCustom* e) {
+	auto balanceChangeListener = EventListenerCustom::create(TAG1, [=](EventCustom* e) {
 		balance->setText(StringUtils::format("%.02f", m_myMoney / 100.0) + App::getString("YUAN"));
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(balanceChangeListener, balance);
@@ -336,6 +350,7 @@ Layer* YYXBuyBook::buyBookFirst()
 		close->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "BookInfoSceneclose", [=]() {
 				payLayer->removeFromParentAndCleanup(true);
+				m_show = true;
 			});
 		});
 	}
@@ -351,6 +366,7 @@ Layer* YYXBuyBook::buyBookFirst()
 					buyBookSecond();
 				if (gotoPay->getTag() == 2)//去充值
 					feeCharging();
+				m_show = true;
 			});
 		});
 	}
@@ -422,6 +438,7 @@ Layer* YYXBuyBook::buyBookFirst()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	payLayer->setPosition(visibleSize / 2);
 	Director::getInstance()->getRunningScene()->addChild(payLayer);
+	m_show = false;
 	return payLayer;
 }
 
@@ -617,8 +634,7 @@ void YYXBuyBook::feeCharging()
 void YYXBuyBook::gotoLogin()
 {
 	if (m_outSceneCallBack)
-		m_outSceneCallBack();
-	Index::GoToLoginScene();
+		m_outSceneCallBack();	
 }
 
 //展示红包

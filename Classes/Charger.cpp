@@ -1,4 +1,5 @@
 ﻿#include "Charger.h"
+#include "YYXSound.h"
 
 #define qq(d) App::log(#d);
 
@@ -91,11 +92,13 @@ bool Charger::init()
 	pay_zhifubao->setTouchEnabled(true);
 
 	pay_weixin->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
 		PayType(0);
 		pay_weixin->loadTexture("Pay/res/ApplePay_weixin_sel_667h.png", TextureResType::PLIST);
 		pay_zhifubao->loadTexture("Pay/res/ApplePay_zhifubao_667h.png", TextureResType::PLIST);
 	});
 	pay_zhifubao->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
 		PayType(1);
 		pay_weixin->loadTexture("Pay/res/ApplePay_weixin_667h.png", TextureResType::PLIST);
 		pay_zhifubao->loadTexture("Pay/res/ApplePay_zhifubao_sel_667h.png", TextureResType::PLIST);
@@ -104,6 +107,7 @@ bool Charger::init()
 	auto close_btn = (Button*)pLayer->getChildByName("close_btn");
 	close_btn->setTouchEnabled(true);
 	close_btn->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
 		this->removeFromParentAndCleanup(true);
 	});
 
@@ -111,40 +115,43 @@ bool Charger::init()
 	auto pay_btn = (Button*)pLayer->getChildByName("pay_btn");
 	pay_btn->setTouchEnabled(true);
 	pay_btn->addClickEventListener([=](Ref* sender) {
-		if (PayPrice() <=0)
-		{
-			Toast::create(App::getString("XUANZHECHONGZHIJINE"));
-			return;
-		}
-		if (App::m_PayTest == 1)
-			PayPrice(0.01);
-		long payCount = PayPrice()*100;
-		string info = App::getString("RECHARGE") + StringUtils::format("%.02f ", PayPrice() ) + App::getString("YUAN");
-		string paytype = "";
-		if (PayType() == 0)
-			paytype = "weixinpay";
-		if (PayType() == 1)
-			paytype = "alipay";
-		App::log(paytype+StringUtils::format(" paymoney = %f",PayPrice()*100));
-		if (App::GetInstance()->m_me)
-			NetIntface::httpPay(App::GetInstance()->m_me->id, payCount, PayPrice() * 100, paytype, info, "", [=](string str) {
-			if (m_callback)
+		YYXLayer::controlTouchTime(1, "zhifuTime", [=]() {
+			YYXSound::getInstance()->playButtonSound();
+			if (PayPrice() <= 0)
 			{
-				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-					m_callback();
-				});
+				Toast::create(App::getString("XUANZHECHONGZHIJINE"));
+				return;
 			}
-			YYXLayer::sendNotify("refershBalanceAndShowRedPacket");
-			YYXLayer::sendNotify("CallBackPaySuccessGoToBuyBook");
-			auto value = YYXLayer::getFileValue("chargerSelectIndex", "0");
-			auto money = getDatamoney(atoi(value.c_str()));
-			auto count = getDatahongbao(atoi(value.c_str()));
-			if (count > 0)
-				XZLayer::showShareRedPacket(StringUtils::format("%d%s", count, App::getString("YUAN")));	
-		}, "", [](string error) {
-			Toast::create(error.c_str());
+			if (App::m_PayTest == 1)
+				PayPrice(0.01);
+			long payCount = PayPrice() * 100;
+			string info = App::getString("RECHARGE") + StringUtils::format("%.02f ", PayPrice()) + App::getString("YUAN");
+			string paytype = "";
+			if (PayType() == 0)
+				paytype = "weixinpay";
+			if (PayType() == 1)
+				paytype = "alipay";
+			App::log(paytype + StringUtils::format(" paymoney = %f", PayPrice() * 100));
+			if (App::GetInstance()->m_me)
+				NetIntface::httpPay(App::GetInstance()->m_me->id, payCount, PayPrice() * 100, paytype, info, "", [=](string str) {
+				if (m_callback)
+				{
+					Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+						m_callback();
+					});
+				}
+				YYXLayer::sendNotify("refershBalanceAndShowRedPacket");
+				YYXLayer::sendNotify("CallBackPaySuccessGoToBuyBook");
+				auto value = YYXLayer::getFileValue("chargerSelectIndex", "0");
+				auto money = getDatamoney(atoi(value.c_str()));
+				auto count = getDatahongbao(atoi(value.c_str()));
+				if (count > 0)
+					XZLayer::showShareRedPacket(StringUtils::format("%d%s", count, App::getString("YUAN")));
+			}, "", [](string error) {
+				Toast::create(error.c_str());
+			});
+			pLayer->removeFromParentAndCleanup(true);
 		});
-		pLayer->removeFromParentAndCleanup(true);
 	});	
 	qq(Charger::init end)
 	return true;
@@ -162,7 +169,7 @@ int Charger::getDatamoney(int idx)
 {
 	App::log("Charger::getData", idx);
 	string key = StringUtils::format("charger+index=%d", idx);
-	int money = (int)YYXStruct::getMapRef(App::GetInstance()->myData, key, 0);
+	long money = (long)YYXStruct::getMapRef(App::GetInstance()->myData, key, 0);
 	return money;
 }
 
@@ -228,6 +235,7 @@ void Charger::setNodePrice(int tag, bool sel)
 		return;
 	node->setTouchEnabled(true);
 	node->addClickEventListener([=](Ref* sneder) {
+		YYXSound::getInstance()->playButtonSound();
 		auto idx = bt0->getTag();
 		App:log("node->addClickEventListener", idx);
 		if (idx > 6 || idx < 0)
@@ -239,7 +247,7 @@ void Charger::setNodePrice(int tag, bool sel)
 	});
 	_eventDispatcher->removeEventListenersForTarget(bt0);
 	auto listener = EventListenerCustom::create("setNodePrice", [=](EventCustom* e) {
-		int getIndex = (int)e->getUserData();
+		long getIndex = (long)e->getUserData();
 		if(getIndex != bt0->getTag())
 			setNodePrice(bt0->getTag());
 	});

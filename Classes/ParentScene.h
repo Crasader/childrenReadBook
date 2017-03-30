@@ -17,14 +17,14 @@ private:
 public:
 	~Parent();
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
-    static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene(SceneInfo* data = nullptr);
 
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
-    virtual bool init();
+    virtual bool init(SceneInfo* data = nullptr);
 
 	void onEnterTransitionDidFinish();
 	// implement the "static create()" method manually
-    CREATE_FUNC(Parent);	
+	static Parent* create(SceneInfo* data = nullptr);
 
 	//设置界面的初始化
 	Layer* initNode_Set();

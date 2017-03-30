@@ -7,36 +7,52 @@
 #include "YYXVisitor.h"
 #include "Charger.h"
 #include "YYXDownloadImages.h"
+#include "DownloadBook.h"
+#include "ReadBook.h"
+#include "BuyBook.h"
+#include "YYXSound.h"
+#include "BookCache.h"
 USING_NS_CC;
 
 using namespace cocostudio::timeline;
 
-Scene* Load::createScene()
+Load::~Load()
 {
-    // 'scene' is an autorelease object
+	ControlScene::getInstance()->end();
+}
+
+Scene* Load::createScene(SceneInfo* data)
+{
     auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
-    auto layer = Load::create();
+    auto layer = Load::create(data);
 	layer->setTag(9);
-    // add layer as a child to scene
     scene->addChild(layer);
-    // return the scene
     return scene;
 }
 
-// on "init" you need to initialize your instance
-bool Load::init()
+Load* Load::create(SceneInfo* data)
 {
-    //////////////////////////////
-    // 1. super init first
+	Load *pRet = new(std::nothrow) Load();
+	if (pRet && pRet->init(data))
+	{
+		pRet->autorelease();
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+	}
+	return pRet;
+}
+
+// on "init" you need to initialize your instance
+bool Load::init(SceneInfo* sceneInfo)
+{
     if ( !Layer::init() )
     {
 		return false;
     }
-	App::GetInstance();	
-	//记录当前场景
-	App::m_RunningScene = LoadScene;
+	App::GetInstance();
 	totalCount = 23;
 	currentCount = 0;
 	Size m_Size = Director::getInstance()->getVisibleSize();
@@ -50,37 +66,22 @@ bool Load::init()
 	YYXVisitor::getInstance()->loadSceneInit();
 	//本机信息
 	getPhoneInfo();
-	//通知异步加载图片完成
-	auto listenLoadPngOver = EventListenerCustom::create("NOTIFY_LOAD_PNG_OVER", [=](EventCustom* event) {
-		auto cache = SpriteFrameCache::getInstance();
-		cache->addSpriteFramesWithFile(PLIST_BACKGROUND);
-		cache->addSpriteFramesWithFile(PLIST_INDEX);
-		cache->addSpriteFramesWithFile(PLIST_TRAIN);
-		m_cacheOver = true;
-		YYXLayer::sendNotify("LoadSceneOverGoToIndex");
-	});
-	_eventDispatcher->addEventListenerWithFixedPriority(listenLoadPngOver, 1);
 	initEvent();
-	App::GetInstance()->pushScene(MySceneName::LoadScene);
+	scheduleOnce([](float t) {
+		YYXLayer::sendNotify("LoadSceneOverGoToIndex");
+	}, 5, "LoadSceneOverGoToIndexscheduleOnce");
     return true;
 }
 
 void Load::initEvent()
 {
-	Director::getInstance()->getEventDispatcher()->addCustomEventListener("LoadSceneOverGoToIndex", [=](EventCustom* e) {
+	auto listener1 = EventListenerCustom::create("LoadSceneOverGoToIndex", [=](EventCustom* e) {
 		//加载完成 && (书城网络请求结束 && 网络超时5秒)
-		auto time = YYXStruct::getMapInt64(App::GetInstance()->myData, "APPOpenTime", 0) + 5;
-		if (m_cacheOver) {
-			if (YYXLayer::getCurrentTime4Second() >= time || m_httpOver)
-			{
-				unschedule("LoadSceneOverGoToIndexSchedule");
-				Director::getInstance()->replaceScene(Index::createScene());
-			}
-		}
+		ControlScene::getInstance()->replaceScene(
+			ControlScene::getInstance()->getSceneInfo(MySceneName::LoadScene),
+			ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene));
 	});
-	schedule([](float f) {
-		YYXLayer::sendNotify("LoadSceneOverGoToIndex");
-	}, 1, "LoadSceneOverGoToIndexSchedule");
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener1, this);
 }
 
 void Load::onEnterTransitionDidFinish()
@@ -100,20 +101,13 @@ void Load::onEnterTransitionDidFinish()
 void Load::initData()
 {
 	//加载本地数据
-	App::preLoad();
+	thread([]() {	App::preLoad(); }).detach();
 	//初始化Toast
 	Toast::GetInstance()->showToast();
-	// 声音初始化数据
-	if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-		App::GetInstance()->isMusicPlay = true;
-	else
-		App::GetInstance()->isMusicPlay = false;
-	if (YYXLayer::getBoolFromXML(SOUND_KEY))
-		App::GetInstance()->isSoundEffect = true;
-	else
-		App::GetInstance()->isSoundEffect = false;
+	YYXSound::getInstance()->init();
+	YYXSound::getInstance()->playBackGroundMusic();
 	//加载plist大图
-	loadPlistPng();
+	//loadPlistPng();
 	//缓存csb文件
 	loadCsbFile();
    //下载初始化
@@ -171,13 +165,15 @@ void Load::initDir()
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "temp/Log");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "collectBook"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "collectBook");
-	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "downloadBook"))
-		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "downloadBook");
+	DownloadBook::getInstance()->initDir();
+	ReadBook::getInstance()->initDir();
+	BuyBook::getInstance()->initDir();
+	BookCache::getInstance()->initDir();
 }
 
 void Load::cleanup()
 {
-	unscheduleAllSelectors();
+	unschedule("LoadSceneOverGoToIndexscheduleOnce");
 }
 
 //异步加载PNG大图
@@ -266,12 +262,9 @@ void Load::httpBookCityInfoAndDownLoad()
 			//书店数量
 			string totalCountKey = StringUtils::format("BookCityTotalPage");
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, totalCountKey, totalPage);
-			m_httpOver = true;
 		}, [=]() {
-			m_httpOver = true;	
 		});
 	}, "", [=](string str) {
-		m_httpOver = true;
 	});	
 }
 

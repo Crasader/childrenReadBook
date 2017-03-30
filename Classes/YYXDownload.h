@@ -7,14 +7,15 @@
 #include <mutex>
 #include "FileNames.h"
 #include "external/unzip/unzip.h"
-//#include "SqliteManager.h"
 #include "App.h"
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include "curl/include/win32/curl/curl.h"
+#pragma  comment(lib,"libcurl_imp.lib")
 #endif // (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "curl/include/android/curl/curl.h"
 #endif
+
 //下载状态 0=下载 1=准备下载   2=暂停  3=下载结束 -1=提前创建任务标示
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -66,6 +67,7 @@ public:
 	bool isDownloading(string taskTag);
 	//获取状态
 	int getTaskStatus(string taskTag);
+	void setTaskStatus(string taskTag, YYXDownloadStatus status);
 	//开始所有下载线程
 	void startAll();
 	//判断是否在下载队列中
@@ -79,9 +81,10 @@ private:
 	//数据容器
 	map<string, YYXStruct> data;
 	//代码容器
-	map<string, function<void(YYXStruct)>> functionMap;
+	std::unordered_map<string, function<void(YYXStruct)>> functionMap;
 	void setMapFunction(string key, function<void(YYXStruct)> runFunction);
 	function<void(YYXStruct)> getMapFunction(string key);
+	void deleteMapFunction(string key);
 	//有一个下载队列
 	map<string, YYXStruct> downloadQueue;
 	//有一个准备队列

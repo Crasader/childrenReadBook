@@ -10,6 +10,7 @@
 #include "App.h"
 #include "YYXStruct.h"
 #include "YYXLayer.h"
+#include "ControlScene.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -51,17 +52,15 @@ public:
 
 	~BabyCenter();
 
-	static cocos2d::Scene* createScene();
-
-	virtual bool init();
+	static Scene* createScene(SceneInfo* sceneInfo = nullptr);
+	static BabyCenter* create(SceneInfo* data = nullptr);
+	virtual bool init(SceneInfo* sceneInfo = nullptr);
 
 	void initEvent();
 
 	void initHttp();
 
 	virtual void onEnterTransitionDidFinish();
-
-	CREATE_FUNC(BabyCenter);
 
 	//初始化宝贝中心
 	void initBabyCenter();
@@ -111,7 +110,7 @@ public:
 	static int getIntFrommyData(int id, string key);
 	static void setBabyInfoToXml(string name, string birthday, int sex, int id=-999);
 	//void makeRoundImage(string path);
-	bool getBoolFromXML(string str);
+	//bool getBoolFromXML(string str);
 };
 
 #endif // __BABYCENTE_SCENE_H__

@@ -47,11 +47,21 @@ std::string YYXDownload::download(string url, string dir, string fileName, strin
 		YYXStruct::initMapYYXStruct(data, urlKey, -999, url);
 		string pathKey = taskTag + "+path";
 		YYXStruct::initMapYYXStruct(data, pathKey, -999, dir + "/" + fileName);
-		if (!isExitDownloadQueue(taskTag))
+		auto zhuangtai = getTaskStatus(taskTag);
+		if (zhuangtai == YYXDownloadStatus::_ready)
 		{
 			deleteReadyQueue(taskTag);
 			addReadyQueue(taskTag);
 		}
+		else if(zhuangtai == YYXDownloadStatus::_download)
+		{
+
+		}
+		else
+		{
+			addReadyQueue(taskTag);
+		}
+
 		//autoFullDownload();
 	}).detach();
 	App::log("YYXDownload::download--END" + taskTag);
@@ -170,7 +180,7 @@ string YYXDownload::getTaskTag(string dir, string fileName)
 		taskTag = StringUtils::format("%s_downloadTag_%d", fileName.c_str(), (int)YYXLayer::getRandom());
 		YYXStruct::initMapYYXStruct(data, dir + "/" + fileName, -999, taskTag);
 		string statusKey = taskTag + "+status";
-		YYXStruct::initMapYYXStruct(data, statusKey, -1);
+		YYXStruct::initMapYYXStruct(data, statusKey, YYXDownloadStatus::_null);
 	}
 	return taskTag;
 }
@@ -199,6 +209,19 @@ function<void(YYXStruct)> YYXDownload::getMapFunction(string key)
 	return nullptr;
 }
 
+void YYXDownload::deleteMapFunction(string key)
+{
+	//YYXLayer::logb("YYXDownload::deleteMapFunction / " + key);
+	if (&key && key != "")
+	{
+		auto it = functionMap.find(key);
+		if (it != functionMap.end())
+		{
+			functionMap.erase(it);
+		}
+	}
+}
+
 int YYXDownload::addDownloadQueue(string task)
 {
 	YYXLayer::logb("YYXDownload::addDownloadQueue");
@@ -220,7 +243,13 @@ int YYXDownload::deleteDownloadQueue(string task)
 	YYXLayer::logb("YYXDownload::deleteDownloadQueue");
 	if (downloadQueue.find(task) != downloadQueue.end())
 		downloadQueue.erase(task);
-	YYXLayer::loge("YYXDownload::deleteDownloadQueue");
+	//删除回调函数
+	string beginKey = task + "+begin";
+	string downloadingKey = task + "+downloading";
+	string endKey = task + "+end";
+	deleteMapFunction(beginKey);
+	deleteMapFunction(downloadingKey);
+	deleteMapFunction(endKey);
 	down_mtx.unlock();
 	return downloadQueue.size();
 }
@@ -262,6 +291,13 @@ int YYXDownload::deleteReadyQueue(string task)
 	}
 	readyQueueMap.erase(task);
 	YYXLayer::loge("YYXDownload::deleteReadyQueue");
+	//删除回调函数
+	string beginKey = task + "+begin";
+	string downloadingKey = task + "+downloading";
+	string endKey = task + "+end";
+	deleteMapFunction(beginKey);
+	deleteMapFunction(downloadingKey);
+	deleteMapFunction(endKey);
 	down_mtx.unlock();
 	App::log("readyQueue.size() ", readyQueue.size());
 	return readyQueue.size();
@@ -368,12 +404,12 @@ void YYXDownload::taskEnd(string taskTag, int resultCode)
 
 void YYXDownload::downLoadFile(string url, string path,  const string& taskTag)
 {//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-	YYXLayer::logb("YYXDownload::downLoadFile");
+	//YYXLayer::logb("YYXDownload::downLoadFile");
 	taskBegin(taskTag);
-	CURL *pCurl;
+	CURL *pCurl = nullptr;
 	pCurl = curl_easy_init();//初始化CURL取得初始化成功后的CURL指针
 	FILE *pFile = nullptr;
-	App::log("YYXDownload::downLoadFile"+path);
+	App::log("YYXDownload::downLoadFile ===============>>>"+path);
 	pFile = fopen(path.c_str(), "ab+");
 	if (pFile == nullptr)
 	{
@@ -646,6 +682,12 @@ int YYXDownload::getTaskStatus(string taskTag)
 	return status;
 }
 
+void YYXDownload::setTaskStatus(string taskTag,YYXDownloadStatus status)
+{
+	string statusKey = taskTag + "+status";
+	YYXStruct::initMapYYXStruct(data, statusKey, status);
+}
+
 //
 //void YYXDownload::getReadyQueueFrontPushDownloadQueue()
 //{
@@ -760,7 +802,6 @@ void YYXDownload::downloadThreadRuning()
 			int status = YYXStruct::getMapInt64(data, statusKey, 1);//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
 			if (status == 1)
 			{
-				//thread(&YYXDownload::downLoadFile, this, url, path, taskTag).detach();				
 				downLoadFile(url, path, taskTag);
 			}
 		}

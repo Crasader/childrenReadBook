@@ -89,7 +89,9 @@ YYXLayer* XZLayer::showVIPRenew(function<void()>runleave)
 			{
 				if(runleave)
 					runleave();
-				Index::GoToLoginScene();
+				//Index::GoToLoginScene();
+				auto control = ControlScene::getInstance();
+				control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 			}
 		});
 	}
@@ -249,11 +251,11 @@ YYXLayer* XZLayer::OpenVIPCardService(int i, function<void()>runleave, const fun
 			YYXVisitor::getInstance()->hintLogin([=]() {
 				if (runleave)
 					runleave();
-				Index::GoToLoginScene();
+				//Index::GoToLoginScene();
 			}, [=]() {
 				if (runleave)
 					runleave();
-				Index::GoToLoginScene();
+				//Index::GoToLoginScene();
 			}, [=]() {
 				viphint->removeFromParent();
 				Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=]() {

@@ -5,7 +5,6 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "json/rapidjson.h"
-//#include "SqliteManager.h"
 #include "network/HttpClient.h"
 #include "network/HttpRequest.h"
 #include "network/HttpResponse.h"
@@ -17,7 +16,6 @@
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include <unistd.h>
 #endif
-
 
 USING_NS_CC;
 using namespace cocos2d::network;
@@ -32,26 +30,6 @@ struct chargerDataStruct
 	int hongbao;
 	int hongbaoId;
 };
-
-enum MySceneName {
-	LoadScene//加载场景
-	,BookRoomScene//书房
-	, ParentScene//父母设置
-	, IndexScene//首页
-	, LoginScene//登陆
-	, BabyCenterScene//宝贝中心
-	, BookCity//书城
-	, BookInfoScene//书籍详细
-	, BookCityCHILD//书城中的书店	
-	, PictureBook//绘本
-	, Recommend//咿啦推荐
-	, Free//限时免费
-	, GoodReputation//五星好评
-	, NewBook//咿啦新书
-	, KangXuanStore//康轩书店
-	, VIPBOOK//vip专属书店
-};
-
 struct ReadStart
 {
 	std::string startTime;
@@ -121,23 +99,23 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.8.0";//应用版本
+	string version = "1.8.1";//应用版本
 
-	long long versioncode = 176;
+	long long versioncode = 177;
 
-	int musicID = -999;//背景音乐ID
+	//int musicID = -999;//背景音乐ID
 
-	vector<int> deleteMusicID;//记录需要停止的音乐ID
+	//vector<int> deleteMusicID;//记录需要停止的音乐ID
 
 	//int DataBaseVersion = 6;//数据库版本
 
-	vector<map<std::string ,YYXStruct>> m_SceneOrder;//记录场景的顺序
+	//vector<map<std::string ,YYXStruct>> m_SceneOrder;//记录场景的顺序
 
-	MySceneName m_showScene;//前一个场景
+	//MySceneName m_showScene;//前一个场景
 
-	YYXStruct m_showSceneData;//前一个场景的参数
+	//YYXStruct m_showSceneData;//前一个场景的参数
 
-	static MySceneName m_RunningScene;//当前场景
+	//static MySceneName m_RunningScene;//当前场景
 
 	static string m_photsName;//照片路径
 
@@ -157,9 +135,9 @@ public:
 
 	bool isOnlyWifi;//是否仅限WiFi下载
 
-	bool isMusicPlay = true;//背景音是否播放
+	//bool isMusicPlay = true;//背景音是否播放
 
-	bool isSoundEffect = true;//音效是否播放
+	//bool isSoundEffect = true;//音效是否播放
 
 	map<string, long long> timeMap;//时刻集合
 
@@ -264,12 +242,12 @@ public:
 
 	//map排序
 	static vector<PAIR> sortMapToVector(map<int, int> mapData);
-
+	static vector<PAIR> sortMapToVector(std::unordered_map<int, int> mapData);
 	//已下载
-	map<int, int> bookDownload;//全部下载的书籍和时间
-	static void addDownloadBookRecord(int bookid);
-	static void deleteDownloadBookRecord(int bookid);//本地删除
-	static void loadDownloadBookCache();//本地缓存文件读入内存
+	//map<int, int> bookDownload;//全部下载的书籍和时间
+	//static void addDownloadBookRecord(int bookid);
+	//static void deleteDownloadBookRecord(int bookid);//本地删除
+	//static void loadDownloadBookCache();//本地缓存文件读入内存
 
 	//收藏
 	map<int, int> bookCollect;
@@ -304,15 +282,15 @@ public:
 	
 	static string replaceChar(string str, string oldChar, string newChar);	//修改字符串, 全部替换
 
-	void stopBackGroundMusic();//关闭
+	//void stopBackGroundMusic();//关闭
 
-	void pauseBackGroundMusic();//暂停
+	//void pauseBackGroundMusic();//暂停
 
-	void resumeBackGroundMusic();//恢复
+	//void resumeBackGroundMusic();//恢复
 
-	void playBackGroundMusic();//播放背景音乐
+	//void playBackGroundMusic();//播放背景音乐
 
-	void stopOtherVoice();//关闭所有记录的音乐
+	//void stopOtherVoice();//关闭所有记录的音乐
 
 	static void whetherForVipDownloadJudgeInCharge(int memberId, int bookId, function<void(int str)> runable, function<void(string error)> errorable);//判断包年用户能否进行vip下载
 
@@ -408,11 +386,11 @@ public:
 	static void backWating();//安卓返回键计时
 
 	//----------------------------------------场景跳转栈------------------------------------------------------
-	void pushScene(MySceneName name, int data=-999,std::string str = "");
+	//void pushScene(MySceneName name, int data=-999,std::string str = "");
 
-	void popBack(MySceneName dangqianScene = LoadScene);
+	//void popBack(MySceneName dangqianScene = LoadScene);
 
-	MySceneName getFromScene();
+	//MySceneName getFromScene();
 };
 
 #endif // __App_SCENE_H__

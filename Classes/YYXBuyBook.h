@@ -32,6 +32,7 @@ private:
 	int m_hongbao = 0;
 	bool m_manualSelectHongbao = false;
 	bool m_click = true;//点击的标示
+	bool m_show = true;//网络请求后只允许一个弹窗
 
 	function<void(int)> m_buyBookSuccessCallBack = nullptr;
 	function<void()> m_outSceneCallBack = nullptr;//切换场景的时候 要先push当前场景 不然回不来

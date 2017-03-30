@@ -64,7 +64,7 @@ private:
 
 	ImageView* m_control;
 
-	long long m_createTime;//场景创建时间
+	//long long m_createTime;//场景创建时间
 	 //时刻集合
 	//map<string, long long> timeMap;
 
@@ -76,11 +76,11 @@ public:
 	BookInfo();
 	~BookInfo();
 
-    static cocos2d::Scene* createScene(int bookId);
+    static cocos2d::Scene* createScene(SceneInfo* sceneInfo = nullptr);
 
-	static BookInfo * create(int bookId);
+	static BookInfo * create(SceneInfo* sceneInfo = nullptr);
 
-	virtual bool init(int bookId);
+	virtual bool init(SceneInfo* sceneInfo = nullptr);
 
 	void showPrice();	//展示价格
 
@@ -96,55 +96,28 @@ public:
 
 	Layer* initCommonView();//初始化评论界面
 							
-	Node* showPay(bool withRedPacket = false);//展示支付界面 是否从选择红包转过来的
-
-	int getMaxRedPacket();
-
 	void initEvent();
 
 	void initHttp();
 
 	void onEnterTransitionDidFinish();
 
-	void bookCallBack();//书籍内部的回调
 	virtual void cleanup();
 
 	void refreshUI();//刷新界面
 	
 	void startSchedu();//启动活动倒计时
 
-	bool httpBuyBook();//网络请求 余额结算购书
-
-	//void updateBuyBookList();//更新后台及本地已购书籍表
-
 	void recharge();
-
-	void IsNotGoToPayMessageBox(bool withRedPacket = false);//提示是否确认继续支付
 
 	void back();//返回
 
-	void httpGetUserBalance(const char * memberID);//查询余额
-
 	int getOptimalRedPacket();//选出最优红包
 
-	void selectOrShowRedPackets();//选择红包界面
-								 
-	void listViewShowRedPacket(ListView*); //展示红包
-
-	void loadRedPacketData(Node* node, int index);  //加载红包数据到节点上
 
 	void httpGetUserRedPackets();//获取红包列表
 	void hintHongbao();
-	//void hint();
-	//bool isBuyThisBook();
-	//void initVipText(Node* node);
-	bool IsRentBook();
-	void httpRentBook(function<void()> runable);
 	string DownLoadBook(int bookId, string bookPlayUrl, string ZipName);
-	void downloadingListener(int bookId, string bookTag, Button* button);
-	//void downloadingListener(int bookId, string bookTag, Button* m_ReadButton);
-	//void showBuyButton(Button* button, int show, int prpgressing = 0);
-	//int whatIsTheRelationshipBetweenUserAndBook(int status, bool zhijieshow = false);//解析出书籍和用户之间的关系(是否vip下载默认不用知道)
 	
 	void log(int stauts);
 	void ButtonControl();//按钮的控制逻辑
@@ -174,15 +147,17 @@ private:
 	void onClickLister();
 	void readBook();
 	void sendDownloadBookAndReadBook();
-	void buyBook(function<void()> mianfeimaishu = nullptr);//
+	void buyBook();
 	void callBackBuyBook();
-	void rentBook(function<void()> callback = nullptr);
 	void hintIsBuyIsRent();
 	void gotoLogin();
 	void addDownloadListener(Button* button);
 	void showXingji();
 	void showCommentCount(int count);
 	void readbook_download_pause_tryreadbook(Button* bt);
+
+private:
+	vector<string> m_listenerName;
 };
 
 #endif //  __BOOKINFO_SCENE_H__

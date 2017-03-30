@@ -2,11 +2,11 @@
 #define __Index_SCENE_H__
 
 #include "cocos2d.h"
-#include "ui\UIVideoPlayer.h"
-#include "ui\CocosGUI.h"
+#include "ui/UIVideoPlayer.h"
+#include "ui/CocosGUI.h"
 #include "Bird.h"
 #include "ContinuousMove.h"
-#include "cocostudio\CocoStudio.h"
+#include "cocostudio/CocoStudio.h"
 #include "LoadScene.h"
 #include "BookRoomScene.h"
 #include "ParentScene.h"
@@ -17,9 +17,9 @@
 #include "BookCityScene.h"
 #include "BookInfoScene.h"
 #include "RestRemind.h"
-#include "WaitingScene.h"
 #include "FileNames.h"
 #include "ShowNotification.h"
+
 
 enum ControlMusic { CLOSE = 0, OPEN = 1 };
 
@@ -36,9 +36,9 @@ public:
 	Index();
 	~Index();
 
-    static cocos2d::Scene* createScene();
-
-    virtual bool init();
+    static cocos2d::Scene* createScene(SceneInfo* sceneInfo = nullptr);
+	static Index* create(SceneInfo* data = nullptr);
+    virtual bool init(SceneInfo* sceneInfo = nullptr);
 
 	void InitVIPCard();//初始化包年
 
@@ -46,8 +46,6 @@ public:
     
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-    CREATE_FUNC(Index);
-
 	//创建每节火车车厢
 	Layout* createItem(int tag,const std::string& csbfilename, int startIndex, int endIndex, bool loop, Size layoutsize);
 
@@ -66,53 +64,53 @@ public:
 	//---------------------------转场函数-----------------------------------------------------
 	//void replaceSceneAnimation(std::function<void()> runfunction);
 
-	//跳转书房
-	static void GoToBookRoomScene();
+	////跳转书房
+	//static void GoToBookRoomScene();
 
-	//跳转父母设置
-	static void GoToParentScene();
+	////跳转父母设置
+	//static void GoToParentScene();
 
-	//跳转首页
-	static void GoToIndexScene();
+	////跳转首页
+	//static void GoToIndexScene();
 
-	//跳转登录
-	static void GoToLoginScene();
+	////跳转登录
+	//static void GoToLoginScene();
 
-	//跳转宝贝中心
-	static void GoToBabyCenterScene();
+	////跳转宝贝中心
+	//static void GoToBabyCenterScene();
 
-	//跳转书城
-	static void GoToBookCity();
+	////跳转书城
+	//static void GoToBookCity();
 
-	//跳转书城里的书店
-	static void GoToBookCityChildStore(int bookStoreId);
+	////跳转书城里的书店
+	//static void GoToBookCityChildStore(int bookStoreId);
 
-	//跳转书籍详情
-	static void GoToBookInfo(int bookId);
+	////跳转书籍详情
+	//static void GoToBookInfo(int bookId);
 
-	//跳转绘本
-	static void GoToPictureBook();
+	////跳转绘本
+	//static void GoToPictureBook();
 
-	//跳转咿啦推荐
-	static void GoToRecommend();
+	////跳转咿啦推荐
+	//static void GoToRecommend();
 
-	//跳转限时免费
-	static void GoToFree();
+	////跳转限时免费
+	//static void GoToFree();
 
-	//跳转五星好评
-	static void GoToGoodReputation();
+	////跳转五星好评
+	//static void GoToGoodReputation();
 
-	//跳转咿啦新书
-	static void GoToNewBook();
+	////跳转咿啦新书
+	//static void GoToNewBook();
 
-	//跳转vip书店
-	static void GoToVIPBook();
+	////跳转vip书店
+	//static void GoToVIPBook();
 
-	//跳转康轩书店
-	static void GoToKangXuanStore();
+	////跳转康轩书店
+	//static void GoToKangXuanStore();
 
-	//返回前一场景
-	static void BackPreviousScene();
+	////返回前一场景
+	//static void BackPreviousScene();
 
 	//过渡遮罩
 	void maskAnimation(Layout* layout, Point point);

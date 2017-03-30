@@ -1,5 +1,6 @@
 ﻿#include "Bird.h"
 #include "YYXLayer.h"
+#include "YYXSound.h"
 
 Bird::Bird(const std::string& filename, const std::string& c_plist, const char* c_FileNameFormat, Vec2 P0, Vec2 P1, Vec2 P2, Vec2 P3, float DelayTime, float FlyTime)
 {
@@ -49,8 +50,7 @@ bool Bird::init()
 	GoToBack();
 	auto sequence = Sequence::create(DelayTime::create(m_DelayTime), CallFuncN::create([=](Ref* pSender) {
 		//音效
-		if (App::GetInstance()->isSoundEffect)
-			AudioEngine::play2d(ELLA_SOUND_BIRDS, false, 0.5);
+		YYXSound::getInstance()->playIndex_BirdSound();
 	}), BezierTo::create(m_FlyTime, bezier), CallFuncN::create(CC_CALLBACK_0(Bird::GoToBack, this)), NULL);
 	runAction(RepeatForever::create(sequence));
 	//schedule([this](float f){

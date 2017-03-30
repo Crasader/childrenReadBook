@@ -48,15 +48,15 @@
             <FileData Type="Normal" Path="other/Book_Mask.png" Plist="" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Sprite_1" ActionTag="-1850091871" Tag="227" IconVisible="False" LeftMargin="-87.8027" RightMargin="-134.1973" TopMargin="21.4033" BottomMargin="-97.4033" ctype="SpriteObjectData">
-            <Size X="222.0000" Y="76.0000" />
+          <AbstractNodeData Name="Sprite_1" ActionTag="-1850091871" Tag="227" IconVisible="False" LeftMargin="17.1687" RightMargin="-75.1687" TopMargin="-100.4302" BottomMargin="42.4302" ctype="SpriteObjectData">
+            <Size X="58.0000" Y="58.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="23.1973" Y="-59.4033" />
+            <Position X="46.1687" Y="71.4302" />
             <Scale ScaleX="0.4000" ScaleY="0.4000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition />
             <PreSize X="0.0000" Y="0.0000" />
-            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookInfo_ studyr_vip_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
+            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_niankatushubiaoshi_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
           <AbstractNodeData Name="Download" ActionTag="-217620844" Tag="22" IconVisible="False" LeftMargin="-45.0000" RightMargin="-45.0000" TopMargin="-45.0000" BottomMargin="-45.0000" ctype="SpriteObjectData">
@@ -92,6 +92,17 @@
             <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="BookHome_yixiazaibiaoshi_736h_1" ActionTag="-475948687" Tag="438" IconVisible="False" LeftMargin="-34.5129" RightMargin="-104.4871" TopMargin="31.1978" BottomMargin="-81.1978" ctype="SpriteObjectData">
+            <Size X="139.0000" Y="50.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="34.9871" Y="-56.1978" />
+            <Scale ScaleX="0.4500" ScaleY="0.4500" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition />
+            <PreSize X="0.0000" Y="0.0000" />
+            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_yixiazaibiaoshi_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
+            <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
         </Children>
       </ObjectData>

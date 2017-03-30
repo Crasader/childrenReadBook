@@ -27,21 +27,21 @@ NetIntface * NetIntface::getInstance()
 
 function<void(string)> NetIntface::getMapFunction(string key)
 {
+	function<void(string)> result = nullptr;
 	if (&key && key != "")
 	{
 		if (NetIntface::m_functionMap.find(key) != NetIntface::m_functionMap.end())
 		{
-			auto result = NetIntface::m_functionMap[key];
-			return result;
+			result = NetIntface::m_functionMap[key];
 		}
 	}
 	//App::log("NetIntface::getMapFunction find not" + key);
-	return nullptr;
+	return result;
 }
 
 void NetIntface::setMapFunction(string key, function<void(string)> runFunction)
 {
-	if (&key && runFunction && key != "")
+	if (&key && runFunction && !key.empty())
 	{
 		//App::log("set" + key);
 		NetIntface::m_functionMap[key] = runFunction;
@@ -50,10 +50,14 @@ void NetIntface::setMapFunction(string key, function<void(string)> runFunction)
 
 void NetIntface::deleteMapFunction(string key)
 {
-	if (&key && key != "")
+	if (&key && !key.empty())
 	{
-		if (NetIntface::m_functionMap.count(key) > 0)
-			NetIntface::m_functionMap.erase(key);
+		auto value = m_functionMap.find(key);
+		if (value != m_functionMap.end())
+		{
+			m_functionMap.erase(value);
+			App::log("==============NetIntface::deleteMapFunction(key);" + key);
+		}
 	}
 }
 
@@ -145,12 +149,12 @@ void NetIntface::httpPost(string url, map<string, string> parameter, string runK
 			errorRunFunction(error);
 		string jsonstr = YYXLayer::getStringFormMap(parameter);
 		string errorstr = url+"("+ jsonstr +")>>> httpPost error => " + error;
+		App::log(" ( post error ) " + errorstr);
 		errorstr = App::replaceChar(errorstr, "&", "___");
 		errorstr = App::replaceChar(errorstr, ",", "___");
 		errorstr = App::replaceChar(errorstr, ":", "=");
 		errorstr = App::replaceChar(errorstr, "{", "=>");
 		errorstr = App::replaceChar(errorstr, "}", "<=");
-		App::log(" ( post error ) "+errorstr);
 		string urlstr = "";
 		if (App::m_debug == 0)
 			urlstr = string("http://192.168.10.10:8089").append(NET_UPERRORLOG);
@@ -163,7 +167,9 @@ void NetIntface::httpPost(string url, map<string, string> parameter, string runK
 	});
 	string p = YYXLayer::getStringFormMap(parameter);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	CocosAndroidJni::httpPost(url.c_str(), p.c_str(), runKey.c_str(), errorKey.c_str());
+	//CocosAndroidJni::httpPost(url.c_str(), p.c_str(), runKey.c_str(), errorKey.c_str());
+	std::thread thisthread(&NetIntface::WIN32_httpPost, url, parameter, runKey, errorKey);
+	thisthread.detach();
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	std::thread thisthread(&NetIntface::WIN32_httpPost, url, parameter, runKey, errorKey);
@@ -209,7 +215,9 @@ void NetIntface::httpGet(string url , string runKey1, function<void(string)> run
 	});
 	//App::log(url);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	CocosAndroidJni::httpGet(url.c_str(), runKey.c_str(), errorKey.c_str());
+	//CocosAndroidJni::httpGet(url.c_str(), runKey.c_str(), errorKey.c_str());
+	std::thread thisthread(&NetIntface::WIN32_httpGet, url, runKey, errorKey);
+	thisthread.detach();
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	std::thread thisthread(&NetIntface::WIN32_httpGet, url, runKey, errorKey);
@@ -1765,7 +1773,9 @@ void NetIntface::DownLoadImage(string url, string dir, string fileName, string r
 		deleteMapFunction(errorKey);
 	});
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	CocosAndroidJni::DownLoadImage(url.c_str(), dir.c_str(), fileName.c_str(), runKey.c_str(), errorKey.c_str());
+	//CocosAndroidJni::DownLoadImage(url.c_str(), dir.c_str(), fileName.c_str(), runKey.c_str(), errorKey.c_str());
+	std::thread thisthread(&NetIntface::WIN32_DownLoad, url, dir, fileName, runKey, errorKey);
+	thisthread.detach();
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	std::thread thisthread(&NetIntface::WIN32_DownLoad, url, dir, fileName, runKey, errorKey);

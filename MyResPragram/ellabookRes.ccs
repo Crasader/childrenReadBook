@@ -182,13 +182,22 @@
             <Project Name="bookNodeover.csd" Type="Node" />
             <Project Name="bookroom.csd" Type="Layer" />
             <PlistInfo Name="bookRoom.csi" Type="Plist" />
+            <Project Name="help.csd" Type="Layer" />
           </Folder>
           <Folder Name="res">
+            <Image Name="BookHome_biaoshishuomingtanchuang_736h.png" />
             <Image Name="BookHome_bj_736h.png" />
+            <Image Name="BookHome_button_biaoshishuoming_736h.png" />
             <Image Name="BookHome_button_shanchu_736h.png" />
             <Image Name="BookHome_button_shoucang_736h.png" />
             <Image Name="BookHome_button_xiazai_736h.png" />
+            <Image Name="BookHome_button_yigoumai_nor_736h.png" />
+            <Image Name="BookHome_button_yigoumai_pre_736h.png" />
             <Image Name="BookHome_button_yishoucang_736h.png" />
+            <Image Name="BookHome_button_yixiazai_nor_736h.png" />
+            <Image Name="BookHome_button_yixiazai_pre_736h.png" />
+            <Image Name="BookHome_button_zuijinyuedu_nor_736h.png" />
+            <Image Name="BookHome_button_zuijinyuedu_pre_736h.png" />
             <Image Name="BookHome_Delete.png" />
             <Image Name="BookHome_Download.png" />
             <Image Name="BookHome_Download_Background.png" />
@@ -204,9 +213,11 @@
             <Image Name="BookHome_girl_0017.png" />
             <Image Name="BookHome_girl_0018.png" />
             <Image Name="BookHome_girl_0022.png" />
+            <Image Name="BookHome_niankatushubiaoshi_736h.png" />
             <Image Name="BookHome_niaochao_choice_736h.png" />
             <Image Name="BookHome_night_window_ipad.png" />
             <Image Name="BookHome_winduw_pop_736h.png" />
+            <Image Name="BookHome_yixiazaibiaoshi_736h.png" />
             <Image Name="BookInfo_ studyr_button_allbook_736h.png" />
             <Image Name="BookInfo_ studyr_button_allbook_press_736h.png" />
             <Image Name="BookInfo_ studyr_button_downloaded_736h.png" />
@@ -217,6 +228,8 @@
             <Image Name="BookInfo_ studyr_button_vip book_press_736h.png" />
             <Image Name="BookInfo_ studyr_shuzhi_736h.png" />
             <Image Name="BookInfo_ studyr_vip_736h.png" />
+            <Image Name="button_shanchu_736h.png" />
+            <Image Name="button_xiazai_736h.png" />
             <Image Name="gm_nav_nor_736h.png" />
             <Image Name="gm_nav_sel_736h.png" />
             <Image Name="muban_nav_bg_736h.png" />
@@ -593,6 +606,7 @@
           <Image Name="Book_Background.png" />
           <Image Name="Book_cover.png" />
           <Image Name="Book_Mask.png" />
+          <Image Name="BookHome_wuxinghaoping_736h.png" />
           <Image Name="BookInfo_book details_ Popover_button_fork_736h.png" />
           <Image Name="BookInfo_book details_ Popover_button_fork_press_736h.png" />
           <Image Name="BookInfo_book-details_-Popover_background_667h.png" />

@@ -94,6 +94,7 @@ class YYXDownloadImages:public Ref
 public:
 	mutex m;//同步
 	int m_concurrence = 4;//并发数
+	int outTime = 40;//超时时间
 	int Concurrence() const { return m_concurrence; }
 	void Concurrence(int val) { m_concurrence = val; }
 	bool m_start;//运行中
@@ -107,7 +108,7 @@ public:
 	static YYXDownloadImages* instance;
 	void newDownloadImage(string url, string dir, string filename,  YYXDownloadImagesPriority priority = normal,int delayTime = 0,  function<void(string)> callback = nullptr, function<void(string)> callbackerror = nullptr);
 	string getTaskTag(string path);
-
+	void getList();
 
 private:
 	map<string, YYXDownloadImagesData*> m_Tasks;
