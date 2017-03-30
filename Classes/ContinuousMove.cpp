@@ -40,12 +40,15 @@ ContinuousMove* ContinuousMove::create(const std::string& c_FileName
 		, f_MoveTime, Show4AnchorPoint, Shadow4AnchorPoint, MoveUpStart, MoveUpTime, ShakeTime
 		,  JumpHeight,  Jumps, completeAnimation);
 	auto cache = SpriteFrameCache::getInstance();
-	node->m_Cloud = Sprite::create();
-	node->m_Cloud->initWithSpriteFrameName(c_FileName);
-	node->m_Cloud->getTexture()->setAliasTexParameters();
-	node->m_Cloud1 = Sprite::create();
-	node->m_Cloud1->initWithSpriteFrameName(c_FileName);
-	node->m_Cloud1->getTexture()->setAliasTexParameters();
+	if (auto spf = cache->getSpriteFrameByName(c_FileName))
+	{
+		node->m_Cloud = Sprite::create();
+		node->m_Cloud->initWithSpriteFrame(spf);
+		node->m_Cloud->getTexture()->setAliasTexParameters();	
+		node->m_Cloud1 = Sprite::create();
+		node->m_Cloud1->initWithSpriteFrame(spf);
+		node->m_Cloud1->getTexture()->setAliasTexParameters();
+	}
 	if (node && node->init())
 	{                                    
 		node->autorelease();		

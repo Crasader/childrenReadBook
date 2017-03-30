@@ -2,6 +2,7 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "YYXDownloadImages.h"
+//#include "ControlScene.h"
 
 USING_NS_CC;
 
@@ -84,7 +85,9 @@ void ShowNotification::initActivity() {
 		//if (App::GetInstance()->m_notification->pushType == 2) {//新书
 		if(pushType == 2)
 		{
-			Index::GoToNewBook();
+			//Index::GoToNewBook();
+			auto control = ControlScene::getInstance();
+			control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(NewBook));
 			return;
 		}
 		//弹出网页
@@ -246,7 +249,9 @@ void ShowNotification::initWord() {
 		//if (App::GetInstance()->m_notification->pushType == 2) 
 		if (pushType == 2)
 		{//新书
-			Index::GoToNewBook();
+			//Index::GoToNewBook();
+			auto control = ControlScene::getInstance();
+			control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(NewBook));
 			return;
 		}
 		auto pushUrl = YYXStruct::getMapString(App::GetInstance()->myData, "pushUrl", "http://www.ellabook.cn");

@@ -68,11 +68,24 @@ std::string YYXDownloadImages::getTaskTag(string path)
 	return taskTag;
 }
 
+void YYXDownloadImages::getList()
+{
+	App::log("*****************************************************************************************************************");
+	for (auto it : downloadList)
+	{
+		string name = it.first;
+		string path = it.second->Path();
+		App::log(name + "===>>" + path);
+	}
+	App::log("*****************************************************************************************************************");
+}
+
 void YYXDownloadImages::startTask()
 {
 	m.lock();
 	if (downloadList.size() > 0)
 	{
+		vector<string> data;
 		for (auto it : downloadList)
 		{
 			auto task = it.second;
@@ -83,11 +96,15 @@ void YYXDownloadImages::startTask()
 				task->StartTime(timestart);
 			}
 			auto nowtime = YYXLayer::getCurrentTime4Second() - timestart;
-			if (nowtime > 60)
+			if (nowtime > outTime)
 			{
-				deleteTask(task->Task());
-				App::log("deleteTask out 60s ==>>" + task->Task());
+				data.push_back(task->Task());
 			}
+		}
+		for (auto it : data)
+		{
+			deleteTask(it);
+			App::log("deleteTask out 10s ==>>" + it);
 		}
 	}
 	if (downloadList.size() < m_concurrence)
@@ -110,7 +127,7 @@ void YYXDownloadImages::startTask()
 	{
 		Start(false);
 	}
-	App::log("YYXDownloadImages::startTask() ==>>> downloadList.size() =", downloadList.size());
+	App::log("YYXDownloadImages::startTask() =========================>>> downloadList.size() =", downloadList.size());
 	m.unlock();
 }
 
@@ -191,5 +208,5 @@ void YYXDownloadImages::deleteTask(string taskTag)
 	auto data = m_Tasks[taskTag];
 	if (data)
 		data->release();
-	m_Tasks.erase(taskTag);
+	m_Tasks.erase(taskTag);	
 }

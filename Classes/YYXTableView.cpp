@@ -1,6 +1,7 @@
 ﻿#include "YYXTableView.h"
 #include "YYXImageView.h"
 #include "NetIntface.h"
+#include "YYXSound.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -63,10 +64,11 @@ vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid, int memberID)
 			memberName = YYXStruct::getMapString(App::GetInstance()->myData, timeKey, "132****1434");//用户名
 			score = YYXStruct::getMapInt64(App::GetInstance()->myData, voiceKey, 3);//星级
 			commentTime = YYXStruct::getMapInt64(App::GetInstance()->myData, timeKey, 0);//评论时间
-			voiceLength = (int)YYXStruct::getMapRef(App::GetInstance()->myData, voiceKey, 0);//语音时间
+			voiceLength = (long)YYXStruct::getMapRef(App::GetInstance()->myData, voiceKey, 0);//语音时间
 			url = YYXStruct::getMapString(App::GetInstance()->myData, voiceKey, "");//语音url
 		}
-		memberName.replace(3, 4, "****");
+		if (memberName.size() >= 7)
+			memberName.replace(3, 4, "****");
 		string AvatarUrlKey = StringUtils::format("comment_gevalId=%d+memberId+AvatarUrl", commentID);
 		int memberId = YYXStruct::getMapInt64(App::GetInstance()->myData, AvatarUrlKey, 0);//用户id
 		auto AvatarUrl = YYXStruct::getMapString(App::GetInstance()->myData, AvatarUrlKey, "");//头像url
@@ -136,7 +138,8 @@ vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid)
 			voiceLength = (int)YYXStruct::getMapRef(App::GetInstance()->myData, voiceKey, 0);//语音时间
 			url = YYXStruct::getMapString(App::GetInstance()->myData, voiceKey, "");//语音url
 		}
-		memberName.replace(3, 4, "****");
+		if(memberName.size() >=7)
+			memberName.replace(3, 4, "****");
 		string AvatarUrlKey = StringUtils::format("comment_gevalId=%d+memberId+AvatarUrl", commentID);
 		int memberId = YYXStruct::getMapInt64(App::GetInstance()->myData, AvatarUrlKey, 0);//用户id
 		auto AvatarUrl = YYXStruct::getMapString(App::GetInstance()->myData, AvatarUrlKey, "");//头像url
@@ -163,7 +166,7 @@ void YYXTableView::tableCellTouched(TableView* table, TableViewCell* cell)
 	auto index = cell->getIdx();
 	auto data = m_data[index];
 	auto memberId = YYXStruct::getMapInt64(data, "headportait", -999);
-	if (memberId > 0 && App::GetInstance()->m_me && App::GetInstance()->m_me->id == memberId)
+	if (memberId > 0 && App::GetInstance()->getMemberId() == memberId)
 	{
 		handleYourOwnComments(table, cell);
 	}
@@ -218,7 +221,7 @@ Layout* YYXTableView::createItem(map<string, YYXStruct>  data, int idx)
 {
 	auto layout = Layout::create();
 	layout->setLayoutType(cocos2d::ui::Layout::Type::RELATIVE);
-	layout->setBackGroundColorType(cocos2d::ui::Layout::BackGroundColorType::SOLID);
+	//layout->setBackGroundColorType(cocos2d::ui::Layout::BackGroundColorType::SOLID);
 	//layout->setColor(Color3B::YELLOW);
 	layout->setTag(LAYOUTTAG);
 
@@ -325,7 +328,7 @@ Layout* YYXTableView::createItem(map<string, YYXStruct>  data, int idx)
 	yuying->setSwallowTouches(false);
 	yuying->addClickEventListener([=](Ref* sender) {
 		auto memberId = YYXStruct::getMapInt64(data, "headportait", -999);
-		if (memberId > 0 && App::GetInstance()->m_me && App::GetInstance()->m_me->id == memberId)
+		if (memberId > 0 && App::GetInstance()->getMemberId() == memberId)
 			m_myVoiceAble = true;
 	});
 
@@ -431,7 +434,7 @@ void YYXTableView::reuseItem(TableViewCell*item, map<string, YYXStruct>  data, i
 	yuying->setSwallowTouches(false);
 	yuying->addClickEventListener([=](Ref* sender) {
 		auto memberId = YYXStruct::getMapInt64(data, "headportait", -999);
-		if (memberId > 0 && App::GetInstance()->m_me && App::GetInstance()->m_me->id == memberId)
+		if (memberId > 0 && App::GetInstance()->getMemberId() == memberId)
 			m_myVoiceAble = true;
 	});
 
@@ -478,9 +481,9 @@ void YYXTableView::playVoiceFrameAnimation(Sprite* vsp)
 		vsp->runAction(ac);
 	}
 	Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(vsp);
-	auto listener = EventListenerCustom::create("stopCommentVoice", [=](EventCustom* e) {
-		int sp = (int)e->getUserData();
-		if (sp != (int)vsp)
+	auto listener = EventListenerCustom::create(TAG_STOPCOMMENT_SOUND_ANIMATION, [=](EventCustom* e) {
+		long sp = (long)e->getUserData();
+		if (sp != (long)vsp)
 		{
 			vsp->stopAllActions();
 			showAnimationEnd(vsp);
@@ -533,10 +536,10 @@ void YYXTableView::handleYourOwnComments(TableView* table, TableViewCell* cell)
 //声音播放完毕或者终止时 需要处理的事件
 void YYXTableView::soundPlayCompletes()
 {
-	App::GetInstance()->stopOtherVoice();
 	m_playingVoiceIdx = -999;
-	YYXLayer::sendNotify("stopCommentVoice");
-	App::GetInstance()->resumeBackGroundMusic();
+	YYXLayer::sendNotify(TAG_STOPCOMMENT_SOUND_ANIMATION);
+	YYXSound::getInstance()->stopAll();
+	YYXSound::getInstance()->resumeBackGroundMusic();
 }
 
 //处理别人发布的评论
@@ -557,28 +560,31 @@ void YYXTableView::handleOtherComments(TableView* table, TableViewCell* cell)
 			auto voicepath = YYXStruct::getMapString(data, "voicepath", "");
 			if (FileUtils::getInstance()->isFileExist(voicepath))
 			{
-				App::GetInstance()->stopOtherVoice();
-				App::GetInstance()->pauseBackGroundMusic();
-				auto voiceId = AudioEngine::play2d(voicepath);
-				m_playingVoiceIdx = index;
-				App::GetInstance()->deleteMusicID.push_back(voiceId);
+				YYXSound* controlSound = nullptr;
+				controlSound = YYXSound::getInstance();
+				if (controlSound)
+				{
+					controlSound->pauseBackGroundMusic();
+					controlSound->stopAll();
+					controlSound->play(voicepath, [=](int id,string path) {
+						m_playingVoiceIdx = -999;
+						YYXLayer::sendNotify(TAG_STOPCOMMENT_SOUND_ANIMATION);
+						controlSound->resumeBackGroundMusic();
+					});
+					m_playingVoiceIdx = index;
+				}
 				//动画
 				auto layout = (Layout*)cell->getChildByTag(LAYOUTTAG);
 				auto yuying = (ImageView*)layout->getChildByTag(5);
 				auto voiceSp = (Sprite*)yuying->getChildByTag(6);
-				YYXLayer::sendNotify("stopCommentVoice", "", (int)voiceSp);
+				YYXLayer::sendNotify(TAG_STOPCOMMENT_SOUND_ANIMATION, "", (int)voiceSp);
 				playVoiceFrameAnimation(voiceSp);
-				AudioEngine::setFinishCallback(voiceId, [=](int id, string path) {
-					m_playingVoiceIdx = -999;
-					YYXLayer::sendNotify("stopCommentVoice");
-					App::GetInstance()->resumeBackGroundMusic();
-				});
 			}
 		}
 	}
 }
 
-void YYXTableView::stopAllAnimation()
+void YYXTableView::stopAllAnimation()//提供给外部的函数
 {
-	YYXLayer::sendNotify("stopCommentVoice");
+	YYXLayer::sendNotify(TAG_STOPCOMMENT_SOUND_ANIMATION);
 }

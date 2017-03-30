@@ -424,7 +424,7 @@
             <FileData Type="Normal" Path="other/wodeshufang-niankasuoding-mr_736h.png" Plist="" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Backcover_goumaichenggong_736h_1" ActionTag="236786048" Tag="117" IconVisible="False" LeftMargin="165.0613" RightMargin="237.9387" TopMargin="270.6447" BottomMargin="86.3554" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Backcover_goumaichenggong_736h_1" ActionTag="236786048" Tag="117" IconVisible="False" LeftMargin="165.0613" RightMargin="237.9387" TopMargin="270.6446" BottomMargin="86.3554" ctype="SpriteObjectData">
             <Size X="451.0000" Y="123.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="390.5613" Y="147.8554" />
@@ -435,7 +435,7 @@
             <FileData Type="MarkedSubImage" Path="Book/res/Backcover_goumaichenggong_736h.png" Plist="Book/csb/backcover.plist" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Backcover_goumaichenggong_tuxing_736h_2" ActionTag="-1655132108" Tag="118" IconVisible="False" LeftMargin="164.0613" RightMargin="236.9387" TopMargin="167.1447" BottomMargin="-17.1446" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Backcover_goumaichenggong_tuxing_736h_2" ActionTag="-1655132108" Tag="118" IconVisible="False" LeftMargin="164.0613" RightMargin="236.9387" TopMargin="167.1446" BottomMargin="-17.1446" ctype="SpriteObjectData">
             <Size X="453.0000" Y="330.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="390.5613" Y="147.8554" />
@@ -444,6 +444,17 @@
             <PrePosition X="0.4573" Y="0.3080" />
             <PreSize X="0.5304" Y="0.6875" />
             <FileData Type="MarkedSubImage" Path="Book/res/Backcover_goumaichenggong_tuxing_736h.png" Plist="Book/csb/backcover.plist" />
+            <BlendFunc Src="1" Dst="771" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="BookHome_wuxinghaoping_736h_1" ActionTag="-1027955381" Tag="219" IconVisible="False" LeftMargin="267.0000" RightMargin="351.0000" TopMargin="339.0000" BottomMargin="99.0000" ctype="SpriteObjectData">
+            <Size X="236.0000" Y="42.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="385.0000" Y="120.0000" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.4508" Y="0.2500" />
+            <PreSize X="0.2763" Y="0.0875" />
+            <FileData Type="Normal" Path="other/BookHome_wuxinghaoping_736h.png" Plist="" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
         </Children>

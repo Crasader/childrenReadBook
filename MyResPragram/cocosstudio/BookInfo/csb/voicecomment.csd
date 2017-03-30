@@ -43,7 +43,7 @@
             <Position X="0.0001" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.0000" />
+            <PrePosition />
             <PreSize X="0.4933" Y="1.9500" />
             <FileData Type="Normal" Path="other/Backcover_voice_background_736h.png" Plist="" />
           </AbstractNodeData>

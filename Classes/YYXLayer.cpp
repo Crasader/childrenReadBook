@@ -24,6 +24,7 @@ YYX框架
 #include <iostream>   
 #include <string>   
 #include "NetIntface.h"
+#include "YYXSound.h"
 
 using namespace std;
 using namespace cocostudio::timeline;
@@ -248,7 +249,15 @@ YYXLayer * YYXLayer::MyMessageBox(string titile, string yesString, function<void
 	if (notext && noString != "")
 		notext->setText(noString);
 	if (content)
+	{
+		auto font = content->getFontSize();
+		if (titile.size() > 30)
+			font -= 8;
+		else if (titile.size() > 45)
+			font -= 16;
+		content->setFontSize(font);
 		content->setText(titile);
+	}
 	messagebox->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
 	messagebox->getParentNode()->setPosition(Director::getInstance()->getVisibleSize() / 2);
 	return messagebox;
@@ -1243,7 +1252,7 @@ YYXLayer* YYXLayer::LoadingLayer(int dtimme, function<void()> runable)
 	auto loading = YYXLayer::create(paramter, map<string, function<void(YYXLayer*)>>());
 	auto listener = EventListenerCustom::create("deleteMyLoadingLayer", [=](EventCustom* e) {
 		App::log("              respond deleteMyLoadingLayer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-		loading->removeFromParentAndCleanup(true);
+		loading->removeFromParent();
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "LoadingLayerCount", 0);
 		if (runable)
 			runable();
@@ -1273,7 +1282,7 @@ YYXLayer* YYXLayer::LoadingLayer(int dtimme, function<void()> runable)
 		auto createTime = YYXStruct::getMapInt64(App::GetInstance()->myData, "createMyLoadingLayerTime", nowtime);
 		if (nowtime > (createTime + dtimme))
 		{
-			loading->removeFromParentAndCleanup(true);
+			loading->removeFromParent();
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "LoadingLayerCount", 0);
 			if (runable)
 				runable();
@@ -1655,16 +1664,16 @@ void YYXLayer::deleteFileValue(string key)
 	}
 }
 
-bool YYXLayer::getBoolFromXML(string str)
-{
-	string data = YYXLayer::getFileValue(str, "true");
-	if (data == "false")
-	{
-		return false;
-	}
-	else
-		return true;
-}
+//bool YYXLayer::getBoolFromXML(string str)
+//{
+//	string data = YYXLayer::getFileValue(str, "true");
+//	if (data == "false")
+//	{
+//		return false;
+//	}
+//	else
+//		return true;
+//}
 
 std::string YYXLayer::getStringTimeFromInt64Time(long long t)
 {
@@ -2252,9 +2261,9 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
 						if (voiceLayer->getTag() == 1)
 						{//停止播放
-							App::GetInstance()->stopOtherVoice();
 							YYXLayer::sendNotify("StopAnimation");
-							App::GetInstance()->resumeBackGroundMusic();
+							YYXSound::getInstance()->stopAll();
+							YYXSound::getInstance()->resumeBackGroundMusic();
 						}
 						else
 						{//播放
@@ -2264,21 +2273,17 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 							string paht = FileUtils::getInstance()->getWritablePath() + "voiceComment/" + StringUtils::format("%d.mp3", id);
 							if (!paht.empty() && FileUtils::getInstance()->isFileExist(paht))
 							{
-								App::GetInstance()->stopOtherVoice();
-								App::GetInstance()->pauseBackGroundMusic();
+								YYXSound::getInstance()->stopAll();
+								YYXSound::getInstance()->pauseBackGroundMusic();
 								auto animate = FrameAnimation::createAnimate(3, "other/yuying.plist", "other/Backcover_voice_donghua%d_736h.png", 0.2f);
 								auto seqDoor = Sequence::create(animate, animate->reverse(), NULL);
 								auto act = RepeatForever::create(seqDoor);
 								auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
 								if (voiceSp)
 									voiceSp->runAction(act);
-								auto playId = AudioEngine::play2d(paht);
-								App::GetInstance()->deleteMusicID.push_back(playId);
-								AudioEngine::setFinishCallback(playId, [=](int id, string path) {
-									App::log(" music finish " + paht);
-									// 音乐结束回调
+								YYXSound::getInstance()->play(paht, [=](int id, string path) {
 									YYXLayer::sendNotify("StopAnimation");
-									App::GetInstance()->resumeBackGroundMusic();
+									YYXSound::getInstance()->resumeBackGroundMusic();
 								});
 							}
 							else
@@ -2340,7 +2345,7 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 			item3->setContentSize(Size(listviewMaxWidth, voiceLayer->getContentSize().height + 5));
 			//停止动画
 			auto listenerStopVoicePlay = EventListenerCustom::create("StopAnimation", [=](EventCustom* e) {
-				if ((int)e->getUserData() != (int)voiceLayer)
+				if ((long)e->getUserData() != (long)voiceLayer)
 				{
 					auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
 					if (voiceSp) {
@@ -2389,13 +2394,6 @@ void YYXLayer::TraversingJson(string json, map<string, string>& data)
 	}
 	else
 		App::log("json TraversingJson Error: "+ json);
-}
-
-//返回按钮的音效
-void YYXLayer::PLAYBUTTON()
-{
-	if (App::GetInstance()->isSoundEffect)
-		AudioEngine::play2d(ELLA_SOUND_BUTTON);
 }
 
 //复制文件夹 不替换 删除源文件

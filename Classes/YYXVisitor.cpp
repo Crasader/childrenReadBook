@@ -2,6 +2,11 @@
 #include "NetIntface.h"
 #include "App.h"
 #include "YYXDownloadImages.h"
+#include "DownloadBook.h"
+#include "ReadBook.h"
+#include "BuyBook.h"
+#include "BookCache.h"
+#include "User.h"
 
 YYXVisitor* YYXVisitor::instance = nullptr;
 
@@ -63,6 +68,7 @@ void YYXVisitor::httpGetVisitorMemberId(string deviceStr)
 			{
 				App::GetInstance()->m_me = new MyAccount();
 				App::GetInstance()->m_me->id = memberId;
+				User::getInstance()->setMemberId(memberId);
 				YYXLayer::setFileValue("visitorMemberId", App::getMemberID(), m_dirpath);
 				//网络获取用户全部信息
 				httpGetVisitorInfo(false);
@@ -82,13 +88,13 @@ void YYXVisitor::httpGetVisitorInfo(bool hint)
 	//查询用户包年服务信息
 	httpCheckVIP(hint);
 	//本地读取vip包年图书列表(租书列表),
-	httpGetVipBook(hint);
+	//httpGetVipBook(hint);
 	//网络请求收藏列表
-	httpGetCollectBook(hint);
+	//httpGetCollectBook(hint);
 	//获取用户已购列表
-	httpGetBuyBook(hint);
+	//httpGetBuyBook(hint);
 	//获取孩子信息
-	httpGetChildren(hint);
+	//httpGetChildren(hint);
 	//查询余额
 	httpGetBalance(hint);
 }
@@ -155,31 +161,23 @@ void YYXVisitor::httpGetVipBook(bool hint)
 					App::GetInstance()->VIPbook[bookid] = (int)YYXLayer::getCurrentTime4Second();
 					App::GetInstance()->myBookURLMap[bookid] = url;
 					//封面下载
-					string fileName = StringUtils::format("%d", bookid) + ".png";
-					if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookid)))
-					{
-						YYXDownloadImagesPriority priority = low;
-						if (index < 6)
-							priority = high;
-						YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, App::getCoverDir(), fileName, priority, 0, [=](string downPath) {
-							YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
-						},  [=](string str) {
-							if (hint)
-							{
-								string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
-								Toast::create(sstr.c_str(), false);
-							}
-						});
-						/*NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
-							YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
-						}, "", [=](string str) {
-							if (hint)
-							{
-								string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
-								Toast::create(sstr.c_str(), false);
-							}
-						});*/
-					}
+					BookCache::getInstance()->addBook(Book::create()->setBookId(bookid)->setCoverURL(bookCoverUrl));
+					//string fileName = StringUtils::format("%d", bookid) + ".png";
+					//if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookid)))
+					//{
+					//	YYXDownloadImagesPriority priority = low;
+					//	if (index < 6)
+					//		priority = high;
+					//	YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, App::getCoverDir(), fileName, priority, 0, [=](string downPath) {
+					//		YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
+					//	},  [=](string str) {
+					//		if (hint)
+					//		{
+					//			string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
+					//			Toast::create(sstr.c_str(), false);
+					//		}
+					//	});
+					//}
 				});
 				YYXLayer::sendNotify("bookRoomSceneCompileChange", "", -1);
 				map<string, string> data;
@@ -239,8 +237,9 @@ void YYXVisitor::httpGetBuyBook(bool hint)
 			//解析过程
 			App::GetInstance()->myBookURLMap[bookId] = bookPlayUrl;
 			App::GetInstance()->myBuyBook[bookId] = orderId;
+			BookCache::getInstance()->addBook(Book::create()->setBookId(bookId)->setCoverURL(bookCoverUrl));
 			//封面下载
-			string fileName = StringUtils::format("%d", bookId) + ".png";
+			/*string fileName = StringUtils::format("%d", bookId) + ".png";
 			if (!FileUtils::getInstance()->isFileExist(App::getBookCoverPngPath(bookId)))
 			{
 				YYXDownloadImagesPriority priority = low;
@@ -256,16 +255,7 @@ void YYXVisitor::httpGetBuyBook(bool hint)
 						Toast::create(sstr.c_str(), false);
 					}
 				});
-				/*NetIntface::DownLoadImage(bookCoverUrl, App::getCoverDir(), fileName, "", [=](string downPath) {
-					YYXLayer::sendNotify("bookRoomCoverDownloadSuccess");
-				}, "", [=](string str) {
-					if (hint)
-					{
-						string sstr = string("<<" + bookName + ">>").append(App::getString("FENGMIANXIAZAISHIBAI"));
-						Toast::create(sstr.c_str(), false);
-					}
-				});*/
-			}
+			}*/
 		}, []() {
 			//解析成功
 			map<string, string> data;
@@ -321,17 +311,6 @@ void YYXVisitor::httpGetChildren(bool hint)
 						YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
 					}
 				}, [](string str) {});
-				/*NetIntface::DownLoadImage(url, m_dirpath, StringUtils::format("9HeadPortrait_%d.png", childrenId),
-					"", [=](string path) {
-					if (path != "" && FileUtils::getInstance()->isFileExist(path))
-					{
-						string savePath = m_dirpath + StringUtils::format("/childHead_%d.png", childrenId);
-						App::makeRoundImage(path, savePath);
-						string pathkey = StringUtils::format("path+childID=%d", childrenId);
-						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathkey, YYXLayer::getCurrentTime4Second(), savePath);
-						YYXLayer::sendNotify("IndexSceneReferShowHeadPortrait");
-					}
-				}, "", [](string str) {});*/
 			}
 		}, [=](int b) {
 			if (b == 1)
@@ -416,9 +395,13 @@ void YYXVisitor::loadLocationVisitorData()
 	//载入购书信息
 	App::loadBuyBookCache();
 	//载入收藏列表
-	App::loadCollectBookCache();
-	//载入下载列表
-	App::loadDownloadBookCache();
+	//loadCollectBookCache();
+	//载入购买书籍时间
+	BuyBook::getInstance()->loadCache();
+	//载入最近阅读时间
+	ReadBook::getInstance()->loadCache();
+	//载入最近下载时间
+	DownloadBook::getInstance()->loadCache();
 	auto userBalancestr = YYXLayer::getFileValue("visitorBalance", "", m_dirpath);
 	int money = atoi(userBalancestr.c_str());
 	App::GetInstance()->m_me->momey = money;
@@ -634,6 +617,7 @@ void YYXVisitor::loginVisitor()
 		if (App::GetInstance()->m_me == nullptr)
 			App::GetInstance()->m_me = new MyAccount();
 		App::GetInstance()->m_me->id = atoi(visitorMemberId.c_str());		
+		User::getInstance()->setMemberId(App::GetInstance()->m_me->id);
 		loadLocationVisitorData();
 		httpGetVisitorInfo(false);
 	}

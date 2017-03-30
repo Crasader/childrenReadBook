@@ -184,26 +184,6 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Image_2" ActionTag="595694885" Tag="33" IconVisible="False" LeftMargin="110.3233" RightMargin="590.6767" TopMargin="52.5000" BottomMargin="38.5000" LeftEage="216" RightEage="216" TopEage="288" BottomEage="288" Scale9OriginX="177" Scale9OriginY="235" Scale9Width="39" Scale9Height="53" ctype="ImageViewObjectData">
-            <Size X="393.0000" Y="523.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="306.8233" Y="300.0000" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.2805" Y="0.4886" />
-            <PreSize X="0.3592" Y="0.8518" />
-            <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_Cover_bg.png" Plist="BookInfo/csb/bookInfo.plist" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="Image_2_0" ActionTag="1798912887" Tag="71" IconVisible="False" LeftMargin="110.3233" RightMargin="590.6767" TopMargin="52.5000" BottomMargin="38.5000" LeftEage="216" RightEage="216" TopEage="288" BottomEage="288" Scale9OriginX="177" Scale9OriginY="235" Scale9Width="39" Scale9Height="53" ctype="ImageViewObjectData">
-            <Size X="393.0000" Y="523.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="306.8233" Y="300.0000" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.2805" Y="0.4886" />
-            <PreSize X="0.3592" Y="0.8518" />
-            <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_Cover_bg.png" Plist="BookInfo/csb/bookInfo.plist" />
-          </AbstractNodeData>
           <AbstractNodeData Name="back" ActionTag="714073043" Tag="79" IconVisible="False" LeftMargin="25.0118" RightMargin="959.9882" TopMargin="23.8561" BottomMargin="480.1439" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="79" Scale9Height="88" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="109.0000" Y="110.0000" />
             <AnchorPoint ScaleY="1.0000" />
@@ -310,6 +290,26 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
+          <AbstractNodeData Name="Image_2_0" ActionTag="1798912887" Tag="71" IconVisible="False" LeftMargin="110.3233" RightMargin="590.6767" TopMargin="52.5000" BottomMargin="38.5000" LeftEage="216" RightEage="216" TopEage="288" BottomEage="288" Scale9OriginX="177" Scale9OriginY="235" Scale9Width="39" Scale9Height="53" ctype="ImageViewObjectData">
+            <Size X="393.0000" Y="523.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="306.8233" Y="300.0000" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.2805" Y="0.4886" />
+            <PreSize X="0.3592" Y="0.8518" />
+            <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_Cover_bg.png" Plist="BookInfo/csb/bookInfo.plist" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Image_2" ActionTag="595694885" Tag="33" IconVisible="False" LeftMargin="110.3233" RightMargin="590.6767" TopMargin="52.5000" BottomMargin="38.5000" LeftEage="216" RightEage="216" TopEage="288" BottomEage="288" Scale9OriginX="177" Scale9OriginY="235" Scale9Width="39" Scale9Height="53" ctype="ImageViewObjectData">
+            <Size X="393.0000" Y="523.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="306.8233" Y="300.0000" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.2805" Y="0.4886" />
+            <PreSize X="0.3592" Y="0.8518" />
+            <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_Cover_bg.png" Plist="BookInfo/csb/bookInfo.plist" />
+          </AbstractNodeData>
           <AbstractNodeData Name="wuxing" ActionTag="1388865723" Tag="98" IconVisible="False" LeftMargin="205.1467" RightMargin="681.8533" TopMargin="126.8654" BottomMargin="448.1346" LeftEage="68" RightEage="68" TopEage="12" BottomEage="12" Scale9OriginX="68" Scale9OriginY="12" Scale9Width="71" Scale9Height="15" ctype="ImageViewObjectData">
             <Size X="207.0000" Y="39.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
@@ -320,23 +320,23 @@
             <PreSize X="0.1892" Y="0.0635" />
             <FileData Type="Normal" Path="other/Backcover_star5_736h.png" Plist="" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Image_4" ActionTag="-175069336" Tag="100" IconVisible="False" LeftMargin="1014.2434" RightMargin="-8.2434" TopMargin="-5.0661" BottomMargin="383.0661" LeftEage="24" RightEage="24" TopEage="56" BottomEage="56" Scale9OriginX="24" Scale9OriginY="56" Scale9Width="40" Scale9Height="124" ctype="ImageViewObjectData">
+          <AbstractNodeData Name="Image_4" ActionTag="-175069336" Tag="100" IconVisible="False" LeftMargin="992.2434" RightMargin="13.7566" TopMargin="53.9339" BottomMargin="324.0661" LeftEage="24" RightEage="24" TopEage="56" BottomEage="56" Scale9OriginX="24" Scale9OriginY="56" Scale9Width="41" Scale9Height="124" ctype="ImageViewObjectData">
             <Size X="88.0000" Y="236.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="1058.2434" Y="501.0661" />
+            <AnchorPoint ScaleX="1.0000" ScaleY="1.0000" />
+            <Position X="1080.2434" Y="560.0661" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.9673" Y="0.8161" />
+            <PrePosition X="0.9874" Y="0.9122" />
             <PreSize X="0.0804" Y="0.3844" />
             <FileData Type="MarkedSubImage" Path="BookInfo/res/yjgou.png" Plist="BookInfo/csb/bookInfo.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="goumainianka" ActionTag="-1418399294" Tag="109" IconVisible="False" LeftMargin="612.7135" RightMargin="81.2865" TopMargin="507.5160" BottomMargin="36.4840" TouchEnable="True" FontSize="28" ButtonText="购买年卡, 免费阅读本书&gt;&gt;&gt;" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="334" Scale9Height="11" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+          <AbstractNodeData Name="goumainianka" ActionTag="-1418399294" Tag="109" IconVisible="False" LeftMargin="597.1050" RightMargin="96.8950" TopMargin="501.1064" BottomMargin="42.8936" TouchEnable="True" FontSize="28" ButtonText="购买年卡, 免费阅读本书&gt;&gt;&gt;" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="334" Scale9Height="11" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="400.0000" Y="70.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="812.7135" Y="71.4840" />
+            <Position X="797.1050" Y="77.8936" />
             <Scale ScaleX="0.7000" ScaleY="0.7000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.7429" Y="0.1164" />
+            <PrePosition X="0.7286" Y="0.1269" />
             <PreSize X="0.3656" Y="0.1140" />
             <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
             <TextColor A="255" R="64" G="100" B="144" />
@@ -344,77 +344,29 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="mianfeishidu" Visible="False" ActionTag="-422683815" Tag="105" IconVisible="False" LeftMargin="645.4413" RightMargin="307.5587" TopMargin="433.5335" BottomMargin="113.4665" TouchEnable="True" FontSize="30" ButtonText="免费试读" Scale9Enable="True" Scale9Width="141" Scale9Height="67" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="141.0000" Y="67.0000" />
-            <AnchorPoint />
-            <Position X="645.4413" Y="113.4665" />
-            <Scale ScaleX="0.8000" ScaleY="0.8000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.5900" Y="0.1848" />
-            <PreSize X="0.1289" Y="0.1091" />
-            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
-            <TextColor A="255" R="255" G="255" B="255" />
-            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_btn_Previews_Selected.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_btn_Previews.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <OutlineColor A="255" R="255" G="0" B="0" />
-            <ShadowColor A="255" R="110" G="110" B="110" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="goumaihong" Visible="False" ActionTag="-1452266761" Tag="108" IconVisible="False" LeftMargin="835.5244" RightMargin="117.4756" TopMargin="433.5331" BottomMargin="113.4669" TouchEnable="True" FontSize="30" ButtonText="购 买" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="111" Scale9Height="45" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="141.0000" Y="67.0000" />
-            <AnchorPoint />
-            <Position X="835.5244" Y="113.4669" />
-            <Scale ScaleX="0.8000" ScaleY="0.8000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.7637" Y="0.1848" />
-            <PreSize X="0.1289" Y="0.1091" />
-            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
-            <TextColor A="255" R="255" G="255" B="255" />
-            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_btn_Read_Selected.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_btn_Read.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <OutlineColor A="255" R="255" G="0" B="0" />
-            <ShadowColor A="255" R="110" G="110" B="110" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="goumai" ActionTag="-215607739" Tag="107" IconVisible="False" LeftMargin="645.8421" RightMargin="307.1579" TopMargin="434.3947" BottomMargin="112.6053" TouchEnable="True" FontSize="40" ButtonText="购 买" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="111" Scale9Height="45" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="141.0000" Y="67.0000" />
-            <AnchorPoint />
-            <Position X="645.8421" Y="112.6053" />
-            <Scale ScaleX="0.8000" ScaleY="0.8000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.5903" Y="0.1834" />
-            <PreSize X="0.1289" Y="0.1091" />
-            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
-            <TextColor A="255" R="255" G="255" B="255" />
-            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_btn_Previews_Selected.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_btn_Previews.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <OutlineColor A="255" R="255" G="0" B="0" />
-            <ShadowColor A="255" R="110" G="110" B="110" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="mianfeiyuedu" ActionTag="432461939" Tag="104" IconVisible="False" LeftMargin="734.4972" RightMargin="42.5028" TopMargin="416.8925" BottomMargin="82.1075" TouchEnable="True" FontSize="55" ButtonText="免费阅读" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="287" Scale9Height="93" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="317.0000" Y="115.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="892.9972" Y="139.6075" />
-            <Scale ScaleX="0.6000" ScaleY="0.6000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.8163" Y="0.2274" />
-            <PreSize X="0.2898" Y="0.1873" />
-            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
-            <TextColor A="255" R="255" G="255" B="255" />
-            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Details pager_mianfeiyueduvip_Button_press_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Details pager_mianfeiyueduvip_Button_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <OutlineColor A="255" R="255" G="0" B="0" />
-            <ShadowColor A="255" R="110" G="110" B="110" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="yuedu" Visible="False" ActionTag="-1570855567" Tag="106" IconVisible="False" LeftMargin="805.9384" RightMargin="-61.9385" TopMargin="384.3357" BottomMargin="108.6643" TouchEnable="True" FontSize="80" ButtonText="阅 读" Scale9Enable="True" LeftEage="50" RightEage="50" TopEage="50" BottomEage="50" Scale9OriginX="50" Scale9OriginY="50" Scale9Width="354" Scale9Height="21" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+          <AbstractNodeData Name="mianfeishidu" ActionTag="-422683815" Tag="105" IconVisible="False" LeftMargin="631.4387" RightMargin="112.5613" TopMargin="378.5331" BottomMargin="114.4669" TouchEnable="True" FontSize="70" ButtonText="免费试读" Scale9Enable="True" LeftEage="149" RightEage="149" TopEage="39" BottomEage="39" Scale9OriginX="149" Scale9OriginY="39" Scale9Width="156" Scale9Height="43" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="350.0000" Y="121.0000" />
             <AnchorPoint />
-            <Position X="805.9384" Y="108.6643" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="631.4387" Y="114.4669" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.7367" Y="0.1770" />
+            <PrePosition X="0.5772" Y="0.1864" />
+            <PreSize X="0.3199" Y="0.1971" />
+            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
+            <TextColor A="255" R="255" G="255" B="255" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <PressedFileData Type="Normal" Path="other/bianji.png" Plist="" />
+            <NormalFileData Type="Normal" Path="other/bianji2.png" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="goumaihong" ActionTag="-1452266761" Tag="108" IconVisible="False" LeftMargin="821.5216" RightMargin="-77.5216" TopMargin="378.5331" BottomMargin="114.4669" TouchEnable="True" FontSize="70" ButtonText="购 买" Scale9Enable="True" LeftEage="149" RightEage="149" TopEage="39" BottomEage="39" Scale9OriginX="149" Scale9OriginY="39" Scale9Width="156" Scale9Height="43" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="350.0000" Y="121.0000" />
+            <AnchorPoint />
+            <Position X="821.5216" Y="114.4669" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.7509" Y="0.1864" />
             <PreSize X="0.3199" Y="0.1971" />
             <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
             <TextColor A="255" R="255" G="255" B="255" />
@@ -424,7 +376,55 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="duliyuedu" Visible="False" ActionTag="-355818240" Tag="110" IconVisible="False" LeftMargin="710.3207" RightMargin="33.6793" TopMargin="383.3350" BottomMargin="109.6650" TouchEnable="True" FontSize="80" ButtonText="阅 读" Scale9Enable="True" LeftEage="50" RightEage="50" TopEage="50" BottomEage="50" Scale9OriginX="50" Scale9OriginY="50" Scale9Width="354" Scale9Height="21" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+          <AbstractNodeData Name="goumai" ActionTag="-215607739" Tag="107" IconVisible="False" LeftMargin="631.2234" RightMargin="112.7766" TopMargin="378.3947" BottomMargin="114.6053" TouchEnable="True" FontSize="70" ButtonText="购 买" Scale9Enable="True" LeftEage="149" RightEage="149" TopEage="39" BottomEage="39" Scale9OriginX="149" Scale9OriginY="39" Scale9Width="156" Scale9Height="43" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="350.0000" Y="121.0000" />
+            <AnchorPoint />
+            <Position X="631.2234" Y="114.6053" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.5770" Y="0.1867" />
+            <PreSize X="0.3199" Y="0.1971" />
+            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
+            <TextColor A="255" R="255" G="255" B="255" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <PressedFileData Type="Normal" Path="other/bianji.png" Plist="" />
+            <NormalFileData Type="Normal" Path="other/bianji2.png" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="mianfeiyuedu" ActionTag="432461939" Tag="104" IconVisible="False" LeftMargin="715.9954" RightMargin="28.0046" TopMargin="414.8925" BottomMargin="78.1075" TouchEnable="True" FontSize="65" ButtonText="免费阅读" Scale9Enable="True" LeftEage="149" RightEage="149" TopEage="39" BottomEage="39" Scale9OriginX="149" Scale9OriginY="39" Scale9Width="19" Scale9Height="37" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="350.0000" Y="121.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="890.9954" Y="138.6075" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.8144" Y="0.2257" />
+            <PreSize X="0.3199" Y="0.1971" />
+            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
+            <TextColor A="255" R="255" G="255" B="255" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/Details pager_mianfeiyueduvip_Button_press_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
+            <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/Details pager_mianfeiyueduvip_Button_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="yuedu" ActionTag="-1570855567" Tag="106" IconVisible="False" LeftMargin="820.9368" RightMargin="-76.9368" TopMargin="378.3947" BottomMargin="114.6053" TouchEnable="True" FontSize="70" ButtonText="阅 读" Scale9Enable="True" LeftEage="149" RightEage="149" TopEage="39" BottomEage="39" Scale9OriginX="149" Scale9OriginY="39" Scale9Width="156" Scale9Height="43" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="350.0000" Y="121.0000" />
+            <AnchorPoint />
+            <Position X="820.9368" Y="114.6053" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.7504" Y="0.1867" />
+            <PreSize X="0.3199" Y="0.1971" />
+            <FontResource Type="Normal" Path="hkhb.TTF" Plist="" />
+            <TextColor A="255" R="255" G="255" B="255" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <PressedFileData Type="Normal" Path="other/bianji2.png" Plist="" />
+            <NormalFileData Type="Normal" Path="other/bianji.png" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="duliyuedu" ActionTag="-355818240" Tag="110" IconVisible="False" LeftMargin="710.3207" RightMargin="33.6793" TopMargin="383.3350" BottomMargin="109.6650" TouchEnable="True" FontSize="80" ButtonText="阅 读" Scale9Enable="True" LeftEage="50" RightEage="50" TopEage="50" BottomEage="50" Scale9OriginX="50" Scale9OriginY="50" Scale9Width="354" Scale9Height="21" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="350.0000" Y="121.0000" />
             <AnchorPoint />
             <Position X="710.3207" Y="109.6650" />
@@ -440,18 +440,39 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="hongbaodikou" ActionTag="1420485088" Tag="103" IconVisible="False" LeftMargin="839.3787" RightMargin="-45.3787" TopMargin="357.9823" BottomMargin="162.0177" FontSize="34" ButtonText="红包可抵扣888元" Scale9Enable="True" LeftEage="41" RightEage="41" TopEage="12" BottomEage="12" Scale9OriginX="41" Scale9OriginY="12" Scale9Width="218" Scale9Height="70" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="300.0000" Y="94.0000" />
+          <AbstractNodeData Name="Image_21" ActionTag="523098353" VisibleForFrame="False" Tag="138" IconVisible="False" LeftMargin="917.9047" RightMargin="30.0952" TopMargin="354.0954" BottomMargin="151.9046" Scale9Enable="True" LeftEage="48" RightEage="48" TopEage="35" BottomEage="35" Scale9OriginX="48" Scale9OriginY="35" Scale9Width="50" Scale9Height="38" ctype="ImageViewObjectData">
+            <Size X="146.0000" Y="108.0000" />
+            <Children>
+              <AbstractNodeData Name="Text_4" ActionTag="1158615555" Tag="139" IconVisible="False" LeftMargin="2.9067" RightMargin="-21.9067" TopMargin="0.8381" BottomMargin="36.1619" FontSize="54" LabelText="红包可" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+                <Size X="165.0000" Y="71.0000" />
+                <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+                <Position X="85.4067" Y="71.6619" />
+                <Scale ScaleX="0.5000" ScaleY="0.5000" />
+                <CColor A="255" R="255" G="255" B="255" />
+                <PrePosition X="0.5850" Y="0.6635" />
+                <PreSize X="1.1301" Y="0.6574" />
+                <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
+                <OutlineColor A="255" R="255" G="0" B="0" />
+                <ShadowColor A="255" R="110" G="110" B="110" />
+              </AbstractNodeData>
+            </Children>
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="989.3787" Y="209.0177" />
-            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <Position X="990.9047" Y="205.9046" />
+            <Scale ScaleX="0.4500" ScaleY="0.4500" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.9044" Y="0.3404" />
-            <PreSize X="0.2742" Y="0.1531" />
+            <PrePosition X="0.9058" Y="0.3353" />
+            <PreSize X="0.1335" Y="0.1759" />
+            <FileData Type="MarkedSubImage" Path="BookInfo/res/pager_hongbao_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="dikou" ActionTag="1382790350" VisibleForFrame="False" Tag="140" IconVisible="False" LeftMargin="951.9878" RightMargin="53.0122" TopMargin="401.2319" BottomMargin="180.7681" FontSize="24" LabelText="抵扣3元" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="89.0000" Y="32.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="996.4878" Y="196.7681" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.9109" Y="0.3205" />
+            <PreSize X="0.0814" Y="0.0521" />
             <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
-            <TextColor A="255" R="255" G="255" B="255" />
-            <PressedFileData Type="MarkedSubImage" Path="BookInfo/res/pager_hongbao_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="BookInfo/res/pager_hongbao_736h.png" Plist="BookInfo/csb/bookInfo.plist" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>

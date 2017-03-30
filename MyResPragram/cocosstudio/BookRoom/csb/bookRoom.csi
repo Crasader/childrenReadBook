@@ -9,26 +9,30 @@
       <FilePathData Path="BookRoom/res/BookHome_girl_0001.png" />
       <FilePathData Path="BookRoom/res/BookHome_girl_0002.png" />
       <FilePathData Path="BookRoom/res/BookHome_girl_0003.png" />
-      <FilePathData Path="BookRoom/res/BookHome_girl_0008.png" />
       <FilePathData Path="BookRoom/res/BookHome_girl_0018.png" />
       <FilePathData Path="BookRoom/res/zg1.png" />
       <FilePathData Path="BookRoom/res/zg2.png" />
       <FilePathData Path="BookRoom/res/zg3.png" />
-      <FilePathData Path="BookRoom/res/BookInfo_ studyr_vip_736h.png" />
-      <FilePathData Path="BookRoom/res/gm_nav_nor_736h.png" />
-      <FilePathData Path="BookRoom/res/gm_nav_sel_736h.png" />
       <FilePathData Path="BookRoom/res/muban_nav_bg_736h.png" />
-      <FilePathData Path="BookRoom/res/nkts_nav_sel_736h.png" />
-      <FilePathData Path="BookRoom/res/sc_nav_sel_736h.png" />
-      <FilePathData Path="BookRoom/res/ysc_nav_sel_736h.png" />
-      <FilePathData Path="BookRoom/res/nkts_nav_nor_736h.png" />
       <FilePathData Path="BookRoom/res/sc_nav_nor_736h.png" />
-      <FilePathData Path="BookRoom/res/ysc_nav_nor_736h.png" />
       <FilePathData Path="BookRoom/res/BookHome_button_shanchu_736h.png" />
       <FilePathData Path="BookRoom/res/BookHome_button_shoucang_736h.png" />
       <FilePathData Path="BookRoom/res/BookHome_button_xiazai_736h.png" />
       <FilePathData Path="BookRoom/res/BookHome_button_yishoucang_736h.png" />
+      <FilePathData Path="BookRoom/res/button_shanchu_736h.png" />
+      <FilePathData Path="BookRoom/res/button_xiazai_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_yixiazaibiaoshi_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_niaochao_choice_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_niankatushubiaoshi_736h.png" />
+      <FilePathData Path="BookRoom/res/sc_nav_sel_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_button_yigoumai_nor_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_button_yigoumai_pre_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_button_yixiazai_nor_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_button_yixiazai_pre_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_button_zuijinyuedu_nor_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_button_zuijinyuedu_pre_736h.png" />
+      <FilePathData Path="BookRoom/res/BookHome_button_biaoshishuoming_736h.png" />
     </ImageFiles>
-    <MaxSize Width="1024" Height="2048" />
+    <MaxSize Width="2048" Height="2048" />
   </Content>
 </PlistInfoProjectFile>

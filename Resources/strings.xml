@@ -334,7 +334,7 @@
     <key>DENGLUHOUFENXIANGKEHUODEYILAHONGBAO</key>
     <string>登录后分享可获得咿啦红包</string>
     <key>HONGBAODIKOU</key>
-    <string>红包抵扣</string>
+    <string>抵扣</string>
     <key>SONG</key>
     <string>送红包</string>
     <key>NGEHONGBAOJIJIANGDAOQI</key>
@@ -447,4 +447,10 @@
     <string>您当前是游客身份, 请登录后开通服务 </string>
     <key>QINGNINKAITONGNIANKAFUWU</key>
     <string>您的VIP已经到期, 请重新续费</string>
+    <key>QUXUFEI</key>
+    <string>去续费</string>
+    <key>QUXIANGXIANG</key>
+    <string>再想想</string>
+  <key>NINDEVIPGUOQISHIFOUXUGEFI</key>
+  <string>您的VIP已经过期，是否续费？</string>
 </dict> 

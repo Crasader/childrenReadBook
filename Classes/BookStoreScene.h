@@ -60,12 +60,9 @@ using namespace std;
 class BookStore : public cocos2d::Layer
 {
 private:
-	//static std::mutex m_mutex_cover;
-	//static std::map<int, map<std::string, ParaType>>* m_viewPageData;//数据源
-	//bool m_touch;//true =触摸状态
-	queue<function<void()>> runQueue;//执行主线程队列
+	//queue<function<void()>> runQueue;//执行主线程队列
 
-	bool queueIsRuning;//队列是否正在运行
+	//bool queueIsRuning;//队列是否正在运行
 
 	static int isNetConnect;//是否联网 0=联网  1=断网
 
@@ -81,35 +78,12 @@ private:
 
 	std::string m_visitFrom;//网络参数 0 = 首页进入  1 = 书城进入
 
-	//size_t m_pageCount;//总页数
-	//size_t m_storeBookCount;//书籍总数	
-	//Vector<Node*> m_wheel;//所有轮子
-	//std::vector<float> m_Rotation;//所有轮子角度
-	//float m_ScrollThreshold;//pageview 翻页阀值
-	//PageView* m_pageView;
-	//Node* m_book1;//m_book1 前一页 csb文件创建viewpage子页面
-	//Node* m_book2;//m_book2 当前展示页 csb文件创建viewpage子页面
-	//Node* m_book3;//m_book3 后一页 csb文件创建viewpage子页面
-	//std::vector<Node*> m_vbook1;//m_book1 的8个book
-	//std::vector<Node*> m_vbook2;//m_book2 的8个book
-	//std::vector<Node*> m_vbook3;//m_book3 的8个book
-
 	Label *moveCircle;//第几/几页
-	Node* pageCircle;
-
-	//bool m_event;//标记通知是否发送
-	//bool m_sendBookInfo;//是否完成上一次的书籍详情的请求,完成=true
-	//threadQueue* m_queue;//网络请求队列管理
-	//int m_getHttp;//请求次数
-	//int m_refre;//刷新界面次数
-	//int m_needRefre;//需要刷新的次数
-	//Node* m_waitLayer; //等待图层 阻止触摸
-	//long long m_httpBookListTime;//网络请求书籍列表的时刻
-	//long long *m_eventTime;
+	Node* pageCircle = nullptr;
 
 	int* m_selectPageIndex;//记录当前展示的3个viewpage子页的内容页码
 
-	MySceneName m_backScene;//记录当前场景
+	//MySceneName m_backScene;//记录当前场景
 
 	EventListenerTouchOneByOne* m_lister;//控制轮子滚动和翻页的监听
 
@@ -119,38 +93,20 @@ private:
 public:
 	~BookStore();
 
-    static cocos2d::Scene* createScene(int BookStoreId);
+    static cocos2d::Scene* createScene(SceneInfo* sceneInfo = nullptr);
 
-    virtual bool init(int BookStoreId);
+	static BookStore* create(SceneInfo* sceneInfo = nullptr);
+
+    virtual bool init(SceneInfo* sceneInfo = nullptr);
+
+	void initEvent();
 
 	void onEnterTransitionDidFinish();
 	
 	//年卡书店初始化
 	void baonianStore();
 
-	static BookStore* create(int BookStoreId);
-	
-	//void httpDownLoadImage(int sort, int* count);//网络请求下载图片
-	//void httpDownLoadImageCallback(char * buf, int length, int bookId, int sort, int* count);//网络请求下载图片的回调函数
-	//void getAllWheel(ui::PageView* pageview);//获取全部轮子
-	//PageView* createPageView();//创建一个pageview
-	//void closeTime();//关闭定时器
-	//void httpBooksInfo(int BookStoreId);	//网络请求本店的所有书籍信息
-	//void httpBooksIdResponseCallback(std::string str , int BookStoreId, int pageIndex);//网络请求本店的所有书籍信息的回调函数
-	//void addHttpQueue_httpDownLoadImage(int bookId, int* count);//httpDownLoadImage请求加入队列
-	//void IsHttpCoverOver(int* count);//判断封面请求是否全部结束
-	//void count4lock(std::mutex& mute, int* count);//计数器减一 加锁 线程同步
-	//void loadTheDataIntoMemory();//装载数据进内存
-	//void refreshUI();//刷新界面
-	//void getView4ViewPage();//新的viewpage添加3个子页
-	//ui::Layout * pageInit(Node * view, int index, std::vector<Node*> booksNode, bool addEvent);//初始化viewpage子页/刷新子页
-	//void init4ViewPage();//初始化viewpage
-	//void addThread_db(string tableName, unordered_map<string, string> paraInfoSTR, unordered_map<string, long long> paraInfoINT);//添加线程到队列
-	//void thread4insert(string tableName, unordered_map<string, string> paraInfoSTR, unordered_map<string, long long> paraInfoINT);//数据操作失败,开线程插入数据库
-
 	bool changPageNumber( );//翻页时,计算内容页码
-
-	//static void notify(NotifyType type, int index=-999);//通知 
 								
 	void showBookPageNumber(); //展示第1/5页
 
@@ -165,9 +121,6 @@ public:
 	//获取当前页书籍列表信息
 	void getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex);
 
-	//创建一个loading图层
-	//YYXLayer* LoadingLayer();
-
 	//刷新一本书
 	void refreshBook(Node* node, int bookId =-999, string path = "", int price = -999, int isNewEllaBook = -999, int hashBuy = -999);
 
@@ -179,13 +132,23 @@ public:
 	//木马移动的动画
 	void viewMoveAnimation(Node* node, bool isLeft);
 
-	void protectAnimation();
-	void addorStartQueue(function<void()> runable, string str = "");
-	//添加并执行队列函数
-	void addQueue(function<void()> runable);
-	void startQueue();
-	void stopQueue();
-	void runingQueue();
+	//void protectAnimation();
+	//void addorStartQueue(function<void()> runable, string str = "");
+	////添加并执行队列函数
+	//void addQueue(function<void()> runable);
+	//void startQueue();
+	//void stopQueue();
+	//void runingQueue();
+
+private:
+	Sprite* sp2;
+	Node* background;
+	Node* moveViews;
+	EventListenerTouchOneByOne *touchmove , *touchlistener;
+	vector<string> listerName;
+	void gotoBookInfo(int bookid);
+	void safe_downCoverOk();
+	void recoverAnimation();
 };
 
 #endif // __BookStore_SCENE_H__

@@ -69,9 +69,11 @@ void Toast::showNext()
 		string content = m_dataQueue.front();
 		App::log("Toast = " + content, content.length());
 		if (content.length() > 54)
-			text->setFontSize(40);
-		else if(content.length() > 45)
-			text->setFontSize(50);
+			text->setFontSize(m_fontSize - 20);
+		else if (content.length() > 45)
+			text->setFontSize(m_fontSize - 10);
+		else
+			text->setFontSize(m_fontSize);
 		text->setText(content);
 		m_time = YYXLayer::getCurrentTime4Second();
 		if (m_showLayer->getParent())
@@ -150,94 +152,3 @@ void Toast::SceneInitToast()
 		});
 	//}).detach();	
 }
-
-//----------------------------------------------------------
-
-	/*auto point = Vec2(visibleSize.width/2, 100);
-
-	auto label = Label::createWithSystemFont(msg.c_str(), "Arial", 40);
-
-	label->setColor(Color3B::WHITE);
-
-	label->ignoreAnchorPointForPosition(false);
-
-	auto layer = LayerColor::create(Color4B(100, 100, 100, 255));
-
-	layer->ignoreAnchorPointForPosition(false);
-
-	layer->setContentSize(label->getContentSize() + Size(20, 15));
-
-	node->addChild(layer,100);
-
-	node->addChild(label,100);
-
-	layer->setPosition(point);
-
-	label->setPosition(layer->getPosition());
-
-	auto mov = App::getCurrentTime() - m_time;
-	if (mov >0)		mov = 0;
-	else		mov = 1;
-	auto seq1 = Sequence::create(DelayTime::create(mov),FadeIn::create(time / 5), DelayTime::create(time / 5 * 1.5), FadeOut::create(time / 5 * 2.5), [=](Ref* sender) {
-		this->removeFromParentAndCleanup(true);
-	}, NULL);
-
-	auto seq2 = Sequence::create(EaseSineIn::create(MoveBy::create(time / 5, Vec2(0, 50))), DelayTime::create(time / 5 * 2),
-		EaseSineOut::create(MoveBy::create(time / 3, Vec2(0, -50))), NULL);
-
-	auto spawn = Spawn::create(seq1, seq2, NULL);
-
-	auto action = Repeat::create(spawn, 1);
-
-	auto seq3 = Sequence::create(DelayTime::create(mov),FadeIn::create(time / 5), DelayTime::create(time / 5 * 1.5), FadeOut::create(time / 5 * 2.5), [=](Ref* sender) {
-		this->removeFromParentAndCleanup(true);
-	}, NULL);
-
-	auto seq4 = Sequence::create(EaseSineIn::create(MoveBy::create(time / 5, Vec2(0, 50))), DelayTime::create(time / 5 * 2),
-		EaseSineOut::create(MoveBy::create(time / 3, Vec2(0, -50))), NULL);
-
-	auto spawn2 = Spawn::create(seq3, seq4, NULL);
-
-	auto action2 = Repeat::create(spawn2, 1);
-
-	layer->setOpacity(0);
-
-	layer->runAction(action);
-
-	label->setOpacity(0);
-
-	label->runAction(action2);
-    return true;
-}
-
-Toast* Toast::create(cocos2d::Node *node, const std::string &msg, const float &time)
-{
-	Toast *ret = new (std::nothrow) Toast();
-	if (ret)
-	{
-		if (ret->init(node, msg, time))
-		{
-			ret->autorelease();
-		}
-		else
-		{
-			delete ret;
-			ret = nullptr;
-		}
-	}
-	return ret;
-}
-
-void Toast::create(const char * msg,bool show)
-{
-	auto mv = App::getCurrentTime() - m_time;
-	if (show)
-		mv = 3;
-	if (mv > 2)
-	{
-
-		MessageBox(msg, "系统提示");
-		m_time = App::getCurrentTime();
-	}
-}
-*/

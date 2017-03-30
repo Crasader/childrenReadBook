@@ -1,4 +1,6 @@
 ﻿#include "YYXRentBook.h"
+#include "BuyBook.h"
+#include "YYXSound.h"
 
 YYXRentBook* YYXRentBook::instance = nullptr;
 
@@ -22,6 +24,7 @@ void YYXRentBook::httpRentBook()
 		if (rent)
 		{
 			App::addvipBook(m_bookId);//上传租书记录成功后, 本地也需要记录租书
+			BuyBook::getInstance()->addBook(m_bookId, YYXLayer::getCurrentTime4Second());
 			App::log("============httpRentBook>>>>addvipBook");
 			if (m_callback)
 				m_callback();
@@ -135,6 +138,7 @@ void YYXRentBook::RentBookMessageBox()
 	if (yes)
 	{
 		yes->addClickEventListener([=](Ref* send) {
+			YYXSound::getInstance()->playButtonSound();
 			layer->removeFromParent();
 			httpRentBook();
 		});
@@ -142,6 +146,7 @@ void YYXRentBook::RentBookMessageBox()
 	if (close)
 	{
 		close->addClickEventListener([=](Ref* sender) {
+			YYXSound::getInstance()->playButtonSound();
 			layer->removeFromParent();
 		});
 	}

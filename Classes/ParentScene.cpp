@@ -5,7 +5,6 @@
 #include "XZLayer.h"
 #include "YYXVisitor.h"
 #include "Charger.h"
-
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <io.h>
 #include <direct.h>
@@ -16,6 +15,7 @@
 #include <sys/stat.h>
 #endif
 USING_NS_CC;
+#include "YYXSound.h"
 
 using namespace cocostudio::timeline;
 
@@ -26,22 +26,38 @@ Parent::~Parent()
 		//auto m = (Text*)(m_voids["momey"]);
 		//m->release();
 	//}	
+	ControlScene::getInstance()->end();
 	App::log("Parent::~Parent()");
 }
 
-Scene* Parent::createScene()
+Scene* Parent::createScene(SceneInfo* data )
 {
     auto scene = Scene::create();
     
-    auto layer = Parent::create();
+    auto layer = Parent::create(data);
 
     scene->addChild(layer);
 
     return scene;
 }
 
+Parent* Parent::create(SceneInfo* data /*= nullptr*/)
+{
+	Parent *pRet = new(std::nothrow) Parent();
+	if (pRet && pRet->init(data))
+	{
+		pRet->autorelease();
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+	}
+	return pRet;
+}
+
 // on "init" you need to initialize your instance
-bool Parent::init()
+bool Parent::init(SceneInfo* sceneinfo )
 {
     //////////////////////////////
     // 1. super init first
@@ -50,7 +66,7 @@ bool Parent::init()
         return false;
     }
 	 
-	App::m_RunningScene = MySceneName::ParentScene;
+	//App::m_RunningScene = MySceneName::ParentScene;
 	////安卓返回键
 	//auto androidListener = EventListenerKeyboard::create();
 	//androidListener->onKeyReleased = [](EventKeyboard::KeyCode keyCode, Event* event) {
@@ -89,10 +105,12 @@ bool Parent::init()
 	homeButton->setPositionX((1094 - visibleSize.width) / 2 + 14);
 	homeButton->setTouchEnabled(true);
 	homeButton->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		//if (YYXLayer::getBoolFromXML(SOUND_KEY))
+			//YYXLayer::PLAYBUTTON;
 		//返回首页
-		Index::GoToIndexScene();
+		//Index::GoToIndexScene();
+		auto control = ControlScene::getInstance();
+		control->backFromScene();
 	});
 
 	//账号信息按钮
@@ -129,8 +147,7 @@ bool Parent::init()
 	//---------------------------按钮点击事件--------------------------------------------------------------------
 	//每页的切换
 	auto listenEvent = [=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		img_zhanghaoxinxi->loadTexture(PICTURE_PARENT_BUTTON_ACCOUNT_UNSEL, TextureResType::PLIST);
 		img_shezhi->loadTexture(PICTURE_PARENT_BUTTON_SET_UNSEL, TextureResType::PLIST);
 		img_lianxiwomen->loadTexture(PICTURE_PARENT_BUTTON_CONTACT_UNSEL, TextureResType::PLIST);
@@ -356,8 +373,7 @@ Layer* Parent::initNode_Account()
 	//性别选择 点击事件
 	boy_img->addClickEventListener([=](Ref* sender) {
 
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 
 		if (boy_img->getTag() == SELECT) {
 			return;
@@ -370,8 +386,7 @@ Layer* Parent::initNode_Account()
 	});
 	girl_img->addClickEventListener([=](Ref* sender) {
 
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 
 		//sex_text->setString(App::getString("SUPER_MOTHER"));
 		if (girl_img->getTag() == SELECT) {
@@ -384,8 +399,7 @@ Layer* Parent::initNode_Account()
 	});
 	//编辑按钮 点击事件
 	edit_button->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		if (edit_button->getTag() == 1)
 		{
 			this->addChild(Index::WaitLayer(), 5, "waitLayer");
@@ -450,8 +464,7 @@ Layer* Parent::initNode_Account()
 	//注销按钮 点击事件
 	logoff->addClickEventListener([=](Ref* sender) {
 
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		//弹框确认
 		auto messagebox = CSLoader::createNode(MESSAGEBOX_LOGOFF_YESORNO_CSB);
 		messagebox->setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -463,8 +476,7 @@ Layer* Parent::initNode_Account()
 		auto b_no = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_LOGOFF_NO);
 		//确认按钮 添加点击事件
 		b_yes->addClickEventListener([=](Ref* sender) {
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 			this->removeChild(messagebox);
 			App::cancelData();
 			// 删除当前图层,添加登陆图层
@@ -475,17 +487,14 @@ Layer* Parent::initNode_Account()
 		});
 		//取消按钮 添加点击事件
 		b_no->addClickEventListener([=](Ref* sender) {
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 
 			this->removeChild(messagebox);			
 		});
 	});
 	//修改密码 点击事件
 	changepassword->addClickEventListener([=](Ref* sender) {
-
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 
 		//弹框 修改密码
 		auto changepasswordMessagebox = CSLoader::createNode(MESSAGEBOX_CHANGEPASSWORD_CSB);
@@ -599,9 +608,7 @@ Layer* Parent::initNode_Account()
 		//关闭按钮 点击事件
 		auto b_close = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_CLOSE);
 		b_close->addClickEventListener([=](Ref* sender) {
-
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 
 			this->removeChild(changepasswordMessagebox);
 			unschedule("ModifyPsd_Code");
@@ -818,17 +825,14 @@ Layer* Parent::initNode_Contact()
 	//保存二维码
 	auto savetoQRcode = (Button*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_BUTTON_BY_NAME_SAVETOQRCODE);
 	savetoQRcode->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON; 
+		YYXSound::getInstance()->playButtonSound();
 		//将图片保存到相册
 		CocosAndroidJni::saveQRcode();
 	});
 	//意见反馈
 	auto feedback = (Button*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_BUTTON_BY_NAME_FEEDBACK);
 	feedback->addClickEventListener([=](Ref* sender) {
-
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 
 		//弹框
 		auto messagebox = CSLoader::createNode(MESSAGEBOX_FEEDBACK_CSB);
@@ -882,18 +886,14 @@ Layer* Parent::initNode_Contact()
 		//关闭按钮
 		auto close = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_CLOSE);
 		close->addClickEventListener([=](Ref* sender) {
-
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
-
+			YYXSound::getInstance()->playButtonSound();
 			this->removeChild(messagebox);
 		});
 	});
 	//qq客服
 	auto qq = (Button*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_BUTTON_BY_NAME_QQ2);
 	qq->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		//弹框
 		MessageBox(App::getString("QQKEFU"), "");
 	});
@@ -929,18 +929,6 @@ Layer* Parent::initNode_Set()
 	sv->setScrollBarEnabled(false);
 	//版本号
 	auto versionText = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_PARENTSCENE_SET_VERSION);
-	/*vector<string> paraStr;
-	paraStr.push_back("appversionA");
-	paraStr.push_back("appversionB");
-	paraStr.push_back("appversionC");
-	vector<unordered_map<string, ParaType>> result = SqliteManager::SelectData(App::sqliteOpen(), DB_APPINFO, paraStr, "");
-	App::sqliteClose;
-	if (result.size() > 0) {
-		//当前APP的版本号
-		int A = result[0]["appversionA"].intPara;
-		int B = result[0]["appversionB"].intPara;
-		int C = result[0]["appversionC"].intPara;
-		auto appVersion = StringUtils::format("%s%d.%d.%d", App::getString("BANBENHAO"),A, B, C);*/
 	if(versionText)
 		versionText->setText(NetIntface::getAppVersion());
 	//}
@@ -972,10 +960,7 @@ Layer* Parent::initNode_Set()
 		time60->loadTexture(PICTURE_PARENT_IMAGEVIEW_60MIN_SEL, TextureResType::PLIST);
 	//添加点击事件
 	auto listen4Time = [=](Ref* sender) {
-
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
-
+		YYXSound::getInstance()->playButtonSound();
 		time0->loadTexture(PICTURE_PARENT_IMAGEVIEW_NOTIME_UNSEL, TextureResType::PLIST);
 		time20->loadTexture(PICTURE_PARENT_IMAGEVIEW_20MIN_UNSEL, TextureResType::PLIST);
 		time30->loadTexture(PICTURE_PARENT_IMAGEVIEW_30MIN_UNSEL, TextureResType::PLIST);
@@ -1044,10 +1029,7 @@ Layer* Parent::initNode_Set()
 	}
 	//下载设置点击事件
 	wifi_img->addClickEventListener([=](Ref *sender) {
-
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
-
+		YYXSound::getInstance()->playButtonSound();
 		if (wifi_img->getTag() == SELECT)
 		{
 			//4G和wifi
@@ -1081,11 +1063,18 @@ Layer* Parent::initNode_Set()
 	auto wipecache_text = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_BY_NAME_WIPECACHE);
 	int count = (int)YYXStruct::getMapInt64(App::GetInstance()->myData, "LocalCacheSize", 0);
 	wipecache_text->setString(StringUtils::format("%.02fM", count/100.0));// getLocalCacheSize()
+
+	auto listener1 = EventListenerCustom::create("xianshiqingchuhuancun", [=](EventCustom* e) {
+		auto sv = (cocos2d::ui::ScrollView*)m_show->getChildByName(FIND_ScrollView_BY_NAME);
+		auto wipecache_text = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_BY_NAME_WIPECACHE);
+		wipecache_text->setString(StringUtils::format("%.1fM", getLocalCacheSize()));
+	});
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener1, wipecache_text);
+
 	auto wipecache_button = (Button*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_BUTTON_BY_NAME_WIPECACHE);
 	wipecache_button->setTouchEnabled(true);
 	wipecache_button->addClickEventListener([=](Ref *sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		//弹框确认
 		auto messagebox = CSLoader::createNode(MESSAGEBOX_WIPECACHE_CSB);
 		messagebox->setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -1099,8 +1088,7 @@ Layer* Parent::initNode_Set()
 		});
 		auto yes = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_YES);
 		yes->addClickEventListener([=](Ref* sender) {
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 			//清除缓存
 			std::thread([=]() {
 				deleteCache();
@@ -1109,9 +1097,7 @@ Layer* Parent::initNode_Set()
 		});
 		auto no = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_NO);		
 		no->addClickEventListener([=](Ref* sender) {
-
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 			this->removeChild(messagebox);
 		});
 	});
@@ -1144,41 +1130,35 @@ Layer* Parent::initNode_Login()
 		layer = CSLoader::createNode(LOGIN_CSB);
 	auto login = (Button*)layer->getChildByName(FIND_BUTTON_BY_NAME_LOGIN);
 	login->addClickEventListener([=](Ref* sender){
-
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
-
-		//跳转登陆
-		App::GetInstance()->pushScene(ParentScene);
-		Index::GoToLoginScene();
+		auto control = ControlScene::getInstance();
+		control->replaceScene(ControlScene::getInstance()->getSceneInfo(ParentScene), ControlScene::getInstance()->getSceneInfo(LoginScene));
 	});
 	return (Layer *)layer;
 }
-
-//预加载
-//void Parent::prestrain()
-//{
-//	auto cache = SpriteFrameCache::getInstance();
-//	cache->addSpriteFramesWithFile(PLIST_PARENT1);
-//	cache->addSpriteFramesWithFile(PLIST_PARENT2);
-//}
 
 //获取本地缓存大小
 float Parent::getLocalCacheSize() {
 	vector<string> param;
 	param.push_back("*");
 
+	string dirs[] = { (FileUtils::getInstance()->getWritablePath() + "temp"),
+	(FileUtils::getInstance()->getWritablePath() + "bookCover"),
+	(FileUtils::getInstance()->getWritablePath() + "bookUNZip"),
+	(FileUtils::getInstance()->getWritablePath() + "unzip"),
+	(FileUtils::getInstance()->getWritablePath() + "bookZip"),
+	(FileUtils::getInstance()->getWritablePath() + "bookTryReadunZip"),
+	(FileUtils::getInstance()->getWritablePath() + "bookTryReadZip"),
+	(FileUtils::getInstance()->getWritablePath() + "readBook"),
+	(FileUtils::getInstance()->getWritablePath() + "downloadBook"),
+	(FileUtils::getInstance()->getWritablePath() + "bookCity"),
+	(FileUtils::getInstance()->getWritablePath() + "voiceComment")};
+
 	float size = 0;//缓存总大小
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "temp");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "bookCover");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "bookUNZip");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "bookZip");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "bookTryReadunZip");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "bookTryReadZip");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "readBook");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "downloadBook");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "bookCity");
-	size += getDirectorySize(FileUtils::getInstance()->getWritablePath() + "voiceComment");
+
+	for (auto it : dirs)
+	{
+		size += getDirectorySize(it);
+	}
 	size = size / 1024.0f / 1024.0f;//以M为单位
 
 	if (size < 0)
@@ -1258,6 +1238,7 @@ void Parent::deleteCache() {
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "temp");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "bookCover");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "bookUNZip");
+	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "unzip");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "bookZip");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "bookTryReadunZip");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "bookTryReadZip");
@@ -1266,11 +1247,8 @@ void Parent::deleteCache() {
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "bookCity");
 	DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "voiceComment");
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "LocalCacheSize", getLocalCacheSize() * 100);
-	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=] {
-		auto sv = (cocos2d::ui::ScrollView*)m_show->getChildByName(FIND_ScrollView_BY_NAME);
-		auto wipecache_text = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_BY_NAME_WIPECACHE);
-		wipecache_text->setString(StringUtils::format("%.1fM", getLocalCacheSize()));
-	});
+	YYXLayer::sendNotify("xianshiqingchuhuancun");
+	YYXLayer::sendNotify(TAG_BOOKROOMBOOKISEXIT);
 }
 
 //删除文件夹

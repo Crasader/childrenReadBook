@@ -5,6 +5,7 @@
 #include "FKPageLayer.h"
 #include "SendCommentLayer.h"
 #include "YYXVisitor.h"
+#include "YYXSound.h"
 USING_NS_FK;
 
 YYXBookOver* YYXBookOver::instance = nullptr;
@@ -114,12 +115,16 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 							m_isUserBuy = true;
 							buySuccessMessageBox(goumaichenggong);
 						}, [=]() {
-							App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+							//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+							auto control = ControlScene::getInstance();
+							control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 						});
 					}));
 				}, [=]() {
-					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					Index::GoToLoginScene();
+					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+					//Index::GoToLoginScene();
+					auto control = ControlScene::getInstance();
+					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 				}, [=]() {
 					Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=]() {
 						YYXBuyBook::GetInstance()->newBuyBook(m_bookId, App::GetInstance()->getMemberId(), [=](int bookid) {
@@ -127,7 +132,9 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 							m_isUserBuy = true;
 							buySuccessMessageBox(goumaichenggong);
 						}, [=]() {
-							App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+							//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+							auto control = ControlScene::getInstance();
+							control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 						});
 					}));
 				});
@@ -142,7 +149,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		yaoqing->addClickEventListener([=](Ref* sender) {
 			if (App::GetInstance()->m_me)
 			{
-				App::GetInstance()->stopOtherVoice();
+				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
 				yaoqingzhuce();
 			}
@@ -178,11 +185,15 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		goumainianka->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "goumainiankaTime", [=]() {
 				YYXVisitor::getInstance()->hintLogin([=]() {
-					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					Index::GoToLoginScene();
+					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+					//Index::GoToLoginScene();
+					auto control = ControlScene::getInstance();
+					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 				}, [=]() {
-					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					Index::GoToLoginScene();
+					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+					//Index::GoToLoginScene();
+					auto control = ControlScene::getInstance();
+					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 				}, [=]() {
 					Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer(
 						[=]() {
@@ -209,7 +220,9 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 			YYXLayer::controlTouchTime(1, "shimeshinainkaTime", [=]() {
 				Director::getInstance()->getRunningScene()->addChild(
 					XZLayer::OpenVIPCardService(2, [=]() {
-					App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
+					auto control = ControlScene::getInstance();
+					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 				}, [=]() {
 					if (App::GetInstance()->m_me)
 					{
@@ -295,7 +308,7 @@ Layer* YYXBookOver::readBookOverLayer()
 		yaoqing->addClickEventListener([=](Ref* sender) {
 			if (App::GetInstance()->m_me)
 			{
-				App::GetInstance()->stopOtherVoice();
+				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
 				yaoqingzhuce();
 			}
@@ -338,14 +351,14 @@ Layer* YYXBookOver::readBookOverLayer()
 				MyComment->setTag(0);
 				noComment->setVisible(false);
 				noCommenttext->setVisible(false);
-				App::GetInstance()->stopOtherVoice();
+				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
 				YYXLayer::sendNotify("showCommentListView", "444444444444444444", -1);
 			});
 		});
 	}
 	//评论成功
-	auto ListenerClickComment = EventListenerCustom::create("bookinfoSceneHttpSendCommentSuccess", [=](EventCustom* e) {
+	auto ListenerClickComment = EventListenerCustom::create(TAG_SENDCOMMENTSUCCESS, [=](EventCustom* e) {
 		int memberid = -1;
 		if (MyComment->getTag() == 1)
 			memberid = m_memberId;
@@ -356,9 +369,9 @@ Layer* YYXBookOver::readBookOverLayer()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(ListenerClickComment, layer);
 	//刷新列表
 	auto listenerRefersh = EventListenerCustom::create("showCommentListView", [=](EventCustom* e) {
-		int memberid = (int)e->getUserData();
+		long memberid = (long)e->getUserData();
 		App::log(" --------------     run showCommentListView()   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^memberid = ", memberid);
-		App::GetInstance()->stopOtherVoice();
+		YYXSound::getInstance()->stopAll();
 		YYXTableView::stopAllAnimation();
 
 		auto tbview = (YYXTableView*)layer->getChildByTag(159);
@@ -401,7 +414,7 @@ Layer* YYXBookOver::readBookOverLayer()
 				jingcaiComment->setTag(0);
 				MyComment->setTag(1);
 				noComment->setVisible(false);
-				App::GetInstance()->stopOtherVoice();
+				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
 				YYXLayer::sendNotify("showCommentListView", "", atoi(App::GetInstance()->getMemberID().c_str()));
 			});
@@ -413,7 +426,7 @@ Layer* YYXBookOver::readBookOverLayer()
 		goComment->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "backCoverGoCommentTime", [=]() {
 				Director::getInstance()->getRunningScene()->addChild(SendComment::create(m_bookId));
-				App::GetInstance()->stopOtherVoice();
+				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
 			});
 		});

@@ -10,12 +10,13 @@
 class Load : public cocos2d::Layer
 {
 public:
+	~Load();
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
-    static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene(SceneInfo* data=nullptr);
 
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
-    virtual bool init();
-	void testTableView();
+    virtual bool init(SceneInfo* data=nullptr);
+	static Load* create(SceneInfo* data=nullptr);
 	void initEvent();
 	virtual void onEnterTransitionDidFinish();
 
@@ -24,7 +25,6 @@ public:
 	void initMemberHttp();//根据memberID进行网络初始化
 	void initDir();//初始化创建文件夹
 	// implement the "static create()" method manually
-    CREATE_FUNC(Load);
 	virtual void cleanup();
 	//缓存csb文件
 	void loadCsbFile();
@@ -38,13 +38,10 @@ public:
 	//网络请求版本号
 	void getEllaVersion();	
 	//用户不使用网络 自动通过本地数据登录
-	void defaultAutoLogin();
 	void getPhoneInfo();
 private:
 	int totalCount;
 	int currentCount;
-	bool m_cacheOver = false; //加载资源是否完成
-	bool m_httpOver = false; // 网络请求是否完成 或者超时5秒
 };
 
 #endif // __Load_SCENE_H__

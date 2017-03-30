@@ -17,6 +17,7 @@ public:
 	Node* m_showLayer = nullptr;//展示的图层
 	queue<std::string> m_dataQueue;
 	map<string, int> huifuMap;//转场恢复展示的次数
+	float m_fontSize = 60;//字体大小
 public:
 	Toast();
 	~Toast();

@@ -7,6 +7,7 @@
 #include "NetIntface.h"
 #include "YYXVisitor.h"
 #include "YYXDownloadImages.h"
+#include "YYXSound.h"
 using namespace cocostudio::timeline;
 
 bool BookCityScene::m_isMoved = false;
@@ -22,17 +23,33 @@ BookCityScene::BookCityScene() {
 BookCityScene::~BookCityScene(){
 	//if (m_queue)
 		//m_queue->stop();
+	ControlScene::getInstance()->end();
 }
 
-Scene* BookCityScene::createScene()
+Scene* BookCityScene::createScene(SceneInfo* data)
 {
     auto scene = Scene::create();
-    auto layer = BookCityScene::create();
+    auto layer = BookCityScene::create(data);
     scene->addChild(layer);
     return scene;
 }
 
-bool BookCityScene::init()
+BookCityScene* BookCityScene::create(SceneInfo* data /*= nullptr*/)
+{
+	BookCityScene *pRet = new(std::nothrow) BookCityScene();
+	if (pRet && pRet->init(data))
+	{
+		pRet->autorelease();
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+	}
+	return pRet;
+}
+
+bool BookCityScene::init(SceneInfo* sceneInfo)
 {
 	if (!Layer::init())
 	{
@@ -41,52 +58,15 @@ bool BookCityScene::init()
 	//游客
 	YYXVisitor::getInstance()->bookCitySceneInit();
 	App::log("setVisitorMode = ");
-	App::m_RunningScene = MySceneName::BookCity;	
+	//App::m_RunningScene = MySceneName::BookCity;	
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 0);
 	httpBookCityInfo();
-	//控制快速多次点击
-	//m_eventTime = new long long(0);
-	//控制层
-	//auto lister_high = EventListenerTouchOneByOne::create();
-	//lister_high->onTouchBegan = [=](Touch* t, Event* e) {
-	//	if (App::getCurrentTime() > (*m_eventTime))
-	//	{
-	//		CCLOG("time = %d", (int)*m_eventTime);
-	//		Director::getInstance()->getEventDispatcher()->resumeEventListenersForTarget(Director::getInstance()->getRunningScene(), true);
-	//		*m_eventTime = App::getCurrentTime();
-	//	}
-	//	else
-	//	{
-	//		Director::getInstance()->getEventDispatcher()->pauseEventListenersForTarget(Director::getInstance()->getRunningScene(), true);
-	//	}
-	//	return true;
-	//};
-	//Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(lister_high, -200);
-	////安卓返回键
-	//auto androidListener = EventListenerKeyboard::create();
-	//androidListener->onKeyReleased = [](EventKeyboard::KeyCode keyCode, Event* event) {
-	//	if (!App::GetInstance()->isBack)
-	//		return;
-	//	switch (keyCode)
-	//	{
-	//	case EventKeyboard::KeyCode::KEY_ESCAPE:
-	//		if (getBoolFromXML(SOUND_KEY))
-	//			PLAYBUTTON;
-	//		Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-	//		Index::GoToIndexScene();
-	//		App::backThreading();
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//};
-	//_eventDispatcher->addEventListenerWithSceneGraphPriority(androidListener, this);
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	addChild(LayerColor::create(Color4B::WHITE));
 
 	//--------------------------------------------------------------------背景控件-------------------------------------------------------------------------------------------------------------------------
-	Layer* node;
+	
 	Data data;
 	if (App::GetInstance()->getData(BABYCENTER_BOOKCITY_CSB,data))
 	{
@@ -94,6 +74,8 @@ bool BookCityScene::init()
 	}
 	else
 		node = (Layer*)CSLoader::createNode(BABYCENTER_BOOKCITY_CSB);
+	if (node == nullptr)
+		return false; 
 	node->setAnchorPoint(Vec2(0.5f, 0.5f));
 	node->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
 	//左边柱子
@@ -124,9 +106,8 @@ bool BookCityScene::init()
 		if (App::getCurrentTime() < t)
 			return;
 		YYXLayer::controlTouchTime(2, "bookCityClickBookStoreTime", [=]() {
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
-			Index::GoToIndexScene();
+			auto control = ControlScene::getInstance();
+			control->backFromScene();
 		});
 	});
 	auto bookroom = (Button*)node->getChildByName("Button_1");
@@ -139,17 +120,14 @@ bool BookCityScene::init()
 		bookroom->setScale(0.4);
 		bookroom->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "bookstoreSceneBookRoomButtonTime", [=]() {
-				App::GetInstance()->pushScene(MySceneName::BookCity);
-				Index::GoToBookRoomScene();
+				auto control = ControlScene::getInstance();
+				control->replaceScene(ControlScene::getInstance()->getSceneInfo(BookCity), ControlScene::getInstance()->getSceneInfo(BookRoomScene));
 			});
 		});
 	}
-	//每个书店的按钮 资源需要复用 先读入内存
-	//auto fileUtils = FileUtils::getInstance();
-	//m_bookStoreCSBRes_double = fileUtils->getDataFromFile(BABYCENTER_DOUBLEBUTTON_CSB); //2颗小按钮
-	//m_bookStoreCSBRes_onlyone = fileUtils->getDataFromFile(BABYCENTER_BIGBUTTON_CSB);//1颗大按钮
 	//初始化listview
-	m_listview = (ListView*)node->getChildByName(BABYCENTER_FIND_LISTVIEW_BYNAME);
+	auto m_listview = (ListView*)node->getChildByName(BABYCENTER_FIND_LISTVIEW_BYNAME);
+	//m_listview->setVisible(false);
 	m_listview->setTouchEnabled(true);
 	m_listview->setBounceEnabled(true);
 	m_listview->setScrollBarEnabled(false);
@@ -160,9 +138,11 @@ bool BookCityScene::init()
 	m_listview->pushBackCustomItem(layout);
 
 	initListView();
-	Director::getInstance()->getEventDispatcher()->addCustomEventListener("bookCitySceneRefershListView", [=](EventCustom* e) {
+	auto listener2 = EventListenerCustom::create("bookCitySceneRefershListView", [=](EventCustom* e) {
 		initListView();
 	});
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, m_listview);
+
 	auto lister = EventListenerTouchOneByOne::create();
 	lister->onTouchBegan = [&](Touch* touch, Event *event) {
 		m_isMoved = false;
@@ -176,11 +156,10 @@ bool BookCityScene::init()
 			m_isMoved = true;
 		}
 	};
-	_eventDispatcher->addEventListenerWithFixedPriority(lister, -140);
-	//点击跳转书店
-	Director::getInstance()->getEventDispatcher()->addCustomEventListener("BookCitySceneClickButton", [=](EventCustom* e) {
-		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "BookCityScrollPosition", m_listview->getScrollBarPositionFromCornerForVertical().y);
-	});
+	auto sp = Sprite::create();
+	addChild(sp);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(lister, sp);
+
 	//注册转换场景动作通知
 	auto listenTurnAction = EventListenerCustom::create("Listen_Turn_Action", [=](EventCustom* event) {
 		m_listview->runAction(Sequence::create(DelayTime::create(0.6f), MoveBy::create(0.5f, Point(0, 1430 * 0.4)), NULL));
@@ -189,7 +168,7 @@ bool BookCityScene::init()
 		leftColumn->runAction(Sequence::create(DelayTime::create(0.6f), MoveBy::create(0.5f, Point(-200 * 0.4, 0)), NULL));
 		rightColumn->runAction(Sequence::create(DelayTime::create(0.6f), MoveBy::create(0.5f, Point(200 * 0.4, 0)), NULL));
 	});
-	_eventDispatcher->addEventListenerWithFixedPriority(listenTurnAction, 1);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenTurnAction, m_listview);
 	return true;
 }
 
@@ -348,6 +327,9 @@ void BookCityScene::initListView()
 	auto click = YYXStruct::getMapInt64(App::GetInstance()->myData, "bookCityClickButton", 0);
 	if (click == 1)
 		return;
+	auto m_listview = (ListView*)node->getChildByName(BABYCENTER_FIND_LISTVIEW_BYNAME);
+	if (m_listview == nullptr)
+		return;
 	m_listview->removeAllItems();
 	auto layout = Layout::create();
 	layout->setContentSize(Size(100, 450));
@@ -372,7 +354,7 @@ void BookCityScene::initListView()
 		auto layout = Layout::create();		
 		string sortKey = StringUtils::format("sort=%d+bookcity", i);
 		int castleId = YYXStruct::getMapInt64(App::GetInstance()->myData, sortKey, -999);
-		auto storeBorder =(int) YYXStruct::getMapRef(App::GetInstance()->myData, sortKey, (Ref*)1);
+		auto storeBorder =(long)YYXStruct::getMapRef(App::GetInstance()->myData, sortKey, (Ref*)1);
 		if (castleId > 0)
 		{
 			if (storeBorder == 0)
@@ -390,7 +372,7 @@ void BookCityScene::initListView()
 				{
 					string sortKey2 = StringUtils::format("sort=%d+bookcity", i+1);
 					int castleId2 = YYXStruct::getMapInt64(App::GetInstance()->myData, sortKey2, -999);
-					auto storeBorder2 = (int)YYXStruct::getMapRef(App::GetInstance()->myData, sortKey2, (Ref*)1);
+					auto storeBorder2 = (long)YYXStruct::getMapRef(App::GetInstance()->myData, sortKey2, (Ref*)1);
 					if (storeBorder2 != 0)
 					{
 						layout->addChild(SmallBtn::create(data, castleId, castleId2));
@@ -567,9 +549,7 @@ void BigBtn::initNode(Data data) {
 		if (BookCityScene::m_isMoved)
 			return;
 		YYXLayer::controlTouchTime(2, "bookCityClickBookStoreTime", [=]() {
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 1);
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 1);			
 			YYXLayer::sendNotify("Listen_Turn_Action");
 			//EventCustom eventCtiyAction("Listen_Turn_Action");
 			//Director::getInstance()->getEventDispatcher()->setEnabled(true);
@@ -599,12 +579,13 @@ void BigBtn::initNode(Data data) {
 			Spawn* sp6 = Spawn::create(sc6, ro6, NULL);
 
 			CallFunc *callFunc = CallFunc::create([=]() {
-				App::GetInstance()->pushScene(MySceneName::BookCity);
+				//App::GetInstance()->pushScene(MySceneName::BookCity);
 				if (m_castleId < 0)
 					m_castleId = 21;
-				Index::GoToBookCityChildStore(m_castleId);
-				YYXLayer::sendNotify("BookCitySceneClickButton");
+				//Index::GoToBookCityChildStore(m_castleId);				
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 0);
+				auto control = ControlScene::getInstance();
+				control->replaceScene(ControlScene::getInstance()->getSceneInfo(BookCity), ControlScene::getInstance()->getSceneInfo(BookCityCHILD)->setData("bookStoreId", Value(m_castleId)));
 			});
 
 			auto seq = Sequence::create(sp1, sp2, sp3, sp4, sp5, sp6, DelayTime::create(1.3f), callFunc, NULL);
@@ -782,13 +763,8 @@ void SmallBtn::initNode(Data data) {
 	b_bgUp->addClickEventListener([=](Ref* sender) {
 		if (BookCityScene::m_isMoved)
 			return;
-		//EventCustom eventCtiyAction("Listen_Turn_Action");
-		//Director::getInstance()->getEventDispatcher()->setEnabled(true);
-		//Director::getInstance()->getEventDispatcher()->dispatchEvent(&eventCtiyAction);
 		YYXLayer::controlTouchTime(2, "bookCityClickBookStoreTime", [=]() {
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 1);
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
 			YYXLayer::sendNotify("Listen_Turn_Action");
 			auto sc1 = ScaleTo::create(0.3f, 1.25);
 			RotateTo* ro1 = RotateTo::create(0.3f, 10);
@@ -809,12 +785,14 @@ void SmallBtn::initNode(Data data) {
 			RotateTo* ro6 = RotateTo::create(0.25f, 0);
 			Spawn* sp6 = Spawn::create(sc6, ro6, NULL);
 			CallFunc *callFunc = CallFunc::create([=]() {
-				App::GetInstance()->pushScene(MySceneName::BookCity);
+				//App::GetInstance()->pushScene(MySceneName::BookCity);
 				if (m_castleId_top < 0)
 					m_castleId_top = 21;
-				Index::GoToBookCityChildStore(m_castleId_top);
-				YYXLayer::sendNotify("BookCitySceneClickButton");
+				//Index::GoToBookCityChildStore(m_castleId_top);
+				
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 0);
+				auto control = ControlScene::getInstance();
+				control->replaceScene(ControlScene::getInstance()->getSceneInfo(BookCity), ControlScene::getInstance()->getSceneInfo(BookCityCHILD)->setData("bookStoreId", Value(m_castleId_top)));
 			});
 			auto seq = Sequence::create(sp1, sp2, sp3, sp4, sp5, sp6, DelayTime::create(1.3f), callFunc, NULL);
 			b_borderUp->runAction(seq);
@@ -959,8 +937,6 @@ void SmallBtn::initNode(Data data) {
 			return;
 		YYXLayer::controlTouchTime(2, "bookCityClickBookStoreTime", [=]() {
 			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 1);
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
 			YYXLayer::sendNotify("Listen_Turn_Action");
 			//EventCustom eventCtiyAction("Listen_Turn_Action");
 			//Director::getInstance()->getEventDispatcher()->setEnabled(true);
@@ -992,12 +968,14 @@ void SmallBtn::initNode(Data data) {
 			Spawn* sp6 = Spawn::create(sc6, ro6, NULL);
 
 			CallFunc *callFunc = CallFunc::create([=]() {
-				App::GetInstance()->pushScene(MySceneName::BookCity);
+				//App::GetInstance()->pushScene(MySceneName::BookCity);
 				if (m_castleId_bottom < 0)
 					m_castleId_bottom = 21;
-				Index::GoToBookCityChildStore(m_castleId_bottom);
-				YYXLayer::sendNotify("BookCitySceneClickButton");
+				//Index::GoToBookCityChildStore(m_castleId_bottom);
+				
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "bookCityClickButton", 0);
+				auto control = ControlScene::getInstance();
+				control->replaceScene(ControlScene::getInstance()->getSceneInfo(BookCity), ControlScene::getInstance()->getSceneInfo(BookCityCHILD)->setData("bookStoreId", Value(m_castleId_bottom)));
 			});
 
 			auto seq = Sequence::create(sp1, sp2, sp3, sp4, sp5, sp6, DelayTime::create(1.3f), callFunc, NULL);

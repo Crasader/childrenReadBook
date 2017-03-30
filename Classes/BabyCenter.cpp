@@ -6,9 +6,11 @@
 #include "NetIntface.h"
 #include "YYXVisitor.h"
 #include "YYXDownloadImages.h"
+#include "YYXSound.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
+using namespace std;
 
 //静态成员变量初始化
 int BabyCenter::m_readBooks = 0;
@@ -21,24 +23,44 @@ BabyCenter::BabyCenter() {
 
 BabyCenter::~BabyCenter() {
 	unschedule("babyCenterSceneUpdataShowHeadPortrait");
+	ControlScene::getInstance()->end();
 	App::log("BabyCenter::~BabyCenter()");
 }
 
-Scene* BabyCenter::createScene()
+Scene* BabyCenter::createScene(SceneInfo* sceneInfo)
 {
 	auto scene = Scene::create();
-	auto layer = BabyCenter::create();
-	scene->addChild(layer);
-	layer->setTag(9);
+	auto layer = BabyCenter::create(sceneInfo);
+	if (layer)
+	{
+		scene->addChild(layer);
+		layer->setTag(9);
+	}
 	return scene;
 }
 
-bool BabyCenter::init()
+
+BabyCenter* BabyCenter::create(SceneInfo* data)
+{
+	BabyCenter *pRet = new(std::nothrow) BabyCenter();
+	if (pRet && pRet->init(data))
+	{
+		pRet->autorelease();
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+	}
+	return pRet;
+}
+
+bool BabyCenter::init(SceneInfo* sceneInfo)
 {
 	App::log("BabyCenter::init");
 	if (!Layer::init())
 		return false;
-	App::m_RunningScene = MySceneName::BabyCenterScene;
+	//App::m_RunningScene = MySceneName::BabyCenterScene;
 	////删除头像
 	//auto t = App::getCurrentTime() - App::GetInstance()->getTime("deleteTime", 0);
 	//if (t > 60*60)
@@ -164,8 +186,7 @@ void BabyCenter::initBabyCenter() {
 	m_img_photo->setTouchEnabled(true);
 	//点击更换头像
 	m_img_photo->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		initPhotoLayer();
 		babyinfo->removeFromParentAndCleanup(true);
 	});
@@ -200,6 +221,7 @@ void BabyCenter::initBabyCenter() {
 	auto changChild = (Button*)babyinfo->getChildByName(FIND_BUTTON_BYNAME_BABYCENTER_BABYCENTE_CHANGECHILD);
 	if (changChild)
 		changChild->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
 		initChangeChild();
 	});
 	//输入框-姓名
@@ -230,8 +252,7 @@ void BabyCenter::initBabyCenter() {
 	{
 		YYXLayer::controlTouchTime(1, "BabyCentercommitButtonTime", [=]() {
 			App::log("BabyCentercommitButtonTime");
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 			//判断名字是否为空
 			if (input_name->getString().length() == 0) {
 				Toast::create(App::getString("MESAAGEBOX_ADDCHILD_NAME_ERROR"));
@@ -285,8 +306,7 @@ void BabyCenter::initBabyCenter() {
 
 	//男孩选择-触发事件
 	select_boy->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_TWO_PNG, TextureResType::PLIST);
 		select_boy->setTouchEnabled(false);
 		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_ONE_PNG, TextureResType::PLIST);
@@ -297,8 +317,7 @@ void BabyCenter::initBabyCenter() {
 	});
 	//女孩选择-触发事件
 	select_girl->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_TWO_PNG, TextureResType::PLIST);
 		select_boy->setTouchEnabled(true);
 		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_ONE_PNG, TextureResType::PLIST);
@@ -312,8 +331,7 @@ void BabyCenter::initBabyCenter() {
 	//编辑按钮触发事件
 	editButton->setTouchEnabled(true);
 	editButton->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		m_img_photo->setTouchEnabled(false);
 		editButton->setVisible(false);
 		editButton->setTouchEnabled(false);
@@ -328,9 +346,8 @@ void BabyCenter::initBabyCenter() {
 	homeButton->setPositionX((1094 - visibleSize.width) / 2 + 14);
 	homeButton->setTouchEnabled(true);
 	homeButton->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
-		Index::GoToIndexScene();
+		auto control = ControlScene::getInstance();
+		control->backFromScene();
 	});
 	App::log("222222222222222222222222222");
 	//通知刷新阅读记录
@@ -656,11 +673,8 @@ void BabyCenter::initLoginLayer() {
 	auto loginButton = (Button*)loginNode->getChildByName(BABYCENTE_FIND_LOGIN_BUTTON);
 	loginButton->setTouchEnabled(true);
 	loginButton->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
-		//跳转登陆
-		App::GetInstance()->pushScene(BabyCenterScene);
-		Index::GoToLoginScene();
+		auto control = ControlScene::getInstance();
+		control->replaceScene(ControlScene::getInstance()->getSceneInfo(BabyCenterScene), ControlScene::getInstance()->getSceneInfo(LoginScene));
 	});
 
 	//返回按钮
@@ -668,9 +682,8 @@ void BabyCenter::initLoginLayer() {
 	homeButton->setPositionX((1094 - visibleSize.width) / 2 + 14);
 	homeButton->setTouchEnabled(true);
 	homeButton->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
-		Index::GoToIndexScene();
+		auto control = ControlScene::getInstance();
+		control->backFromScene();
 	});
 	App::log("BabyCenter::initLoginLayer---END");
 }
@@ -704,10 +717,9 @@ void BabyCenter::initPhotoLayer() {
 	localPhoto->setTouchEnabled(true);
 	localPhoto->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "PHOTOSHOW_FIND_LOCALPHOTOTime", [=]() {
+			YYXSound::getInstance()->playButtonSound();
 			//selectPath = "";
 			YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "selectPath");
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
 			string dir = FileUtils::getInstance()->getWritablePath() + "temp";
 			string fileName = "PhotoAlbum.png";
 			string thispath = dir + "/" + fileName;
@@ -740,8 +752,7 @@ void BabyCenter::initPhotoLayer() {
 		YYXLayer::controlTouchTime(1, "PHOTOSHOW_FIND_LOCALPHOTOTime", [=]() {
 			//selectPath = "";
 			YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "selectPath");
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 			string dir = NetIntface::getAlbumAbsolutePath();
 			string fileName = "photograph.png";
 			string imgpath = dir + "/" + fileName;
@@ -773,8 +784,7 @@ void BabyCenter::initPhotoLayer() {
 	photoEnd->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(3, "upimagetime", [=]() {
 			Toast::create(App::getString("UPIMAGE"));
-			if (YYXLayer::getBoolFromXML(SOUND_KEY))
-				YYXLayer::PLAYBUTTON;
+			YYXSound::getInstance()->playButtonSound();
 			uploadAvatar();
 		});
 	});
@@ -784,8 +794,7 @@ void BabyCenter::initPhotoLayer() {
 	homeButton->setTouchEnabled(true);
 	homeButton->setPositionX((1094 - visibleSize.width) / 2 + 14);
 	homeButton->addClickEventListener([=](Ref* sender) {
-		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			YYXLayer::PLAYBUTTON;
+		YYXSound::getInstance()->playButtonSound();
 		SelcetHeadPortrait->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 		SelcetHeadPortrait->removeFromParentAndCleanup(true);
 		initBabyCenter();
@@ -813,6 +822,7 @@ void BabyCenter::initChangeChild()
 		changeChildLayer->addChild(back);
 		back->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "FIND_BUTTON_BYNAME_BABYCENTER_CHANGECHILD_BACK_Time", [=]() {
+				YYXSound::getInstance()->playButtonSound();
 				if(changeChildLayer)
 				changeChildLayer->removeFromParentAndCleanup(true);
 				initBabyCenter();
@@ -876,6 +886,7 @@ void BabyCenter::initChangeChild()
 	{
 		finishbutton->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "FIND_BUTTON_BYNAME_BABYCENTER_CHANGECHILD_BACK_Time", [=]() {
+				YYXSound::getInstance()->playButtonSound();
 				if (finishbutton->getTag() == 0)
 				{
 					finishbutton->setTag(1);//编辑状态 展示关闭按钮
@@ -913,6 +924,7 @@ Layer* BabyCenter::initAddChild()
 	{
 		b_close->addClickEventListener([addchildMessagebox](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "FIND_BUTTON_BY_NAME_ADDCHILD_CLOSETime", [addchildMessagebox]() {
+				YYXSound::getInstance()->playButtonSound();
 				addchildMessagebox->removeFromParentAndCleanup(true);
 			});
 		});
@@ -939,6 +951,7 @@ Layer* BabyCenter::initAddChild()
 	Pic_man->setTouchEnabled(true);
 	Pic_woman->setTouchEnabled(true);
 	auto lister_man = [=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
 		woman->setSelectedState(false);
 		man->setSelectedState(true);
 	};
@@ -953,6 +966,7 @@ Layer* BabyCenter::initAddChild()
 	//添加宝贝按钮
 	b_add->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "FIND_BUTTON_BY_NAME_ADDCHILD_ADDTime", [=]() {
+			YYXSound::getInstance()->playButtonSound();
 			auto IsMan = false;
 			if (man->getSelectedState())
 				IsMan = true;
@@ -1069,6 +1083,7 @@ void BabyCenter::setNodeChild(Node* node, int index)
 		if (index != 0) {
 			deleteButton->addClickEventListener([=](Ref* sender) {
 				YYXLayer::controlTouchTime(1, "FIND_BUTTON_BYNAME_BABYCENTER_CHANGECHILD_CHILD_DELETETime", [=]() {
+					YYXSound::getInstance()->playButtonSound();
 					auto messagebox = YYXLayer::MyMessageBox(App::getString("QUEDINGSHANCHU"), App::getString("QUEDING"), [=]()
 					{
 						string runkey = StringUtils::format("babyCenterScenehttpDeleteChildSuccess_%d", (int)YYXLayer::getRandom());
@@ -1188,7 +1203,8 @@ void BabyCenter::setNodeChild(Node* node, int index)
 		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener1, node);
 		headPortrait->setTouchEnabled(true);
 		headPortrait->addClickEventListener([=](Ref* sender) {
-			YYXLayer::controlTouchTime(1, "ChangeHeadPortraitClickTime", [=]() {				
+			YYXLayer::controlTouchTime(1, "ChangeHeadPortraitClickTime", [=]() {
+				YYXSound::getInstance()->playButtonSound();
 				if (id == -999)
 				{
 					auto addchildLayer = initAddChild();
@@ -1344,11 +1360,13 @@ void BabyCenter::uploadAvatar() {
 	auto showID = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
 	if (showID == -999)
 	{
-		App::GetInstance()->pushScene(BabyCenterScene);
-		Index::GoToLoginScene();
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([]() {
+		//App::GetInstance()->pushScene(BabyCenterScene);
+		//Index::GoToLoginScene();
+		//Director::getInstance()->getScheduler()->performFunctionInCocosThread([]() {
 			Toast::create(App::getString("DENGLUSHIXIAOCHONGXINDENGLU"));
-		});
+		//});
+			auto control = ControlScene::getInstance();
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(BabyCenterScene), ControlScene::getInstance()->getSceneInfo(LoginScene));
 	}
 	string selectPath = YYXStruct::getMapString(App::GetInstance()->myData, "selectPath", "");
 	if (selectPath == "" || !FileUtils::getInstance()->isFileExist(selectPath))
@@ -1622,18 +1640,6 @@ void BabyCenter::getChildDetailsBusinessLogic(string json,function<void()> error
 							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathKey, YYXLayer::getCurrentTime4Second(), savePath);
 						}
 					});
-					/*NetIntface::DownLoadImage(url, dir, fileName, StringUtils::format("DownLoadImage%d", YYXLayer::getRandom()), [=](string path) {
-						if (path != "" && FileUtils::getInstance()->isFileExist(path))
-						{
-							string savePath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("childHead_%d.png", childrenId);
-							App::makeRoundImage(path, savePath);
-							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, savePath);
-							YYXLayer::setFileValue("ShowChildHeadPortrait", savePath);
-							YYXLayer::sendNotify("BaByCenterSceneChildInfoReferHeadPortrait");
-							string pathKey = StringUtils::format("path+childID=%d", childrenId);
-							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, pathKey, YYXLayer::getCurrentTime4Second(), savePath);
-						}
-					}, "", [](string str) {});*/
 				}
 			}
 			else

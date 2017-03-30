@@ -144,169 +144,6 @@ void Java_org_cocos2dx_cpp_AppActivity_CallBackBookInfoSceneSendComment(JNIEnv *
 	});
 }
 
-// 本地方法 上传头像的回调
-//原型函数public native static void CallBackBabySceneUpPortrait();
-/*void Java_org_cocos2dx_cpp_AppActivity_CallBackBabySceneUpPortrait(JNIEnv *env, jobject thiz)
-{
-	Parent::DeleteDirectory(FileUtils::getInstance()->getWritablePath() + "temp");
-	App::GetInstance()->addTime("deleteTime", App::getCurrentTime());
-	std::string str;
-	CocosAndroidJni::getResult(str);
-	if (App::GetInstance()->m_me)
-	{
-		App::GetInstance()->m_me->showPortraitPath = str; 
-		if (App::GetInstance()->m_me && App::GetInstance()->m_me->id > 0)
-		{
-			auto id = App::GetInstance()->m_me->id;
-			CocosAndroidJni::getChildDetails(id);
-		}
-	}
-}*/
-
-// 本地方法 余额购书失败的回调
-//原型函数public native static void CallBackRechargeBuyBookFail();
-	void Java_org_cocos2dx_cpp_AppActivity_CallBackRechargeBuyBookFail(
-		JNIEnv *env, jobject thiz) {
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-			Director::getInstance()->getEventDispatcher()->setEnabled(true);
-			EventCustom event("buybookcallback");
-			Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-		});
-	}
-
-//// 本地方法 余额不足的回调
-////原型函数public native static void CallBackRechargeBuyBookMyBalanceIsNotEnough();
-//	void Java_org_cocos2dx_cpp_AppActivity_CallBackRechargeBuyBookMyBalanceIsNotEnough(
-//		JNIEnv *env, jobject thiz) {
-//		Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-//			Director::getInstance()->getEventDispatcher()->setEnabled(true);
-//			EventCustom event1("buybookcallback");
-//			EventCustom event2("gotorecharge");
-//			Director::getInstance()->getEventDispatcher()->dispatchEvent(&event1);
-//			Director::getInstance()->getEventDispatcher()->dispatchEvent(&event2);
-//		});
-//	}
-
-// 本地方法 余额购书成功的回调
-//原型函数public native static void CallBackRechargeBuyBookSuccess();
-/*void Java_org_cocos2dx_cpp_AppActivity_CallBackRechargeBuyBookSuccess(
-	JNIEnv *env, jobject thiz) {
-	Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-		Director::getInstance()->getEventDispatcher()->setEnabled(true);
-		EventCustom event("pay");
-		Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-	});
-	if (App::GetInstance()->m_me)
-		CocosAndroidJni::GetBuyBook(App::GetInstance()->m_me->id);
-}*/
-
-// 本地方法 查询余额的回调
-//原型函数public native static void CallBackRechargeGetUserBalance();
-/*void Java_org_cocos2dx_cpp_AppActivity_CallBackRechargeGetUserBalance(
-	JNIEnv *env, jobject thiz) {
-	std::string str;
-	CocosAndroidJni::getResult(str);
-	rapidjson::Document doc;
-	if (YYXLayer::getJsonObject4Json(doc, str))
-	{
-		if (YYXLayer::getBoolForJson(false, doc, "result"))
-		{
-			auto recharge = YYXLayer::getDouble4Json(-1, doc, "data", "balance_amount");
-			if (recharge == -1)
-			{
-				App::log("余额更新异常");
-				if (App::GetInstance()->m_RunningScene == MySceneName::BookInfoScene)
-				{
-					Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-						Toast::create(App::getString("NETEXCEPTION"));
-						Director::getInstance()->getEventDispatcher()->setEnabled(true);
-						EventCustom event("buybookcallback");
-						Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-					});
-				}
-			}
-			else
-			{
-				App::log("更新余额 showyue通知");
-				if (App::GetInstance()->m_me)
-					App::GetInstance()->m_me->momey = recharge*100;
-				Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-					Director::getInstance()->getEventDispatcher()->setEnabled(true);
-					EventCustom event("showyue");
-					Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-				});
-			}
-		}
-	}
-}*/
-	
-//// 本地方法 已购列表的回调
-////原型函数public native static void CallBackLoadSceneGetBuyBook();
-//void Java_org_cocos2dx_cpp_AppActivity_CallBackLoadSceneGetBuyBook(JNIEnv *env, jobject thiz, jstring objectstring)
-//{
-//	const char* resultstring = env->GetStringUTFChars(objectstring, NULL);
-//	string str = resultstring;
-//	if (App::GetInstance()->m_RunningScene == MySceneName::LoginScene)
-//	{
-//		App::log("已购列表的回调"+str);
-//		if (str == "true")
-//		{
-//			Load::notifyLoginSuccess();
-//		}
-//		else
-//		{
-//			Load::notifyLoginFailed();
-//		}
-//	}
-//	if (App::GetInstance()->m_RunningScene == MySceneName::BookInfoScene)
-//	{
-//		Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-//			Director::getInstance()->getEventDispatcher()->setEnabled(true);
-//			EventCustom event("panduanIsBuy");
-//			Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-//		});
-//	}
-//}
-
-//本地方法 下载孩子头像的回调
-//原型函数public native static void CallBackBabySceneReferChildPortrait();
-void Java_org_cocos2dx_cpp_AppActivity_CallBackBabySceneReferChildPortrait(
-	JNIEnv *env, jobject thiz) {
-	std::string str;
-	CocosAndroidJni::getResult(str);
-	if (App::GetInstance()->m_RunningScene == MySceneName::BabyCenterScene)
-	{
-		auto layer = (BabyCenter*)Director::getInstance()->getRunningScene()->getChildByTag(9);
-		layer->CallBackDownLoadChildPortrait(str);
-	}
-}
-
-/*//本地方法 请求孩子列表信息回调
-//原型函数public native static void CallBackLoadScenegetChildDetails();
-void Java_org_cocos2dx_cpp_AppActivity_CallBackLoadScenegetChildDetails(
-		JNIEnv *env, jobject thiz) {
-	std::string str;
-	CocosAndroidJni::getResult(str);
-	BabyCenter::getChildDetailsCallback(str);
-}*/
-
-//本地方法 登录的回调
-//原型函数public native static void CallBackLoadSceneAccountLogin();
-/*void Java_org_cocos2dx_cpp_AppActivity_CallBackLoadSceneAccountLogin(
-		JNIEnv *env, jobject thiz) {
-	std::string str;
-	CocosAndroidJni::getResult(str);
-	Load::verficationCallback(str);
-	if (App::GetInstance()->m_RunningScene == MySceneName::ParentScene)
-	{
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-			Director::getInstance()->getEventDispatcher()->setEnabled(true);
-			EventCustom event("REFRESH_USER_INFO_OVER");
-			Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-		});
-	}
-}*/
-
 void Java_org_cocos2dx_cpp_AppActivity_takePotos(JNIEnv *env, jobject thiz) {
 	CCLOG("%s", "拍照返回");
 	//开启一个线程找头像然后发消息
@@ -328,35 +165,16 @@ void Java_org_cocos2dx_cpp_AppActivity_takePotos(JNIEnv *env, jobject thiz) {
 				App::log("拍照找到图片");
 				CocosAndroidJni::CompressPictureByTakePhoto(App::m_photsName.c_str());
 				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-							if (App::GetInstance()->m_RunningScene == BabyCenterScene)
-							{
+							//if (App::GetInstance()->m_RunningScene == BabyCenterScene)
+							//{
 								auto scene = (BabyCenter*)Director::getInstance()->getRunningScene()->getChildByTag(9);
 								scene->m_BigPhoto->loadTexture(fullpath);
 								scene->m_img_photo->loadTexture(fullpath);
-							}
+							//}
 						});
 			});
 	thread_1.detach();
 }
-
-/*void Java_org_cocos2dx_cpp_AppActivity_getPhoto(JNIEnv *env, jobject thiz) {
-	CocosAndroidJni::ToastAndroid(App::getString("STR_PICTUREING"));
-	std::thread thread_1(
-			[]() {
-				CocosAndroidJni::CompressPictureByTakePhoto(App::m_photsName.c_str());
-				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-							if (App::GetInstance()->m_RunningScene == BabyCenterScene)
-							{
-								auto scene = (BabyCenter*)Director::getInstance()->getRunningScene()->getChildByTag(9);
-								string path;
-								CocosAndroidJni::GetPhotoPath(path);
-								string fullpath = path + "/" + App::m_photsName;
-								scene->m_BigPhoto->loadTexture(fullpath);
-							}
-						});
-			});
-	thread_1.detach();
-}*/
 
 void Java_org_cocos2dx_cpp_AppActivity_getPayResult(JNIEnv *env, jobject thiz) {
 	std::string result;

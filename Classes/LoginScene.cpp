@@ -4,14 +4,15 @@
 #include "YYXVisitor.h"
 #include "Charger.h"
 #include "YYXDownloadImages.h"
+#include "User.h"
 
-Scene* Login::createScene()
+Scene* Login::createScene(SceneInfo *sceneInfo)
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
     
     // 'layer' is an autorelease object
-    auto layer = Login::create();
+    auto layer = Login::create(sceneInfo);
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -20,8 +21,23 @@ Scene* Login::createScene()
     return scene;
 }
 
+Login* Login::create(SceneInfo* data /*= nullptr*/)
+{
+	Login *pRet = new(std::nothrow) Login();
+	if (pRet && pRet->init(data))
+	{
+		pRet->autorelease();
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+	}
+	return pRet;
+}
+
 // on "init" you need to initialize your instance
-bool Login::init()
+bool Login::init(SceneInfo *sceneInfo)
 {
     //////////////////////////////
     // 1. super init first
@@ -31,7 +47,7 @@ bool Login::init()
     }
 	 
 	//记录当前场景
-	App::m_RunningScene = LoginScene;
+	//App::m_RunningScene = LoginScene;
 
 	////安卓返回键
 	//auto androidListener = EventListenerKeyboard::create();
@@ -343,6 +359,7 @@ Layer* Login::registerInit()
 						App::GetInstance()->m_me = new MyAccount();
 						App::GetInstance()->m_me->id = memberId;
 						App::GetInstance()->m_me->momey = 0;
+						User::getInstance()->setMemberId(memberId);
 					}
 					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userAccount", -999, name);
 					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userPassword", -999, password);
@@ -380,8 +397,10 @@ Layer* Login::registerInit()
 					Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
 						YYXLayer::sendNotify("LoginScenehttpAccountRegisteOver");
 						closeTime();
-						App::GetInstance()->popBack();
-						Index::BackPreviousScene();
+						//App::GetInstance()->popBack();
+						//Index::BackPreviousScene();
+						auto control = ControlScene::getInstance();
+						control->replaceScene(control->getCurrentScene(),control->getFromScene(),false);
 						thread runable([=]() {	
 							App::ccsleep(1000);
 							int count = __String(couponSum).intValue();
@@ -557,8 +576,10 @@ Layer* Login::loginInit()
 	b_close->addClickEventListener([=](Ref* sender) {
 		//关闭 返回
 		YYXLayer::controlTouchTime(1, "LoginSceneb_closeTime", [=]() {
-			App::GetInstance()->popBack();
-			Index::BackPreviousScene();
+			//App::GetInstance()->popBack();
+			//Index::BackPreviousScene();
+			auto control = ControlScene::getInstance();
+			control->replaceScene(control->getCurrentScene(), control->getFromScene(),false);
 		});
 	});
 	b_register->addClickEventListener([=](Ref* sender) {
@@ -575,18 +596,17 @@ Layer* Login::loginInit()
 	//通知: 登录成功
 	_eventDispatcher->removeCustomEventListeners("USER_LOGIN_SUCCESS");
 	auto listenLoginSuccess = EventListenerCustom::create("USER_LOGIN_SUCCESS", [=](EventCustom* event) {
-		App::log("************************YYXLayer::sendNotify(USER_LOGIN_SUCCESS);");
 		Director::getInstance()->getRunningScene()->addChild(YYXLayer::WaitLayer());
 		scheduleOnce([](float f) {
 			Toast::create(App::getString("DENGLUCHENGGONG"));
 		}, 2.0f, "LoginSuccessToast");
 		scheduleOnce([](float f) {
 			//验证成功,返回前场景
-			App::GetInstance()->popBack();
-			Index::BackPreviousScene();
+			auto control = ControlScene::getInstance();
+			control->replaceScene(control->getCurrentScene(), control->getFromScene(),false);
 		}, 5.0f, "LoginSuccess");
 	});
-	_eventDispatcher->addEventListenerWithFixedPriority(listenLoginSuccess, 1);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenLoginSuccess, loginmessagebox);
 
 	//通知: 登录失败
 	_eventDispatcher->removeCustomEventListeners("USER_LOGIN_FAILED");
@@ -595,13 +615,12 @@ Layer* Login::loginInit()
 			Director::getInstance()->getEventDispatcher()->resumeEventListenersForTarget(Director::getInstance()->getRunningScene(), true);			
 			b_login->setTitleText(App::getString("DENGLU"));
 	});
-	_eventDispatcher->addEventListenerWithFixedPriority(listenLoginFailed, 1);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenLoginFailed, loginmessagebox);
 	//---------------------------------------通知END------------------------------------------------------------------------------------
 
 		//登录按钮
 	b_login->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "LoginSceneb_loginTime", [=]() {			
-			App::log("===============================>>> LoginClick");
 			auto phone = account->getString();
 			auto _password = password->getString();
 			if (phone == "888" && _password == "debug")
@@ -619,11 +638,7 @@ Layer* Login::loginInit()
 				Toast::create(App::getString("QINGSHURUMIMA"));
 				return;
 			}
-			//暂停所有触发事件
-			//Director::getInstance()->getEventDispatcher()->pauseEventListenersForTarget(Director::getInstance()->getRunningScene(), true);
 			b_login->setTitleText(App::getString("DEMGLUZHONG"));
-			//网络请求登录		
-			//Load::verification(phone, _password);
 			LogIn(phone, _password);
 		});
 	});
@@ -1144,6 +1159,8 @@ void Login::closeTime()
 void Login::LogIn(string member_name, string member_passwd)
 {
 	if (member_name != "" && member_passwd != "") {
+		if (!NetIntface::IsNetConnect(true))
+			return;
 		NetIntface::httpLogIn(member_name, member_passwd,"", [=](string json) {
 			NetIntface::httpLogInCallBack(json, [=](int memberId, int memberSex, int memberGrade, string memberCity, string memberProvince) {
 				YYXVisitor::getInstance()->logoutVisitor();
@@ -1151,6 +1168,7 @@ void Login::LogIn(string member_name, string member_passwd)
 				if (App::GetInstance()->m_me == nullptr)
 					App::GetInstance()->m_me = new MyAccount();
 				App::GetInstance()->m_me->id = memberId;
+				User::getInstance()->setMemberId(memberId);
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userAccount", -999, member_name);
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userSex", memberSex);
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userCity", -999, memberCity);
@@ -1175,6 +1193,11 @@ void Login::LogIn(string member_name, string member_passwd)
 			YYXLayer::sendNotify("USER_LOGIN_FAILED");
 		});
 	}
+}
+
+Login::~Login()
+{
+	ControlScene::getInstance()->end();
 }
 
 //确定需要展示的头像和孩子ID

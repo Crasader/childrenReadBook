@@ -3,6 +3,7 @@
 #include "FKAudioPlayer.h"
 #include "YYXBookOver.h"
 #include "FKBookParser.h"
+#include "YYXSound.h"
 USING_NS_FK;
 USING_NS_CC;
 
@@ -95,7 +96,8 @@ void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 	FK::AudioPlayer::getInstance()->pauseAllEffect();
     // if you use SimpleAudioEngine, it must be pause
-	App::GetInstance()->stopBackGroundMusic();
+	YYXSound::getInstance()->stopBackGroundMusic();
+	YYXSound::getInstance()->stopAll();
 }
 
 // this function will be called when the app is active again
@@ -109,7 +111,6 @@ void AppDelegate::applicationWillEnterForeground() {
 	FK::AudioPlayer::getInstance()->resumeAllEffect();
 
     // if you use SimpleAudioEngine, it must resume here
-	auto isReading = YYXStruct::getMapInt64(App::GetInstance()->myData, "UserIsReadingBook", 0);
-	if (isReading == 0 && App::GetInstance()->isMusicPlay)
-		App::GetInstance()->playBackGroundMusic();
+	if (FK::BookParser::getInstance()->getIsReading())		
+		YYXSound::getInstance()->playBackGroundMusic();
 }

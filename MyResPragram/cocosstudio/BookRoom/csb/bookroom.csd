@@ -74,17 +74,6 @@
             <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_girl_0001.png" Plist="BookRoom/csb/bookRoom.plist" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
-          <AbstractNodeData Name="BookHome_girl_0008_8" ActionTag="-944496871" Tag="10" IconVisible="False" LeftMargin="377.5000" RightMargin="671.5000" TopMargin="127.0381" BottomMargin="466.9619" ctype="SpriteObjectData">
-            <Size X="45.0000" Y="20.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="400.0000" Y="476.9619" />
-            <Scale ScaleX="0.6660" ScaleY="0.6660" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.3656" Y="0.7768" />
-            <PreSize X="0.0411" Y="0.0326" />
-            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_girl_0008.png" Plist="BookRoom/csb/bookRoom.plist" />
-            <BlendFunc Src="1" Dst="771" />
-          </AbstractNodeData>
           <AbstractNodeData Name="Node_1" ActionTag="-149787021" Tag="1061" IconVisible="True" RightMargin="1094.0000" TopMargin="614.0003" BottomMargin="-0.0003" ctype="SingleNodeObjectData">
             <Size X="0.0000" Y="0.0000" />
             <Children>
@@ -236,55 +225,35 @@
             <PreSize X="1.3144" Y="0.1450" />
             <FileData Type="MarkedSubImage" Path="BookRoom/res/muban_nav_bg_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Image_14" ActionTag="433697833" Tag="209" IconVisible="False" LeftMargin="731.5159" RightMargin="160.4841" TopMargin="17.9723" BottomMargin="495.0277" LeftEage="66" RightEage="66" TopEage="33" BottomEage="33" Scale9OriginX="66" Scale9OriginY="33" Scale9Width="70" Scale9Height="35" ctype="ImageViewObjectData">
-            <Size X="202.0000" Y="101.0000" />
+          <AbstractNodeData Name="Image_14" ActionTag="433697833" Tag="209" IconVisible="False" LeftMargin="669.5149" RightMargin="206.4851" TopMargin="18.4724" BottomMargin="495.5276" LeftEage="66" RightEage="66" TopEage="15" BottomEage="15" Scale9OriginX="66" Scale9OriginY="15" Scale9Width="86" Scale9Height="70" ctype="ImageViewObjectData">
+            <Size X="218.0000" Y="100.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="832.5159" Y="545.5277" />
+            <Position X="778.5149" Y="545.5276" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.7610" Y="0.8885" />
-            <PreSize X="0.1846" Y="0.1645" />
-            <FileData Type="MarkedSubImage" Path="BookRoom/res/gm_nav_nor_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
+            <PrePosition X="0.7116" Y="0.8885" />
+            <PreSize X="0.1993" Y="0.1629" />
+            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_button_yigoumai_nor_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Image_14_0" ActionTag="2109762657" Tag="1134" IconVisible="False" LeftMargin="552.0939" RightMargin="341.9061" TopMargin="17.9723" BottomMargin="495.0277" LeftEage="98" RightEage="98" TopEage="13" BottomEage="13" Scale9OriginX="98" Scale9OriginY="13" Scale9Width="4" Scale9Height="75" ctype="ImageViewObjectData">
-            <Size X="200.0000" Y="101.0000" />
+          <AbstractNodeData Name="Image_14_1" ActionTag="1382426052" Tag="1135" IconVisible="False" LeftMargin="443.1324" RightMargin="384.8676" TopMargin="18.4723" BottomMargin="495.5277" LeftEage="52" RightEage="52" TopEage="13" BottomEage="13" Scale9OriginX="52" Scale9OriginY="13" Scale9Width="162" Scale9Height="74" ctype="ImageViewObjectData">
+            <Size X="266.0000" Y="100.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="652.0939" Y="545.5277" />
+            <Position X="576.1324" Y="545.5277" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.5961" Y="0.8885" />
-            <PreSize X="0.1828" Y="0.1645" />
-            <FileData Type="MarkedSubImage" Path="BookRoom/res/nkts_nav_nor_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
+            <PrePosition X="0.5266" Y="0.8885" />
+            <PreSize X="0.2431" Y="0.1629" />
+            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_button_zuijinyuedu_nor_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Image_14_1" ActionTag="1382426052" Tag="1135" IconVisible="False" LeftMargin="402.9219" RightMargin="532.0781" TopMargin="17.9723" BottomMargin="495.0277" LeftEage="52" RightEage="52" TopEage="13" BottomEage="13" Scale9OriginX="52" Scale9OriginY="13" Scale9Width="55" Scale9Height="75" ctype="ImageViewObjectData">
-            <Size X="159.0000" Y="101.0000" />
+          <AbstractNodeData Name="Image_14_2" ActionTag="435710017" Tag="1136" IconVisible="False" LeftMargin="264.7499" RightMargin="611.2501" TopMargin="18.4724" BottomMargin="495.5276" LeftEage="52" RightEage="52" TopEage="13" BottomEage="13" Scale9OriginX="52" Scale9OriginY="13" Scale9Width="114" Scale9Height="74" ctype="ImageViewObjectData">
+            <Size X="218.0000" Y="100.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="482.4219" Y="545.5277" />
+            <Position X="373.7499" Y="545.5276" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.4410" Y="0.8885" />
-            <PreSize X="0.1453" Y="0.1645" />
-            <FileData Type="MarkedSubImage" Path="BookRoom/res/sc_nav_nor_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="Image_14_2" ActionTag="435710017" Tag="1136" IconVisible="False" LeftMargin="245.7498" RightMargin="692.2502" TopMargin="17.9723" BottomMargin="495.0277" LeftEage="52" RightEage="52" TopEage="13" BottomEage="13" Scale9OriginX="52" Scale9OriginY="13" Scale9Width="52" Scale9Height="75" ctype="ImageViewObjectData">
-            <Size X="156.0000" Y="101.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="323.7498" Y="545.5277" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.2959" Y="0.8885" />
-            <PreSize X="0.1426" Y="0.1645" />
-            <FileData Type="MarkedSubImage" Path="BookRoom/res/ysc_nav_sel_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="Image_4" ActionTag="-896176070" Tag="513" IconVisible="False" LeftMargin="699.7916" RightMargin="365.2084" TopMargin="51.1115" BottomMargin="526.8885" LeftEage="9" RightEage="9" TopEage="11" BottomEage="11" Scale9OriginX="9" Scale9OriginY="11" Scale9Width="11" Scale9Height="14" ctype="ImageViewObjectData">
-            <Size X="29.0000" Y="36.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="714.2916" Y="544.8885" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.6529" Y="0.8874" />
-            <PreSize X="0.0265" Y="0.0586" />
-            <FileData Type="Normal" Path="other/wodeshufang-niankasuoding-mr_736h.png" Plist="" />
+            <PrePosition X="0.3416" Y="0.8885" />
+            <PreSize X="0.1993" Y="0.1629" />
+            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_button_yixiazai_pre_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
           </AbstractNodeData>
           <AbstractNodeData Name="Image_3" ActionTag="-144673813" VisibleForFrame="False" Tag="170" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" PercentWidthEnable="True" PercentHeightEnable="True" PercentWidthEnabled="True" PercentHeightEnabled="True" LeftEage="35" RightEage="35" TopEage="19" BottomEage="19" Scale9OriginX="35" Scale9OriginY="19" Scale9Width="39" Scale9Height="22" ctype="ImageViewObjectData">
             <Size X="1094.0000" Y="614.0000" />
@@ -305,6 +274,29 @@
             <PrePosition X="-0.4570" Y="0.6083" />
             <PreSize X="0.0000" Y="0.0000" />
             <FileData Type="Normal" Path="BookRoom/csb/bookNodeover.csd" Plist="" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Button_1" ActionTag="1510897607" Tag="214" IconVisible="False" LeftMargin="844.1420" RightMargin="179.8580" TopMargin="32.5260" BottomMargin="511.4740" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="20" Scale9Height="28" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="70.0000" Y="70.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="879.1420" Y="546.4740" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.8036" Y="0.8900" />
+            <PreSize X="0.0640" Y="0.1140" />
+            <TextColor A="255" R="65" G="65" B="70" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="BookHome_button_biaoshishuoming_736h_1" ActionTag="312152257" Tag="215" IconVisible="False" LeftMargin="866.2755" RightMargin="177.7245" TopMargin="44.0462" BottomMargin="519.9538" ctype="SpriteObjectData">
+            <Size X="50.0000" Y="50.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="891.2755" Y="544.9538" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.8147" Y="0.8875" />
+            <PreSize X="0.0457" Y="0.0814" />
+            <FileData Type="MarkedSubImage" Path="BookRoom/res/BookHome_button_biaoshishuoming_736h.png" Plist="BookRoom/csb/bookRoom.plist" />
+            <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
         </Children>
       </ObjectData>

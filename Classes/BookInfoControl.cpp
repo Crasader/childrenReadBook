@@ -5,6 +5,7 @@ USING_NS_CC;
 
 BookInfoControl::BookInfoControl()
 {	
+	App::log("BookInfoControl()");
 	bookId = -999;
 	memberId = -999;
 	bookStauts = 0;
@@ -18,6 +19,7 @@ BookInfoControl::BookInfoControl()
 
 BookInfoControl::~BookInfoControl()
 {
+	App::log("~BookInfoControl()");
 }
 
 void BookInfoControl::setControl(int bookid, int memberid, int bookstauts)
