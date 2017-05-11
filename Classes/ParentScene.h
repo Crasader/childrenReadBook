@@ -56,25 +56,6 @@ public:
 	//意见反馈
 	void FeedBack(string,string);
 
-	//网络请求修改用户信息
-	//void updateInfo(int, string, string);
-	//void updateInfoCallback(string, int, string, string);
-
-	//通知修改用户信息成功
-	//void notifyModifySuccess();
-
-	//通知修改用户信息失败
-	//void notifyModifyFailed();
-
-	//获取验证码
-	void getCode(string);
-
-	//网络请求修改密码
-	void modifyPassword(string, string);
-
-	//网络请求账户余额
-	void getUserMoney();
-
 	//展示红包
 	void showRedPacket();
 
@@ -85,7 +66,7 @@ public:
 
 	void loadRedPacketData(Node * node, int index);
 	//获取有效红包
-	void httpGetUserRedPacket();
+	//void httpGetUserRedPacket();
 
 	//void stringHttpRequest(HttpRequest::Type type, string url, map<string, string> paramter, int outTime, std::function<void(string json)> runable, std::function<void()> errorRunable);
 };

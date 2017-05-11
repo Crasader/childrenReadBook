@@ -122,6 +122,16 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
+          <AbstractNodeData Name="Image_1" ActionTag="-10143315" VisibleForFrame="False" Tag="1250" IconVisible="False" LeftMargin="697.9636" RightMargin="89.0364" TopMargin="36.4817" BottomMargin="523.5183" LeftEage="101" RightEage="101" TopEage="17" BottomEage="17" Scale9OriginX="101" Scale9OriginY="17" Scale9Width="105" Scale9Height="20" ctype="ImageViewObjectData">
+            <Size X="307.0000" Y="54.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="851.4636" Y="550.5183" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.7783" Y="0.8966" />
+            <PreSize X="0.2806" Y="0.0879" />
+            <FileData Type="MarkedSubImage" Path="BookStoreScene/res/yilahuiyuan.png" Plist="BookStoreScene/csb/bookstore.plist" />
+          </AbstractNodeData>
         </Children>
       </ObjectData>
     </Content>

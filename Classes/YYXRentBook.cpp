@@ -1,86 +1,12 @@
 ﻿#include "YYXRentBook.h"
-#include "BuyBook.h"
+#include "MyBook.h"
 #include "YYXSound.h"
+#include "User.h"
+#include "AppHttp.h"
+#include "YYXTime.h"
+#include "HttpWaiting.h"
 
 YYXRentBook* YYXRentBook::instance = nullptr;
-
-void YYXRentBook::httpRentBook()
-{
-	string url = string(IP).append(NET_RENT);
-	map<string, string> par;
-	par["memberId"] =StringUtils::format("%d",m_memberId);
-	par["bookId"] = StringUtils::format("%d", m_bookId);
-	par["resource"] = App::m_resource;
-	par["payType"] = "2";
-	NetIntface::httpPost(url, par, "rentSuccess", [=](string json) {
-		rapidjson::Document doc;
-		bool rent = false;
-		if (YYXLayer::getJsonObject4Json(doc, json))
-		{
-			auto code = YYXLayer::getIntForJson(-1, doc, "code");
-			if (code == 0 || code == 4)
-				rent = true;
-		}
-		if (rent)
-		{
-			App::addvipBook(m_bookId);//上传租书记录成功后, 本地也需要记录租书
-			BuyBook::getInstance()->addBook(m_bookId, YYXLayer::getCurrentTime4Second());
-			App::log("============httpRentBook>>>>addvipBook");
-			if (m_callback)
-				m_callback();
-		}
-		else
-			Toast::create(App::getString("ZUSHUSHIBAI"),false);
-	}, "rentFail", [](string str) {
-		Toast::create(App::getString("NETEXCEPTION"),false);
-	});
-}
-
-void YYXRentBook::httpBookInfo()
-{
-	NetIntface::httpGetBookInfo(m_bookId, "", [=](string json) {
-		NetIntface::httpGetBookInfoCallBack(json, [=](float avgScore, bool isvip, int bookId, int bookPage, int bookPrice100, int bookmarketPrice100, int remainTime, string bookAuthor,
-			string bookSize, string bookPress, string bookIntroduction, string bookName, string bookPlayUrl, string bookCoverUrl, string bookViewUrl) {
-			//解析正常
-			m_bookName = bookName;
-			//书籍信息 原价+书籍名称+ 书页数
-			string BookNameKey = StringUtils::format("bookName+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookNameKey, bookmarketPrice100, bookName, (Ref*)bookPage);
-			//现价+封面url+新书标记
-			string BookPriceKey = StringUtils::format("bookPrice+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPriceKey, bookPrice100, bookCoverUrl);
-			//购书标记+下载URL + 	是否是vip书籍
-			string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", bookId);
-			if (isvip)
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, -999, bookPlayUrl, (Ref*)1);
-			else
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, -999, bookPlayUrl, (Ref*)0);
-			//活动倒计时 + 书籍作者
-			string BookAuthorKey = StringUtils::format("bookAuthor+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookAuthorKey, remainTime, bookAuthor);
-			//出版社 + 书籍星级
-			string BookPressKey = StringUtils::format("bookPress+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPressKey, avgScore, bookPress);
-			//书籍资源大小
-			string BookSizeKey = StringUtils::format("bookSize+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookSizeKey, -999, bookSize);
-			//书籍介绍
-			string bookIntroductionKey = StringUtils::format("bookIntroduction+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, bookIntroductionKey, -999, bookIntroduction);
-			//试读url
-			string bookViewUrlKey = StringUtils::format("bookViewUrl+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, bookViewUrlKey, -999, bookViewUrl);
-			Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-				RentBookMessageBox();
-			});
-		}, []() {
-			//解析错误
-			Toast::create(App::getString("HUOQUSHUJIXIANGQINGYICHANG"),false);
-		});
-	}, "", [](string str) {
-		Toast::create(App::getString("NETEXCEPTION"),false);
-	});
-}
 
 YYXRentBook::YYXRentBook()
 {
@@ -105,7 +31,18 @@ void YYXRentBook::newRentBook(int bookid, int memberId, const function<void()>& 
 	m_bookId = bookid;
 	m_memberId = memberId;
 	m_callback = val;
-	httpBookInfo();
+	int key = YYXTime::getInstance()->getIntNumber();
+	auto waitinglayer = HttpWaiting::getInstance()->newWaitingLayer(key, [=]() {
+		//Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+			RentBookMessageBox();
+		//});
+	});
+	if (waitinglayer)
+		Director::getInstance()->getRunningScene()->addChild(waitinglayer);
+	AppHttp::getInstance()->httpBookInfo(bookid,[key](string name) {
+		YYXRentBook::getInstance()->m_bookName = name;
+		YYXLayer::sendNotify(TAG_REMOVEWAITING, "", key);
+	});
 }
 
 void YYXRentBook::backgroundThreadRentBook(int bookid, int memberId, const function<void()>& val)
@@ -113,7 +50,12 @@ void YYXRentBook::backgroundThreadRentBook(int bookid, int memberId, const funct
 	m_bookId = bookid;
 	m_memberId = memberId;
 	m_callback = val;
-	httpRentBook();
+	AppHttp::getInstance()->httpRentBook(m_bookId, [=]() {
+		App::addvipBook(m_bookId);//上传租书记录成功后, 本地也需要记录租书
+		MyBook::getInstance()->addBook(m_bookId, YYXLayer::getCurrentTime4Second());
+		if (m_callback)
+			m_callback();
+	});
 }
 
 void YYXRentBook::RentBookMessageBox()
@@ -132,7 +74,7 @@ void YYXRentBook::RentBookMessageBox()
 	}
 	if (time)
 	{
-		int tday = App::GetInstance()->m_me->vipTime / 86400;
+		int tday = User::getInstance()->getVipTime() / 86400;
 		time->setText(StringUtils::format("%d%s", tday, App::getString("STR_BOOINFODAY")));
 	}
 	if (yes)
@@ -140,7 +82,19 @@ void YYXRentBook::RentBookMessageBox()
 		yes->addClickEventListener([=](Ref* send) {
 			YYXSound::getInstance()->playButtonSound();
 			layer->removeFromParent();
-			httpRentBook();
+			int key = YYXTime::getInstance()->getIntNumber();
+			auto waitlayer = HttpWaiting::getInstance()->newWaitingLayer(key, [=]() {
+				if (m_callback)
+					m_callback();
+			});
+			if(waitlayer)
+				Director::getInstance()->getRunningScene()->addChild(waitlayer);
+			AppHttp::getInstance()->httpRentBook(m_bookId, [key]() {
+				auto bookid = YYXRentBook::getInstance()->m_bookId;
+				App::addvipBook(bookid);//上传租书记录成功后, 本地也需要记录租书
+				MyBook::getInstance()->addBook(bookid, YYXTime::getInstance()->getNowTime4S());
+				YYXLayer::sendNotify(TAG_REMOVEWAITING, "", key);
+			});
 		});
 	}
 	if (close)

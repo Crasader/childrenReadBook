@@ -37,26 +37,26 @@ struct ReadStart
 	int bookId;
 };
 
-struct MyAccount
-{
-	int id;//用户id
-	//int sex;//用户性别
-	//std::string memberName;//用户名
-	//std::string memberProvince;//省份
-	//std::string memberCity;//城市
-	int momey=0;//账户余额:单位 (分)
-	//string showPortraitPath ="";//展示的头像全路径	
-	bool vip = false;
-	string startvip = "";
-	string endvip = "";
-	long long vipTime = 0;
-};
-
-struct AcountInfo
-{
-	std::string password;//密码
-	std::string memberName;//用户名
-};
+//struct MyAccount
+//{
+//	//int id;//用户id
+//	//int sex;//用户性别
+//	//std::string memberName;//用户名
+//	//std::string memberProvince;//省份
+//	//std::string memberCity;//城市
+//	//int momey=0;//账户余额:单位 (分)
+//	//string showPortraitPath ="";//展示的头像全路径	
+//	bool vip = false;
+//	string startvip = "";
+//	string endvip = "";
+//	long long vipTime = 0;
+//};
+//
+//struct AcountInfo
+//{
+//	std::string password;//密码
+//	std::string memberName;//用户名
+//};
 
 struct MyTime
 {
@@ -85,8 +85,14 @@ private:
 	static __Dictionary* m_strings;//字符串表
 
 	//static sqlite3* m_db;//数据库指针
+	static atomic_int message;
+	static atomic_bool threadRuning;
 
 public:
+	Ref* ref = nullptr;
+	void showRef(Ref* r= nullptr, int time =0);
+	Ref* getRef();
+
 	static int m_debug ;//0=测试版本  1=正式版本
 	static int m_PayTest;//0=正式  1=测试  (支付价格0.01)
 	static void runTestFunction();
@@ -99,33 +105,11 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.8.1";//应用版本
+	string version = "1.8.3";//应用版本
 
-	long long versioncode = 177;
-
-	//int musicID = -999;//背景音乐ID
-
-	//vector<int> deleteMusicID;//记录需要停止的音乐ID
-
-	//int DataBaseVersion = 6;//数据库版本
-
-	//vector<map<std::string ,YYXStruct>> m_SceneOrder;//记录场景的顺序
-
-	//MySceneName m_showScene;//前一个场景
-
-	//YYXStruct m_showSceneData;//前一个场景的参数
-
-	//static MySceneName m_RunningScene;//当前场景
+	long long versioncode = 179;
 
 	static string m_photsName;//照片路径
-
-	MyAccount* m_me;//当前登录用户
-
-	AcountInfo* m_acount;//账号信息
-
-	ReadStart* m_read;//阅读记录
-
-	//MyNotification* m_notification;//消息推送信息
 
 	long long m_Time;//验证码时间
 
@@ -135,16 +119,23 @@ public:
 
 	bool isOnlyWifi;//是否仅限WiFi下载
 
-	//bool isMusicPlay = true;//背景音是否播放
-
-	//bool isSoundEffect = true;//音效是否播放
-
 	map<string, long long> timeMap;//时刻集合
 
 	std::queue<YYXStruct> RefVector;//需要释放的界面集合
 
 	map<string, YYXStruct> myData;//数据临时存储
 
+	//管理网络接口和下载图片的线程
+	void addMessage() {
+		message += 1;
+		manageThread();
+	}
+	void delMessage() {
+		message -=1;
+		if (message < 0)
+			message = 0;
+	}
+	void manageThread();
 	/*
 	//APP版本数据
 	<key> netVersion <value>(A+B+C, versionNum, nullptr);
@@ -226,7 +217,7 @@ public:
 	readMemberId
 	readChildrenId
 	*/
-	int getMemberId();
+	static int getMemberId();
 
 	//获取唯一字符串标记
 	static string getOnlyKey();
@@ -243,30 +234,15 @@ public:
 	//map排序
 	static vector<PAIR> sortMapToVector(map<int, int> mapData);
 	static vector<PAIR> sortMapToVector(std::unordered_map<int, int> mapData);
-	//已下载
-	//map<int, int> bookDownload;//全部下载的书籍和时间
-	//static void addDownloadBookRecord(int bookid);
-	//static void deleteDownloadBookRecord(int bookid);//本地删除
-	//static void loadDownloadBookCache();//本地缓存文件读入内存
-
-	//收藏
-	map<int, int> bookCollect;
-	static void addRecordBookCollect(int bookid);//本地添加,网络上传直接应用在场景中了
-	static void deleteRecordBookCollect(int bookid);//本地删除
-	static void httpGetCollectBook(bool hint = true);//网络获取收藏列表
-	static void loadCollectBookCache();//本地缓存文件读入内存
 
 	//VIP包年服务
 	map<int, int> VIPbook;
 	static void addvipBook(int bookid);//写入本地包年图书
-	static void httpCheckVIP(bool hint = true); //获取包年服务信息
-	static void httpGetVipBook(bool hint = true);//获取包年图书列表
 	static void loadvipBookCache();//本地缓存文件读入内存
 
 	//购书列表
 	map<int, int> myBuyBook;//已购列表
 	static void loadBuyBookCache();//本地缓存文件读入内存
-	static void httpGetBuyBook(bool hint = true);//网络获取购书列表
 
 	map<int, string> myBookURLMap;//我的书籍下载地址(购书+包年)
 
@@ -282,17 +258,7 @@ public:
 	
 	static string replaceChar(string str, string oldChar, string newChar);	//修改字符串, 全部替换
 
-	//void stopBackGroundMusic();//关闭
-
-	//void pauseBackGroundMusic();//暂停
-
-	//void resumeBackGroundMusic();//恢复
-
-	//void playBackGroundMusic();//播放背景音乐
-
-	//void stopOtherVoice();//关闭所有记录的音乐
-
-	static void whetherForVipDownloadJudgeInCharge(int memberId, int bookId, function<void(int str)> runable, function<void(string error)> errorable);//判断包年用户能否进行vip下载
+	//static void whetherForVipDownloadJudgeInCharge(int memberId, int bookId, function<void(int str)> runable, function<void(string error)> errorable);//判断包年用户能否进行vip下载
 
 	void addTime(string key, long long data); //添加时刻
 	
@@ -334,14 +300,13 @@ public:
 
 	static void getVisible();
 
-	static void httpComment(int bookid, function<void()> runFunction);
-
 	//---------------csb文件缓存-----------------------------------------------------------------------------
 	map<string,Data> CsbCache;
 	bool addData(string path, Data& d);
 	bool getData(string path, Data& d);
 	//------------------csb文件缓存END----------------------------------------------------------------
 	//---------------------------------工具方法----------------------------------------------
+	static bool initImage(string path);
 	static bool copyFile(string source , string ToDesc);
 	static bool createDataBase();//保存数据库
 	static void startTime();//启动定时器
@@ -352,21 +317,14 @@ public:
 	//获取系统时间，格式，例：2016-04-06 18:06:48
 	static bool isNight();//根据系统时间判断白天或夜晚
 	static const char* getString(const char* key);
-	//static bool analysisMemberInfo(rapidjson::Value &data);//解析data节点
 	static std::string analysisJsonString(rapidjson::Value &data, std::string key);//解析单个节点的key对应的值
 	static int analysisJsonInt(rapidjson::Value &data, std::string key);
 	static long long analysisJsonLongLong(rapidjson::Value & data, std::string key);
 	static double analysisJsonDouble(rapidjson::Value &data, std::string key);
-	//static Texture2D* readImage(std::string path);//读取本地路径的图片
 	static std::string getMemberID();//获取用户ID
 	static void examineIndex(int size, int index);//检查下标
-	//static void initParaType(std::map<std::string, ParaType>& map, std::string key, long long number, std::string str);//初始化ParaType添加到map中
 	static void ccsleep(int times);//休眠时间 ms
-	static bool IsHaveFile(std::string path);//判断文件是否存在
 	static string getFormatTime(time_t t);
-	//static vector<map<string, myParaType>> analysisJson4SQLite(const char * json, vector<string> stringType, vector<string> longlongType);//解析原生数据库返回的json字符串
-	//static string getString4map(map<string, myParaType> maps, string key,string default_str = "");
-	//static long long getlonglong4map(map<string, myParaType> maps, string key, long long default_int=-999);
 	//时间戳转成时间 16-02-12
 	static void log(string str,long long count = -999);
 
@@ -384,13 +342,6 @@ public:
 	static void backThreading();//开启安卓返回键计时
 
 	static void backWating();//安卓返回键计时
-
-	//----------------------------------------场景跳转栈------------------------------------------------------
-	//void pushScene(MySceneName name, int data=-999,std::string str = "");
-
-	//void popBack(MySceneName dangqianScene = LoadScene);
-
-	//MySceneName getFromScene();
 };
 
 #endif // __App_SCENE_H__

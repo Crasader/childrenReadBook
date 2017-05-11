@@ -94,17 +94,53 @@
             <Project Name="bigButtonLayer.csd" Type="Node" />
             <PlistInfo Name="bookCity.csi" Type="Plist" />
             <Project Name="bookCityScene.csd" Type="Layer" />
+            <PlistInfo Name="buttons.csi" Type="Plist" />
             <Project Name="doubleButtonLayer.csd" Type="Node" />
           </Folder>
           <Folder Name="res">
+            <Image Name="bg_10.png" />
+            <Image Name="bg_100.png" />
+            <Image Name="bg_101.png" />
+            <Image Name="bg_14.png" />
+            <Image Name="bg_17.png" />
+            <Image Name="bg_18.png" />
+            <Image Name="bg_2.png" />
+            <Image Name="bg_20.png" />
+            <Image Name="bg_21.png" />
+            <Image Name="bg_22.png" />
+            <Image Name="bg_23.png" />
+            <Image Name="bg_25.png" />
+            <Image Name="bg_3.png" />
+            <Image Name="bg_39.png" />
+            <Image Name="bg_4.png" />
+            <Image Name="bg_46.png" />
+            <Image Name="bg_47.png" />
+            <Image Name="bg_49.png" />
+            <Image Name="bg_5.png" />
+            <Image Name="bg_50.png" />
+            <Image Name="bg_51.png" />
+            <Image Name="bg_63.png" />
+            <Image Name="bg_65.png" />
+            <Image Name="bg_7.png" />
+            <Image Name="bg_8.png" />
+            <Image Name="bg_80.png" />
+            <Image Name="bg_81.png" />
+            <Image Name="bg_82.png" />
+            <Image Name="bg_83.png" />
+            <Image Name="bg_84.png" />
+            <Image Name="bg_85.png" />
+            <Image Name="bg_86.png" />
+            <Image Name="bg_87.png" />
+            <Image Name="bg_89.png" />
+            <Image Name="bg_90.png" />
+            <Image Name="bg_91.png" />
+            <Image Name="bg_92.png" />
             <Image Name="BookStore_background_b.png" />
             <Image Name="BookStore_background_t.png" />
             <Image Name="border1.png" />
             <Image Name="border2.png" />
             <Image Name="border3.png" />
             <Image Name="border4.png" />
-            <Image Name="Common_Return.png" />
-            <Image Name="Common_Return_Selected.png" />
             <Image Name="img_937.png" />
             <Image Name="jiazai.png" />
             <Image Name="l.png" />
@@ -155,7 +191,6 @@
             <Image Name="mupai_736h.png" />
             <Image Name="pager_hongbao_736h.png" />
             <Image Name="pager_jiagebaidi_736h.png" />
-            <Image Name="pager_yigou_736h.png" />
             <Image Name="parentsVerification_button_blue_ipad@2x.png" />
             <Image Name="parentsVerification_button_red_ipad@2x.png" />
             <Image Name="parentsVerification_button_Selected_blue_ipad@2x.png" />
@@ -173,7 +208,6 @@
             <Image Name="Voicecomment_word_background_736h.png" />
             <Image Name="yila_736h.png" />
             <Image Name="yila2_736h.png" />
-            <Image Name="yjgou.png" />
           </Folder>
         </Folder>
         <Folder Name="BookRoom">
@@ -260,6 +294,7 @@
             <Image Name="Carriage_0006_board.png" />
             <Image Name="Carriage_night_window_568h.png" />
             <Image Name="Ellabook_new_736h.png" />
+            <Image Name="yilahuiyuan.png" />
           </Folder>
         </Folder>
         <Folder Name="IndexScene">
@@ -553,10 +588,19 @@
         <Folder Name="Notification">
           <Folder Name="csb">
             <Project Name="activity.csd" Type="Layer" />
+            <Project Name="huiyuantype.csd" Type="Node" />
+            <Project Name="kaitonghuiyuan.csd" Type="Layer" />
+            <Project Name="kaitonghuiyuan7day.csd" Type="Layer" />
+            <Project Name="pay.csd" Type="Layer" />
+            <Project Name="paytype.csd" Type="Node" />
+            <Project Name="paytype_other.csd" Type="Node" />
             <Project Name="update.csd" Type="Layer" />
             <Project Name="version.csd" Type="Layer" />
+            <Project Name="viptimeout.csd" Type="Layer" />
+            <Project Name="zhongbanglaixi.csd" Type="Layer" />
           </Folder>
           <Folder Name="res">
+            <Image Name="huiyuanzhongbanglaixi_bg.png" />
             <Image Name="progress.png" />
             <Image Name="progress1.png" />
             <Image Name="push_image_2.png" />
@@ -598,6 +642,7 @@
           <Image Name="Backcover_voice_donghua0_736h.png" />
           <Image Name="Backcover_voice_donghua1_736h.png" />
           <Image Name="Backcover_voice_donghua2_736h.png" />
+          <Image Name="background_ipad.png" />
           <Image Name="bianji.png" />
           <Image Name="bianji2.png" />
           <Image Name="bianji3.png" />
@@ -623,14 +668,30 @@
           <Image Name="HBSRedpacket_XX_ZZ_736h.png" />
           <Image Name="headportaitdefult.png" />
           <Image Name="headportaitnull.png" />
+          <Image Name="niankatushubiaoshi.png" />
+          <Image Name="pager_yigou_736h.png" />
           <Image Name="qiehuanhaizi.png" />
           <Image Name="qiehuanhaizi2.png" />
           <Image Name="shufang_button_1_736h.png" />
           <Image Name="shufang_button_2_736h.png" />
+          <Image Name="title.png" />
           <Image Name="User_bg_ipad@2x.png" />
           <Image Name="Userinfo_childcenter_close__ipad@2x.png" />
           <Image Name="wodeshufang-niankasuoding_736h.png" />
           <Image Name="wodeshufang-niankasuoding-mr_736h.png" />
+          <Image Name="yilahuiyuan_chaozhitiyan_736h.png" />
+          <Image Name="yilahuiyuan_huiyuanka_waikuang_nor_736h.png" />
+          <Image Name="yilahuiyuan_huiyuanka_waikuang_pre_736h.png" />
+          <Image Name="yilahuiyuan_icon_weixin_736h.png" />
+          <Image Name="yilahuiyuan_icon_zhanghuyue_736h.png" />
+          <Image Name="yilahuiyuan_icon_zhifubao_736h.png" />
+          <Image Name="yilahuiyuan_jiantou_736h.png" />
+          <Image Name="yilahuiyuan_tehui_736h.png" />
+          <Image Name="yilahuiyuan_zhifufangshi_waikuang_nor_736h.png" />
+          <Image Name="yilahuiyuan_zhifufangshi_waikuang_pre_736h.png" />
+          <Image Name="yilahuiyuan_zhifufangshi_weixuanzhong_736h.png" />
+          <Image Name="yilahuiyuan_zhifufangshi_xuanzhong_736h.png" />
+          <Image Name="yjgou.png" />
           <PlistInfo Name="yuying.csi" Type="Plist" />
         </Folder>
         <Folder Name="ParentScene">
@@ -817,68 +878,6 @@
             <Image Name="weixin_667h.png" />
             <Image Name="zhifubao_667h.png" />
           </Folder>
-        </Folder>
-        <Folder Name="res">
-          <Image Name="ApplePay_0_667h.png" />
-          <Image Name="ApplePay_1_667h.png" />
-          <Image Name="ApplePay_2_667h.png" />
-          <Image Name="ApplePay_3_667h.png" />
-          <Image Name="ApplePay_4_667h.png" />
-          <Image Name="ApplePay_5_667h.png" />
-          <Image Name="ApplePay_6_667h.png" />
-          <Image Name="ApplePay_7_667h.png" />
-          <Image Name="ApplePay_8_667h.png" />
-          <Image Name="ApplePay_9_667h.png" />
-          <Image Name="ApplePay_background_667h.png" />
-          <Image Name="ApplePay_background1_667h.png" />
-          <Image Name="ApplePay_background2_667h.png" />
-          <Image Name="ApplePay_buy_off_667h.png" />
-          <Image Name="ApplePay_buy_selected_667h.png" />
-          <Image Name="ApplePay_close_off_667h.png" />
-          <Image Name="ApplePay_close_selected_667h.png" />
-          <Image Name="ApplePay_coin_667h.png" />
-          <Image Name="ApplePay_coin_selected_667h.png" />
-          <Image Name="ApplePay_deposit_off_667h.png" />
-          <Image Name="ApplePay_deposit_selected_667h.png" />
-          <Image Name="ApplePay_frame_667h.png" />
-          <Image Name="ApplePay_gotopay_background_667h.png" />
-          <Image Name="ApplePay_gotopay_off_667h.png" />
-          <Image Name="ApplePay_gotopay_selected_667h.png" />
-          <Image Name="ApplePay_title_667h.png" />
-          <Image Name="ApplePay_title2_667h.png" />
-          <Image Name="ApplePay_weixin_667h.png" />
-          <Image Name="ApplePay_weixin_sel_667h.png" />
-          <Image Name="ApplePay_zhifubao_667h.png" />
-          <Image Name="ApplePay_zhifubao_sel_667h.png" />
-          <Image Name="block.png" />
-          <Image Name="caidai_an.png" />
-          <Image Name="caidai_liang.png" />
-          <Image Name="HBSRedpacket_BSYHB_736h.png" />
-          <Image Name="HBSRedpacket_BSYHBXZ_736h.png" />
-          <Image Name="HBSRedpacket_CHDT_736h.png" />
-          <Image Name="HBSRedpacket_DDB_667h.png" />
-          <Image Name="HBSRedpacket_DG_736h.png" />
-          <Image Name="HBSRedpacket_HB_736h.png" />
-          <Image Name="HBSRedpacket_HDT_736h.png" />
-          <Image Name="HBSRedpacket_HYJJX_667h.png" />
-          <Image Name="HBSRedpacket_HYJJX_736h.png" />
-          <Image Name="HBSRedpacket_JT_736h.png" />
-          <Image Name="HBSRedpacket_JT_FH_667h.png" />
-          <Image Name="HBSRedpacket_JT_FH_ZZ_667h.png" />
-          <Image Name="HBSRedpacket_JT_JR_667h.png" />
-          <Image Name="HBSRedpacket_JT_JR_736h.png" />
-          <Image Name="HBSRedpacket_M_736h.png" />
-          <Image Name="HBSRedpacket_WDHB_736h.png" />
-          <Image Name="HBSRedpacket_XDB_667h.png" />
-          <Image Name="HBSRedpacket_XX_667h.png" />
-          <Image Name="HBSRedpacket_YJJX_667h.png" />
-          <Image Name="HBSRedpacket_YLHB_736h.png" />
-          <Image Name="HBSRedpacket_ZHYE_667h.png" />
-          <Image Name="push_image_bg_4.png" />
-          <Image Name="push_image_bg_quxiao.png" />
-          <Image Name="push_image_bg_quxiao2.png" />
-          <Image Name="weixin_667h.png" />
-          <Image Name="zhifubao_667h.png" />
         </Folder>
         <Folder Name="RestRemind">
           <Folder Name="csb">

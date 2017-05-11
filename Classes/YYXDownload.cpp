@@ -1,4 +1,5 @@
 ﻿#include "YYXDownload.h"
+#include "YYXTime.h"
 
 YYXDownload* YYXDownload::instance = nullptr;
 //	string statusKey = taskTag + "+status";//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
@@ -14,428 +15,116 @@ YYXDownload::~YYXDownload()
 	App::log("~YYXDownload()---END");
 }
 
-YYXDownload* YYXDownload::GetInstance()
+YYXDownload* YYXDownload::getInstance()
 {
 	if (instance == nullptr)
 		instance = new YYXDownload();
 	return instance;
 }
 
-std::string YYXDownload::download(string url, string dir, string fileName, string beginstr, function<void(YYXStruct)> beginFunction,
-	string downloadingstr, function<void(YYXStruct)> downloadingFunction, string endstr, function<void(YYXStruct)> endFunction)
-{
-	App::log("YYXDownload::download");
-	if (!FileUtils::getInstance()->isDirectoryExist(dir))
-	{
-		App::log("YYXDownload::download / " + dir);
-		FileUtils::getInstance()->createDirectory(dir);
-	}
-	auto taskTag = getTaskTag(dir, fileName);
-	string statusKey = taskTag + "+status";
-	YYXStruct::initMapYYXStruct(data, statusKey, 1);
-	std::thread([=]() {
-		setMapFunction(beginstr, beginFunction);
-		setMapFunction(downloadingstr, downloadingFunction);
-		setMapFunction(endstr, endFunction);
-		string beginKey = taskTag + "+begin";
-		YYXStruct::initMapYYXStruct(data, beginKey, -999, beginstr);
-		string downloadingKey = taskTag + "+downloading";
-		YYXStruct::initMapYYXStruct(data, downloadingKey, -999, downloadingstr);
-		string endKey = taskTag + "+end";
-		YYXStruct::initMapYYXStruct(data, endKey, -999, endstr);
-		string urlKey = taskTag + "+url";
-		YYXStruct::initMapYYXStruct(data, urlKey, -999, url);
-		string pathKey = taskTag + "+path";
-		YYXStruct::initMapYYXStruct(data, pathKey, -999, dir + "/" + fileName);
-		auto zhuangtai = getTaskStatus(taskTag);
-		if (zhuangtai == YYXDownloadStatus::_ready)
-		{
-			deleteReadyQueue(taskTag);
-			addReadyQueue(taskTag);
-		}
-		else if(zhuangtai == YYXDownloadStatus::_download)
-		{
-
-		}
-		else
-		{
-			addReadyQueue(taskTag);
-		}
-
-		//autoFullDownload();
-	}).detach();
-	App::log("YYXDownload::download--END" + taskTag);
-	return taskTag;
-}
-
 void YYXDownload::pause(string tag)
 {
-	App::log("YYXDownload::stop");
-	//从下载队列移除
-	//判断是否在下载队列中
-	string statusKey = tag + "+status";
-	YYXStruct::initMapYYXStruct(data, statusKey, 2);
-	if (downloadQueue.find(tag) != downloadQueue.end())
+	auto task = getTask(tag);
+	if (task)
 	{
-		deleteDownloadQueue(tag);
+		task->setStatus(_pause);
 	}
-	else
-	{
-		deleteReadyQueue(tag);
-	}
-	//autoFullDownload();
-	App::log("YYXDownload::stop-END");
+	delDownloadList(tag);	
 }
 
 void YYXDownload::pauseAll()
 {
-	//全部清空
-	while (!readyQueue.empty())
+	m_Mdownloadlist.lock();
+	for (auto it : m_downloadList)
 	{
-		auto tag = readyQueue.front();
-		string statusKey = tag + "+status";
-		YYXStruct::initMapYYXStruct(data, statusKey, 2);
-		readyQueue.pop();
+		auto tag = it.first;
+		auto data = getTask(tag);
+		if (data)
+		{
+			data->setStatus(_pause);
+		}
 	}
-	readyQueueMap.clear();
-	for (auto it = downloadQueue.begin(); it != downloadQueue.end(); it++)
-	{
-		App::log(it->first);
-		string statusKey = it->first + "+status";
-		YYXStruct::initMapYYXStruct(data, statusKey, 2);
-	}
-	downloadQueue.clear();
+	m_downloadList.clear();
+	m_Mdownloadlist.unlock();
 }
 
-//void YYXDownload::autoFullDownload()
-//{//判断下载队列是否满负荷
-//	App::log("YYXDownload::autoFullDownload", downloadCount);
-//	App::log("downqueue.size = ", downloadQueue.size());
-//	App::log("readyqueue.size = ", readyQueue.size());
-//	while (downloadQueue.size() < downloadCount)
-//	{
-//		getReadyQueueFrontPushDownloadQueue();
-//		if (readyQueue.empty())
-//			break;
-//	}
-//	startAll();
-//	App::log("YYXDownload::autoFullDownload---END");
-//	App::log("downqueue.size2 = ", downloadQueue.size());
-//	App::log("readyqueue.size2 = ", readyQueue.size());
-//}
-
-//void YYXDownload::pauseAll()
-//{
-//	App::log("YYXDownload::pauseAll");
-//	for (int i = 0; i < readyQueue.size();i++)
-//	{
-//		down_mtx.lock();
-//		auto it = readyQueue.front();
-//		string statusKey = it + "+status";
-//		YYXStruct::initMapYYXStruct(data, statusKey, 2);
-//		readyQueue.pop();
-//		down_mtx.unlock();
-//	}
-//	for (auto it : downloadQueue)
-//	{
-//		auto key = it.first;
-//		auto value = it.second;		
-//		string statusKey = key + "+status";
-//		YYXStruct::initMapYYXStruct(data, statusKey, 2);
-//		if (downloadQueue.find(key) != downloadQueue.end())
-//		{
-//			deleteDownloadQueue(key);
-//		}
-//	}
-//	App::log("YYXDownload::pauseAll---END");
-//}
+void YYXDownload::deleteAll()
+{
+	m_Malllist.lock();
+	for (auto it : m_allTasks)
+	{
+		string key = it.first;
+		auto data = it.second;
+		if (data)
+		{
+			if (!data->getThreadRuning())
+			{
+				DownLoadFileData::del(data);
+			}
+			else
+			{
+				thread([=]() {
+					string tag = data->getTag();
+					data->setStatus(_pause);
+					while (data->getThreadRuning())
+					{
+						data->setStatus(_pause);
+						App::ccsleep(3000);
+						if (!data->getThreadRuning())
+						{
+							DownLoadFileData::del(data);
+							break;
+						}
+						App::log(tag+"  YYXDownload::deleteAll() ------------------------------------>>> runing");
+					}
+				}).detach();
+			}
+		}
+	}
+	m_allTasks.clear();
+	m_Malllist.unlock();
+}
 
 void YYXDownload::setDownloadMaxCount(int count)
 {
-	YYXLayer::logb("YYXDownload::setDownloadMaxCount");
 	downloadCount = count;
-	YYXLayer::loge("YYXDownload::setDownloadMaxCount");
 }
 
 int YYXDownload::getDownloadMaxCount()
 {
-	YYXLayer::logb("YYXDownload::getDownloadMaxCount");
 	return downloadCount;
-	YYXLayer::loge("YYXDownload::getDownloadMaxCount");
 }
-
-std::string YYXDownload::getTag(string path)
-{
-	auto pathtag = YYXStruct::getMapString(YYXDownload::GetInstance()->data, path, "");
-	return pathtag;
-}
-
-string YYXDownload::getTaskTag(string dir, string fileName)
-{
-	//判断是否重复任务
-	auto taskTag = YYXStruct::getMapString(data, dir + "/" + fileName, "");
-	if (taskTag == "")
-	{
-		//生成下载任务的唯一标识符
-		taskTag = StringUtils::format("%s_downloadTag_%d", fileName.c_str(), (int)YYXLayer::getRandom());
-		YYXStruct::initMapYYXStruct(data, dir + "/" + fileName, -999, taskTag);
-		string statusKey = taskTag + "+status";
-		YYXStruct::initMapYYXStruct(data, statusKey, YYXDownloadStatus::_null);
-	}
-	return taskTag;
-}
-
-void YYXDownload::setMapFunction(string key, function<void(YYXStruct)> runFunction)
-{
-	YYXLayer::logb("YYXDownload::setMapFunction");
-	if (&key && runFunction && key != "")
-		functionMap[key] = runFunction;
-	YYXLayer::loge("YYXDownload::setMapFunction");
-}
-
-function<void(YYXStruct)> YYXDownload::getMapFunction(string key)
-{
-	//YYXLayer::logb("YYXDownload::getMapFunction / " + key);
-	if (&key && key != "")
-	{
-		if (functionMap.find(key) != functionMap.end())
-		{
-			auto result = functionMap[key];
-			//YYXLayer::loge("YYXDownload::getMapFunction" + key);
-			return result;
-		}
-	}
-	YYXLayer::loge("YYXDownload::getMapFunction  is nullptr "); 
-	return nullptr;
-}
-
-void YYXDownload::deleteMapFunction(string key)
-{
-	//YYXLayer::logb("YYXDownload::deleteMapFunction / " + key);
-	if (&key && key != "")
-	{
-		auto it = functionMap.find(key);
-		if (it != functionMap.end())
-		{
-			functionMap.erase(it);
-		}
-	}
-}
-
-int YYXDownload::addDownloadQueue(string task)
-{
-	YYXLayer::logb("YYXDownload::addDownloadQueue");
-	down_mtx.lock();
-	if (&task && task != "")
-	{
-		string pathKey = task + "+path";
-		string path = YYXStruct::getMapString(data, pathKey, "");
-		downloadQueue[task] = YYXStruct(-999, path, nullptr);
-	}
-	down_mtx.unlock();
-	YYXLayer::loge("YYXDownload::addDownloadQueue");
-	return downloadQueue.size();
-}
-
-int YYXDownload::deleteDownloadQueue(string task)
-{
-	down_mtx.lock();
-	YYXLayer::logb("YYXDownload::deleteDownloadQueue");
-	if (downloadQueue.find(task) != downloadQueue.end())
-		downloadQueue.erase(task);
-	//删除回调函数
-	string beginKey = task + "+begin";
-	string downloadingKey = task + "+downloading";
-	string endKey = task + "+end";
-	deleteMapFunction(beginKey);
-	deleteMapFunction(downloadingKey);
-	deleteMapFunction(endKey);
-	down_mtx.unlock();
-	return downloadQueue.size();
-}
-
-int YYXDownload::addReadyQueue(string task)
-{
-	down_mtx.lock();
-	YYXLayer::logb("YYXDownload::addReadyQueue");
-	string statusKey = task + "+status";
-	YYXStruct::initMapYYXStruct(data, statusKey, 1);
-	if (&task && task != "")
-	{
-		readyQueue.push(task);
-		readyQueueMap[task] = "";
-	}
-	YYXLayer::loge("YYXDownload::addReadyQueue");
-	down_mtx.unlock();
-	App::log("addReadyQueue ---- readyQueue.size()", readyQueue.size());
-	return readyQueue.size();
-}
-
-int YYXDownload::deleteReadyQueue(string task)
-{
-	down_mtx.lock();
-	YYXLayer::logb("YYXDownload::deleteReadyQueue");
-	string statusKey = task + "+status";
-	YYXStruct::initMapYYXStruct(data, statusKey, 2);
-	vector<string> data;
-	while (!readyQueue.empty())
-	{
-		auto it = readyQueue.front();
-		if (it != task)
-			data.push_back(it);
-		readyQueue.pop();
-	}
-	for (auto it : data)
-	{
-		readyQueue.push(it);
-	}
-	readyQueueMap.erase(task);
-	YYXLayer::loge("YYXDownload::deleteReadyQueue");
-	//删除回调函数
-	string beginKey = task + "+begin";
-	string downloadingKey = task + "+downloading";
-	string endKey = task + "+end";
-	deleteMapFunction(beginKey);
-	deleteMapFunction(downloadingKey);
-	deleteMapFunction(endKey);
-	down_mtx.unlock();
-	App::log("readyQueue.size() ", readyQueue.size());
-	return readyQueue.size();
-}
-
-//void YYXDownload::startAll()
-//{
-//	YYXLayer::logb("YYXDownload::startAll");
-//	for (auto it : downloadQueue)
-//	{
-//		string str = "";
-//		str = it.first;
-//		startTask(str);
-//	}
-//	YYXLayer::loge("YYXDownload::startAll");
-//}
 
 void YYXDownload::startAll()
 {
-	YYXLayer::logb("YYXDownload::startAll");
-	for (int i = 0; i < getDownloadMaxCount();i++)
+	int count = 0;
+	int dc = getDownloadingCount();
+	if (dc < downloadCount)
+		count = downloadCount - dc;
+	for (size_t i = 0; i < count; i++)
 	{
-		thread(&YYXDownload::downloadThreadRuning, this).detach();
+		if (getReadyCount() > 0)
+		{
+			thread([]() {
+				auto taskTag = YYXDownload::getInstance()->popReadyList();
+				if (!taskTag.empty())
+				{
+					auto data = YYXDownload::getInstance()->getTask(taskTag);
+					//重复任务 会出现的情况：1.有任务tag 但是任务data已经释放
+					if (data)
+					{
+						if (data->getStatus() != _pause) {
+							App::log("startAll-----------" + data->getTag());
+							YYXDownload::getInstance()->addDownloadList(taskTag);
+							YYXDownload::getInstance()->curlDownloadFile(data);
+						}
+					}
+				}
+			}).detach();
+		}
 	}
-	YYXLayer::loge("YYXDownload::startAll");
 }
 
-bool YYXDownload::isExitDownloadQueue(string taskTag)
-{
-	if (downloadQueue.find(taskTag) == downloadQueue.end())
-		return false;
-	else
-		return true;
-}
-
-//int YYXDownload::startTask(string taskTag)
-//{
-//	YYXLayer::logb("YYXDownload::startTask"+ taskTag );
-//	string urlKey = taskTag + "+url";
-//	string url = YYXStruct::getMapString(data, urlKey, "");
-//	string pathKey = taskTag + "+path";
-//	string path = YYXStruct::getMapString(data, pathKey, "");
-//	string statusKey = taskTag + "+status";
-//	int status = YYXStruct::getMapInt64(data, statusKey, 1);
-//	if (url != "" && path != "") 
-//	{//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-//		if (status == 1)
-//		{
-//			thread(&YYXDownload::downLoadFile, this, url, path, taskTag).detach();
-//			//downLoadFile(url, path, taskTag);
-//		}
-//		else if (status == 2 || status == 3)
-//		{
-//			deleteDownloadQueue(taskTag);
-//		}
-//	}
-//	YYXLayer::loge("******YYXDownload::startTask / path=   " + path);
-//	return downloadQueue.size();
-//}
-
-void YYXDownload::taskBegin(string taskTag)
-{
-	YYXLayer::logb("YYXDownload::taskBegin");
-	string beginKey = taskTag + "+begin";
-	string beginstr = YYXStruct::getMapString(data, beginKey, "");
-	auto run = getMapFunction(beginstr);
-	if (run)
-	{
-		run(YYXStruct(-999, taskTag, nullptr));
-	}
-	addDownloadQueue(taskTag);
-	YYXLayer::loge("YYXDownload::taskBegin");
-}
-
-void YYXDownload::taskDownloading(string taskTag, int progress)
-{
-	//YYXLayer::logb("YYXDownload::taskDownloading");
-	string downloadingKey = taskTag + "+downloading";
-	string downloadingstr = YYXStruct::getMapString(YYXDownload::GetInstance()->data, downloadingKey, "");
-	auto run = YYXDownload::GetInstance()->getMapFunction(downloadingstr);
-	if (run)
-	{
-		run(YYXStruct(progress, taskTag, nullptr));
-	}
-	//YYXLayer::loge("YYXDownload::taskDownloading");
-}
-
-void YYXDownload::taskEnd(string taskTag, int resultCode)
-{
-	YYXLayer::logb("YYXDownload::taskEnd");
-	string endKey = taskTag + "+end";
-	string endstr = YYXStruct::getMapString(data, endKey, "");
-	auto run = getMapFunction(endstr);
-	if (resultCode == -1)
-		App::log("CURL init error");
-	deleteDownloadQueue(taskTag);
-	//autoFullDownload();
-	if (run)
-	{		
-		run(YYXStruct(resultCode, taskTag, nullptr));
-	}
-	YYXLayer::loge("YYXDownload::taskEnd");
-}
-
-void YYXDownload::downLoadFile(string url, string path,  const string& taskTag)
-{//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-	//YYXLayer::logb("YYXDownload::downLoadFile");
-	taskBegin(taskTag);
-	CURL *pCurl = nullptr;
-	pCurl = curl_easy_init();//初始化CURL取得初始化成功后的CURL指针
-	FILE *pFile = nullptr;
-	App::log("YYXDownload::downLoadFile ===============>>>"+path);
-	pFile = fopen(path.c_str(), "ab+");
-	if (pFile == nullptr)
-	{
-		taskEnd(taskTag, -1);//初始化失败
-		YYXLayer::loge("YYXDownload::downLoadFile");
-		return;
-	}
-	string statusKey = string(taskTag).append("+status");	//标记开始下载的状态
-	YYXStruct::initMapYYXStruct(data, statusKey, 0);
-	curl_easy_setopt(pCurl, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(pCurl, CURLOPT_FILE, pFile);                  //指定写入的文件指针
-	curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, pWriteCallback);//设置写数据的回调函数
-	curl_easy_setopt(pCurl, CURLOPT_VERBOSE, true);                //让CURL报告每一件意外的事情
-	curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 10000);                 //设置超时时间
-	curl_easy_setopt(pCurl, CURLOPT_NOPROGRESS, false);
-	curl_easy_setopt(pCurl, CURLOPT_PROGRESSFUNCTION, DownProgresss);//指定显示进度的回调函数
-	curl_easy_setopt(pCurl, CURLOPT_RESUME_FROM, getLocalFileSize(path.c_str()));// 从本地大小位置进行请求数据
-	curl_easy_setopt(pCurl, CURLOPT_PROGRESSDATA, &taskTag);//DownProgresss函数的第一个参数	
-	CURLcode nResCode = curl_easy_perform(pCurl);//执行上面设定的动作并返回状态码
-	curl_easy_cleanup(pCurl);//释放相关资源
-	fclose(pFile);
-	if(!isPause(taskTag))
-		YYXStruct::initMapYYXStruct(data, statusKey, 3);//标记结束下载的状态	
-	taskEnd(taskTag, nResCode);
-	YYXLayer::loge("*****************YYXDownload::downLoadFile");
-}
 //zipName无后缀
 bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath, function<void(string str)> successRun, function<void(string str)> failRun)
 {
@@ -447,7 +136,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 	if (!zipfile) {
 		string errorstr = zipPath + " error : Unable to open the zip file";
 		App::log(errorstr);
-		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat",(int)YYXLayer::getRandom()),2);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat",YYXTime::getInstance()->getRandomL()),2);
 		//通知解压失败
 		if (failRun)
 			failRun(zipPath);
@@ -459,7 +148,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 	if (unzGetGlobalInfo(zipfile, &global_info) != UNZ_OK) {
 		string errorstr = zipPath + " error : Unable to get the zip file information";
 		App::log(errorstr);
-		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 		//通知解压失败
 		if (failRun)
 			failRun(zipPath);
@@ -483,7 +172,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 			//通知解压失败
 			string errorstr = zipPath + " error : "+ string(fileName) +" =>Read the current file information failure";
 			App::log(errorstr);
-			App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+			App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 			if (failRun)
 				failRun(zipPath);
 			return false;
@@ -506,7 +195,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : "+ fullPath +"=>Failed to create the folder";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -529,7 +218,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 						//通知解压失败
 						string errorstr = zipPath + " error : "+ dir +"=>Failed to create the folder";
 						App::log(errorstr);
-						App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+						App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 						if (failRun)
 							failRun(zipPath);
 						return false;
@@ -549,7 +238,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : " + string(fileName) + " =>unzOpenCurrentFile is Failed";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -562,7 +251,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : "+ fullPath +" =>Failed to open the file";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -578,7 +267,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 					//通知解压失败
 					string errorstr = zipPath + " error : " + string(fileName) + " =>unzReadCurrentFile is Failed";
 					App::log(errorstr);
-					App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+					App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 					if (failRun)
 						failRun(zipPath);
 					return false;
@@ -599,7 +288,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : " + string(fileName) + " =>unzGoToNextFile is Failed";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -617,101 +306,6 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 	YYXLayer::loge("YYXDownload::uncompress");
 	return true;
 }
-
-bool YYXDownload::isExitReadyQueue(string taskTag)
-{
-	if (readyQueueMap.find(taskTag) != readyQueueMap.end())
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-	//return result;
-}
-
-bool YYXDownload::isPause(string taskTag)
-{
-	string statusKey = taskTag + "+status";
-	//int status = YYXStruct::getMapInt64(data, statusKey, 1);//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey, 0);
-	if (status == 2)
-	{		
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool YYXDownload::isEnd(string taskTag)
-{
-	string statusKey = taskTag + "+status";
-	//int status = YYXStruct::getMapInt64(data, statusKey, 1);//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey, 0);
-	if (status == 3)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool YYXDownload::isDownloading(string taskTag)
-{
-	string statusKey = taskTag + "+status";
-	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey, -1);
-	if (status == 0 || status == 1)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-int YYXDownload::getTaskStatus(string taskTag)
-{
-	string statusKey = taskTag + "+status";
-	int status = YYXStruct::getMapInt64(data, statusKey, -1);
-	return status;
-}
-
-void YYXDownload::setTaskStatus(string taskTag,YYXDownloadStatus status)
-{
-	string statusKey = taskTag + "+status";
-	YYXStruct::initMapYYXStruct(data, statusKey, status);
-}
-
-//
-//void YYXDownload::getReadyQueueFrontPushDownloadQueue()
-//{
-//	YYXLayer::logb("YYXDownload::getReadyQueueFrontPushDownloadQueue");
-//	if (downloadQueue.size() < downloadCount)
-//	{
-//		if (!readyQueue.empty())
-//		{
-//			down_mtx.lock();
-//			App::log("readyQueue = ", readyQueue.size());
-//			auto it = readyQueue.front();
-//			readyQueue.pop();
-//			down_mtx.unlock();
-//			if (it != "")
-//			{
-//				string statusKey = it + "+status";
-//				int status = YYXStruct::getMapInt64(data, statusKey, 1);//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-//				if (status == 1)
-//					addDownloadQueue(it);
-//			}
-//		}
-//	}
-//	YYXLayer::loge("YYXDownload::getReadyQueueFrontPushDownloadQueue");
-//}
 
 size_t YYXDownload::pWriteCallback(void *pData, size_t n, size_t nDataSize, FILE *stream)
 {
@@ -734,76 +328,335 @@ long YYXDownload::getLocalFileSize(const char *filePath)
 	return size;
 }
 
-int YYXDownload::DownProgresss(void* clientp, double fDownLoadTotal, double fDownLoaded, double fUpTotal, double fUpLoaded)
+void YYXDownload::addFunc(int key, const function<void(DownLoadFileData*)>& func)
 {
-	//YYXLayer::logb("YYXDownload::DownProgresss");
-	auto tag = (string*)clientp;
+	m_Mcallback.lock();
+	if (key > 0 && func)
+	{
+		m_callbackFuncs[key] = func;
+	}
+	m_Mcallback.unlock();
+}
+
+function<void(DownLoadFileData*)> YYXDownload::getFunc(int key)
+{
+	m_Mcallback.lock();
+	function<void(DownLoadFileData*)> call = nullptr;
+	auto it = m_callbackFuncs.find(key);
+	if (it != m_callbackFuncs.end())
+	{
+		call = it->second;
+	}
+	m_Mcallback.unlock();
+	return call;
+}
+
+void YYXDownload::delFunc(int key)
+{
+	m_Mcallback.lock();
+	if (key > 0)
+	{
+		auto it = m_callbackFuncs.find(key);
+		if (it != m_callbackFuncs.end())
+		{
+			m_callbackFuncs.erase(it);
+		}
+	}
+	m_Mcallback.unlock();
+}
+
+void YYXDownload::addDownloadList(string tag)
+{
+	m_Mdownloadlist.lock();
+	if (!tag.empty())
+		m_downloadList[tag] = 0;
+	m_Mdownloadlist.unlock();
+}
+
+void YYXDownload::delDownloadList(string tag)
+{
+	m_Mdownloadlist.lock();
+	m_downloadList.erase(tag);
+	m_Mdownloadlist.unlock();
+}
+
+int YYXDownload::getDownloadingCount()
+{
+	m_Mdownloadlist.lock();
+	int cou = m_downloadList.size();
+	m_Mdownloadlist.unlock();
+	return cou;
+}
+
+void YYXDownload::addReadyList(string tag)
+{
+	m_Mreadylist.lock();
+	m_readyQueue.push(tag);
+	m_Mreadylist.unlock();
+}
+
+string  YYXDownload::popReadyList()
+{
+	m_Mreadylist.lock();
+	string tag = "";
+	if (!m_readyQueue.empty())
+	{
+		tag = m_readyQueue.front();
+		m_readyQueue.pop();
+	}
+	m_Mreadylist.unlock();
+	return tag;
+}
+
+int YYXDownload::getReadyCount()
+{
+	m_Mreadylist.lock();
+	int cou = m_readyQueue.size();
+	m_Mreadylist.unlock();
+	return cou;
+}
+
+void YYXDownload::addTask(DownLoadFileData * data)
+{
+	//去任务列表中的重复
+	m_Malllist.lock();
+	string tag = data->getTag();
+	auto it = m_allTasks.find(tag);
+	if (it != m_allTasks.end())
+	{
+		if(it->second != data)
+			DownLoadFileData::del(data);
+	}
+	else
+	{
+		m_allTasks[tag] = data;
+	}
+	m_allTasks[tag]->setStatus(_ready);
+	m_Malllist.unlock();
+}
+
+void YYXDownload::delTask(string tag)
+{
+	m_Malllist.lock();
+	auto it = m_allTasks.find(tag);
+	if (it != m_allTasks.end())
+	{
+		auto data = it->second;
+		DownLoadFileData::del(data);
+		m_allTasks.erase(tag);
+	}
+	m_Malllist.unlock();
+}
+
+DownLoadFileData * YYXDownload::getTask(string tag)
+{
+	m_Malllist.lock();
+	DownLoadFileData* data = nullptr;
+	auto it = m_allTasks.find(tag);
+	if (it != m_allTasks.end())
+	{
+		data = it->second;
+	}
+	m_Malllist.unlock();
+	return data;
+}
+
+void YYXDownload::curlDownloadFile(DownLoadFileData* data)
+{
+	while (data->getThreadRuning())
+	{
+		data->setStatus(_pause);
+		App::ccsleep(5000);
+	}
+	string url = data->getUrl();
+	string path = data->getPath();
+	auto beginFun = data->getBeginFunc();
+	function<void(DownLoadFileData*)> EndFunc = [](DownLoadFileData* dat) {
+		auto endFun = dat->getEndFunc();
+		if (endFun)
+			endFun(dat);
+		dat->setThreadRuning(false);
+	};
+	if (beginFun)
+		beginFun(data);
+	data->setThreadRuning(true);
+
+	CURL *pCurl = nullptr;
+	pCurl = curl_easy_init();//初始化CURL取得初始化成功后的CURL指针
+	FILE *pFile = nullptr;
+	pFile = fopen(path.c_str(), "ab+");
+	if (pFile == nullptr)
+	{
+		if (EndFunc)
+			EndFunc(data);
+		return;
+	}
+	data->setStatus(_download);
+	curl_easy_setopt(pCurl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(pCurl, CURLOPT_FILE, pFile);                  //指定写入的文件指针
+	curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, pWriteCallback);//设置写数据的回调函数
+	curl_easy_setopt(pCurl, CURLOPT_VERBOSE, true);                //让CURL报告每一件意外的事情
+	curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 10000);                 //设置超时时间
+	curl_easy_setopt(pCurl, CURLOPT_NOPROGRESS, false);
+	curl_easy_setopt(pCurl, CURLOPT_PROGRESSFUNCTION, DownProgress);//指定显示进度的回调函数
+	curl_easy_setopt(pCurl, CURLOPT_RESUME_FROM, getLocalFileSize(path.c_str()));// 从本地大小位置进行请求数据
+	curl_easy_setopt(pCurl, CURLOPT_PROGRESSDATA, data);//DownProgresss函数的第一个参数	
+	CURLcode nResCode = curl_easy_perform(pCurl);//执行上面设定的动作并返回状态码
+	curl_easy_cleanup(pCurl);//释放相关资源
+	fclose(pFile);
+	if (data->getStatus() != _pause)
+	{
+		if (nResCode == CURLE_OK)
+			data->setStatus(_over);
+		else
+			data->setStatus(_null);
+	}
+	auto endFun = data->getEndFunc();
+	if (endFun)
+		endFun(data);
+	data->setThreadRuning(false);
+	if (data->getStatus() != _pause)
+	{
+		data->setStatus(_over);
+		delDownloadList(data->getTag());
+		delTask(data->getTag());
+	}	
+	startAll();
+}
+
+int YYXDownload::DownProgress(void* clientp, double fDownLoadTotal, double fDownLoaded, double fUpTotal, double fUpLoaded)
+{
+	auto date = (DownLoadFileData*)clientp;
+	string taskTag = date->getTag();
+	YYXLayer::controlTouchTime(5, taskTag + "Time", [=]() {
+		YYXLayer::setFileValue(taskTag, Value(fDownLoadTotal).asString(), FileUtils::getInstance()->getWritablePath() + "temp");
+	});
 	int pragress = fDownLoaded / fDownLoadTotal *100.0;
-	int pausePint = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, *tag + "+pause", 0);
+	auto pausePint = date->getPausePint();
 	if (pragress < pausePint)
 	{
 		pragress = pausePint;
-	}	
-	taskDownloading(*tag, pragress);
-	string statusKey = *tag + "+status";
-	int status = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, statusKey , 0);//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-	if (status == 2 )
-	{
-		int pausePint = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, *tag + "+pause", 0);
-		if (pragress > pausePint)
-			YYXStruct::initMapYYXStruct(YYXDownload::GetInstance()->data, *tag + "+pause", pragress);
-		return 1;
 	}
-	else if (status == 3)
+	int code = 0;//1=下载中断 0=下载流畅
+	auto status = date->getStatus();
+	switch (status)
 	{
-		return 1;
+	case _pause:
+		code = 1;
+		break;
+	case _over:
+		code = 1;
+		break;
 	}
-	else 
+	date->setPausePint(pragress);
+	auto fun = date->getDownloadingFunc();
+	if (fun)
 	{
-		return 0;
+		fun(date);
 	}
+	return code;
 }
 
-//1.下载完成之后删除taskTag
-//2.开始自动全负荷下载, 将准备队列的任务获取过来, 让下载队列满负荷下载
-//3.暂停一个任务 只需要string statusKey = tag + "+status";//下载状态 1=准备下载  0=下载
-//YYXStruct::initMapYYXStruct(data, statusKey, 1);
-
-
-/*
-1.采用线程池方式下载
-2.开启最大设置线程数量
-3.每个线程等待下载
-*/
-void YYXDownload::downloadThreadRuning()
+void YYXDownload::newDownloadFile(DownLoadFileData * data)
 {
-	while (true)
-	{
-		//App::log("              void YYXDownload::downloadThreadRuning()");
-		App::ccsleep(5000);
-		//1.判断是否有任务需要下载
-		string taskTag = "";
-		down_mtx.lock();
-		if (!readyQueue.empty())
+	string dir = data->getDir();
+	string fileName = data->getFileName();
+	string taskTag = data->getTag();
+
+	if (!FileUtils::getInstance()->isDirectoryExist(dir))
+		FileUtils::getInstance()->createDirectory(dir);
+	std::thread mythread([=]() {
+		auto zhuangtai = data->getStatus();
+		switch (zhuangtai)
 		{
-			App::log("cong readyQueue qu chu yi ge ren wu              readyQueue.size() =", readyQueue.size());
-			taskTag = readyQueue.front();
-			readyQueue.pop();
-			readyQueueMap.erase(taskTag);
+		case _null:
+			data->setStatus(_ready);
+			break;
+		case _ready:
+			return;
+			break;
+		case _download:
+			return;
+			break;
+		case _pause:
+			data->setStatus(_ready);
+			break;
+		case _over:
+			data->setStatus(_ready);
+			break;
 		}
-		down_mtx.unlock();
-		if (taskTag != "")
-		{
-			string urlKey = taskTag + "+url";
-			string url = YYXStruct::getMapString(data, urlKey, "");
-			string pathKey = taskTag + "+path";
-			string path = YYXStruct::getMapString(data, pathKey, "");
-			string statusKey = taskTag + "+status";
-			int status = YYXStruct::getMapInt64(data, statusKey, 1);//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-			if (status == 1)
-			{
-				downLoadFile(url, path, taskTag);
-			}
-		}
-	}
+		if (data)
+			addTask(data);
+		addReadyList(taskTag);
+		startAll();
+	});
+	mythread.detach();
+	App::log("YYXDownload::download--END" + taskTag);
+}
+
+DownLoadFileData::DownLoadFileData()
+{
+	m_threadRuning = false;
+}
+
+DownLoadFileData::~DownLoadFileData()
+{
+	YYXDownload::getInstance()->delFunc(m_beginKey);
+	YYXDownload::getInstance()->delFunc(m_downloadingKey);
+	YYXDownload::getInstance()->delFunc(m_endKey);
+}
+
+DownLoadFileData * DownLoadFileData::create()
+{
+	return new DownLoadFileData();
+}
+
+void DownLoadFileData::del(DownLoadFileData * data)
+{
+	if (data)
+		delete data;
+	data = nullptr;
+}
+
+function<void(DownLoadFileData*)> DownLoadFileData::getBeginFunc()
+{
+	if (m_beginKey > 0)
+		return YYXDownload::getInstance()->getFunc(m_beginKey);
+	else
+		return nullptr;
+}
+
+void DownLoadFileData::setBeginFunc(const function<void(DownLoadFileData*)>& val)
+{
+	m_beginKey = YYXTime::getInstance()->getRandomL();
+	YYXDownload::getInstance()->addFunc(m_beginKey, val);
+}
+
+function<void(DownLoadFileData*)> DownLoadFileData::getDownloadingFunc()
+{
+	if (m_downloadingKey > 0)
+		return YYXDownload::getInstance()->getFunc(m_downloadingKey);
+	else
+		return nullptr;
+}
+
+void DownLoadFileData::setDownloadingFunc(const function<void(DownLoadFileData*)>& val)
+{
+	m_downloadingKey = YYXTime::getInstance()->getRandomL();
+	YYXDownload::getInstance()->addFunc(m_downloadingKey, val);
+}
+
+
+function<void(DownLoadFileData*)> DownLoadFileData::getEndFunc()
+{
+	if (m_endKey > 0)
+		return YYXDownload::getInstance()->getFunc(m_endKey);
+	else
+		return nullptr;
+}
+
+void DownLoadFileData::setEndFunc(const function<void(DownLoadFileData*)>& val)
+{
+	m_endKey = YYXTime::getInstance()->getRandomL();
+	YYXDownload::getInstance()->addFunc(m_endKey, val);
 }

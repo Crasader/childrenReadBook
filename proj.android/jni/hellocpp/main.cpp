@@ -13,7 +13,8 @@
 #include "../../Classes/Toast.h"
 #include "../../Classes/YYXLayer.h"
 #include "../../Classes/YYXStruct.h"
-#include "../../Classes/NetIntface.h"
+#include "../../Classes/CrossPlatform.h"
+#include "../../Classes/WeixinPay.h"
 
 #define  LOG_TAG    "main"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
@@ -30,12 +31,65 @@ extern "C"
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	
+	//本地方法 网络接口回调函数
+	//原型函数public native static void CrossPlatformCallback(String json);
+	void Java_org_cocos2dx_cpp_AppActivity_CrossPlatformCallback(JNIEnv *env, jobject thiz, jstring json) {
+		const char* _json = env->GetStringUTFChars(json, NULL);
+		App::log("Java_org_cocos2dx_cpp_AppActivity_CrossPlatformCallback");
+		App::log(_json);
+		rapidjson::Document doc;
+		auto result = YYXLayer::getJsonObject4Json(doc, _json);
+		if (result)
+		{
+			auto callwhere = YYXLayer::getStringForJson("", doc, "call");// 0 = 空,   1 = call1, 2 = call2,  3=WeixinPay_m_callback,  4= WeixinPay_m_callbackerror
+			int callNum = Value(callwhere).asInt();
+			CallBack_String call = nullptr;
+			switch (callNum)
+			{
+			case 3:
+				call = WeixinPay::getInstance()->getCallback();
+				if (call)
+					call(_json);
+				break;
+			case 4:
+				call = WeixinPay::getInstance()->getCallbackerror();
+				if (call)
+					call(_json);
+				break;
+			case 5:
+				WeixinPay::getInstance()->writeOrderId(_json);
+				break;
+			}
+			return;
+			auto taskname = YYXLayer::getStringForJson("", doc, "task");
+			auto data = CrossPlatform::getInstance()->getTask(Value(taskname).asInt());
+			if (data)
+			{
+				CallBack_String func = nullptr;
+				switch (callNum)
+				{
+				case 1:
+					func = data->getCall1Key();
+					if (func)
+						func(_json);
+					break;
+				case 2:
+					func = data->getCall2Key();
+					if (func)
+						func(_json);
+					break;
+				}
+			}
+			CrossPlatform::getInstance()->delTask(Value(taskname).asInt());
+		}
+	}
+
 //本地方法 网络接口回调函数
 //原型函数public native static void NetInterfaceCallback(String functionKey,String json);
 void Java_org_cocos2dx_cpp_AppActivity_NetInterfaceCallback(JNIEnv *env, jobject thiz, jstring functionKey, jstring json) {
 	const char* _functionKey = env->GetStringUTFChars(functionKey, NULL);
 	const char* _json = env->GetStringUTFChars(json, NULL);
-	auto runable = NetIntface::getMapFunction(_functionKey);
+	auto runable = CrossPlatform::getMapFunction(_functionKey);
 	if (runable)
 	{
 		runable(_json);
@@ -147,14 +201,15 @@ void Java_org_cocos2dx_cpp_AppActivity_CallBackBookInfoSceneSendComment(JNIEnv *
 void Java_org_cocos2dx_cpp_AppActivity_takePotos(JNIEnv *env, jobject thiz) {
 	CCLOG("%s", "拍照返回");
 	//开启一个线程找头像然后发消息
-	CocosAndroidJni::ToastAndroid(App::getString("STR_PICTUREING"));
+	//CocosAndroidJni::ToastAndroid(App::getString("STR_PICTUREING"));
+	Toast::create(App::getString("STR_PICTUREING"));
 	std::thread thread_1(
 			[]() {
 				int i = 0;
 				string path;
 				CocosAndroidJni::GetPhotoPath(path);
 				string fullpath = path + "/" + App::m_photsName;
-				while (!App::IsHaveFile(fullpath))
+				while (!FileUtils::getInstance()->isFileExist(fullpath))
 				{
 					if (i > 10)
 					return;

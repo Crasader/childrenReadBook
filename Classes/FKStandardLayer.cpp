@@ -9,7 +9,6 @@ bool StandardLayer::init()
     {
         return false;
     }
-    _iCount = 1;
     //通过currentPage获取pageData
     BookParser* bookParser = BookParser::getInstance();
     _bookData = bookParser->getBookData();
@@ -31,7 +30,6 @@ bool StandardLayer::init()
 void StandardLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void StandardLayer::onExitTransitionDidStart()
@@ -63,6 +61,9 @@ void StandardLayer::initSprite(map<int, SpriteData> mTmp)
         spTmp = _spriteController.getSpriteFromSpriteData(it->second,sImageDic);
         if (spTmp != nullptr) {
             this->addChild(spTmp);
+            
+            string sImagePath = sImageDic + it->second.getImageId();
+            _mReplaceImageSprite[spTmp] = sImagePath;
         }
     }
 }
@@ -88,11 +89,7 @@ bool StandardLayer::onTouchBegan(Touch* touch, Event* event)
     _spriteData = _standardController.getSpriteDataFromSpriteTag(_iCurrentTag);
     
     log("ImageId = %s",_spriteData.getImageId().c_str());
-    //字幕操作
-    if(_standardController.getPageData().getHasSubtitle() == "yes")
-    {
-        operateSubtitle();
-    }
+    
     //触发方式：点击
     if (_spriteData.getTouchEnable() == "no" && _iCurrentTag != Node::INVALID_TAG)
     {
@@ -194,7 +191,9 @@ void StandardLayer::playSpriteSoundWithTag(int iTag)
         if (FileUtils::getInstance()->isFileExist(sFilePath))
         {
             AudioPlayer::getInstance()->playEffect(sFilePath, _standardController.getPageData().getInterrupt());
-            
+            //暂停字幕
+            PageLayer* pageLayer = (PageLayer*)this->getParent()->getChildByTag(2);
+            pageLayer->pauseSubtitles();
         }
     }
 }
@@ -303,20 +302,22 @@ void StandardLayer::relateAnimationRunAction(int iTag, string categroyId)
                         rsp->runAction(rac);
                     }else
                     {
-                        rac->setTag(ACTION_TOUCH);
                         Action* autoAction = rsp->getActionByTag(ACTION_AUTO);
                         //判断是否触发自动动画
                         if (autoAction != nullptr) {
                             Action *copyAutoAction = autoAction->clone();
                             copyAutoAction->retain();
                             rsp->stopActionByTag(ACTION_AUTO);
-                            rsp->runAction(Sequence::create((FiniteTimeAction*)rac,CallFuncN::create([copyAutoAction](Node* node){
+                            Action *action = Sequence::create((FiniteTimeAction*)rac,CallFuncN::create([copyAutoAction](Node* node){
                                 copyAutoAction->setTag(ACTION_AUTO);
                                 node->runAction(copyAutoAction);
                                 copyAutoAction->release();
-                            }), NULL));
+                            }), NULL);
+                            action->setTag(ACTION_TOUCH);
+                            rsp->runAction(action);
                         }else
                         {
+                            rac->setTag(ACTION_TOUCH);
                             rsp->runAction(rac);
                         }
                     }
@@ -355,34 +356,42 @@ bool StandardLayer::replaceImageWithTouch(Sprite* sprite , vector<AnimationData>
         
         if (styleId == "imagereplace" && categroyId == vAnimationData[i].getCategoryId()) {
             int count = vAnimationData[i].getCount();
-            char imageName[50];
-            char soundName[50];
-            string imagePath;
-            string soundPath;
             string imageId = vAnimationData[i].getImageId();
             string soundId = vAnimationData[i].getSoundId();
+            string imagePath;
+            string soundPath;
             
-            if (_iCount <= count) {
-                if (_iCount == count) {
-                    _iCount = 1;
-                }else
-                {
-                    _iCount++;
-                }
-                
-                if (imageId != "") {
-                    imageId.erase(imageId.end()-4,imageId.end());
-                    sprintf(imageName, "%s_%d.png", imageId.c_str(),_iCount);
-                    imagePath = _bookData.getBookPath() + "/image/" + imageName;
-
-                }
-                
-                if (soundId != "") {
-                    soundId.erase(soundId.end()-4,soundId.end());
-                    sprintf(soundName, "%s_%d.mp3", soundId.c_str(),_iCount);
-                    soundPath = _bookData.getBookPath() + "/sound/" + soundName;
+            for (map<Sprite*,string>::iterator it = _mReplaceImageSprite.begin(); it != _mReplaceImageSprite.end(); it++) {
+                if (sprite == it->first) {
+                    imagePath = it->second;
+                    if (imagePath.find(imageId) != string::npos) {
+                        imagePath = imagePath.replace(imagePath.find(".png"), 4, "_2.png");
+                        if (soundId != "") {
+                            soundPath = _bookData.getBookPath() + "/sound/" + soundId.replace(soundId.find(".mp3"), 4, "_2.mp3");
+                        }
+                    }else
+                    {
+                        vector<string> vImageId = Util::split(imagePath, "_");
+                        int num = stringTo<int>(vImageId.back().replace(vImageId.back().find(".png"), 4, ""));
+                        if (num < count) {
+                            num++;
+                            imagePath = _bookData.getBookPath() + "/image/" + imageId.replace(imageId.find(".png"), 4, "_") + toString(num) + ".png";
+                            if (soundId != "") {
+                                soundPath = _bookData.getBookPath() + "/sound/" + soundId.replace(soundId.find(".mp3"), 4, "_") + toString(num) + ".mp3";
+                            }
+                        }else
+                        {
+                            imagePath = _bookData.getBookPath() + "/image/" + imageId.replace(imageId.find(".png"), 4, "_") + "1.png";
+                            if (soundId != "") {
+                                soundPath = _bookData.getBookPath() + "/sound/" + soundId.replace(soundId.find(".mp3"), 4, "_1.mp3");
+                            }
+                        }
+                    }
+                    _mReplaceImageSprite[sprite] = imagePath;
+                    break;
                 }
             }
+        
             sprite->setTexture(imagePath);
             if (FileUtils::getInstance()->isFileExist(soundPath)){
                 AudioPlayer::getInstance()->playEffect(soundPath, _standardController.getPageData().getInterrupt());
@@ -391,55 +400,6 @@ bool StandardLayer::replaceImageWithTouch(Sprite* sprite , vector<AnimationData>
         }
     }
     return false;
-}
-
-//字幕控制
-void StandardLayer::operateSubtitle()
-{
-    //暂停字幕和声音
-    if(_spriteData.getIsSubtitle()=="")
-    {
-        pauseOrResumeSubtitle("pause");
-        AudioPlayer::getInstance()->pauseOrResumeSubtitleMusic("pause");
-    }
-    //恢复字幕和声音
-    else if(_spriteData.getIsSubtitle()=="yes")
-    {
-        pauseOrResumeSubtitle("resume");
-        AudioPlayer::getInstance()->pauseOrResumeSubtitleMusic("resume");
-    }
-    //字幕和声音重播
-    if(_spriteData.getIsReplay() == "yes")
-    {
-        string backgroundPath = _bookData.getBookPath() + "/sound/" + _standardController.getPlayBackgroundMusic();
-        AudioPlayer::getInstance()->playBackgroundMusic(backgroundPath, false);
-    }
-    
-    
-}
-//字幕的暂停和续播
-void StandardLayer::pauseOrResumeSubtitle(string sPauseOrResume)
-{
-    map<int, SpriteData> mSpData = _standardController.getSpriteMap();
-    for (map<int, SpriteData>::iterator it = mSpData.begin(); it != mSpData.end(); ++it)
-    {
-        SpriteData spData = it->second;
-        if(spData.getIsSubtitle() == "yes")
-        {
-            if(sPauseOrResume == "pause")
-            {
-                auto sp = this->getChildByTag(it->first);
-                Director::getInstance()->getActionManager()->pauseTarget(sp);
-            }
-            else if(sPauseOrResume == "resume")
-            {
-                auto sp = this->getChildByTag(it->first);
-                Director::getInstance()->getActionManager()->resumeTarget(sp);
-            }
-            
-        }
-    }
-    
 }
 
 NS_FK_END

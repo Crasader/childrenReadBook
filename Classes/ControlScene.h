@@ -71,8 +71,10 @@ public:
 	ControlScene();
 	~ControlScene();
 	static ControlScene* getInstance();
+	static void showMemory();
 
 	SceneInfo* getSceneInfo(MySceneName);
+	void show();//展示栈内信息
 
 	void backFromScene();
 	void replaceScene(SceneInfo* CurrentScene, SceneInfo* NextScene, bool push = true);
@@ -81,7 +83,7 @@ public:
 	SceneInfo* getFromScene(bool pop = true);
 	bool getReplaceAble() const { return m_replace; }
 	SceneInfo* getCurrentScene();
-
+	void clear();
 
 	int getLoadPlistCount() const { CCLOG("getLoadPlistCount = %d", m_loadPlistCount); return m_loadPlistCount; }
 	void setLoadPlistCount(int val) { 
@@ -104,6 +106,5 @@ private:
 	bool replace(SceneInfo* CurrentScene, SceneInfo* NextScene, bool push =true);//核心函数;
 	void preLoadResources(vector<string> plist, const function<void()> & callback);
 
-	void show();//展示栈内信息
 };
 #endif

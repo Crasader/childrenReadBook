@@ -31,6 +31,10 @@ public:
     void stopAllEffect();
     void resumeAllEffect();
     void pauseAllEffect();
+
+	void uncacheAll();
+    
+	AudioEngine::AudioState getBackgroundPlayAudioState();
     
 	void setAutoPlayCallBack(const AutoPlayCallBack& callback);
     
@@ -38,8 +42,6 @@ public:
     void pauseOrResumeSubtitleMusic(string sPauseOrResume);
     
 private:
-    AudioEngine*                        _audioEngine;
-//    SimpleAudioEngine*                  _simpleAudioEngine;
     static AudioPlayer*                 _audioPlayer;
     unsigned int                        _iSoundId;
     unsigned int                        _iMusicId;

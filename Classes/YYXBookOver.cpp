@@ -6,6 +6,9 @@
 #include "SendCommentLayer.h"
 #include "YYXVisitor.h"
 #include "YYXSound.h"
+#include "AppHttp.h"
+#include "BuyVip.h"
+#include "IndexScene.h"
 USING_NS_FK;
 
 YYXBookOver* YYXBookOver::instance = nullptr;
@@ -34,7 +37,7 @@ void YYXBookOver::init(int bookId, int memberId, bool isTry)
 {
 	m_bookId = bookId;
 	m_memberId = memberId;
-	m_isBookCover = false;
+	m_isBookCoverRuning = false;
 	if (isTry)
 	{
 		m_isUserBuy = false;
@@ -49,7 +52,7 @@ void YYXBookOver::init(int bookId, int memberId, bool isTry)
 
 Layer* YYXBookOver::tryReadBookOverLayer()
 {
-	App::httpComment(m_bookId, []() {
+	AppHttp::getInstance()->httpComments(m_bookId, []() {
 		YYXLayer::sendNotify("showCommentListView", "", -1);
 	});
 	map<string, int64String> parameter;
@@ -57,7 +60,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	YYXLayer::insertMap4ParaType(parameter, "csb", -999, "Book/csb/tryReadBookEndPage.csb");
 	map<string, function<void(YYXLayer*)>> runmap;
 	runmap["cleanup"] = [=](YYXLayer* sender) {
-		m_isBookCover = false;
+		m_isBookCoverRuning = false;
 	};
 	auto layer = YYXLayer::create(parameter, runmap);
 	layer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
@@ -71,7 +74,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	auto goumaiwanzhengban = (Button*)layer->findControl("Button_4");
 	auto jixuyuedu = (Button*)layer->findControl("Button_7");
 	auto goumainianka = (Button*)layer->findControl("Button_5");
-	auto shimeshinianka = (Button*)layer->findControl("Button_6");
+
 	//购买成功
 	auto goumaichenggong = (ImageView*)layer->findControl("Image_2"); 
 	goumaichenggong->setSize(Director::getInstance()->getWinSize());	
@@ -93,7 +96,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		jixuyueduBox->setTitleColor(Color3B::WHITE);
 		jixuyueduBox->addClickEventListener([=](Ref* sneder) {
 			//Director::getInstance()->popScene();
-			BookParser::getInstance()->pageDown();
+			BookParser::getInstance()->pageDown(true);
 		});
 	}
 	if (closed)
@@ -114,31 +117,24 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 							//购买成功后
 							m_isUserBuy = true;
 							buySuccessMessageBox(goumaichenggong);
-						}, [=]() {
-							//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-							auto control = ControlScene::getInstance();
-							control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
+						}, []() {
+							YYXBookOver::getInstance()->GotoLogin();
 						});
 					}));
-				}, [=]() {
-					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					//Index::GoToLoginScene();
-					auto control = ControlScene::getInstance();
-					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
+				}, []() {
+					YYXBookOver::getInstance()->GotoLogin();
 				}, [=]() {
 					Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer([=]() {
 						YYXBuyBook::GetInstance()->newBuyBook(m_bookId, App::GetInstance()->getMemberId(), [=](int bookid) {
 							//购买成功后
 							m_isUserBuy = true;
 							buySuccessMessageBox(goumaichenggong);
-						}, [=]() {
-							//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-							auto control = ControlScene::getInstance();
-							control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
+						}, []() {
+							YYXBookOver::getInstance()->GotoLogin();
 						});
 					}));
 				});
-			}, []() {});
+			});
 		});
 	}
 
@@ -147,7 +143,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		yaoqing->setAnchorPoint(Vec2(1, 0));
 		yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
 		yaoqing->addClickEventListener([=](Ref* sender) {
-			if (App::GetInstance()->m_me)
+			if (!YYXVisitor::getInstance()->getVisitorMode())
 			{
 				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
@@ -184,54 +180,25 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	{
 		goumainianka->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "goumainiankaTime", [=]() {
-				YYXVisitor::getInstance()->hintLogin([=]() {
-					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					//Index::GoToLoginScene();
-					auto control = ControlScene::getInstance();
-					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
-				}, [=]() {
-					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					//Index::GoToLoginScene();
-					auto control = ControlScene::getInstance();
-					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
+				YYXVisitor::getInstance()->hintLogin([]() {
+					YYXBookOver::getInstance()->GotoLogin();
+				}, []() {
+					YYXBookOver::getInstance()->GotoLogin();
 				}, [=]() {
 					Director::getInstance()->getRunningScene()->addChild(Index::SelectLayer(
 						[=]() {
-						Director::getInstance()->getRunningScene()->addChild(XZLayer::payBuyVip(
-							[=]() {
-							if (App::GetInstance()->m_me)
-							{
-								YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-									m_isUserVip = true;
-									buySuccessMessageBox(goumaichenggong);
-								});
-							}
-						}));
-					}));
-				}, "  ", false);
-			}, []() {});
-		});
-	}
-
-	//什么是年卡
-	if (shimeshinianka)
-	{
-		shimeshinianka->addClickEventListener([=](Ref* sender) {
-			YYXLayer::controlTouchTime(1, "shimeshinainkaTime", [=]() {
-				Director::getInstance()->getRunningScene()->addChild(
-					XZLayer::OpenVIPCardService(2, [=]() {
-					//App::GetInstance()->pushScene(BookInfoScene, m_bookId);
-					auto control = ControlScene::getInstance();
-					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
-				}, [=]() {
-					if (App::GetInstance()->m_me)
-					{
-						YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-							m_isUserVip = true;
-							buySuccessMessageBox(goumaichenggong);
+						auto blayer = BuyVip::getInstance()->show();
+						BuyVip::getInstance()->setCallback([=](string json) {
+							AppHttp::getInstance()->httpCheckVIP();
+							YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
+								m_isUserVip = true;
+								buySuccessMessageBox(goumaichenggong);
+							});							
 						});
-					}
-				}));
+						if (blayer)
+							Director::getInstance()->getRunningScene()->addChild(blayer);
+					}));
+				}, "  ",  false);
 			});
 		});
 	}
@@ -240,7 +207,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	{
 		jixuyuedu->addClickEventListener([=](Ref* sender) {
 			//Director::getInstance()->popScene();
-			BookParser::getInstance()->pageDown();
+			BookParser::getInstance()->pageDown(true);
 		});
 	}
 
@@ -249,14 +216,12 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		jixuyuedu->setVisible(true);
 		goumaiwanzhengban->setVisible(false);
 		goumainianka->setVisible(false);
-		shimeshinianka->setVisible(false);
 	}
 	else
 	{
 		jixuyuedu->setVisible(false);
 		goumaiwanzhengban->setVisible(true);
 		goumainianka->setVisible(true);
-		shimeshinianka->setVisible(true);
 	}
 
 	auto changeListener = EventListenerCustom::create("referBookOver", [=](EventCustom* e) {
@@ -265,26 +230,24 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 			jixuyuedu->setVisible(true);
 			goumaiwanzhengban->setVisible(false);
 			goumainianka->setVisible(false);
-			shimeshinianka->setVisible(false);
 		}
 		else
 		{
 			jixuyuedu->setVisible(false);
 			goumaiwanzhengban->setVisible(true);
 			goumainianka->setVisible(true);
-			shimeshinianka->setVisible(true);
 		}
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(changeListener, layer);
 	goumaichenggong->removeFromParent();
 	layer->addChild(goumaichenggong);
-	m_isBookCover = true;
+	m_isBookCoverRuning = true;
 	return layer;
 }
 
 Layer* YYXBookOver::readBookOverLayer()
 {
-	App::httpComment(m_bookId, []() {
+	AppHttp::getInstance()->httpComments(m_bookId, []() {
 		YYXLayer::sendNotify("showCommentListView", "", -1);
 	});
 	map<string, int64String> parameter;
@@ -306,7 +269,7 @@ Layer* YYXBookOver::readBookOverLayer()
 		yaoqing->setAnchorPoint(Vec2(1, 0));
 		yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
 		yaoqing->addClickEventListener([=](Ref* sender) {
-			if (App::GetInstance()->m_me)
+			if (!YYXVisitor::getInstance()->getVisitorMode())
 			{
 				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
@@ -362,7 +325,7 @@ Layer* YYXBookOver::readBookOverLayer()
 		int memberid = -1;
 		if (MyComment->getTag() == 1)
 			memberid = m_memberId;
-		App::httpComment(m_bookId, [=]() {
+		AppHttp::getInstance()->httpComments(m_bookId, [=]() {
 			YYXLayer::sendNotify("showCommentListView", "", memberid);
 		});
 	});
@@ -430,8 +393,7 @@ Layer* YYXBookOver::readBookOverLayer()
 				YYXTableView::stopAllAnimation();
 			});
 		});
-		if (App::GetInstance()->m_me)
-			goComment->setVisible(true);
+		goComment->setVisible(true);
 	}
 	return layer;
 }
@@ -448,5 +410,15 @@ void YYXBookOver::buySuccessMessageBox(ImageView* goumaichenggongLayer)
 void YYXBookOver::yaoqingzhuce()
 {
 	string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
-	NetIntface::inviteRegister(App::GetInstance()->getMemberId(), url, "", [](string json) {}, "", [](string str) {});
+	CrossPlatform::inviteRegister(App::GetInstance()->getMemberId(), url, "", [](string json) {}, "", [](string str) {});
+}
+
+void YYXBookOver::GotoLogin()
+{
+	auto control = ControlScene::getInstance();
+	control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
+	thread ([=]() {
+		App::ccsleep(3000);
+		control->end();
+	}).detach();
 }

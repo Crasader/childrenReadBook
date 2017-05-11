@@ -13,6 +13,7 @@
 #include "Toast.h"
 #include "YYXStruct.h"
 #include "BookInfoControl.h"
+#include "BookCache.h"
 
 using namespace std;
 
@@ -61,7 +62,6 @@ private:
 	Text* m_price_x;//售价小数部分
 	Text* m_originalPrice;//原价
 	Text* m_name;//名字
-
 	ImageView* m_control;
 
 	//long long m_createTime;//场景创建时间
@@ -113,9 +113,6 @@ public:
 	void back();//返回
 
 	int getOptimalRedPacket();//选出最优红包
-
-
-	void httpGetUserRedPackets();//获取红包列表
 	void hintHongbao();
 	string DownLoadBook(int bookId, string bookPlayUrl, string ZipName);
 	
@@ -155,9 +152,10 @@ private:
 	void showXingji();
 	void showCommentCount(int count);
 	void readbook_download_pause_tryreadbook(Button* bt);
+	void downloadCover();
 
 private:
-	vector<string> m_listenerName;
+	Book* m_bookData = nullptr;//书籍信息
 };
 
 #endif //  __BOOKINFO_SCENE_H__

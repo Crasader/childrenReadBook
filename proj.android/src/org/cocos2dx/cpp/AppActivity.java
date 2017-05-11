@@ -61,6 +61,8 @@ import org.cocos2dx.cpp.http.JsonObjectPostRequest;
 import org.cocos2dx.cpp.http.LoginScene;
 import org.cocos2dx.cpp.http.NetInterface;
 import org.cocos2dx.cpp.http.Recharge;
+import org.cocos2dx.cpp.newPay.MyAliPay;
+import org.cocos2dx.cpp.newPay.MyWeixinPay;
 import org.cocos2dx.cpp.sqlite.MySQLiteOpenHelper;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.json.JSONException;
@@ -173,7 +175,10 @@ public class AppActivity extends Cocos2dxActivity {
         // //集成基本统计分析, 结束 Session
         UMGameAgent.onPause(this);
     }
-    
+
+	//本地方法 通用接口调用
+	public native static void CrossPlatformCallback(String json);
+
     //本地方法 网络接口回调函数
     public native static void NetInterfaceCallback(String functionKey,String json);
     
@@ -237,9 +242,6 @@ public class AppActivity extends Cocos2dxActivity {
 	// 本地方法 余额购书成功的回调
 	public native static void CallBackRechargeBuyBookSuccess();
 
-	// 本地方法 余额不足的回调
-//	public native static void CallBackRechargeBuyBookMyBalanceIsNotEnough();
-
 	// 本地方法 余额购书失败的回调
 	public native static void CallBackRechargeBuyBookFail();
 
@@ -274,10 +276,7 @@ public class AppActivity extends Cocos2dxActivity {
 						.get("openPhotoAlbumSelectImageWidth");
 				String height = m_callbackKey
 						.get("openPhotoAlbumSelectImageHeight");
-//				Bitmap bp = ImageTool.readUri(uri, m_context, 600, 600, false);
-//				Bitmap rp = ImageTool.toRoundBitmap(bp);
-//				ImageTool.saveFile(rp, imageName, imageDir);
-				Bitmap bp = ImageTool.readUri(uri, m_context,Integer.parseInt(width), Integer.parseInt(height),false);
+				Bitmap bp = ImageTool.readUri(uri, m_context, 600, 600, false);
 				ImageTool.saveFile(bp, imageName, imageDir);
 				String runKey = m_callbackKey.get("openPhotoAlbumSelectImageRunKey");
 				NetInterfaceCallback(runKey, imageDir + File.separator + imageName);
@@ -300,11 +299,6 @@ public class AppActivity extends Cocos2dxActivity {
 				String dir = m_callbackKey.get("photographAlbumSelectImageDir");
 				String runKey = m_callbackKey
 						.get("photographAlbumSelectImageRunKey");
-//				Bitmap bp = ImageTool.getBitmapformPicturePathByCompaction(dir
-//						+ File.separator + name, m_context, 600, 600, false);
-//				Bitmap rp = ImageTool.toRoundBitmap(bp);
-//				ImageTool.saveFile(rp, "save_" + name, dir);
-//				NetInterfaceCallback(runKey, dir + File.separator + "save_"
 				NetInterfaceCallback(runKey, dir + File.separator 
 						+ name);
 			} else {
@@ -322,21 +316,7 @@ public class AppActivity extends Cocos2dxActivity {
 				GoBack();
 			else
 				GoToBook();
-		} 
-//		else if(resultCode == MacroCode.WeixinPay && data.getStringExtra("key").equals("weixinpay"))
-//		{
-//			int res = data.getIntExtra("errCode", -1);
-//			if(res == 0)
-//			{
-//				m_result = "9000";				
-//			}
-//			else
-//			{
-//				m_result = "-1";
-//			}
-//			getPayResult();
-//			Log.e("show","支付完成会的回调字符串 = " + m_result);
-//		}
+		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -348,51 +328,10 @@ public class AppActivity extends Cocos2dxActivity {
 	public static Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			/*case SDK_PAY_FLAG: {
-				PayResult payResult = new PayResult((String) msg.obj);
-
-				// 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
-				// String resultInfo = payResult.getResult();
-
-				String resultStatus = "-1";
-				resultStatus = payResult.getResultStatus();
-				m_result = resultStatus;
-				getPayResult();
-				// 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
-				if (TextUtils.equals(resultStatus, "9000")) {
-					//Toast.makeText(m_context, "支付成功", Toast.LENGTH_SHORT).show();
-					//cocosToast("支付成功");
-				} else {
-					// 判断resultStatus 为非“9000”则代表可能支付失败
-					// “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-					if (TextUtils.equals(resultStatus, "8000")) {
-						//Toast.makeText(m_context, "支付结果确认中", Toast.LENGTH_SHORT).show();						
-						cocosToast("支付结果确认中");
-					} else {
-						// 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
-						//Toast.makeText(m_context, "支付失败", Toast.LENGTH_SHORT).show();						
-						cocosToast("支付失败");
-					}
-				}
-				break;
-			}
-			case SDK_CHECK_FLAG: {
-				Toast.makeText(m_context, "检查结果为：" + msg.obj,
-						Toast.LENGTH_SHORT).show();
-				break;
-			}*/
 			case 3:
 				Exit();
 				break;
 			case 4:
-				//Toast.makeText(m_context, "" + msg.obj, Toast.LENGTH_SHORT).show();
-				/*new AlertDialog.Builder(m_context).setMessage(msg.obj.toString()).setTitle("系统提示")
-				.setNegativeButton("确定", new DialogInterface.OnClickListener() {					
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-
-					}
-				}).show();*/
 				cocosToast(msg.obj.toString());
 				break;
 			case MacroCode.MessageBox:
@@ -461,35 +400,6 @@ public class AppActivity extends Cocos2dxActivity {
 				//已购列表的回调
 				CallBackLoadSceneGetBuyBook(msg.obj.toString());
 				break;
-			/*case MacroCode.WeixinPayResult:
-				//微信支付回调
-				try{
-					int errCode = msg.arg1;
-					if(errCode == 0)
-					{
-						m_result = "9000";
-					}
-					else
-					{
-						m_result = "-1";
-					}
-					getPayResult();
-				}catch (Exception e) {
-					Log.e("201606211113",e.toString());
-				}
-				break;*/
-			/*case MacroCode.RechargeGetUserBalance:
-				//查询余额回调
-				CallBackRechargeGetUserBalance();
-				break;*/
-//			case MacroCode.RechargeBuyBookSuccess:
-				//余额购书成功的回调
-//				CallBackRechargeBuyBookSuccess();
-//				break;	
-//			case MacroCode.RechargeBuyBookMyBalanceIsNotEnough:
-				//余额不足回调
-//				MyBalanceIsNotEnough();
-//				break;
 			case MacroCode.RechargeBuyBookFail:
 				//余额购书失败的回调
 				CallBackRechargeBuyBookFail();
@@ -579,37 +489,6 @@ public class AppActivity extends Cocos2dxActivity {
 	};
 
 	// ------------------mHandler的处理函数END-------------------------------------------------
-	
-	// JNI 打开数据库
-	public static boolean openDataBase()
-	{
-//		new DbFromJSONEX(m_context, "");
-		return true;
-	}
-	
-	// JNI 判断数据库是否正常,判断数据库的版本是否最新,否则重建数据库
-	public static int examineDataBase(int dataBaseVersion) {
-		/*String dir = m_context.getApplicationContext().getFilesDir()
-				.getAbsolutePath();
-		String path = dir + "/data.db";
-		try {
-			SQLiteDatabase db = OpenDataBase();
-			long dbversion = MySQLiteOpenHelper.getDataBaseVersion(db);
-			CloseDataBase(db);
-			if (dbversion == dataBaseVersion) {
-				return 0;
-			} else {
-				Log.e("show", dbversion + " updata DataBase:" + dataBaseVersion);
-				MySQLiteOpenHelper.copyDataBase(m_context, dir, path);
-				return (int) (dataBaseVersion - dbversion);
-			}
-		} catch (Exception e) {
-			Log.e("201606011803", e.toString());
-			MySQLiteOpenHelper.copyDataBase(m_context, dir, path);
-			return 999;
-		}*/
-		return 0;
-	}
 	
 	//获取毫秒时间
 	public static long getMillsTime()
@@ -716,25 +595,6 @@ public class AppActivity extends Cocos2dxActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}	
-	}
-	
-	// JNI 充值订单
-	public static void httpGetRechargeOrderID(int memberid, int rechargeCount,
-			int price100, String payType, String payInfo, final String runKey,
-			final String errorKey) {
-		m_callbackKey.put("RechargeRunKey", runKey);
-		m_callbackKey.put("RechargeErrorKey", errorKey);
-		NetInterface.httpGetOrderId(mQueue, memberid, rechargeCount, price100,
-				payType, payInfo, runKey, errorKey);
-	}
-	// JNI VIP订单
-	public static void httpGetVIPOrderID(int memberid, int rechargeCount,
-	                                          int price100, String payType, String payInfo, final String runKey,
-	                                          final String errorKey) {
-		m_callbackKey.put("RechargeRunKey", runKey);
-		m_callbackKey.put("RechargeErrorKey", errorKey);
-		NetInterface.httpGetVIPOrderId(mQueue, memberid, rechargeCount, price100,
-				payType, payInfo, runKey, errorKey);
 	}
 	
 	// 获取分享成功的红包
@@ -1100,19 +960,6 @@ public class AppActivity extends Cocos2dxActivity {
 		mHandler.sendMessage(msg);
 	}
 
-//	//JNI 获取用户红包列表
-//	public static void httpGetUserRedPackets(int memberId,final String runKey, final String errorKey)
-//	{
-//		NetInterface.httpGetUserRedPackets(mQueue, memberId, new CallBackFunction(){
-//			@Override
-//			public void sendMessage(String json, int MessageType) {
-//				if(MessageType == MacroCode.SUCCESS)
-//					sendNotify4YYXStruct(runKey, -999, json);
-//				else
-//					sendNotify4YYXStruct(errorKey, -999, json);
-//			}});
-//	}
-	
 	// JNI 使用红包购书
 	public static void httpBuyBookWithRedPacket(int memberId,int redPacketID, 
 			int bookID,final String runKey, final String errorKey)
@@ -1146,69 +993,6 @@ public class AppActivity extends Cocos2dxActivity {
 				mHandler.sendMessage(msg);
 			}});
 	}
-
-//	// JNI 余额购书
-//	public static void RechargeBuyBook(String memberid,int bookid ,int price100)
-//	{
-//		new Recharge().Http_Recharge_BuyBook(mQueue, memberid, bookid, new CallBackFunction() {			
-//			@Override
-//			public void sendMessage(String json, int MessageType) {
-//				m_result = json;
-//				Message msg = new Message();
-//				msg.what = MessageType;
-//				msg.obj = json;
-//				mHandler.sendMessage(msg);
-//			}
-//		});
-//	}
-
-//	//余额不足去充值
-//	public static void MyBalanceIsNotEnough()
-//	{
-//		// 创建退出对话框
-//		final AlertDialog isExit = new AlertDialog.Builder(m_context).create();
-//		// 设置对话框标题
-//		isExit.setTitle("温馨提示");
-//		// 设置对话框消息
-//		isExit.setMessage("余额不足");
-//		// 添加选择按钮并注册监听
-//		isExit.setButton(DialogInterface.BUTTON_POSITIVE, "取消", new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int which) {
-//				switch (which) {
-//				case AlertDialog.BUTTON_POSITIVE:// "确认"按钮退出程序	
-//					isExit.dismiss();
-//					break;
-//				}
-//			}
-//		});
-//		isExit.setButton(DialogInterface.BUTTON_NEGATIVE, "去充值", new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int which) {
-//				switch (which) {
-//				case AlertDialog.BUTTON_NEGATIVE:// "取消"第二个按钮取消对话框
-//					CallBackRechargeBuyBookMyBalanceIsNotEnough();
-//					break;
-//				}
-//			}
-//		});
-//		// 显示对话框
-//		isExit.show();
-//	}	
-
-	// JNI 查询余额
-	/*public static void GetUserBalance(String memberId,String resource)
-	{
-		new Recharge().Http_GetUserBalance(mQueue, getRequestId(), memberId, new CallBackFunction(){
-
-			@Override
-			public void sendMessage(String json, int MessageType) {
-				m_result = json;
-				Message msg = new Message();
-				msg.what = MessageType;
-				msg.obj = json;
-				mHandler.sendMessage(msg);
-			}			
-		},null);
-	}*/
 
 	// JNI 资源图片保存到相册
 	public static void saveQRcode() {
@@ -1247,32 +1031,6 @@ public class AppActivity extends Cocos2dxActivity {
 		.getWritableDatabase();
 		return db;
 	}
-
-	// JNI 判断数据库是否异常,判断数据库的版本和应用程序的版本是否一致,否则重建数据库,
-	/*public static boolean SQLiteIsException() {
-		String dir = m_context.getApplicationContext().getFilesDir()
-				.getAbsolutePath();
-		String path = dir + "/data.db";
-		try {
-			SQLiteDatabase db = OpenDataBase();
-			String dbversion = MySQLiteOpenHelper.getDataBaseVersion(db);
-			CloseDataBase(db);
-			String version = Tool.getVersion(m_context);
-			if(dbversion.equals("") || version == null || version.equals(dbversion))
-			{
-				Log.i("show","db = "+ dbversion + "app = "+ version);
-				return true;
-			}
-			else
-			{
-				Log.e("show","db = "+ dbversion + "app = "+ version);
-				return MySQLiteOpenHelper.copyDataBase(m_context, dir, path);
-			}						
-		} catch (Exception e) {
-			Log.e("201606011803", e.toString());			
-			return MySQLiteOpenHelper.copyDataBase(m_context, dir, path);
-		}
-	}*/
 
 	// JNI 关闭数据库
 	public static void CloseDataBase(SQLiteDatabase db) {
@@ -1533,36 +1291,36 @@ public class AppActivity extends Cocos2dxActivity {
 	}
 
 	// JNI 支付
-	public static void Pay(String payMode, String _PARTNER, String _SELLER,
-			String _RSA_PRIVATE, String orderId, String bookName,
-			String bookIntroduction, int bookPrice, final String runKey,final String errorKey) {
-		try {
-			if (payMode.equals("alipay")) {
-				String PARTNER = _PARTNER;
-				String SELLER = _SELLER;
-				String RSA_PRIVATE = _RSA_PRIVATE;
-				if (_PARTNER.isEmpty() || _PARTNER == null) {
-					PARTNER = "2088011267982277";
-				}
-				if (_SELLER.isEmpty() || _SELLER == null) {
-					SELLER = "xkhqjd@163.com";
-				}
-				if (_RSA_PRIVATE.isEmpty() || _RSA_PRIVATE == null) {
-					RSA_PRIVATE = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMRJ0eigJyUdcf4DY34l3IGJVkOAnglsOUZJV2aXtIUlhdDA7PeZVYYtt4zTI97rfMZ+dLbBoTAQxDpkoffDi3xVYX4Cc6CViBP/5ol5dS7xiwHU1VTOWUrhWO1OvHgmUPiMZ1YWoQpb+UyAfObrgvRYMxP3kny9RkxkpJ1i9UsjAgMBAAECgYEAiGw6DPEKY9xUNtRKGQndeNZn8yB4NlpWcEhXC4HSwFt05sK/r9KNQ2WQ1bqFitCmdxq6qa5oBg0RJPh+LcJltXoV1JXTQfazDMVElsyfZwQx5mFjOhAr49nXe1OpaEti/rMoL4qIlA9tPlJMv8sdLtbNXHYT//KLazfv4EtBb9ECQQD5Lb05n60hTtztL7sXZdjVSHbR/sniPA32dVrgaPlLtSFPUXdK09RsD4PVbNtqdhFB54ZG049wpjYW4DKkt4GrAkEAyalsBU8gi8uILCwQBBZGHJHMK+WOwM3lUKpcnwcZR27zZrRdc5zLPa99xj39k+U5hxgGX4NBf/nlQ7TTLG9UaQJBAPje5g+Xm6OY0K9U7NgBsP/U0FgM0jZTJN7zd0CLl/I1hn9iLnNd/tuu401W3A8IvVPFmidDRhCM8ZkHc41weuECQETzcMO/8ljaFo1D45YCJ6bNEwpPSygRPj7+gPy+6J3MCd0r/mfxTGyi/FY0C+ftkGXoiQVPU632O7WStkGTL0ECQFruILIHI7nxouIZsfEDpDp20ncKBbcXHWBWx3y6/Gv8J+KJ2MqSmGZP6z64/qLSULlyKFxOTCCP7BCGW6enDgg=";
-				}
-				m_context.AliPay(PARTNER, SELLER, RSA_PRIVATE, orderId,
-						bookName, bookIntroduction,
-						String.format("%.02f", bookPrice / 100.0), 
-						runKey,errorKey);
-			} else if (payMode.equals("weixinpay")) {
-				new weixinPay(m_context).pay(orderId,
-						Integer.toString(bookPrice), bookIntroduction);
-			}
-		} catch (Exception e) {
-			Log.e("201606201621", e.toString());
-			NetInterfaceCallback(errorKey, "支付异常");
-		}
-	}
+//	public static void Pay(String payMode, String _PARTNER, String _SELLER,
+//			String _RSA_PRIVATE, String orderId, String bookName,
+//			String bookIntroduction, int bookPrice, final String runKey,final String errorKey) {
+//		try {
+//			if (payMode.equals("alipay")) {
+//				String PARTNER = _PARTNER;
+//				String SELLER = _SELLER;
+//				String RSA_PRIVATE = _RSA_PRIVATE;
+//				if (_PARTNER.isEmpty() || _PARTNER == null) {
+//					PARTNER = "2088011267982277";
+//				}
+//				if (_SELLER.isEmpty() || _SELLER == null) {
+//					SELLER = "xkhqjd@163.com";
+//				}
+//				if (_RSA_PRIVATE.isEmpty() || _RSA_PRIVATE == null) {
+//					RSA_PRIVATE = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMRJ0eigJyUdcf4DY34l3IGJVkOAnglsOUZJV2aXtIUlhdDA7PeZVYYtt4zTI97rfMZ+dLbBoTAQxDpkoffDi3xVYX4Cc6CViBP/5ol5dS7xiwHU1VTOWUrhWO1OvHgmUPiMZ1YWoQpb+UyAfObrgvRYMxP3kny9RkxkpJ1i9UsjAgMBAAECgYEAiGw6DPEKY9xUNtRKGQndeNZn8yB4NlpWcEhXC4HSwFt05sK/r9KNQ2WQ1bqFitCmdxq6qa5oBg0RJPh+LcJltXoV1JXTQfazDMVElsyfZwQx5mFjOhAr49nXe1OpaEti/rMoL4qIlA9tPlJMv8sdLtbNXHYT//KLazfv4EtBb9ECQQD5Lb05n60hTtztL7sXZdjVSHbR/sniPA32dVrgaPlLtSFPUXdK09RsD4PVbNtqdhFB54ZG049wpjYW4DKkt4GrAkEAyalsBU8gi8uILCwQBBZGHJHMK+WOwM3lUKpcnwcZR27zZrRdc5zLPa99xj39k+U5hxgGX4NBf/nlQ7TTLG9UaQJBAPje5g+Xm6OY0K9U7NgBsP/U0FgM0jZTJN7zd0CLl/I1hn9iLnNd/tuu401W3A8IvVPFmidDRhCM8ZkHc41weuECQETzcMO/8ljaFo1D45YCJ6bNEwpPSygRPj7+gPy+6J3MCd0r/mfxTGyi/FY0C+ftkGXoiQVPU632O7WStkGTL0ECQFruILIHI7nxouIZsfEDpDp20ncKBbcXHWBWx3y6/Gv8J+KJ2MqSmGZP6z64/qLSULlyKFxOTCCP7BCGW6enDgg=";
+//				}
+//				m_context.AliPay(PARTNER, SELLER, RSA_PRIVATE, orderId,
+//						bookName, bookIntroduction,
+//						String.format("%.02f", bookPrice / 100.0),
+//						runKey,errorKey);
+//			} else if (payMode.equals("weixinpay")) {
+//				new weixinPay(m_context).pay(orderId,
+//						Integer.toString(bookPrice), bookIntroduction);
+//			}
+//		} catch (Exception e) {
+//			Log.e("201606201621", e.toString());
+//			NetInterfaceCallback(errorKey, "支付异常");
+//		}
+//	}
 
 	// JNI 判断是否联网
 	public static boolean IsNetConnect(boolean hint, String runKey) {
@@ -1629,179 +1387,6 @@ public class AppActivity extends Cocos2dxActivity {
 		Bitmap rp = ImageTool.toRoundBitmap(bp);
 		ImageTool.saveFile(rp, photoName, GetMyAppDir()+File.separator+ "temp");
 	}
-
-	// ------------------------------支付宝支付-----------------------------------------------
-
-	/**
-	 * call alipay sdk pay. 调用SDK支付
-	 * 
-	 */
-	public void AliPay(String PARTNER, String SELLER, String RSA_PRIVATE,
-			String orderId, String bookName, String bookIntroduction,
-			String bookPrice, final String runKey, final String errorKey) {
-		// 订单
-		String orderInfo = getOrderInfo(PARTNER, SELLER, RSA_PRIVATE, orderId,
-				bookName, bookIntroduction, bookPrice);
-		// 对订单做RSA 签名
-		String str_sign = sign(orderInfo, RSA_PRIVATE);
-		try {
-			// 仅需对sign 做URL编码
-			str_sign = URLEncoder.encode(str_sign, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
-		// 完整的符合支付宝参数规范的订单信息
-		final String payInfo = orderInfo + "&sign=\"" + str_sign + "\"&"
-				+ getSignType();
-
-		Runnable payRunnable = new Runnable() {
-
-			@Override
-			public void run() {
-				// 构造PayTask 对象
-				PayTask alipay = new PayTask(AppActivity.this);
-				// 调用支付接口，获取支付结果
-				String result = alipay.pay(payInfo);
-
-//				Message msg = new Message();
-//				msg.what = SDK_PAY_FLAG;
-//				msg.obj = result;
-//				mHandler.sendMessage(msg);
-				PayResult payResult = new PayResult(result);
-				String resultStatus = "-1";
-				resultStatus = payResult.getResultStatus();
-				if (TextUtils.equals(resultStatus, "9000")) {					
-					//cocosToast("支付成功");
-					NetInterfaceCallback(runKey, "");
-				} 
-				else
-				{
-					NetInterfaceCallback(errorKey, "支付失败");
-				}				
-			}
-		};
-
-		// 必须异步调用
-		Thread payThread = new Thread(payRunnable);
-		payThread.start();
-	}
-
-	/**
-	 * check whether the device has authentication alipay account.
-	 * 查询终端设备是否存在支付宝认证账户
-	 * 
-	 */
-	public void check(View v) {
-		Runnable checkRunnable = new Runnable() {
-
-			@Override
-			public void run() {
-				// 构造PayTask 对象
-				PayTask payTask = new PayTask(AppActivity.this);
-				// 调用查询接口，获取查询结果
-				boolean isExist = payTask.checkAccountIfExist();
-
-				Message msg = new Message();
-				msg.what = SDK_CHECK_FLAG;
-				msg.obj = isExist;
-				mHandler.sendMessage(msg);
-			}
-		};
-
-		Thread checkThread = new Thread(checkRunnable);
-		checkThread.start();
-
-	}
-
-	/**
-	 * get the sdk version. 获取SDK版本号
-	 * 
-	 */
-	public void getSDKVersion() {
-		PayTask payTask = new PayTask(this);
-		String version = payTask.getVersion();
-		Toast.makeText(this, version, Toast.LENGTH_SHORT).show();
-	}
-
-	/**
-	 * create the order info. 创建订单信息
-	 * 
-	 */
-	public String getOrderInfo(String PARTNER, String SELLER,
-			String RSA_PRIVATE, String orderId, String subject, String body,
-			String price) {
-		// 签约合作者身份ID
-		String orderInfo = "partner=" + "\"" + PARTNER + "\"";
-
-		// 签约卖家支付宝账号
-		orderInfo += "&seller_id=" + "\"" + SELLER + "\"";
-
-		// 商户网站唯一订单号
-		orderInfo += "&out_trade_no=" + "\"" + orderId + "\"";
-
-		// 商品名称
-		orderInfo += "&subject=" + "\"" + subject + "\"";
-
-		// 商品详情
-		orderInfo += "&body=" + "\"" + body + "\"";
-
-		// 商品金额
-		orderInfo += "&total_fee=" + "\"" + price + "\"";
-		// orderInfo += "&total_fee=" + "\"" + "0.01" + "\"";
-
-		// 服务器异步通知页面路径
-		orderInfo += "&notify_url=" + "\""
-				+""+ MacroCode.IP +"/ellabook-server/Alipay.jsp"
-				+ "\"";
-
-		// 服务接口名称， 固定值
-		orderInfo += "&service=\"mobile.securitypay.pay\"";
-
-		// 支付类型， 固定值
-		orderInfo += "&payment_type=\"1\"";
-
-		// 参数编码， 固定值
-		orderInfo += "&_input_charset=\"utf-8\"";
-
-		// 设置未付款交易的超时时间
-		// 默认30分钟，一旦超时，该笔交易就会自动被关闭。
-		// 取值范围：1m～15d。
-		// m-分钟，h-小时，d-天，1c-当天（无论交易何时创建，都在0点关闭）。
-		// 该参数数值不接受小数点，如1.5h，可转换为90m。
-		orderInfo += "&it_b_pay=\"30m\"";
-
-		// extern_token为经过快登授权获取到的alipay_open_id,带上此参数用户将使用授权的账户进行支付
-		// orderInfo += "&extern_token=" + "\"" + extern_token + "\"";
-
-		// 支付宝处理完请求后，当前页面跳转到商户指定页面的路径，可空
-		// orderInfo += "&return_url=\"m.alipay.com\"";
-
-		// 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
-		// orderInfo += "&paymethod=\"expressGateway\"";
-		Log.i("yyx", orderInfo);
-		return orderInfo;
-	}
-
-	/**
-	 * sign the order info. 对订单信息进行签名
-	 * 
-	 * @param content
-	 *            待签名订单信息
-	 */
-	public String sign(String content, String RSA_PRIVATE) {
-		return SignUtils.sign(content, RSA_PRIVATE);
-	}
-
-	/**
-	 * get the sign type we use. 获取签名方式
-	 * 
-	 */
-	public String getSignType() {
-		return "sign_type=\"RSA\"";
-	}
-
-	// ------------------------------支付宝支付END-----------------------------------------------
 
 	// ---------------------------------程序退出-----------------------------
 	public static void Exit() {
@@ -2039,4 +1624,16 @@ public class AppActivity extends Cocos2dxActivity {
 		m_szUniqueID = m_szUniqueID.toUpperCase();
 		return m_szUniqueID;
 	}
+
+	public static String newMyAliPay(String json)
+	{
+		new MyAliPay().httpAliPayOrderId(json);
+		return "";
+	}
+
+	public static String newWeixinPay(String Json)
+    {
+        new MyWeixinPay().Pay(Json);
+        return "";
+    }
 }

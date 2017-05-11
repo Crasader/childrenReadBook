@@ -1,59 +1,79 @@
 ﻿#include "Charger.h"
 #include "YYXSound.h"
+#include "AppHttp.h"
+#include "HttpWaiting.h"
+#include "XZLayer.h"
 
 #define qq(d) App::log(#d);
 
-void Charger::httpChargerInfo()
-{
-	string url = string(IP) + NET_GETCHARGEACITIVITY+"?type=2";
-	NetIntface::httpPost(url, map<string, string>(),"", [](string json) {
-		NetIntface::httpGetRechargeActivityCallBack(json, [&](int index, int hongbaoid, int hongbao) {
-			//赠送红包列表
-			string key = StringUtils::format("charger+index=%d", index);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, hongbao, StringUtils::format("%d", hongbaoid));
-		}, [](int index, int charger) {
-			//充值金额列表
-			string key = StringUtils::format("charger+index=%d", index);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, -999, "", (Ref*)charger);
-		}, []() {
-			//解析结束的操作
-			YYXLayer::sendNotify("setNodePrice", "", -1);
-		}, []() {
-			//解析异常的操作
-		});
-	}, "", [](string str) {
-		//网络异常的操作
-	});
-}
+Charger* Charger::instance = nullptr;
 
-void Charger::cleanup()
+Charger* Charger::getInstance()
 {
-	qq(Charger::cleanup())
-}
-
-Charger* Charger::create()
-{
-	Charger *pRect = new Charger();
-	if (pRect) {
-		if (pRect->init()) {
-			pRect->autorelease();
-		}
-		else {
-			pRect->release();
-			pRect = nullptr;
-		}
-	}
-	return pRect;
-}
-
-bool Charger::init()
-{
-	if (!Layer::init())
+	if (instance == nullptr)
 	{
-		return false;
+		instance = new Charger();
 	}
+	return instance;
+}
+
+
+void Charger::show()
+{
+	if (haveData())
+	{
+		auto lay = newChargeLayer();
+		if(lay)
+			Director::getInstance()->getRunningScene()->addChild(lay);
+	}
+	else
+	{
+		httpCallChargeLayer();
+	}
+}
+
+void Charger::addData(ChargeData* data)
+{
+	if (data)
+	{
+		int idx = data->getIndex();
+		auto it = m_data.find(idx);
+		if (it != m_data.end())
+		{
+			auto olddata = it->second;
+			if (olddata && olddata != data)
+			{
+				ChargeData::del(olddata);
+			}
+		}
+		m_data[idx] = data;
+	}
+}
+
+ChargeData* Charger::getData(int idx)
+{
+	ChargeData* data = nullptr;
+	auto it = m_data.find(idx);
+	if (it != m_data.end())
+	{
+		data = it->second;
+	}
+	return data;
+}
+
+bool Charger::haveData()
+{
+	auto count = m_data.size();
+	bool show = false;
+	if (count == 6)
+	{
+		show = true;
+	}
+	return show;
+}
+cocos2d::Layer* Charger::newChargeLayer()
+{
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	httpChargerInfo();	
 	Data data;
 	string csb = RECHARGE_CSB;
 	if (App::GetInstance()->getData(csb, data))
@@ -62,7 +82,6 @@ bool Charger::init()
 		pLayer = (Layer*)CSLoader::createNode(csb);
 	pLayer->setAnchorPoint(Vec2(0.5f, 0.5f));
 	pLayer->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-	addChild(pLayer);
 	//触摸屏蔽层
 	auto bg_ImgView = (ImageView*)pLayer->getChildByName("bg_Imgview");
 	bg_ImgView->setTouchEnabled(true);
@@ -76,13 +95,20 @@ bool Charger::init()
 	auto bt3 = pLayer->getChildByName("FileNode_3");
 	auto bt4 = pLayer->getChildByName("FileNode_4");
 	auto bt5 = pLayer->getChildByName("FileNode_5");
+	vector<Node*> nods;
+	nods.push_back(bt0);
+	nods.push_back(bt1);
+	nods.push_back(bt2);
+	nods.push_back(bt3);
+	nods.push_back(bt4);
+	nods.push_back(bt5);
+	for (int i = 0; i < 6; i++)
+	{
+		auto node = nods[i];
+		auto data = m_data[i];
+		setNode(node, data);
+	}
 
-	setNodePrice(0);
-	setNodePrice(1);
-	setNodePrice(2);
-	setNodePrice(3);
-	setNodePrice(4);
-	setNodePrice(5);
 
 	//微信支付
 	auto pay_weixin = (ImageView*)pLayer->getChildByName("Image_11");
@@ -91,24 +117,36 @@ bool Charger::init()
 	auto pay_zhifubao = (ImageView*)pLayer->getChildByName("Image_12");
 	pay_zhifubao->setTouchEnabled(true);
 
-	pay_weixin->addClickEventListener([=](Ref* sender) {
-		YYXSound::getInstance()->playButtonSound();
-		PayType(0);
+	if (getPayPlatform() == WEIXIN)
+	{
 		pay_weixin->loadTexture("Pay/res/ApplePay_weixin_sel_667h.png", TextureResType::PLIST);
 		pay_zhifubao->loadTexture("Pay/res/ApplePay_zhifubao_667h.png", TextureResType::PLIST);
+	}
+	else if (getPayPlatform() == ZHIFUBAO)
+	{
+		pay_weixin->loadTexture("Pay/res/ApplePay_weixin_667h.png", TextureResType::PLIST);
+		pay_zhifubao->loadTexture("Pay/res/ApplePay_zhifubao_sel_667h.png", TextureResType::PLIST);
+	}
+
+	pay_weixin->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
+		pay_weixin->loadTexture("Pay/res/ApplePay_weixin_sel_667h.png", TextureResType::PLIST);
+		pay_zhifubao->loadTexture("Pay/res/ApplePay_zhifubao_667h.png", TextureResType::PLIST);
+		setPayPlatform(WEIXIN);
 	});
 	pay_zhifubao->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
-		PayType(1);
 		pay_weixin->loadTexture("Pay/res/ApplePay_weixin_667h.png", TextureResType::PLIST);
 		pay_zhifubao->loadTexture("Pay/res/ApplePay_zhifubao_sel_667h.png", TextureResType::PLIST);
+		setPayPlatform(ZHIFUBAO);
 	});
 	//关闭按钮
 	auto close_btn = (Button*)pLayer->getChildByName("close_btn");
 	close_btn->setTouchEnabled(true);
 	close_btn->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
-		this->removeFromParentAndCleanup(true);
+		pLayer->removeFromParentAndCleanup(true);
+		pLayer = nullptr;
 	});
 
 	//支付按钮
@@ -117,101 +155,94 @@ bool Charger::init()
 	pay_btn->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "zhifuTime", [=]() {
 			YYXSound::getInstance()->playButtonSound();
-			if (PayPrice() <= 0)
+			pLayer->removeFromParentAndCleanup(true);
+			pLayer = nullptr;
+			auto con = Charger::getInstance();
+			int idx = con->getIndex();//点击位置
+			auto data = con->getData(idx);
+			if (data == nullptr)
 			{
 				Toast::create(App::getString("XUANZHECHONGZHIJINE"));
 				return;
 			}
-			if (App::m_PayTest == 1)
-				PayPrice(0.01);
-			long payCount = PayPrice() * 100;
-			string info = App::getString("RECHARGE") + StringUtils::format("%.02f ", PayPrice()) + App::getString("YUAN");
-			string paytype = "";
-			if (PayType() == 0)
-				paytype = "weixinpay";
-			if (PayType() == 1)
-				paytype = "alipay";
-			App::log(paytype + StringUtils::format(" paymoney = %f", PayPrice() * 100));
-			if (App::GetInstance()->m_me)
-				NetIntface::httpPay(App::GetInstance()->m_me->id, payCount, PayPrice() * 100, paytype, info, "", [=](string str) {
-				if (m_callback)
-				{
-					Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-						m_callback();
-					});
-				}
-				YYXLayer::sendNotify("refershBalanceAndShowRedPacket");
-				YYXLayer::sendNotify("CallBackPaySuccessGoToBuyBook");
-				auto value = YYXLayer::getFileValue("chargerSelectIndex", "0");
-				auto money = getDatamoney(atoi(value.c_str()));
-				auto count = getDatahongbao(atoi(value.c_str()));
-				if (count > 0)
-					XZLayer::showShareRedPacket(StringUtils::format("%d%s", count, App::getString("YUAN")));
-			}, "", [](string error) {
-				Toast::create(error.c_str());
+			int _payObjectId = data->getPayId();
+			int payFlatform = con->getPayPlatform();
+			string payFlatform_Str = "";
+			if (payFlatform == WEIXIN)
+				payFlatform_Str = "wxpay";
+			if (payFlatform == ZHIFUBAO)
+				payFlatform_Str = "alipay";
+
+			CrossPlatform::getInstance()->pay(App::getMemberId(), _payObjectId, "recharge", payFlatform_Str, [](string json) {
+				Director::getInstance()->getScheduler()->performFunctionInCocosThread([]() {
+					YYXLayer::sendNotify("refershBalanceAndShowRedPacket");
+					YYXLayer::sendNotify("CallBackPaySuccessGoToBuyBook");
+					CallBackFunction callback = Charger::getInstance()->getCallback();
+					if (callback)
+						callback();
+					auto con = Charger::getInstance();
+					int idx = con->getIndex();//点击位置
+					auto data = con->getData(idx);
+					if (data)
+					{
+						int count = data->getHongbao();
+						if (count > 0)
+							XZLayer::safe_ShowShareRedPacket(StringUtils::format("%d%s", count/100, App::getString("YUAN")));
+					}
+				});
+			}, [](string json) {
+				Toast::create(json.c_str());
 			});
-			pLayer->removeFromParentAndCleanup(true);
 		});
 	});	
-	qq(Charger::init end)
-	return true;
+	return pLayer;
 }
 
-int Charger::getDatahongbao(int idx)
-{
-	App::log("Charger::getData", idx);
-	string key = StringUtils::format("charger+index=%d", idx);
-	int hongbao = YYXStruct::getMapInt64(App::GetInstance()->myData, key, 0);
-	return hongbao;
-}
 
-int Charger::getDatamoney(int idx)
+void Charger::httpCallChargeLayer()
 {
-	App::log("Charger::getData", idx);
-	string key = StringUtils::format("charger+index=%d", idx);
-	long money = (long)YYXStruct::getMapRef(App::GetInstance()->myData, key, 0);
-	return money;
+	AppHttp::getInstance()->httpChargerInfo(1009);
+	auto wlayer = HttpWaiting::getInstance()->newWaitingLayer(1009,[]() {
+		auto layer = Charger::getInstance()->newChargeLayer();
+		if (layer)
+		{
+			Director::getInstance()->getRunningScene()->addChild(layer);
+		}
+	});
+	if (wlayer)
+	{
+		Director::getInstance()->getRunningScene()->addChild(wlayer);
+	}
 }
 
 Charger::Charger()
 {
-	qq(Charger::Charger())
-	m_payPrice = 0;
-	m_payType = 0;
-	m_payIndex = 0;
 }
 
 Charger::~Charger()
 {
-	qq(Charger::~Charger())
 }
 
-void Charger::setNodePrice(int tag, bool sel)
+void Charger::setNode(Node* bt0, ChargeData* data)
 {
-	auto bt0 = pLayer->getChildByTag(tag);
-	if (bt0 == nullptr)
+	if (bt0 == nullptr || data == nullptr)
 		return;
-	int idx = bt0->getTag();
-	App::log("setNodePrice = ", idx);
-	if (idx > 6 || idx < 0)
-	{
-		qq(idx > 6 || idx < 0)
-			return;
-	}
-	qq(7777777777777)
+	bool sel = false;
+	if (data->getIndex() == getIndex())
+		sel = true;
 	auto chongzhijine = (TextAtlas*)bt0->getChildByName("AtlasLabel_1");//充值金额
 	auto selItem = (ImageView*)bt0->getChildByName("Image_1");//亮色选中活动飘带
 	auto unSelItem = (ImageView*)bt0->getChildByName("Image_2");//暗色未选活动飘带
 	auto texthongbao = (Text*)bt0->getChildByName("Text_1");//送多少钱红包
 	auto text = (Text*)bt0->getChildByName("Text_2");//充值金额
 	auto selSP = (Sprite*)bt0->getChildByName("sel");//选中打钩
-	if(selSP)
+	if (selSP)
 		selSP->setVisible(sel);
-	int money = getDatamoney(idx);
-	auto hongbao = getDatahongbao(idx);
-	if(chongzhijine)
-		chongzhijine->setStringValue(StringUtils::format("%d", money));
-	if (selItem == nullptr || unSelItem == nullptr || texthongbao== nullptr )
+	int money = data->getPrice();
+	auto hongbao = data->getHongbao();
+	if (chongzhijine)
+		chongzhijine->setStringValue(StringUtils::format("%d", money / 100));
+	if (selItem == nullptr || unSelItem == nullptr || texthongbao == nullptr)
 		return;
 	if (hongbao <= 0)
 	{
@@ -224,11 +255,11 @@ void Charger::setNodePrice(int tag, bool sel)
 		selItem->setVisible(true);
 		unSelItem->setVisible(!sel);
 		texthongbao->setVisible(true);
-		texthongbao->setText(StringUtils::format("%s%d%s", App::getString("SONG"), hongbao, App::getString("YUAN")));
+		texthongbao->setText(StringUtils::format("%s%d%s", App::getString("SONG"), hongbao / 100, App::getString("YUAN")));
 	}
-	
-	if(text)
-		text->setText(StringUtils::format("%s%d%s", App::getString("RENMINBI"), money, App::getString("YUAN")));
+
+	if (text)
+		text->setText(StringUtils::format("%s%d%s", App::getString("RENMINBI"), money / 100, App::getString("YUAN")));
 
 	auto node = (ImageView*)bt0->getChildByName("Image_58");
 	if (node == nullptr)
@@ -236,21 +267,36 @@ void Charger::setNodePrice(int tag, bool sel)
 	node->setTouchEnabled(true);
 	node->addClickEventListener([=](Ref* sneder) {
 		YYXSound::getInstance()->playButtonSound();
-		auto idx = bt0->getTag();
-		App:log("node->addClickEventListener", idx);
-		if (idx > 6 || idx < 0)
-			return;
-		PayIndex(idx);
-		PayPrice(getDatamoney(idx));
-		setNodePrice(idx, true);
-		YYXLayer::sendNotify("setNodePrice", "222222", idx);
+		YYXLayer::sendNotify(TAG_ChargerSelectNode);
+		setIndex(data->getIndex());
 	});
 	_eventDispatcher->removeEventListenersForTarget(bt0);
-	auto listener = EventListenerCustom::create("setNodePrice", [=](EventCustom* e) {
-		long getIndex = (long)e->getUserData();
-		if(getIndex != bt0->getTag())
-			setNodePrice(bt0->getTag());
+	auto listener = EventListenerCustom::create(TAG_ChargerSelectNode, [=](EventCustom* e) {
+		setNode(bt0, data);
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, bt0);
-	App::log("Charger:: setNodePrice END ");
+}
+
+ChargeData::ChargeData()
+{
+
+}
+
+ChargeData::~ChargeData()
+{
+
+}
+
+ChargeData* ChargeData::create()
+{
+	return new ChargeData();
+}
+
+void ChargeData::del(ChargeData* data)
+{
+	if (data)
+	{
+		delete data;
+	}
+	data = nullptr;
 }

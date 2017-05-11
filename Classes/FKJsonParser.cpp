@@ -15,6 +15,7 @@ JsonParser::~JsonParser()
 
 void JsonParser::dealloc()
 {
+    _subtitleData.clear();
     _Event.clear();
     _bookData.clear();
     _pageData.clear();
@@ -39,7 +40,7 @@ int JsonParser::parserBook(string sBookPath,float resourcesScale,float coordinat
 {
     int errCode = -1;
     //判断bookPath是否存在
-    if (FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->fullPathForFilename(sBookPath)))
+    if (FileUtils::getInstance()->isDirectoryExist(sBookPath))
     {
         //将书名存入_bookData中
         _bookData.setBookPath(sBookPath);
@@ -50,7 +51,7 @@ int JsonParser::parserBook(string sBookPath,float resourcesScale,float coordinat
         log("find book");
         
         //判断资源文件夹中是否包含json文件
-        auto filePath = FileUtils::getInstance()->fullPathForFilename(sBookPath +"/json.txt");
+        auto filePath = sBookPath + "/json.txt";
         if (FileUtils::getInstance()->isFileExist(filePath)) {
             //获取json字符串
             auto jsonStr = FileUtils::getInstance()->getStringFromFile(filePath);
@@ -109,6 +110,16 @@ int JsonParser::setPageDataToBookData(const rapidjson::Value &book)
         else if (0 == strcmp(pageType.GetString(), "game"))
         {
             iRet = setGamePageDataToBookData(i, pageDic);
+        }
+        
+        if (pageDic.HasMember("subtitlesound")) {
+            const rapidjson::Value &subtitleSound = pageDic["subtitlesound"];
+            _pageData.setSubtitleSoundId(subtitleSound.GetString());
+        }
+        
+        if (pageDic.HasMember("subtitleset")) {
+            const rapidjson::Value &subtitleSet = pageDic["subtitleset"];
+            setSubtitleDataToPageData(subtitleSet);
         }
         
         //animationgroup
@@ -204,16 +215,6 @@ int JsonParser::setJsonToSpriteData(const rapidjson::Value &sprite)
             
             _spriteData.setEndPosition(endX.GetString(), endY.GetString() ,_bookData.getCoordinateScale(),_bookData.getWinSizeOffset());
         }
-        //字幕
-        if(sprite.HasMember("issubtitle"))
-        {
-            _spriteData.setIsSubtitle(sprite["issubtitle"].GetString());
-            _pageData.setHasSubtitle("yes");
-        }
-        if(sprite.HasMember("isreplay"))
-        {
-            _spriteData.setIsReplay(sprite["isreplay"].GetString());
-        }
         iRet = DATA_SUCCESS;
     } catch (exception &error) {
         log("error.%s",error.what());
@@ -266,7 +267,7 @@ int JsonParser::setGameDataToGame(const rapidjson::Value &pageDic)
         const rapidjson::Value &renderRectW = renderRect["w"];
         const rapidjson::Value &renderRectH = renderRect["h"];
         
-        _pageData.setRenderRect(renderRectX.GetString(), renderRectY.GetString(), renderRectW.GetString(), renderRectH.GetString(), _bookData.getCoordinateScale());
+        _pageData.setRenderRect(renderRectX.GetString(), renderRectY.GetString(), renderRectW.GetString(), renderRectH.GetString(), _bookData.getCoordinateScale(), _bookData.getWinSizeOffset());
     }
     
     //迷宫游戏
@@ -416,16 +417,7 @@ int JsonParser::setJsonToGameSpriteData(const rapidjson::Value &sprite)
             
             _gameSpriteData.setEndPosition(endX.GetString(), endY.GetString() ,_bookData.getCoordinateScale(),_bookData.getWinSizeOffset());
         }
-        //字幕
-        if(sprite.HasMember("issubtitle"))
-        {
-            _gameSpriteData.setIsSubtitle(sprite["issubtitle"].GetString());
-            _pageData.setHasSubtitle("yes");
-        }
-        if(sprite.HasMember("isreplay"))
-        {
-            _gameSpriteData.setIsReplay(sprite["isreplay"].GetString());
-        }
+    
         iRet = DATA_SUCCESS;
     } catch (exception &error) {
         log("error.%s",error.what());
@@ -577,6 +569,51 @@ int JsonParser::setNormalPointToKeyPathData(const rapidjson::Value &normalPoint)
     return iRet;    
 }
 
+#pragma mark - Subtitle
+int JsonParser::setSubtitleDataToPageData(const rapidjson::Value &subtitleSet)
+{
+    int iRet = DATA_SUCCESS;
+    if (!subtitleSet.IsArray()) {
+        log("subtitleData is wrong");
+        return iRet = DATA_ERROR;
+    }
+    for (unsigned int i = 0; i < subtitleSet.Size(); i++) {
+        _subtitleData.clear();
+        const rapidjson::Value &subtitleDic = subtitleSet[i];
+        const rapidjson::Value &subtitle = subtitleDic["subtitle"];
+        
+        setJsonToSubtitleData(subtitle);
+        _pageData.setSubtitleSet(_subtitleData);
+    }
+    return iRet;
+}
+
+int JsonParser::setJsonToSubtitleData(const rapidjson::Value &subtitle)
+{
+    int iRet = DATA_SUCCESS;
+    try {
+        const rapidjson::Value &image = subtitle["image"];
+        const rapidjson::Value &position = subtitle["position"];
+        const rapidjson::Value &positionX = position["x"];
+        const rapidjson::Value &positionY = position["y"];
+        const rapidjson::Value &zorder = position["z"];
+        const rapidjson::Value &startTime = subtitle["starttime"];
+        const rapidjson::Value &duration = subtitle["duration"];
+        const rapidjson::Value &animationeffect = subtitle["animationeffect"];
+        
+        _subtitleData.setImageId(image.GetString());
+        _subtitleData.setPosition(positionX.GetString(), positionY.GetString(), _bookData.getCoordinateScale(), _bookData.getWinSizeOffset());
+        _subtitleData.setZOrder(zorder.GetString());
+        _subtitleData.setStartTime(startTime.GetString());
+        _subtitleData.setDuration(duration.GetString());
+        _subtitleData.setAnimationEffect(animationeffect.GetString());
+        
+    } catch (exception &error) {
+        log("error = %s",error.what());
+        return iRet = DATA_ERROR;
+    }
+    return iRet;
+}
 
 #pragma mark - movie
 int JsonParser::setMovieDataToPageData(const rapidjson::Value &movieSet)

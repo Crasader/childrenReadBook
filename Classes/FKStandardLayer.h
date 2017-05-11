@@ -56,11 +56,7 @@ public:
     bool   replaceImageWithTouch(Sprite* sprite , vector<AnimationData> &vAnimationData ,string categroyId);
     
     map<int,int> touchCollision(Vec2 location);
-    
-    //暂停字幕动画
-    void     operateSubtitle();
-    void     pauseOrResumeSubtitle(string sPauseOrResume);
-    
+        
 private:
     bool                            _isRunAutoAction;
     int                             _iCurrentTag;
@@ -73,7 +69,8 @@ private:
     AnimationGroupController        _animationGroupController;
     AnimationGroupMemberController  _animationGroupMemberController;
     EventListenerTouchOneByOne*     _oneTouch;
-    int                             _iCount;
+    //存储sprite和imagePath键值对，用于replace animation
+    map<Sprite* , string>           _mReplaceImageSprite;
 };
 
 

@@ -4,6 +4,12 @@ enum MyEnum
 	SELECT = 0, UNSELECT = 1
 };
 
+#define YYXCallBack const function<void()>&
+#define HttpCallBack function<void(HttpData*)>
+#define CallBackFunction function<void()>
+#define CallBack_String function<void(string)>
+
+
 #define FIND_IMAGEVIEW_BY_NAME_BACKGROUND "background"//背景 控件名称 复用
 
 //------------------------------------首页场景---------------------------------------------------------
@@ -937,11 +943,7 @@ enum MyEnum
 
 #define IP "http://cloud.ellabook.cn"//网络域名
 
-//#define IP "http://112.124.61.64"
-
-//#define  IP "http://192.168.10.10:8089"
-
-//#define  IP "http://192.168.10.162:8080"
+//#define  IP "http://114.55.175.152"
 
 #define NET_LOGIN "/ellabook-server/member/login.do"//登录post (username String 用户名& password String 密码) ----0男1女2保密
 
@@ -1155,6 +1157,7 @@ enum MyEnum
 #define TAG_DIKOUHONGBAO "addHint"
 #define TAG_SENDCOMMENTSUCCESS "HttpSendCommentSuccess"
 #define TAG_BOOKINFOREFERUI "bookinfoscene_referui"
+#define TAG_BOOKINFO_CONTROL "bookinfoscene_referControl"
 
 #define TAG_RECOVERBOOKSTORE "huifuyuanyang"
 
@@ -1163,3 +1166,27 @@ enum MyEnum
 #define TAG_BOOKROOMBOOKISEXIT "BookDeleteOrDownloadInBookRoom"
 #define TAG_BOOKCOVERDOWNLOAD "BookCoverDownloadInBookRoom"
 #define TAG_CHILDHEADDOWNLOADOVER "ChildHeadDownloadSuccess"
+
+#define TAG_BABYCENTERSCENECHANGECHILDREN "BabyCenterSceneChangeChildren"
+#define TAG_BABYCENTERSCENESHOWDELETEBUTTON "BabyCenterSceneShowDeleteButton"
+#define TAG_BABYCENTERSCENESHOWCHILD "BabyCenterSceneShowChild"
+#define TAG_BABYCENTERSCENEAMENDBABYINFO "BabyCenterSceneAmendBabyInfo"
+
+#define TAG_CITYSCENEERFERVIEW "CitySceneReferView"
+
+#define TAG_INDEXSCENEDOWNLOADCHILDHEAD "IndexSceneDownloadHead"
+
+#define TAG_REMOVEBUYVIP "BuyVipMessageBoxRemove"
+#define TAG_BUYVIPSELECTPAYTYPE "BuyVipSelectPayType"
+#define TAG_REMOVEBUYVIPPAY "BuyVipPayLayerRemove"
+
+#define TAG1 "httpMoneyOver"
+#define TAG2 "httpRedPacketOver"
+
+#define TAG_REFERSH_VIP "http_callback_refersh_vip"//vip请求状态回来后刷新
+
+#define TAG_REMOVEWAITING "removeHttpWaitingLayer"//删除loading图层
+
+#define TAG_SHOWVIPHINT "showVIPRenew"//vip到期
+
+#define TAG_ChargerSelectNode "ChargerLayerSelectNode"//充值界面选择节点

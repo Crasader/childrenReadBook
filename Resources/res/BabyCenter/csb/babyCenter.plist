@@ -48,28 +48,6 @@
 				<key>sourceSize</key>
 				<string>{123,123}</string>
 			</dict>
-			<key>BabyCenter/res/UserInfo_Not-selected_1.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{665,607},{150,48}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{150,48}</string>
-			</dict>
-			<key>BabyCenter/res/UserInfo_Not-selected_2.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{819,607},{150,48}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{150,48}</string>
-			</dict>
 			<key>BabyCenter/res/UserInfo_Photograph.png</key>
 			<dict>
 				<key>frame</key>
@@ -91,28 +69,6 @@
 				<false />
 				<key>sourceSize</key>
 				<string>{123,123}</string>
-			</dict>
-			<key>BabyCenter/res/UserInfo_Selected_1.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{973,603},{150,48}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{150,48}</string>
-			</dict>
-			<key>BabyCenter/res/UserInfo_Selected_2.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{1045,547},{150,48}}</string>
-				<key>offset</key>
-				<string>{0,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{150,48}</string>
 			</dict>
 			<key>BabyCenter/res/Parents_Login_ipad@2x.png</key>
 			<dict>
@@ -172,7 +128,7 @@
 			<key>BabyCenter/res/UserInfo_Headportrait_head.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{948,921},{97,70}}</string>
+				<string>{{948,901},{97,70}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -183,7 +139,7 @@
 			<key>BabyCenter/res/UserInfo_Title_2.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1022,975},{157,28}}</string>
+				<string>{{795,607},{157,28}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -194,7 +150,7 @@
 			<key>BabyCenter/res/UserInfo_Title_1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1127,599},{157,28}}</string>
+				<string>{{956,603},{157,28}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -238,7 +194,7 @@
 			<key>BabyCenter/res/UserInfo_Headportrait_border.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{903,659},{116,116}}</string>
+				<string>{{903,639},{116,116}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -249,7 +205,7 @@
 			<key>BabyCenter/res/UserInfo_Headportrait_photo.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1023,655},{104,104}}</string>
+				<string>{{1023,635},{104,104}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -282,7 +238,7 @@
 			<key>BabyCenter/res/UserInfo_interface_time.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{671,659},{269,228}}</string>
+				<string>{{671,661},{269,228}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -304,7 +260,7 @@
 			<key>BabyCenter/res/UserInfo_Title_3.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1199,547},{157,28}}</string>
+				<string>{{1045,547},{157,28}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -315,7 +271,7 @@
 			<key>BabyCenter/res/Parents_button_Complete.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{754,932},{190,67}}</string>
+				<string>{{754,934},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -337,7 +293,7 @@
 			<key>BabyCenter/res/Parents_button_Edit.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{903,779},{190,67}}</string>
+				<string>{{903,759},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -348,7 +304,7 @@
 			<key>BabyCenter/res/Parents_button_Edit_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{903,850},{190,67}}</string>
+				<string>{{903,830},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -359,7 +315,7 @@
 			<key>BabyCenter/res/UserInfo_switchChild_ipad.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1022,921},{126,50}}</string>
+				<string>{{665,607},{126,50}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>

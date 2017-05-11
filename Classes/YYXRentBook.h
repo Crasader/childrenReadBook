@@ -2,7 +2,7 @@
 #define __YYXRentBook_HH__
 #include "cocos2d.h"
 #include "App.h"
-#include "NetIntface.h"
+#include "CrossPlatform.h"
 
 USING_NS_CC;
 using namespace std;
@@ -14,8 +14,6 @@ private:
 	int m_bookId = 0;
 	int m_memberId = 0;
 	string m_bookName = "";
-	void httpRentBook();
-	void httpBookInfo();
 
 public:
 	YYXRentBook();

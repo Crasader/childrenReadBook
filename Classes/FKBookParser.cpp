@@ -15,22 +15,29 @@ BookParser* BookParser::getInstance()
 
 void BookParser::end()
 {
-    if (_bookParser == nullptr) {
+	AudioPlayer::getInstance()->end();
+    if (_bookParser != nullptr) {
         delete _bookParser;
-        _bookParser = nullptr;
+        _bookParser = nullptr;	
     }
 }
 
 BookParser::BookParser()
+:_bookEndCallBack(nullptr)
+, _pageDownCallBack(nullptr)
+,_pageUpCallBack(nullptr)
+,_pageShareCallBack(nullptr)
+,_pageQuitCallBack(nullptr)
+,_playModeChangeCallBack(nullptr)
+, _playMode(PlayModeState::DEFULT)
+,_pageMenuChangeCallBack(nullptr)
 {
 	init();
-	
 }
 
 void BookParser::init()
 {
 	_isReading = false;
-	_playMode = PlayModeState::DEFULT;
 	_bookData.clear();
 	_iCurrentPage = 0;
 	_fCoordinateScale = 0.0f;
@@ -39,13 +46,10 @@ void BookParser::init()
 	_sPlatform.clear();
 	_sDrawFilePath.clear();
 	_isPaused = false;
-
-	_bookEndCallBack = nullptr;
-	_pageDownCallBack = nullptr;
-	_pageUpCallBack = nullptr;
-	_pageShareCallBack = nullptr;
-	_pageQuitCallBack = nullptr;
-	_playModeChangeCallBack = nullptr;
+	AudioPlayer::getInstance()->stopAllEffect();
+	AudioPlayer::getInstance()->uncacheAll();
+	SpriteFrameCache::getInstance()->removeSpriteFrames();
+	Director::getInstance()->getTextureCache()->removeAllTextures();
 }
 
 Scene* BookParser::getRootScene()
@@ -68,6 +72,7 @@ BookParser::~BookParser()
 
 int BookParser::bookJsonParser(string sBookPath, float resourcesScale, float coordinateScale,string platform)
 {
+	init();
     _sBookPath = sBookPath;
     _sPlatform = platform;
     _fResourcesScale = resourcesScale;
@@ -86,17 +91,31 @@ int BookParser::bookJsonParser(string sBookPath, float resourcesScale, float coo
     return errCode;
 }
 
+cocos2d::Size BookParser::getResourceSize() const
+{
+	if (_resourceSize.equals(Size(0, 0)))
+	{
+		return Director::getInstance()->getOpenGLView()->getDesignResolutionSize();
+	}
+	return _resourceSize;
+}
+
+void BookParser::setResourceSize(const cocos2d::Size& resourceSize)
+{
+	_resourceSize = resourceSize;
+}
+
 Vec2 BookParser::computeWinSizeOffset()
 {
-    Vec2 offset;
-    Size winSize = Director::getInstance()->getWinSize();
-    if (winSize.width < 1094) {
-        float offsetX = (1094 - winSize.width)/2;
-        float offsetY = (614 - winSize.height)/2;
-        offset = Vec2(offsetX, offsetY);
-        return offset;
-    }
-    return Vec2::ZERO;
+	Vec2 offset;
+	//目前ResolutionPolicy::FIXED_HEIGHT情况下，getWinSize()获取的是进行过高度缩放后的Size。
+	//偏移的目的是使整个画面裁剪后仍居中
+	Size winSize = Director::getInstance()->getWinSize();
+	Size resSize = getResourceSize();
+	float offsetX = (resSize.width - winSize.width) / 2;
+	float offsetY = (resSize.height - winSize.height) / 2;
+	offset = Vec2(offsetX, offsetY);
+	return offset;
 }
 
 void BookParser::setBookPlayModeState(PlayModeState playMode)
@@ -110,17 +129,7 @@ void BookParser::setBookPlayModeState(PlayModeState playMode)
 		break;
 	case AUTOPLAY:
 		AudioPlayer::getInstance()->setAutoPlayCallBack([this](int musicId, std::string soundPath){
-			if (_iCurrentPage < _bookData.getPages())
-			{
-				_iCurrentPage++;
-				PreLoadResourcesController::pageDownPreloadResources();
-				AudioPlayer::getInstance()->playEffect("booknextpage.mp3", "yes");
-				Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), false));
-			}
-			else if (_bookEndCallBack != nullptr)
-			{
-				_bookEndCallBack(_sBookPath);
-			}
+            pageDown(false);
 		});
 		break;
 	case LISTEN:
@@ -194,6 +203,18 @@ Menu* BookParser::getPageMenu()
     return _pageMenu;
 }
 
+void BookParser::setPageMenuChangeCallBack(const PageMenuChangeCallBack &pageMenuChangeCallBack)
+{
+    _pageMenuChangeCallBack = pageMenuChangeCallBack;
+}
+
+void BookParser::runPageMenuChangeCallBack()
+{
+    if (_pageMenuChangeCallBack != nullptr) {
+        _pageMenuChangeCallBack(_pageMenu);
+    }
+}
+
 void BookParser::setIsReading(bool isReading)
 {
     _isReading = isReading;
@@ -248,7 +269,7 @@ void BookParser::runPageUpCallBack()
 
 void BookParser::runPageDownCallBack()
 {
-	if (_pageUpCallBack != nullptr) {
+	if (_pageDownCallBack != nullptr) {
 		_pageDownCallBack();
 	}
 }
@@ -274,7 +295,7 @@ void BookParser::runBookShareCallBack()
 	}
 }
 
-void BookParser::setBookEndCallBack(const BookEndCallBack &bookEndCallBack)
+void BookParser::setBookEndCallBack(const PageCallBack &bookEndCallBack)
 {
 	_bookEndCallBack = bookEndCallBack;
 }
@@ -321,7 +342,7 @@ RenderTexture* BookParser::pageScreenShot()
 
 string BookParser::getVersion()
 {
-    return "2.4";
+    return BOOK_PARSER_VERSION;
 }
 
 int BookParser::pageUp()
@@ -332,47 +353,50 @@ int BookParser::pageUp()
 	{
 		drawLayerSavePNGFile();
 		_bookParser->setCurrentPage(--_iCurrentPage);
-		doPageTurn(true);
+		doPageTurn(true, true);
 		return _iCurrentPage;
 	}
 	
 	return NO_PAGE_TO_TURN;
 }
 
-int BookParser::pageDown()
+int BookParser::pageDown(bool isByHand)
 {
+	//cocos2d-x3.14.1修复了音频结束回调中stop语音崩溃的问题。
 	AudioPlayer::getInstance()->stopAllEffect();
-
-	int iNum = _bookData.getPages();
-	if (_iCurrentPage < iNum)
-	{
-		drawLayerSavePNGFile();
-		_bookParser->setCurrentPage(++_iCurrentPage);
-		doPageTurn(false);
-		return _iCurrentPage;
-	}
-	
-	return NO_PAGE_TO_TURN;
+    if (_iCurrentPage < _bookData.getPages())
+    {
+        drawLayerSavePNGFile();
+        _bookParser->setCurrentPage(++_iCurrentPage);
+        doPageTurn(false, isByHand);
+        return _iCurrentPage;
+    }
+    else if (_bookEndCallBack != nullptr)
+    {
+        _bookEndCallBack();
+    }
+    return NO_PAGE_TO_TURN;
 }
 
 void BookParser::bookQuit()
 {
 	_bookParser->setIsReading(false);
 	AudioPlayer::getInstance()->stopAllEffect();
-	AudioPlayer::getInstance()->playEffect("booknextpage.mp3", "yes");
+	AudioPlayer::getInstance()->uncacheAll();
 	PreLoadResourcesController::pageQuitRemoveResources();
-	Director::getInstance()->getTextureCache()->removeAllTextures();
-	SpriteFrameCache::getInstance()->removeSpriteFrames();
-	//Director::getInstance()->replaceScene(BookParser::getInstance()->getRootScene());
+    drawLayerSavePNGFile();
 	log("%s", Director::getInstance()->getTextureCache()->getCachedTextureInfo().c_str());
-	drawLayerSavePNGFile();
-	//Director::getInstance()->replaceScene(TransitionPageTurn::create(0.2, IndexLayer::createScene(), true));
+//#ifdef CC_PLATFORM_WIN32_DOT_NET
+//	SpriteFrameCache::getInstance()->removeSpriteFrames();
+//	Director::getInstance()->getTextureCache()->removeAllTextures();
+//	Director::getInstance()->replaceScene(BookParser::getInstance()->getRootScene());
+//#else
+//	Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, BookParser::getInstance()->getRootScene(), false));
+//#endif
 }
 
-void BookParser::doPageTurn(bool backwards)
+void BookParser::doPageTurn(bool backwards, bool isByHand)
 {
-	AudioPlayer::getInstance()->playEffect("booknextpage.mp3", "yes");
-
 	if (backwards)
 	{
 		PreLoadResourcesController::pageUpPreloadResources();
@@ -380,6 +404,10 @@ void BookParser::doPageTurn(bool backwards)
 	else
 	{
 		PreLoadResourcesController::pageDownPreloadResources();
+	}
+	if (isByHand)
+	{
+		AudioPlayer::getInstance()->playEffect("booknextpage.mp3", "yes");
 	}
 	Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), backwards));
 }

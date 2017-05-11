@@ -57,7 +57,7 @@ public:
     void    initSprite(vector<GameSpriteData> vTmp);
     
     //点读功能
-    void    playSpriteSoundWithTag(int iTag);
+    void    playSpriteSoundWithTag(GameSpriteData gsData);
     
     //自动运动动画
     void    autoAnimationRunAction(vector<AnimationGroupMemberData> mTmp);
@@ -71,11 +71,7 @@ public:
     void    relateAnimationRunAction(int iTag, GameSpriteData gsData, string categroyId);
     
     map<int,GameSpriteData> touchCollision(Vec2 location);
-    
-    //暂停字幕动画
-    void    operateSubtitle();
-    void    pauseOrResumeSubtitle(string sPauseOrResume);
-    
+            
 private:
     GameSpriteData                 _winGsData;
     bool                           _isRunAutoAction;
@@ -88,7 +84,8 @@ private:
     AnimationGroupController       _animationGroupController;
     AnimationGroupMemberController _animationGroupMemberController;
     EventListenerTouchOneByOne*    _oneTouch;
-    int                            _iCount;
+    //存储sprite和imagePath键值对，用于replace animation
+    map<Sprite* , string>           _mReplaceImageSprite;
 };
 
 NS_FK_END

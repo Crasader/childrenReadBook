@@ -7,7 +7,7 @@
 			<key>BookStoreScene/res/Carriage_0001_wheel_l.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{194,119},{140,140}}</string>
+				<string>{{1,119},{140,140}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -18,7 +18,7 @@
 			<key>BookStoreScene/res/Carriage_0004_wheel_r@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{278,261},{120,120}}</string>
+				<string>{{143,119},{120,120}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -40,7 +40,7 @@
 			<key>BookStoreScene/res/Ellabook_new_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,119},{191,201}}</string>
+				<string>{{1,310},{191,201}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,13 +51,24 @@
 			<key>BookStoreScene/res/Carriage_night_window_568h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,322},{109,275}}</string>
+				<string>{{194,310},{109,275}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<true />
 				<key>sourceSize</key>
 				<string>{109,275}</string>
+			</dict>
+			<key>BookStoreScene/res/yilahuiyuan.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{413,1},{307,54}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{307,54}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>

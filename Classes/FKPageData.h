@@ -9,6 +9,7 @@
 #include "FKMovieData.h"
 #include "FKParticleSystemData.h"
 #include "FKAnimationGroupSetData.h"
+#include "FKSubtitleData.h"
 #include "FKUtil.h"
 
 NS_FK_BEGIN
@@ -29,6 +30,12 @@ public:
     void                        setSoundId(string sSoundId);
     void                        setInterrupt(string sInterrupt);
     void                        setPageType(string sPageType);
+    
+    void                        setSubtitleSoundId(string sSubtitleSoundId);
+    string                      getSubtitleSoundId();
+    //字幕模块
+    vector<SubtitleData>        getSubtitleSet();
+    void                        setSubtitleSet(SubtitleData &subtitleData);
     
     vector<AnimationGroupData>  getAnimationGroupSetData();
     void                        setAnimationGroupSet(AnimationGroupSetData &animationGroupSetData);
@@ -53,7 +60,7 @@ public:
     
     //画板
     void                        setRenderRect(string sRenderRectX,string sRenderRectY,string
-                                              sRenderRectW,string sRenderRectH,float coordinateScale);
+                                              sRenderRectW,string sRenderRectH,float coordinateScale,Vec2 winSizeOffset);
     cocos2d::Rect               getRenderRect();
     
     //迷宫游戏
@@ -66,13 +73,12 @@ public:
     //粒子系统
     void                        setParticleSystemData(ParticleSystemData &psData);
     vector<ParticleSystemData>  getParticleSystemData();
-    //字幕
-    void                        setHasSubtitle(string sHasSubtitle);
-    string                      getHasSubtitle();
     
     void                        clear();
 private:
-    //背景音乐
+    //字幕音频
+    string                          _sSubtitleSoundId;
+    //背景音频
     string                          _sSoundId;
     //背景音是否能够被打断
     string                          _sInterrupt;
@@ -88,6 +94,8 @@ private:
     map<int, SpriteData>            _mSpriteData;
     //动画组模块，包含一个或者多个动画组
     vector<AnimationGroupSetData>   _vAnimationGroupSet;
+    //字幕模块
+    vector<SubtitleData>             _vSubtitleSet;
     //视频模块
     vector<MovieData>               _vMovieData;
     //粒子系统
@@ -102,8 +110,6 @@ private:
     vector<KeyPathData>             _vKeyPathData;
     //复杂连线游戏连线信息
     vector<ComplexLineData>         _vComplexLineData;
-    //字幕相关
-    string                          _sHasSubtitle;
     
 };
 

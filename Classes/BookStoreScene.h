@@ -42,8 +42,6 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "IndexScene.h"
-//#include "SqliteManager.h"
-#include "ThreadQueue.h"
 #include "network/CCDownloader.h"
 #include "App.h"
 #include <fstream>
@@ -51,7 +49,7 @@
 #include "XZLayer.h"
 #include "YYXLayer.h"
 USING_NS_CC;
-using namespace daocode;
+//using namespace daocode;
 using namespace std;
 
 #define TIMER_RIGHTROLLING "rightrolling"//右滚一页的定时器名字
@@ -60,10 +58,6 @@ using namespace std;
 class BookStore : public cocos2d::Layer
 {
 private:
-	//queue<function<void()>> runQueue;//执行主线程队列
-
-	//bool queueIsRuning;//队列是否正在运行
-
 	static int isNetConnect;//是否联网 0=联网  1=断网
 
 	bool m_click;//是否允许封面点击
@@ -91,6 +85,7 @@ private:
 
 	long long m_createTime;//场景创建时间
 public:
+	BookStore();
 	~BookStore();
 
     static cocos2d::Scene* createScene(SceneInfo* sceneInfo = nullptr);
@@ -106,11 +101,13 @@ public:
 	//年卡书店初始化
 	void baonianStore();
 
-	bool changPageNumber( );//翻页时,计算内容页码
+	bool haveData();//判断是否有数据展示;
+
+	bool changPageNumber();//翻页时,计算内容页码
 								
 	void showBookPageNumber(); //展示第1/5页
 
-	vector<int> getSortsOfThisPage(int index);//根据页码 返回该页码page上的所有书籍的sort 书籍小于等于8本
+	//vector<int> getSortsOfThisPage(int index);//根据页码 返回该页码page上的所有书籍的sort 书籍小于等于8本
 
 	 //返回上级
 	void back();
@@ -119,7 +116,7 @@ public:
 	void cleanup();
 
 	//获取当前页书籍列表信息
-	void getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex);
+	//void getCurrentlyPageBookListInfo(int bookStoreID, int pageIndex);
 
 	//刷新一本书
 	void refreshBook(Node* node, int bookId =-999, string path = "", int price = -999, int isNewEllaBook = -999, int hashBuy = -999);
@@ -147,7 +144,7 @@ private:
 	EventListenerTouchOneByOne *touchmove , *touchlistener;
 	vector<string> listerName;
 	void gotoBookInfo(int bookid);
-	void safe_downCoverOk();
+	//void safe_downCoverOk();
 	void recoverAnimation();
 };
 

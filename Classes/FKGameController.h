@@ -42,15 +42,6 @@ public:
     //粒子系统
     vector<ParticleSystemData>      getParticleSystemData();
     
-    /**
-     *  通过Tag获取对应GameSprite的data
-     *
-     *  @param iTag spriteTag
-     *
-     *  @return GameSpriteData
-     */
-    GameSpriteData                  getSpriteDataFromSpriteTag(int iTag);
-    
     //获取背景音
     string                          getPlayBackgroundMusic();
     

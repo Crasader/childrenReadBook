@@ -12,44 +12,50 @@ enum YYXDownloadImagesPriority
 	normal,
 	low
 };
-class YYXDownloadImagesData :public Ref
+class YYXDownloadImagesData
 {
+private:
 	string m_task = "";
 	string m_url = "";
 	string m_path = "";
 	string m_dir = "";
 	string m_fileName = "";
 	long long m_startTime = -1;
+	double m_netFileSize = 0;
 	YYXDownloadImagesPriority m_priority;
 	int m_delayTime = 0;
 	function<void(string)>  m_callback = nullptr;
 	function<void(string)>  m_callbackerror = nullptr;
+	bool runing = false;
 public:
-	std::string Url() const { return m_url; }
-	YYXDownloadImagesData* Url(std::string val)
+	static YYXDownloadImagesData* create();
+	static void del(YYXDownloadImagesData* data);
+
+	std::string getUrl() const { return m_url; }
+	YYXDownloadImagesData* setUrl(std::string val)
 	{
 		m_url = val;
 		return this;
 	}
 
-	std::string Path() const { return m_path; }
+	std::string getPath() const { return m_path; }
 
-	YYXDownloadImagesData* Path(std::string val)
+	YYXDownloadImagesData* setPath(std::string val)
 	{
 		m_path = val;
 		return this;
 	}
 
-	function<void(string)> Callback() const { return m_callback; }
-	YYXDownloadImagesData* Callback(function<void(string)> val)
+	function<void(string)> getCallback() const { return m_callback; }
+	YYXDownloadImagesData* setCallback(const function<void(string)>& val)
 	{
 		m_callback = val;
 		return this;
 	}
 
-	function<void(string)> Callbackerror() const { return m_callbackerror; }
+	function<void(string)> getCallbackerror() const { return m_callbackerror; }
 
-	YYXDownloadImagesData* Callbackerror(function<void(string)> val)
+	YYXDownloadImagesData* setCallbackerror(const function<void(string)>& val)
 	{
 		m_callbackerror = val;
 		return this;
@@ -73,33 +79,37 @@ public:
 		m_task = val; 
 		return this;
 	}
-	std::string Dir() const { return m_dir; }
-	YYXDownloadImagesData* Dir(std::string val) 
+	std::string getDir() const { return m_dir; }
+	YYXDownloadImagesData* setDir(std::string val) 
 	{
 		m_dir = val; 	
+		if (!FileUtils::getInstance()->isDirectoryExist(m_dir))
+			FileUtils::getInstance()->createDirectory(m_dir);
 		return this;
 	}
-	std::string FileName() const { return m_fileName; }
-	YYXDownloadImagesData* FileName(std::string val)
+	std::string getFileName() const { return m_fileName; }
+	YYXDownloadImagesData* setFileName(std::string val)
 	{
 		m_fileName = val; 
 		return this;
 	}
 	long long StartTime() const { return m_startTime; }
 	void StartTime(long long val) { m_startTime = val; }
+	double getNetFileSize() const { return m_netFileSize; }
+	void setNetFileSize(double val) { m_netFileSize = val; }
+	string ToString();
+	bool getRuning() const { return runing; }
+	void setRuning(bool val) { runing = val; }
 };
 
 class YYXDownloadImages:public Ref
 {
 public:
 	mutex m;//同步
-	int m_concurrence = 4;//并发数
-	int outTime = 40;//超时时间
-	int Concurrence() const { return m_concurrence; }
-	void Concurrence(int val) { m_concurrence = val; }
-	bool m_start;//运行中
-	bool Start() const { return m_start; }
-	void Start(bool val) { 
+
+	bool m_start = false;//运行中
+	bool getStart() const { return m_start; }
+	void setStart(bool val) { 
 		m_start = val; 
 	}
 	YYXDownloadImages();
@@ -109,21 +119,38 @@ public:
 	void newDownloadImage(string url, string dir, string filename,  YYXDownloadImagesPriority priority = normal,int delayTime = 0,  function<void(string)> callback = nullptr, function<void(string)> callbackerror = nullptr);
 	string getTaskTag(string path);
 	void getList();
-
+	void startTask();
+	int Concurrence() const { return m_concurrence; }
+	void Concurrence(int val) { m_concurrence = val; }
+	void clearAllReadyTask();
+	YYXDownloadImagesData* getData(string taskTag);
 private:
 	map<string, YYXDownloadImagesData*> m_Tasks;
-	map<string, string> m_Tag;//任务标示存储
+	//map<string, string> m_Tag;//任务标示存储 <path, taskname>
 	//3条准备队列
 	vector<string> highList;
 	vector<string> normalList;
 	vector<string> lowList;
 	//1条正在下载队列
 	map<string, YYXDownloadImagesData*> downloadList;
-	void startTask();
+	float outTime =60;//超时时间
+	int m_concurrence = 3;//并发数
+
 	bool addDownloadListFormHighList();
 	bool addDownloadListFormNormalList();
 	void addDownloadListFormLowList();
 	void downloadImage(YYXDownloadImagesData * data);
+	void downloadImage_Curl(YYXDownloadImagesData *data);
+	static size_t pWriteCallback(void *pData, size_t n, size_t nDataSize, FILE *stream);
+	static int DownProgresss(void* clientp, double fDownLoadTotal, double fDownLoaded, double fUpTotal, double fUpLoaded);
+	long getLocalFileSize(const char *filePath);
 	void deleteTask(string taskTag);
+	void addMaxTask();//增加并发
+	void decreaseMaxTask();//减少并发
+	void addOutTime();//增加超时时间
+	void decreaseOutTime();//减少超时时间
+
+	void change4OutTime();//超时一次
+	void change4GoodTime();//快速下载一次
 };
 #endif 

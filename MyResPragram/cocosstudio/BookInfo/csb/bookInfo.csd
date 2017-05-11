@@ -320,17 +320,17 @@
             <PreSize X="0.1892" Y="0.0635" />
             <FileData Type="Normal" Path="other/Backcover_star5_736h.png" Plist="" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Image_4" ActionTag="-175069336" Tag="100" IconVisible="False" LeftMargin="992.2434" RightMargin="13.7566" TopMargin="53.9339" BottomMargin="324.0661" LeftEage="24" RightEage="24" TopEage="56" BottomEage="56" Scale9OriginX="24" Scale9OriginY="56" Scale9Width="41" Scale9Height="124" ctype="ImageViewObjectData">
-            <Size X="88.0000" Y="236.0000" />
+          <AbstractNodeData Name="Image_4" ActionTag="-175069336" Tag="100" IconVisible="False" LeftMargin="991.2434" RightMargin="13.7566" TopMargin="53.9339" BottomMargin="324.0661" LeftEage="24" RightEage="24" TopEage="56" BottomEage="56" Scale9OriginX="24" Scale9OriginY="56" Scale9Width="41" Scale9Height="124" ctype="ImageViewObjectData">
+            <Size X="89.0000" Y="236.0000" />
             <AnchorPoint ScaleX="1.0000" ScaleY="1.0000" />
             <Position X="1080.2434" Y="560.0661" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.9874" Y="0.9122" />
-            <PreSize X="0.0804" Y="0.3844" />
-            <FileData Type="MarkedSubImage" Path="BookInfo/res/yjgou.png" Plist="BookInfo/csb/bookInfo.plist" />
+            <PreSize X="0.0814" Y="0.3844" />
+            <FileData Type="Normal" Path="other/yjgou.png" Plist="" />
           </AbstractNodeData>
-          <AbstractNodeData Name="goumainianka" ActionTag="-1418399294" Tag="109" IconVisible="False" LeftMargin="597.1050" RightMargin="96.8950" TopMargin="501.1064" BottomMargin="42.8936" TouchEnable="True" FontSize="28" ButtonText="购买年卡, 免费阅读本书&gt;&gt;&gt;" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="334" Scale9Height="11" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+          <AbstractNodeData Name="goumainianka" ActionTag="-1418399294" Tag="109" IconVisible="False" LeftMargin="597.1050" RightMargin="96.8950" TopMargin="501.1064" BottomMargin="42.8936" TouchEnable="True" FontSize="28" ButtonText="购买会员, 免费阅读本书&gt;&gt;&gt;" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="334" Scale9Height="11" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="400.0000" Y="70.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="797.1050" Y="77.8936" />

@@ -28,5 +28,20 @@
         <EnableHTML5Advanced Value="False" />
       </Value>
     </Item>
+    <Item Key="TabsParamsKey">
+      <Value ctype="TabsInfo">
+        <OpenedDocuments>
+          <FilePathData Path="Notification/csb/zhongbanglaixi.csd" />
+          <FilePathData Path="Notification/csb/kaitonghuiyuan.csd" />
+          <FilePathData Path="Notification/csb/pay.csd" />
+          <FilePathData Path="Notification/csb/viptimeout.csd" />
+          <FilePathData Path="Notification/csb/version.csd" />
+          <FilePathData Path="Notification/csb/huiyuantype.csd" />
+          <FilePathData Path="Notification/csb/kaitonghuiyuan7day.csd" />
+          <FilePathData Path="Pay/csb/paylayer.csd" />
+        </OpenedDocuments>
+        <ActiveDocument Path="Pay/csb/paylayer.csd" />
+      </Value>
+    </Item>
   </Properties>
 </UserData>

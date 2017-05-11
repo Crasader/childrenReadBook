@@ -42,8 +42,6 @@ void GameSpriteData::clear()
     _sType.clear();
     _sRole.clear();
     _sImageTouched.clear();
-    _sIsSubtitle.clear();
-    _sIsReplay.clear();
     _sIsAlpha.clear();
     _iRelationId = 0;
     _iGroupId = 0;
@@ -282,24 +280,7 @@ string GameSpriteData::getIsWin()
 {
     return _sIsWin;
 }
-//字幕
-void GameSpriteData::setIsSubtitle(string sSubtitle)
-{
-    _sIsSubtitle = sSubtitle;
-}
-void GameSpriteData::setIsReplay(string sIsReplay)
-{
-    _sIsReplay = sIsReplay;
-}
 
-string GameSpriteData::getIsSubtitle()
-{
-    return _sIsSubtitle;
-}
-string GameSpriteData::getIsReplay()
-{
-    return _sIsReplay;
-}
 string GameSpriteData::getIsAlpha()
 {
     return _sIsAlpha;

@@ -177,9 +177,9 @@ public class weixinPay{
 			par.put("appid",data.appid);
 			par.put("partnerid",data.mch_id);
 			par.put("prepayid",respose.prepay_id);
-			par.put("noncestr",data.nonce_str);			
+			par.put("noncestr",data.nonce_str);
 			par.put("timestamp","1466156165");
-			par.put("package","Sign=WXPay");			
+			par.put("package","Sign=WXPay");
 			req.appId			= data.appid;
 			req.partnerId		= data.mch_id;
 			req.prepayId		= respose.prepay_id;

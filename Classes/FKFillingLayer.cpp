@@ -16,7 +16,6 @@ bool FillingLayer::init()
 void FillingLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void FillingLayer::onExitTransitionDidStart()

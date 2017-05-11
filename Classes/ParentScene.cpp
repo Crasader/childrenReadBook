@@ -1,7 +1,7 @@
 ﻿#include "ParentScene.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
-#include "NetIntface.h"
+#include "CrossPlatform.h"
 #include "XZLayer.h"
 #include "YYXVisitor.h"
 #include "Charger.h"
@@ -14,9 +14,17 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #endif
-USING_NS_CC;
-#include "YYXSound.h"
 
+#include "YYXSound.h"
+#include "YYXVisitor.h"
+#include "User.h"
+#include "YYXTime.h"
+#include "AppHttp.h"
+#include "HttpWaiting.h"
+#include "BuyVip.h"
+#include "vipNotifyLayer.h"
+
+USING_NS_CC;
 using namespace cocostudio::timeline;
 
 Parent::~Parent()
@@ -65,26 +73,6 @@ bool Parent::init(SceneInfo* sceneinfo )
     {
         return false;
     }
-	 
-	//App::m_RunningScene = MySceneName::ParentScene;
-	////安卓返回键
-	//auto androidListener = EventListenerKeyboard::create();
-	//androidListener->onKeyReleased = [](EventKeyboard::KeyCode keyCode, Event* event) {
-	//	if (!App::GetInstance()->isBack)
-	//		return;
-	//	switch (keyCode)
-	//	{
-	//	case EventKeyboard::KeyCode::KEY_ESCAPE:
-	//		if (YYXLayer::getBoolFromXML(SOUND_KEY))
-	//			YYXLayer::PLAYBUTTON;
-	//		Index::GoToIndexScene();
-	//		App::backThreading();
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//};
-	//_eventDispatcher->addEventListenerWithSceneGraphPriority(androidListener, this);
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -105,10 +93,6 @@ bool Parent::init(SceneInfo* sceneinfo )
 	homeButton->setPositionX((1094 - visibleSize.width) / 2 + 14);
 	homeButton->setTouchEnabled(true);
 	homeButton->addClickEventListener([=](Ref* sender) {
-		//if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			//YYXLayer::PLAYBUTTON;
-		//返回首页
-		//Index::GoToIndexScene();
 		auto control = ControlScene::getInstance();
 		control->backFromScene();
 	});
@@ -135,9 +119,7 @@ bool Parent::init(SceneInfo* sceneinfo )
 	
 	//---------------------------界面--------------------------------------------------------------
 	//场景初始化
-	//string member_name = YYXStruct::getMapString(App::GetInstance()->myData, "userAccount", "");
 	YYXVisitor::getInstance()->parentSceneInit([=](){
-		App::cancelData();
 		m_show = initNode_Login();
 	}, [=]() {
 		m_show = initNode_Account(); 
@@ -160,15 +142,13 @@ bool Parent::init(SceneInfo* sceneinfo )
 		img_shezhi->setTouchEnabled(true);
 		img_lianxiwomen->setTouchEnabled(true);
 		m_show->removeFromParentAndCleanup(true);
-		string member_name = YYXStruct::getMapString(App::GetInstance()->myData, "userAccount", "");
 		switch (((ImageView*)sender)->getTag())
 		{
 		case 1:
 			((ImageView*)sender)->loadTexture(PICTURE_PARENT_BUTTON_ACCOUNT_SEL, TextureResType::PLIST);
 			//账号信息界面
-			if (App::GetInstance()->m_me == nullptr || member_name == "")
+			if (YYXVisitor::getInstance()->getVisitorMode())
 			{
-				App::cancelData();
 				m_show = initNode_Login();
 			}
 			else
@@ -193,30 +173,19 @@ bool Parent::init(SceneInfo* sceneinfo )
 	img_lianxiwomen->addClickEventListener(listenEvent);
 
 	//-----------------------监听事件----------------------------------
-	thread([=]() {
+	thread mythread([=]() {
 		YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "LocalCacheSize", getLocalCacheSize()*100);
-	}).detach();
+	});
+	mythread.detach();
 	//网络请求余额
 	Director::getInstance()->getEventDispatcher()->addCustomEventListener("refershBalanceAndShowRedPacket", [=](EventCustom* sender) {
-		getUserMoney();
+		AppHttp::getInstance()->httpUserBalance([](int balance) {
+			YYXLayer::sendNotify("ParentScenehttpGetUserBalanceReferBalance");
+		});
 		auto money = YYXStruct::getMapInt64(App::GetInstance()->myData, "showRedPacketMoney", -999);
 		if (money != -999)
-			XZLayer::showShareRedPacket(StringUtils::format("%d%s",money,App::getString("YUAN")));
+			XZLayer::safe_ShowShareRedPacket(StringUtils::format("%d%s",money,App::getString("YUAN")));
 	});
-	/*Director::getInstance()->getEventDispatcher()->addCustomEventListener("httpBuyBookWithRedPacket_success", [=](EventCustom* e) {
-		auto data = (YYXStruct*)e->getUserData();
-		auto stringdata = YYXStruct::getStringData(*data, "");
-		if (&stringdata && stringdata != "")
-			httpGetRedpacketCallback(stringdata);
-		if (data)
-			delete data;
-	});
-	Director::getInstance()->getEventDispatcher()->addCustomEventListener("httpBuyBookWithRedPacket_fail", [=](EventCustom* e) {
-		auto data = (YYXStruct*)e->getUserData();
-		Toast::create(App::getString("HONGBAOHUOQUSHIBAI"));
-		if (data)
-			delete data;
-	});*/	
 	//-----------------------监听事件END----------------------------------	
     return true;
 }
@@ -232,15 +201,6 @@ void Parent::onEnterTransitionDidFinish()
 //账号信息界面初始化
 Layer* Parent::initNode_Account()
 {
-	//-------------------------------------------获取本地数据----------------------------------------------------
-	/*vector<string> param;
-	param.push_back("member_name");
-	param.push_back("member_sex");
-	param.push_back("memberProvince");
-	param.push_back("memberCity");
-	vector<unordered_map<string, ParaType>> result = SqliteManager::SelectData(App::sqliteOpen(), DB_USERINFO, param, "where member_id=" + App::getMemberID());
-	App::sqliteClose();*/
-
 	//-------------------------------------------获取控件--------------------------------------------------------
 	//图层
 	Node* account;
@@ -288,21 +248,32 @@ Layer* Parent::initNode_Account()
 	//充值VIP
 	auto VIPButton = (Button*)account->getChildByName(FIND_BUTTON_BY_NAME_PARENTSCENE_VIP);
 	if (VIPButton) {
-		if (App::GetInstance()->m_me->vip)
-			VIPButton->setTitleText(App::getString("OPENVIPAGAIN"));
-		else
-			VIPButton->setTitleText(App::getString("OPENVIP"));
-		VIPButton->addClickEventListener([=](Ref* sender) {
-			if (App::GetInstance()->m_me->vip)
+		VIPButton->setTitleText(App::getString("OPENVIP"));
+		VIPButton->addClickEventListener([](Ref* sender) {
+			if (User::getInstance()->getVip())
 			{
-				auto layers = XZLayer::showVIPRenew(nullptr);
-				if (layers)
-					addChild(layers, 9);
+				int key = YYXTime::getInstance()->getIntNumber();
+				AppHttp::getInstance()->httpVipHint_VipType(App::getMemberId(), key);
+				auto waitlayer = HttpWaiting::getInstance()->newWaitingLayer(key, []() {
+					auto layer = VipNotify::getInstance()->VipTimeOutLayer();
+					if(layer)
+						Director::getInstance()->getRunningScene()->addChild(layer);
+				});		
+				if (waitlayer)
+				Director::getInstance()->getRunningScene()->addChild(waitlayer);
 			}
-			else {				
-				auto layer = XZLayer::OpenVIPCardService(2);
+			else
+			{
+				auto layer = BuyVip::getInstance()->show();
 				if (layer)
-					addChild(layer, 9);
+					Director::getInstance()->getRunningScene()->addChild(layer);
+				BuyVip::getInstance()->setCallback([](string josn) {
+					//如果是余额支付 vip升级成功后已经获得了余额，只要刷新余额
+					YYXLayer::sendNotify("ParentScenehttpGetUserBalanceReferBalance");
+					AppHttp::getInstance()->httpCheckVIP([]() {
+						YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
+					});
+				});
 			}
 		});
 	}
@@ -312,18 +283,16 @@ Layer* Parent::initNode_Account()
 	//momey->retain();
 	//m_voids["momey"] = momey;
 	//初始化余额
-	int myMomey = -999;
+	int myMomey = User::getInstance()->getMoney();
 	//vip
 	auto viptext = (Text*)account->getChildByName("jibie_content");
-	if (App::GetInstance()->m_me)
-	{
-		myMomey = App::GetInstance()->m_me->momey;
+
 		if (viptext)
 		{
-			if (App::GetInstance()->m_me->vip)
-				viptext->setText(App::getString("NIANKAFUWUJIEZHI") + App::GetInstance()->m_me->endvip);
+			if (User::getInstance()->getVip())
+				viptext->setText(App::getString("NIANKAFUWUJIEZHI") + User::getInstance()->getEndTime());
 		}
-	}
+	
 	if (myMomey <= 0)
 		myMomey = 0;
 	string str = StringUtils::format("%.02f", myMomey/100.0) + App::getString("YUAN");
@@ -333,26 +302,28 @@ Layer* Parent::initNode_Account()
 	{
 		myRedPacket->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "ParentSceneClickmyRedPacketTime",[=]() {
-				//获取用户红包
-				//NetIntface::httpGetUserRedPackets(App::GetInstance()->m_me->id,"httpBuyBookWithRedPacket_success","httpBuyBookWithRedPacket_fail");
 				showRedPacket();
-				httpGetUserRedPacket();
+				AppHttp::getInstance()->httpUserRedPackets([]() {
+					YYXLayer::sendNotify("httpUserRedPacketSuccess");
+				});
 			});
 		});
 	}
 	//--------------------------------根据数据库信息初始化账号信息---------------------------------
-	string member_name = YYXStruct::getMapString(App::GetInstance()->myData, "userAccount","");
-	string userCity = YYXStruct::getMapString(App::GetInstance()->myData, "userCity", App::getString("UNKNOEPRICE"));
-	string userProvince = YYXStruct::getMapString(App::GetInstance()->myData, "userProvince", App::getString("UNKNOEPRICE"));
-	int userSex = YYXStruct::getMapInt64(App::GetInstance()->myData, "userSex", 0);
-	if(account_text)
-		account_text->setString(member_name.substr(0, 3) + "****" + member_name.substr(member_name.length() - 4, member_name.length() - 1));
+	string member_name = User::getInstance()->getUserAccount();
+	string userCity = User::getInstance()->getUserCity();
+	string userProvince = User::getInstance()->getUserProvince();
+	if (account_text)
+	{
+		if (member_name.length() >= 7)
+			account_text->setString(member_name.substr(0, 3) + "****" + member_name.substr(member_name.length() - 4, member_name.length() - 1));
+	}
 	if (city_text && city_drop) {
 		city_text->setString(userProvince + userCity);
 		city_drop->setSiteText(userProvince, userCity);
 	}
 	//判断性别
-	if (userSex == 1) {
+	if (User::getInstance()->getSex() == 1) {
 		sex_text->setString(App::getString("SUPER_FATHER"));
 		sex_text->setTag(SELECT);
 		boy_img->setTag(SELECT);
@@ -372,13 +343,10 @@ Layer* Parent::initNode_Account()
 	//------------------------------------------点击事件----------------------------------------------------
 	//性别选择 点击事件
 	boy_img->addClickEventListener([=](Ref* sender) {
-
 		YYXSound::getInstance()->playButtonSound();
-
 		if (boy_img->getTag() == SELECT) {
 			return;
 		}
-		//sex_text->setString(App::getString("SUPER_FATHER"));
 		boy_img->setTag(SELECT);
 		girl_img->setTag(UNSELECT);
 		boy_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_BOY_SEL, TextureResType::PLIST);
@@ -402,47 +370,20 @@ Layer* Parent::initNode_Account()
 		YYXSound::getInstance()->playButtonSound();
 		if (edit_button->getTag() == 1)
 		{
-			this->addChild(Index::WaitLayer(), 5, "waitLayer");
+			auto laye = HttpWaiting::getInstance()->newWaitingLayer();
+			if(laye)
+				addChild(laye);
 			int selectedSex = 1;
 			if (girl_img->getTag() == SELECT) {
 				selectedSex = 2;
 			}
 			vector<string> siteStr = city_drop->getSiteText();
-			//updateInfo(selectedSex, siteStr[0], siteStr[1]);
 			//修改用户信息
-			NetIntface::httpAmendUserInfo(App::GetInstance()->m_me->id, selectedSex, siteStr[1], siteStr[0],
-				StringUtils::format("httpAmendUserInfo%d", (int)YYXLayer::getRandom()), [=](string json) {
-				NetIntface::httpAmendUserInfoCallBack(json, [=]() {
-					//正确结果
-					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userSex", selectedSex);
-					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userCity", -999, siteStr[1]);
-					YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "userProvince", -999, siteStr[0]);
-					//UserDefault::getInstance()->setStringForKey("userCity", siteStr[1]);
-					//UserDefault::getInstance()->setStringForKey("userProvince", siteStr[0]);
-					//UserDefault::getInstance()->setIntegerForKey("userSex", selectedSex);
-					YYXLayer::setFileValue("userCity", siteStr[1]);
-					YYXLayer::setFileValue("userProvince", siteStr[0]);
-					YYXLayer::setFileValue("userSex", StringUtils::format("%d", selectedSex));
-					Toast::create(App::getString("XIUGAIXINXICHENGGONG"));
-					YYXLayer::sendNotify("MODIFY_USER_INFO_SUCCESS");
-					YYXLayer::sendNotify("REFRESH_USER_INFO_OVER");
-				}, []() {
-					//解析错误
-					Toast::create(App::getString("MODIFY_INFO_FAILED"));
-					YYXLayer::sendNotify("MODIFY_USER_INFO_FAILED");
-				});
-			}, StringUtils::format("httpAmendUserInfo%d", (int)YYXLayer::getRandom()), [](string str) {
-				//网络错误
-				Toast::create(App::getString("NETEXCEPTION"));
-			});
+			AppHttp::getInstance()->httpAmendUserInfo(selectedSex, siteStr[1], siteStr[0]);
 		}
 		else {
 			edit_button->setTag(1);
 			edit_button->setTitleText(App::getString("WANCHENG"));
-			//edit_button->setVisible(false);
-			//edit_button->setTouchEnabled(false);
-			//over_button->setVisible(true);
-			//over_button->setTouchEnabled(true);
 			sex_text->setVisible(false);
 			boy_img->setVisible(true);
 			boy_img->setTouchEnabled(true);
@@ -454,11 +395,6 @@ Layer* Parent::initNode_Account()
 			city_drop->setDropEnable(true);
 		}
 	});
-	//完成按钮 点击事件
-	//over_button->addClickEventListener([=](Ref* sender) {
-		//if (YYXLayer::getBoolFromXML(SOUND_KEY))
-			//YYXLayer::PLAYBUTTON;
-	//});
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	//注销按钮 点击事件
@@ -504,14 +440,6 @@ Layer* Parent::initNode_Account()
 
 		auto bgImg = (ImageView*)changepasswordMessagebox->getChildByTag(55);
 		bgImg->setTouchEnabled(true);
-
-		////手机号输入框
-		//auto inpit_phoneNum = (TextField*)changepasswordMessagebox->getChildByName(FIND_TEXTFIELD_BY_NAME_MODIFY_PHONENUM);
-		////验证码输入框
-		//auto inpit_code = (TextField*)changepasswordMessagebox->getChildByName(FIND_TEXTFIELD_BY_NAME_MODIFY_YANZHENGMA);
-		////新密码输入框
-		//auto inpit_newPassword = (TextField*)changepasswordMessagebox->getChildByName(FIND_TEXTFIELD_BY_NAME_MODIFY_PASSWORD);
-
 		auto inpit_phoneNum = MyEditBox::create(Size(260, 45), App::getString("EDITBOX_PHONE"));
 		inpit_phoneNum->setMyFontSize(20);
 		inpit_phoneNum->setBoxMaxLength(11);
@@ -539,17 +467,9 @@ Layer* Parent::initNode_Account()
 		//确认修改密码 点击事件
 		auto b_change = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_CHANGE);
 		b_change->addClickEventListener([=](Ref* sender) {
-			//if (!CocosAndroidJni::IsNetConnect())
-			//{
-			//	Toast::create(App::getString("NETEXCEPTION"));
-			//	return;
-			//}
-			if (!NetIntface::IsNetConnect(true))
+			if (!CrossPlatform::IsNetConnect(true))
 				return;
-			//string xmlCode = "";
-			//xmlCode = UserDefault::getInstance()->getStringForKey("yanzhengCode");
 			int xmlCodeTime = 0;
-			//xmlCodeTime = UserDefault::getInstance()->getIntegerForKey("codeTime");
 			string xmlCode = YYXLayer::getFileValue("yanzhengCode", "");
 			string xmlCodeTimestr = YYXLayer::getFileValue("codeTime","");
 			xmlCodeTime = atoi(xmlCodeTimestr.c_str());
@@ -565,11 +485,6 @@ Layer* Parent::initNode_Account()
 				Toast::create(App::getString("MESAAGEBOX_CODE_ERROR"));
 				return;
 			}
-			auto userAccount = YYXStruct::getMapString(App::GetInstance()->myData, "userAccount", "");
-			if (inpit_phoneNum->getString() != userAccount){
-				Toast::create( App::getString("MESAAGEBOX_USERNAME_ERROR"));
-				return;
-			}
 			if (code.length()!= 6){
 				Toast::create( App::getString("MESAAGEBOX_CODE_ERROR"));
 				return;
@@ -579,7 +494,7 @@ Layer* Parent::initNode_Account()
 				return;
 			}
 			unschedule("ModifyPsd_Code");
-			modifyPassword(inpit_phoneNum->getString(), inpit_newPassword->getString());
+			AppHttp::getInstance()->httpChangePassword(inpit_phoneNum->getString(), inpit_newPassword->getString());
 			this->removeChild(changepasswordMessagebox);
 		});
 		//获取验证码 点击事件
@@ -590,7 +505,7 @@ Layer* Parent::initNode_Account()
 				Toast::create(App::getString("MESAAGEBOX_USERNAME_ERROR"));
 				return;
 			}
-			getCode(inpit_phoneNum->getString());
+			AppHttp::getInstance()->httpCAPTCHA(inpit_phoneNum->getString());
 			b_getcode->setTouchEnabled(false);
 			b_getcode->setTitleText(StringUtils::format("%d%s", m_times, App::getString("seconds")));
 			schedule([=](float f) {
@@ -616,22 +531,27 @@ Layer* Parent::initNode_Account()
 	});
 	//充值 点击事件
 	rechange->addClickEventListener([=](Ref* sender) {
-		auto recharge = Charger::create();
-		addChild(recharge);
+		auto con = Charger::getInstance();
+		con->show();
+		con->setCallback([]() {
+			//充值成功
+			AppHttp::getInstance()->httpUserBalance([](int balance) {
+				YYXLayer::sendNotify("ParentScenehttpGetUserBalanceReferBalance");
+			});
+		});
 	});
 	
 	//-----------------------------------------------通知-------------------------------------------------------
 	//通知刷新用户信息
 	auto listenRefreshUserInfo = EventListenerCustom::create("REFRESH_USER_INFO_OVER", [=](EventCustom* event) {
-		string userCity = YYXStruct::getMapString(App::GetInstance()->myData, "userCity", App::getString("UNKNOEPRICE"));
-		string userProvince = YYXStruct::getMapString(App::GetInstance()->myData, "userProvince", App::getString("UNKNOEPRICE"));
-		int userSex = YYXStruct::getMapInt64(App::GetInstance()->myData, "userSex", 0);
+		string userCity = User::getInstance()->getUserCity();
+		string userProvince = User::getInstance()->getUserProvince();
 		if (city_text && city_drop) {
 			city_text->setString(userProvince + userCity);
 			city_drop->setSiteText(userProvince, userCity);
 		}
 		//判断性别
-		if (userSex == 1) {
+		if (User::getInstance()->getSex() == 1) {
 			sex_text->setString(App::getString("SUPER_FATHER"));
 			sex_text->setTag(SELECT);
 			boy_img->setTag(SELECT);
@@ -647,54 +567,11 @@ Layer* Parent::initNode_Account()
 			girl_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_GIRL_SEL, TextureResType::PLIST);
 			boy_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_BOY_UNSEL, TextureResType::PLIST);
 		}
-		/*CCLOG("--------------------------------------refresh");
-		vector<string> param2;
-		param2.push_back("member_name");
-		param2.push_back("member_sex");
-		param2.push_back("memberProvince");
-		param2.push_back("memberCity");
-		vector<unordered_map<string, ParaType>> result2 = SqliteManager::SelectData(App::sqliteOpen(), DB_USERINFO, param2, "where member_id=" + App::getMemberID());
-		App::sqliteClose();
-		if (result2.size() > 0) {
-			//初始化账号--号码
-			string acountStr = result2[0]["member_name"].stringPara;
-			if (acountStr.length() >= 7) {
-				account_text->setString(acountStr.substr(0, 3) + "****" + acountStr.substr(acountStr.length() - 4, acountStr.length() - 1));
-			}
-			//判断性别
-			if (result2[0]["member_sex"].intPara == 1) {
-				sex_text->setString(App::getString("SUPER_FATHER"));
-				sex_text->setTag(SELECT);
-				boy_img->setTag(SELECT);
-				girl_img->setTag(UNSELECT);
-				boy_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_BOY_SEL, TextureResType::PLIST);
-				girl_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_GIRL_UNSEL, TextureResType::PLIST);
-			}
-			else {
-				sex_text->setString(App::getString("SUPER_MOTHER"));
-				sex_text->setTag(UNSELECT);
-				girl_img->setTag(SELECT);
-				boy_img->setTag(UNSELECT);
-				girl_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_GIRL_SEL, TextureResType::PLIST);
-				boy_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_BOY_UNSEL, TextureResType::PLIST);
-			}
-			//判断本地是否缓存地点信息
-			string provinceStr = result2[0]["memberProvince"].stringPara;
-			string cityStr = result2[0]["memberCity"].stringPara;
-			if (provinceStr.length() > 0) {
-				city_text->setString(provinceStr + cityStr);
-				city_drop->setSiteText(provinceStr, cityStr);
-			}
-		}*/
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenRefreshUserInfo, account);
 
 	//通知修改用户信息成功
 	auto listenModifyUserInfoSuccess = EventListenerCustom::create("MODIFY_USER_INFO_SUCCESS", [=](EventCustom* event) {
-		//edit_button->setVisible(true);
-		//edit_button->setTouchEnabled(true);
-		//over_button->setVisible(false);
-		//over_button->setTouchEnabled(false);
 		edit_button->setTitleText(App::getString("BIANJI"));
 		edit_button->setTag(0);
 		sex_text->setVisible(true);
@@ -706,11 +583,6 @@ Layer* Parent::initNode_Account()
 		city_img->setVisible(false);
 		city_drop->setVisible(false);
 		city_drop->setDropEnable(false);
-
-		//删除waitlayer
-		if (this->getChildByName("waitLayer") != nullptr) {
-			this->removeChildByName("waitLayer");
-		}
 
 		if (boy_img->getTag() == SELECT) {
 			sex_text->setString(App::getString("SUPER_FATHER"));
@@ -728,10 +600,6 @@ Layer* Parent::initNode_Account()
 
 	//通知修改用户信息失败
 	auto listenModifyFailed = EventListenerCustom::create("MODIFY_USER_INFO_FAILED", [=](EventCustom* event) {
-		//edit_button->setVisible(true);
-		//edit_button->setTouchEnabled(true);
-		//over_button->setVisible(false);
-		//over_button->setTouchEnabled(false);
 		edit_button->setTitleText(App::getString("BIANJI"));
 		edit_button->setTag(0);
 		sex_text->setVisible(true);
@@ -744,10 +612,6 @@ Layer* Parent::initNode_Account()
 		city_drop->setVisible(false);
 		city_drop->setDropEnable(false);
 
-		//删除waitlayer
-		if (this->getChildByName("waitLayer") != nullptr) {
-			this->removeChildByName("waitLayer");
-		}
 
 		if (sex_text->getTag() == SELECT) {
 			sex_text->setString(App::getString("SUPER_FATHER"));
@@ -767,38 +631,27 @@ Layer* Parent::initNode_Account()
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenModifyFailed, account);
 	//网络刷新余额
-	getUserMoney();
-	App::httpCheckVIP();
+	AppHttp::getInstance()->httpUserBalance([](int balance) {
+		YYXLayer::sendNotify("ParentScenehttpGetUserBalanceReferBalance");
+	});
+	AppHttp::getInstance()->httpCheckVIP([]() {
+		YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
+	});
 	//通知 展示余额
 	auto listenshowyue = EventListenerCustom::create("ParentScenehttpGetUserBalanceReferBalance", [=](EventCustom* sender) {
-		App::log("展示余额", App::GetInstance()->m_me->momey);
-		int myMomey = 0;
-		if (App::GetInstance()->m_me)
-			myMomey = App::GetInstance()->m_me->momey;
-		string str = StringUtils::format("%.02f", myMomey / 100.0) + App::getString("YUAN");
+		string str = StringUtils::format("%.02f", User::getInstance()->getMoney() / 100.0) + App::getString("YUAN");
 		if (momey) {
 			momey->setText(str);
-			//momey->setTextColor(Color4B::RED);
 		}
 		App::log("展示余额END", momey->getReferenceCount());
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenshowyue, momey);
 	//通知 升级VIP
 	auto listner = EventListenerCustom::create("refershMemberIDVIP", [=](EventCustom* e) {
-		if (App::GetInstance()->m_me)
+		if (User::getInstance()->getVip())
 		{
-			if (App::GetInstance()->m_me->vip)
-			{
-				if (VIPButton)
-					VIPButton->setTitleText(App::getString("OPENVIPAGAIN"));
-				if (viptext)
-					viptext->setText(App::getString("NIANKAFUWUJIEZHI") + App::GetInstance()->m_me->endvip);
-			}
-			else
-			{
-				if (VIPButton)
-					VIPButton->setTitleText(App::getString("OPENVIP"));
-			}
+			if (viptext)
+				viptext->setText(App::getString("NIANKAFUWUJIEZHI") + User::getInstance()->getEndTime());
 		}
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listner, VIPButton);
@@ -930,7 +783,7 @@ Layer* Parent::initNode_Set()
 	//版本号
 	auto versionText = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_PARENTSCENE_SET_VERSION);
 	if(versionText)
-		versionText->setText(NetIntface::getAppVersion());
+		versionText->setText(CrossPlatform::getAppVersion());
 	//}
 	//设置时间的部分
 	auto time0 = (ImageView*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_IMAGEVIEW_BY_NAME_NOTIME);
@@ -1090,9 +943,10 @@ Layer* Parent::initNode_Set()
 		yes->addClickEventListener([=](Ref* sender) {
 			YYXSound::getInstance()->playButtonSound();
 			//清除缓存
-			std::thread([=]() {
+			std::thread mythread([=]() {
 				deleteCache();
-			}).detach();
+			});
+			mythread.detach();
 			this->removeChild(messagebox);
 		});
 		auto no = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_NO);		
@@ -1107,13 +961,8 @@ Layer* Parent::initNode_Set()
 	{
 		invite->addClickEventListener([](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "yaoqingzhuceTime", []() {
-				if (App::GetInstance()->m_me)
-				{
-					string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
-					NetIntface::inviteRegister(App::GetInstance()->m_me->id, url, "", [](string json) {}, "", [](string str) {});
-				}
-				else
-					Toast::create(App::getString("STR_YOUDONTLOGIN"));
+				string url = string("http://ellabook.cn/ellaBook-invite-red/index.html?memberId=").append(App::getMemberID());
+				CrossPlatform::inviteRegister(App::getMemberId(), url, "", [](string json) {}, "", [](string str) {});
 			});
 		});
 	}
@@ -1249,6 +1098,7 @@ void Parent::deleteCache() {
 	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "LocalCacheSize", getLocalCacheSize() * 100);
 	YYXLayer::sendNotify("xianshiqingchuhuancun");
 	YYXLayer::sendNotify(TAG_BOOKROOMBOOKISEXIT);
+	Load::initDir();
 }
 
 //删除文件夹
@@ -1331,437 +1181,7 @@ void Parent::FeedBack(string feed, string num) {
 	p["feedbackMember_name"] = feed;
 	p["feedbackAdd_time"] = App::GetStringTime();
 	p["resource"] = App::m_resource;
-	NetIntface::httpPost(url, p, "", [](string json) {
-		Toast::create(App::getString("FEEDBACK_INFO"));
-	}, "", [](string str) {});
-	//CCLOG("%s----------%s", feed.c_str(), num.c_str());
-	//HttpRequest* request = new HttpRequest();
-	//request->setRequestType(HttpRequest::Type::POST);
-	//request->setUrl(std::string(IP).append(NET_FEEDBACKSAVE).c_str());
-
-	//auto postData = std::string("memberId=").append(App::getMemberID()).append("&feedbackMember_name=").append(num).append
-	//	("&feedbackContent=").append(feed).append("&feedbackAdd_time=").append(App::GetStringTime()).append
-	//	("&resource=").append(App::m_resource);
-	//request->setRequestData(postData.c_str(), strlen(postData.c_str()));
-
-	////CCLOG(postData.c_str());
-
-	////请求的回调函数
-	//request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
-	//	if (!response)
-	//	{
-	//		return;
-	//	}
-	//	if (!response->isSucceed())
-	//	{
-	//		log("response failed! error buffer: %s", response->getErrorBuffer());
-	//		return;
-	//	}
-	//	else
-	//	{
-	//		//CCLOG("feedback successful");
-	//		MessageBox(App::getString("FEEDBACK_INFO"), App::getString("FEEDBACK_TITLE"));
-	//	}
-	//});
-	//cocos2d::network::HttpClient::getInstance()->send(request);
-	//cocos2d::network::HttpClient::getInstance()->setTimeoutForConnect(3);
-	//request->release();
 }
-
-//网络请求修改用户信息
-/*void Parent::updateInfo(int sex, string site1, string site2) {
-	HttpRequest* request = new HttpRequest();
-	request->setRequestType(HttpRequest::Type::POST);
-	request->setUrl(std::string(IP).append(NET_MODIFY_CITY).c_str());
-
-	auto postData = std::string("memberId=").append(App::getMemberID()).append("&sex=").append(StringUtils::format("%d", sex)).append
-	("&city=").append(site2).append("&province=").append(site1);
-	request->setRequestData(postData.c_str(), strlen(postData.c_str()));
-
-	//请求的回调函数
-	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
-		if (!response){
-			notifyModifyFailed();
-			return;
-		}
-		if (!response->isSucceed()){
-			notifyModifyFailed();
-			log("response failed! error buffer: %s", response->getErrorBuffer());
-			return;
-		}
-
-		//json解析
-		std::string str(response->getResponseData()->begin(), response->getResponseData()->end());
-		thread callback(&Parent::updateInfoCallback, this, str, sex, site1, site2);
-		callback.detach();
-	});
-	cocos2d::network::HttpClient::getInstance()->send(request);
-	cocos2d::network::HttpClient::getInstance()->setTimeoutForConnect(3);
-	request->release();
-}
-void Parent::updateInfoCallback(string str, int sex, string site1, string site2) {
-	rapidjson::Document doc;
-	doc.Parse<0>(str.c_str());
-	if (doc.HasParseError()) {
-		notifyModifyFailed();
-		return;
-	}
-
-	if (!doc.IsObject() || !doc.HasMember("code")) {
-		notifyModifyFailed();
-		return;
-	}
-	rapidjson::Value &value = doc["code"];
-	if (value.IsInt() && value.GetInt() == 0) {//请求修改正常
-		unordered_map<string, string> paraInfoSTR;
-		unordered_map<string, long long> paraInfoINT;
-		paraInfoINT["member_sex"] = sex;
-		paraInfoINT["upTime"] = App::getCurrentTime();
-		paraInfoSTR["memberProvince"] = site1;
-		paraInfoSTR["memberCity"] = site2;
-		SqliteManager::UpdateData(App::sqliteOpen(), DB_USERINFO, paraInfoSTR, paraInfoINT, "where member_id=" + App::getMemberID());
-		App::sqliteClose();
-		notifyModifySuccess();
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([=] {
-			Director::getInstance()->getEventDispatcher()->setEnabled(true);
-			EventCustom eventModifySuccess("REFRESH_USER_INFO_OVER");
-			Director::getInstance()->getEventDispatcher()->dispatchEvent(&eventModifySuccess);
-		});
-	}
-	else{
-		notifyModifyFailed();
-	}
-}*/
-
-//通知修改用户信息成功
-/*void Parent::notifyModifySuccess() {
-	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=] {
-		if (!Director::getInstance()->getEventDispatcher()->isEnabled()) {
-			Director::getInstance()->getEventDispatcher()->setEnabled(true);
-		}
-		EventCustom eventModifySuccess("MODIFY_USER_INFO_SUCCESS");
-		Director::getInstance()->getEventDispatcher()->dispatchEvent(&eventModifySuccess);
-	});
-}
-
-//通知修改用户信息失败
-void Parent::notifyModifyFailed() {
-	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=] {
-		if (!Director::getInstance()->getEventDispatcher()->isEnabled()) {
-			Director::getInstance()->getEventDispatcher()->setEnabled(true);
-		}
-		EventCustom eventModifyFailed("MODIFY_USER_INFO_FAILED");
-		Director::getInstance()->getEventDispatcher()->dispatchEvent(&eventModifyFailed);
-	});
-}*/
-
-//获取修改密码的验证码
-void Parent::getCode(std::string account)
-{
-	App::log(StringUtils::format("code--------------%s", account.c_str()));
-	string url = string(IP).append(NET_GETCODE);
-	map<string, string> p;
-	p["mobileNum"] = account;
-	p["type"] = "2";
-	p["resource"] = App::m_resource;
-	NetIntface::httpPost(url, p, "parentSceneGetCodeSuccess", [](string json) {
-		rapidjson::Document doc;
-		if (YYXLayer::getJsonObject4Json(doc, json))
-		{
-			auto code = YYXLayer::getIntForJson(1, doc, "code");
-			if (code == 0)
-			{
-				auto num = YYXLayer::getStringForJson("", doc, "num");
-				YYXLayer::setFileValue("yanzhengCode", num);
-				YYXLayer::setFileValue("codeTime", StringUtils::format("%d", (int)YYXLayer::getCurrentTime4Second()));
-				Toast::create(App::getString("MESAAGEBOX_GETCODE_SUCCESS"));
-				App::startTime();
-				return;
-			}
-			else
-			{
-				auto desc = YYXLayer::getStringForJson("", doc, "desc");
-				Toast::create(desc.c_str());
-				return;
-			}
-		}
-		Toast::create(App::getString("YANZHENGMAQINGQIUSHIBAIQINGCHONGSHI"));
-	}, "parentSceneGetCodeFail", [](string str) {
-		Toast::create(App::getString("YANZHENGMAQINGQIUSHIBAIQINGCHONGSHI"));
-	});
-	//if (!CocosAndroidJni::IsNetConnect())
-	//{
-	//	Toast::create(App::getString("NETEXCEPTION"));
-	//	return;
-	//}
-	//if (!NetIntface::IsNetConnect(true))
-	//	return;
-	//Toast::create(App::getString("GetCode"));
-	//HttpRequest* request = new HttpRequest();
-	//request->setRequestType(HttpRequest::Type::POST);
-	//request->setUrl(std::string(IP).append(NET_GETCODE).c_str());
-	//auto postData = std::string("mobileNum=").append(account).append("&type=2")
-	//	.append("&resource=").append(App::m_resource);
-	//request->setRequestData(postData.c_str(), strlen(postData.c_str()));
-	//App::log(std::string(IP).append(NET_GETCODE).append("\n").append(postData).c_str());
-	////请求的回调函数
-	//request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
-	//	std::string str4result(App::getString("MESAAGEBOX_GETCODE_SUCCESS"));
-	//	if (!response)
-	//	{
-	//		return;
-	//	}
-	//	if (!response->isSucceed())
-	//	{
-	//		log("response failed");
-	//		log("error buffer: %s", response->getErrorBuffer());
-	//		return;
-	//	}
-	//	//解析json
-	//	//{"num":"480473","desc":"success","mobileNum":"18888702717","code":0}
-	//	//{"desc":"mobilenum has registed：18888702717", "code" : 10003}
-	//	std::vector<char> *buffer = response->getResponseData();
-	//	std::string str(buffer->begin(), buffer->end());
-	//	rapidjson::Document doc;
-	//	doc.Parse<0>(str.c_str());
-	//	if (doc.HasParseError())
-	//	{
-	//		//CCLOG("json parse error : %s", doc.GetParseError());
-	//	}
-	//	else
-	//	{
-	//		if (doc.IsObject() && doc.HasMember("code"))
-	//		{
-	//			rapidjson::Value &code = doc["code"];
-	//			if (code.IsInt() && code.GetInt() == 0)
-	//			{
-	//				//验证码发送成功
-	//				if (doc.HasMember("num"))
-	//				{
-	//					rapidjson::Value &num = doc["num"];
-	//					if (num.IsString())
-	//					{
-	//						string code = num.GetString();
-	//						if (code.length() == 6)
-	//						{
-	//							//UserDefault::getInstance()->setStringForKey("yanzhengCode", code);
-	//							//UserDefault::getInstance()->setIntegerForKey("codeTime", (int)App::getCurrentTime());
-	//							YYXLayer::setFileValue("yanzhengCode", code);
-	//							YYXLayer::setFileValue("codeTime", StringUtils::format("%d",(int)YYXLayer::getCurrentTime4Second()));
-	//						}
-	//					}
-	//				}
-	//				Toast::create(App::getString("MESAAGEBOX_GETCODE_SUCCESS"));
-	//				App::startTime();
-	//			}
-	//			else
-	//			{
-	//				//验证码发送失败
-	//				rapidjson::Value &desc = doc["desc"];
-	//				Toast::create( desc.GetString());
-	//			}
-	//		}
-	//	}
-	//});
-	//cocos2d::network::HttpClient::getInstance()->send(request);
-	//request->release();
-}
-
-//用户修改密码
-void Parent::modifyPassword(string acount, string newPsd) {
-	string url = std::string(IP).append(NET_MODIFY_PASSWORD);
-	map<string, string> p;
-	p["memberName"] = acount;
-	p["password"] = newPsd;
-	NetIntface::httpPost(url, p, "parentSceneModifyPasswordSuccess", [](string json) {
-		rapidjson::Document doc;
-		if (YYXLayer::getJsonObject4Json(doc, json))
-		{
-			auto code = YYXLayer::getIntForJson(1, doc, "code");
-			if (code == 0)
-			{
-				Toast::create(App::getString("MESAAGEBOX_FORGETPASSWORD_SUCCESS"));
-				return;
-			}
-		}
-		Toast::create(App::getString("MESAAGEBOX_FORGETPASSWORD_ERROR"));
-	}, "parentSceneModifyPasswordFail", [](string str) {
-		Toast::create(App::getString("MESAAGEBOX_FORGETPASSWORD_ERROR"));
-	});
-	//HttpRequest* request = new HttpRequest();
-	//request->setRequestType(HttpRequest::Type::POST);
-	//request->setUrl(std::string(IP).append(NET_MODIFY_PASSWORD).c_str());
-
-	//auto postData = std::string("memberName=").append(acount).append("&password=").append(newPsd);
-	//request->setRequestData(postData.c_str(), strlen(postData.c_str()));
-
-	////CCLOG(postData.c_str());
-
-	////请求的回调函数
-	//request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
-	//	if (!response)
-	//	{
-	//		Toast::create( App::getString("MESAAGEBOX_FORGETPASSWORD_ERROR"));
-	//		return;
-	//	}
-	//	if (!response->isSucceed())
-	//	{
-	//		Toast::create( App::getString("MESAAGEBOX_FORGETPASSWORD_ERROR"));
-	//		log("response failed! error buffer: %s", response->getErrorBuffer());
-	//		return;
-	//	}
-
-	//	//json解析
-	//	std::string str(response->getResponseData()->begin(), response->getResponseData()->end());
-	//	rapidjson::Document doc;
-	//	doc.Parse<0>(str.c_str());
-	//	if (doc.HasParseError()) {//json parse error
-	//		Toast::create( App::getString("MESAAGEBOX_FORGETPASSWORD_ERROR"));
-	//		return;
-	//	}
-
-	//	if (!doc.IsObject() || !doc.HasMember("code")) {
-	//		Toast::create( App::getString("MESAAGEBOX_FORGETPASSWORD_ERROR"));
-	//		return;
-	//	}
-	//	rapidjson::Value &value = doc["code"];
-	//	if (value.IsInt() && value.GetInt() == 0) {//请求修改正常
-	//		Toast::create( App::getString("MESAAGEBOX_FORGETPASSWORD_SUCCESS"));
-	//		unordered_map<string, string> paraInfoSTR;
-	//		unordered_map<string, long long> paraInfoINT;
-	//		paraInfoSTR["member_passwd"] = newPsd;
-	//		//SqliteManager::UpdateData(App::sqliteOpen(), DB_USERINFO, paraInfoSTR, paraInfoINT, "where member_name=" + acount);
-	//		//App::sqliteClose();
-	//	}
-	//	else{
-	//		Toast::create(App::getString("MESAAGEBOX_FORGETPASSWORD_ERROR"));
-	//	}
-	//});
-	//cocos2d::network::HttpClient::getInstance()->send(request);
-	//cocos2d::network::HttpClient::getInstance()->setTimeoutForConnect(3);
-	//request->release();
-}
-
-//网络请求账户余额
-void Parent::getUserMoney()
-{
-	string runKey = "ParentSceneHttpGetUserBalanceSuccess";
-	string errorKey = "ParentSceneHttpGetUserBalanceFail";
-	NetIntface::httpGetUserBalance(App::GetInstance()->m_me->id, runKey, [](string json) {
-		//解析json 
-		//写入内存和xml
-		NetIntface::httpGetUserBalanceCallBack(json, [](int id, int userBalance, long long uptime) {
-			//正确解析
-			if (App::GetInstance()->m_me && userBalance >= 0)
-			{
-				App::GetInstance()->m_me->momey = userBalance;
-				//UserDefault::getInstance()->setIntegerForKey("userBalance", userBalance);
-				YYXLayer::setFileValue("userBalance", StringUtils::format("%d", userBalance));
-				YYXLayer::sendNotify("ParentScenehttpGetUserBalanceReferBalance");
-			}
-		}, []() {
-			//返回错误,或者解析错误
-		});
-	}, errorKey, [](string str) {
-		//网络错误
-		Toast::create(App::getString("NETEXCEPTION"));
-	});
-//	//发出请求,回调之后会发送showyue的通知,showyue事件(获取app里的数据然后更新到界面)
-//	CocosAndroidJni::GetUserBalance(memberid.c_str(), App::GetInstance()->m_resource.c_str());
-//	////string url = "http://cloud.ellabook.cn/ellabook-server/order/queryMemberAmount.do?memberId=4030";
-//	//string url = string(IP).append(NET_GETRECHARGE).append("?memberId=").append(memberid).append("&resource=").append(App::m_resource);
-//	//map<string, string> par;
-//	//stringHttpRequest(HttpRequest::Type::GET, url, par, 0, [=](string json) {
-//	//	rapidjson::Document doc;
-//	//	if (YYXLayer::getJsonObject4Json(doc, json))
-//	//	{
-//	//		if (YYXLayer::getBoolForJson(false, doc, "result"))
-//	//		{
-//	//			auto recharge = YYXLayer::getDouble4Json(-1, doc, "data","balance_amount");
-//	//			if (recharge == -1)
-//	//				App::log("余额不需要更新");
-//	//			else
-//	//			{
-//	//				App::log("更新余额");
-//	//				if (App::GetInstance()->m_me)
-//	//					App::GetInstance()->m_me->momey = recharge;
-//	//				Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-//	//					Director::getInstance()->getEventDispatcher()->setEnabled(true);
-//	//					EventCustom event("showyue");
-//	//					Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-//	//				});
-//	//			}
-//	//		}
-//	//	}
-//	//}, []() {
-//	//	Toast::create("余额获取失败");
-//	//});
-}
-
-//void Parent::stringHttpRequest(HttpRequest::Type type, string url, map<string, string> paramter, int outTime, std::function<void(string json)> runable, std::function<void()> errorRunable)
-//{
-//	if (!&url || !&paramter)
-//	{
-//		App::log("参数异常");
-//		return;
-//	}
-//	//if (!CocosAndroidJni::IsNetConnect())
-//	//{
-//	//	Director::getInstance()->getScheduler()->performFunctionInCocosThread([] {
-//	//		Toast::create(App::getString("NETEXCEPTION"));
-//	//	});
-//	//	return;
-//	//}
-//	if (!NetIntface::IsNetConnect(true))
-//		return;
-//	HttpRequest* request = new HttpRequest();
-//	request->setRequestType(type);
-//	request->setUrl(url.c_str());
-//	//CCLOG("%s", url.c_str());
-//	App::log(url);
-//	if (type == HttpRequest::Type::POST)
-//	{
-//		string postData;
-//		if (paramter.size() > 0)
-//		{
-//			for (auto it : paramter)
-//			{
-//				auto key = it.first;
-//				auto value = it.second;
-//				postData.append(StringUtils::format("&%s=%s", key.c_str(), value.c_str()));
-//			}
-//			postData.erase(0, 1);
-//			request->setRequestData(postData.c_str(), postData.length());
-//		}
-//		//CCLOG("%s", postData.c_str());
-//		App::log(postData);
-//	}
-//	//请求的回调函数
-//	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
-//		if (!response)
-//		{
-//			if (errorRunable)
-//				errorRunable();
-//			return;
-//		}
-//		if (!response->isSucceed())
-//		{
-//			if (errorRunable)
-//				errorRunable();
-//			CCLOG("http failed \n code = %d \n error = %s", response->getResponseCode(), response->getErrorBuffer());
-//			return;
-//		}
-//		std::vector<char> *buffer = response->getResponseData();
-//		std::string str(buffer->begin(), buffer->end());
-//		App::log(str);
-//		if (runable)
-//			runable(str);
-//	});
-//	cocos2d::network::HttpClient::getInstance()->send(request);
-//	if (outTime > 0)
-//		cocos2d::network::HttpClient::getInstance()->setTimeoutForConnect(outTime);
-//	request->release();
-//}
 
 void Parent::showRedPacket()
 {
@@ -1907,70 +1327,3 @@ void Parent::loadRedPacketData(Node* node, int index)
 		auto redPacket = (ImageView*)node->getChildByName(FIND_IMAGEVIE_BY_NAME_EVERYREDPACKET_COVER);
 	}
 }
-//获取有效红包
-void Parent::httpGetUserRedPacket()
-{
-	string url = string(IP).append(NET_USERREDPACKET).append("?memberId=").append(App::GetInstance()->getMemberID());
-	string runKey = "ParentSceneHttpGetUserRedPacketSuccess";
-	string errorKey = "ParentSceneHttpGetUserRedPacketFail";
-	NetIntface::httpGet(url, runKey, [](string json) {
-		NetIntface::httpGetUserRedPacketsCallBack(json, []() {
-			App::GetInstance()->m_redPacket.clear();
-		}, [](int coupon_id, int coupon_amount100, string coupon_expire_time) {
-			if (coupon_id != -999 || coupon_amount100 != -99900) {
-				map<string, YYXStruct> mapresult;
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_id", coupon_id);
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_amount", coupon_amount100);
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_expire_time", 0, coupon_expire_time);
-				App::GetInstance()->m_redPacket.push_back(mapresult);
-			}
-		}, [](int expiring_coupon_count) {
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "expiring_coupon_count", expiring_coupon_count);
-			YYXLayer::sendNotify("httpUserRedPacketSuccess");
-		}, []() {
-			Toast::create(App::getString("HONGBAOHUOQUSHIBAI"));
-		});
-	}, errorKey, [](string str) {
-		Toast::create(App::getString("NETEXCEPTION"));
-	});
-}
-
-////获取有效红包的回调
-//void Parent::httpGetRedpacketCallback(string json)
-//{
-//	App::log("Parent::httpGetRedpacketCallback");
-//	rapidjson::Document doc;
-//	YYXLayer::getJsonObject4Json(doc, json);
-//	bool result = YYXLayer::getBool4Json(false, doc, "result");
-//	int  expiring_coupon_count = YYXLayer::getIntForJson(0, doc, "expiring_coupon_count");
-//	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "expiring_coupon_count", expiring_coupon_count);
-//	if (result)
-//	{
-//		App::GetInstance()->m_redPacket.clear();
-//		rapidjson::Value arraylist;
-//		if (YYXLayer::getJsonArray4Json(arraylist, doc, "data"))
-//		{
-//			map<string, YYXStruct> result;
-//			YYXLayer::getData4JsonArray(arraylist, result, [](rapidjson::Value & item, map<string, YYXStruct>& mapresult) {
-//				int coupon_id = YYXLayer::getInt4Json(-999, item, "coupon_id");
-//				int coupon_amount100 = YYXLayer::getDouble4Json(-999.00, item, "coupon_amount") * 100;
-//				string coupon_expire_time = YYXLayer::getString4Json("", item, "coupon_expire_time");
-//				if (coupon_id != -999 || coupon_amount100 != -99900) {
-//					YYXStruct::initMapYYXStruct(mapresult, "coupon_id", coupon_id);
-//					YYXStruct::initMapYYXStruct(mapresult, "coupon_amount", coupon_amount100);
-//					YYXStruct::initMapYYXStruct(mapresult, "coupon_expire_time", 0, coupon_expire_time);
-//					App::GetInstance()->m_redPacket.push_back(mapresult);
-//				}
-//			});
-//		}
-//		else
-//		{
-//			Toast::create(App::getString("HONGBAOHUOQUSHIBAI"));
-//		}
-//	}
-//	else
-//	{
-//		Toast::create(App::getString("HONGBAOHUOQUSHIBAI"));
-//	}
-//	YYXLayer::sendNotify("referRedPackets", "Parent");
-//}

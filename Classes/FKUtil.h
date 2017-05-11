@@ -1,11 +1,11 @@
-﻿#ifndef __UTIL_H__
+#ifndef __UTIL_H__
 #define __UTIL_H__
 
 using namespace std;
 
 // 0x00 HI ME LO
-// 00   02 04 00
-#define BOOK_PARSER_VERSION 0x00020400
+// 00   02 06 00
+#define BOOK_PARSER_VERSION "2.6"
 
 #define DATA_SUCCESS 0
 #define DATA_ERROR -1
@@ -35,6 +35,39 @@ enum PlayModeState {
     LISTEN,                 //听书模式
 	DEFULT = READ				
 };
+
+NS_FK_BEGIN
+
+class FK_DLL Util
+{
+public:
+    //字符分割处理
+    static vector<string> split( string str, string pattern)
+    {
+        vector<string> ret;
+        if(pattern.empty()) {
+            return ret;
+        }
+        size_t start = 0,index = str.find_first_of(pattern,0);
+        while(index!=str.npos)
+        {
+            if(start!=index)
+            {
+                ret.push_back(str.substr(start,index-start));
+            }
+            start = index + 1;
+            index = str.find_first_of(pattern,start);
+        }
+        if(!str.substr(start).empty())
+        {
+            ret.push_back(str.substr(start));
+        }
+        return ret;
+    }
+    
+};
+
+NS_FK_END
 
 //string转换各个类型
 template <class Type>

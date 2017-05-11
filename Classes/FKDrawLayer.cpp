@@ -20,7 +20,7 @@ bool DrawLayer::init()
         return false;
     }
     
-    _color = Color4F(Color3B(254, 199, 39));
+    _color = Color4F(Color3B(250, 246, 238));
     _fwidth = 5.0f;
     _canvesState = false;
     _earserState = false;
@@ -36,7 +36,6 @@ bool DrawLayer::init()
     
     //平台型号
     BookParser* bookParser = BookParser::getInstance();
-    string sPlatform = bookParser->getPlatform();
     
     _sDicPath = "Canves/1024X768/";
     
@@ -98,6 +97,8 @@ bool DrawLayer::init()
             
         }
     });
+    //设置ClippingType，防止TransitionPageTurn后渲染出现白背景绿色色块
+    penView->setClippingType(Layout::ClippingType::SCISSOR);
     bg->addChild(penView, 3, 109);
     
     //画笔粗细选择
@@ -163,7 +164,6 @@ bool DrawLayer::init()
 void DrawLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void DrawLayer::onExitTransitionDidStart()
@@ -598,12 +598,13 @@ vector<LinePoint> DrawLayer::calculateSmoothLinePoints()
 
 void DrawLayer::draw(Renderer* renderer, const Mat4 &transform, uint32_t flags)
 {
-    _renderTexture->begin();
     vector<LinePoint> vSmoothedPoints = calculateSmoothLinePoints();
     if (!vSmoothedPoints.empty()) {
+        _renderTexture->begin();
         //生成draw
-        DrawNode* drawNode = DrawNode::create();
+//        DrawNode* drawNode = DrawNode::create();
         for (unsigned int i = 0; i < vSmoothedPoints.size()-1; i++) {
+            auto penBrush = Sprite::create("penHead7.png");
             LinePoint linePoint1 = vSmoothedPoints[i];
             LinePoint linePoint2 = vSmoothedPoints[i+1];
             if (_earserState) {
@@ -613,12 +614,17 @@ void DrawLayer::draw(Renderer* renderer, const Mat4 &transform, uint32_t flags)
                 _earserNode->visit();
             }else
             {
-                drawNode->drawSegment(linePoint1.getPoint(), linePoint2.getPoint(), _fwidth, _color);
+                penBrush->setColor(Color3B(_color));
+                penBrush->setOpacity(_color.a*255);
+                penBrush->setScale(_fwidth/10.0f);
+                penBrush->setPosition(linePoint1.getPoint());
+                penBrush->visit();
+//                drawNode->drawSegment(linePoint1.getPoint(), linePoint2.getPoint(), _fwidth, _color);
             }
         }
-        drawNode->visit();
+//        drawNode->visit();
+        _renderTexture->end();
     }
-    _renderTexture->end();
 }
 
 

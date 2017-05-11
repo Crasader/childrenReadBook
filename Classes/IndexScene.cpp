@@ -1,8 +1,11 @@
 ﻿#include "IndexScene.h"
-#include "NetIntface.h"
+#include "CrossPlatform.h"
 #include "YYXVisitor.h"
 #include "YYXSound.h"
 #include "User.h"
+#include "AppHttp.h"
+#include "YYXDownloadImages.h"
+#include "vipNotifyLayer.h"
 USING_NS_CC;
 using namespace cocostudio::timeline;
 
@@ -13,6 +16,8 @@ Index::~Index()
 {
 	YYXLayer::logb("Index::~Index()");
 	ControlScene::getInstance()->end();
+	//App::GetInstance()->showRef(nullptr, 1000);
+	ControlScene::getInstance()->clear();
 	YYXLayer::loge("Index::~Index()");
 }
 
@@ -70,8 +75,6 @@ bool Index::init(SceneInfo* data)
 		{
 		case EventKeyboard::KeyCode::KEY_ESCAPE:
 			CocosAndroidJni::AppExit();
-			break;
-		default:
 			break;
 		}
 	};
@@ -195,7 +198,7 @@ bool Index::init(SceneInfo* data)
 		sky->setPosition(Vec2(0, origin.y + visibleSize.height));
 
 		this->runAction(Sequence::create(DelayTime::create(3), CallFuncN::create([=](Ref* sender) {
-			this->removeChild(sky);
+			sky->removeFromParentAndCleanup(true);
 			cache->removeSpriteFrameByName(PICTURE_INDEX_BACKGROUND0);
 		}), NULL));
 		auto sky1 = Sprite::create();
@@ -226,15 +229,15 @@ bool Index::init(SceneInfo* data)
 		
 
 		//飞鸟
-		auto bird1 = Bird::create(PICTURE_INDEX_YELLOWBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_YELLOWBIRD, Vec2(2800 * 0.4, 1530 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(-200 * 0.4, 1530 * 0.4), 7, 7);
+		auto bird1 = Bird::create(PICTURE_INDEX_YELLOWBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_YELLOWBIRD, Vec2(2800 * 0.4, 1530 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(1350 * 0.4, 1100 * 0.4), Vec2(-200 * 0.4, 1530 * 0.4), 3, 3);
 		addChild(bird1);
-		auto bird2 = Bird::create(PICTURE_INDEX_BLUEBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_BLUEBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width / 2, visibleSize.height * 0.75), Vec2(0, visibleSize.height * 0.75), Vec2(-300, visibleSize.height), 11, 11);
+		auto bird2 = Bird::create(PICTURE_INDEX_BLUEBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_BLUEBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width / 2, visibleSize.height * 0.75), Vec2(0, visibleSize.height * 0.75), Vec2(-300, visibleSize.height), 5, 5);
 		addChild(bird2);
-		auto bird3 = Bird::create(PICTURE_INDEX_CYANBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_CYANBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width, visibleSize.height * 0.75), Vec2(visibleSize.width / 2, visibleSize.height* 0.75), Vec2(0, visibleSize.height), 13, 13);
+		auto bird3 = Bird::create(PICTURE_INDEX_CYANBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_CYANBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width, visibleSize.height * 0.75), Vec2(visibleSize.width / 2, visibleSize.height* 0.75), Vec2(0, visibleSize.height), 7, 6);
 		addChild(bird3);
-		auto bird4 = Bird::create(PICTURE_INDEX_PINKBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_PINKBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(900 * 0.4, 1200 * 0.4), Vec2(visibleSize.width / 3, visibleSize.height* 0.75), Vec2(-300 * 0.4, 1530 * 0.4), 17, 17);
+		auto bird4 = Bird::create(PICTURE_INDEX_PINKBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_PINKBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(900 * 0.4, 1200 * 0.4), Vec2(visibleSize.width / 3, visibleSize.height* 0.75), Vec2(-300 * 0.4, 1530 * 0.4), 17, 8);
 		addChild(bird4);
-		auto bird5 = Bird::create(PICTURE_INDEX_REDBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_REDBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width * 0.8, visibleSize.height * 0.8), Vec2(visibleSize.width * 0.5, visibleSize.height * 0.9), Vec2(0, visibleSize.height), 19, 19);
+		auto bird5 = Bird::create(PICTURE_INDEX_REDBIRD_FIRSTFRAME, plist, FORMAT_PICTURE_NAME_INDEX_REDBIRD, Vec2(2900 * 0.4, 1530 * 0.4), Vec2(visibleSize.width * 0.8, visibleSize.height * 0.8), Vec2(visibleSize.width * 0.5, visibleSize.height * 0.9), Vec2(0, visibleSize.height), 19, 7);
 		addChild(bird5);
 	}	
 	//火车
@@ -435,42 +438,12 @@ bool Index::init(SceneInfo* data)
 	rightNode->addChild(portrait);
 	portrait->setPosition(Vec2(-203 * 0.4, 1471 * 0.4));
 	
-
-	//bool findDataSour = false;
-	//auto childid = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
-	//if (App::GetInstance()->m_me == nullptr || childid == -999) {
-	//	portrait->loadTexture(PICTURE_INDEX_PORTRAIT_NO_LOGIN, TextureResType::PLIST);
-	//}
-	//else
-	//{
-	//	auto path = YYXStruct::getMapString(App::GetInstance()->myData, "ShowChildHeadPortrait", "");
-	//	if (path != "" && FileUtils::getInstance()->isFileExist(path))
-	//	{
-	//		portrait->loadTexture(path);
-	//		findDataSour = true;
-	//	}
-	//	else
-	//	{
-	//		string savePath = FileUtils::getInstance()->getWritablePath() + StringUtils::format("temp/childHead_%d.png", childid);
-	//		if (FileUtils::getInstance()->isFileExist(savePath))
-	//		{
-	//			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "ShowChildHeadPortrait", -999, savePath);
-	//			YYXLayer::setFileValue("ShowChildHeadPortrait", savePath);
-	//			portrait->loadTexture(savePath);
-	//			findDataSour = true;
-	//		}
-	//	}
-	//	if (!findDataSour)
-	//	{
-	//		portrait->loadTexture(PICTURE_INDEX_PORTRAIT, TextureResType::PLIST);
-	//	}
-	//}
 	auto user = User::getInstance();
-	auto _myChildId = Value(YYXLayer::getFileValue("ShowChildID", "")).asInt();
-	string path = YYXLayer::getFileValue("ShowChildHeadPortrait", "");
-	user->setChildId(_myChildId);
 	auto myChildId = user->getChildId();
 	auto child = user->getChild(myChildId);
+	string path = "";
+	if (child)
+		path = child->getPath();
 	bool listenerrefersh = true;
 	if (portrait)
 	{
@@ -490,28 +463,41 @@ bool Index::init(SceneInfo* data)
 					if (FileUtils::getInstance()->isFileExist(_child->getPath()))
 					{
 						portrait->loadTexture(_child->getPath());
-						YYXLayer::setFileValue("ShowChildHeadPortrait", _child->getPath());
 					}
 				}
 			});
 			_eventDispatcher->addEventListenerWithSceneGraphPriority(listener1, portrait);
-			user->httpHeadImage([=]() {
-				auto _child = user->getChild(user->getChildId());
-				if (_child)
-					_child->downloadHead_CircleImage();
+			auto listener2 = EventListenerCustom::create(TAG_INDEXSCENEDOWNLOADCHILDHEAD, [](EventCustom* e) {
+				ChildInfo* child =(ChildInfo*) e->getUserData();
+				if (child == nullptr)
+					return;
+				string path = child->getPath();
+				if (!path.empty() && FileUtils::getInstance()->isFileExist(path))
+				{
+					YYXLayer::sendNotify(TAG_CHILDHEADDOWNLOADOVER);
+				}
+				else
+				{
+					string url = child->getUrl();
+					if (!url.empty())
+					{
+						YYXDownloadImages::GetInstance()->newDownloadImage(url, child->getDir(), ChildInfo::getChildImageFileName(child->getChildrenId())
+							, high, 0, [=](string downpath) {
+							string savepath = child->getDir() + "/_" + ChildInfo::getChildImageFileName(child->getChildrenId());
+							CrossPlatform::cutTheRounded(downpath, savepath, 300, 300, "", [=](string _savepath) {
+								child->setPath(savepath);
+								YYXLayer::sendNotify(TAG_CHILDHEADDOWNLOADOVER);
+							}, "", [](string error) {});
+						});
+					}
+				}
 			});
+			_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, portrait);
+			AppHttp::getInstance()->httpChildren();
 		}
 	}
-
 	YYXVisitor::getInstance()->indexSceneInit(portrait);
-	//下载第一个孩子的头像回调
-	auto listenerHeadPortrait = EventListenerCustom::create("IndexSceneReferShowHeadPortrait", [portrait](EventCustom* e) {
-		auto path = YYXStruct::getMapString(App::GetInstance()->myData, "ShowChildHeadPortrait", "");
-		if (portrait && path != "" && FileUtils::getInstance()->isFileExist(path))
-			portrait->loadTexture(path);
-		YYXVisitor::getInstance()->indexSceneInit(portrait);
-	});
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerHeadPortrait, portrait);
+
 	////皇冠
 	auto crown = Sprite::create();
 	crown->initWithSpriteFrameName(PICTURE_INDEX_CROWN);
@@ -527,17 +513,15 @@ bool Index::init(SceneInfo* data)
 	parent->setScale(4.0 / 6.0);
 	parent->setPosition(Vec2(-176 * 0.4, 1221 * 0.4));
 	parent->setTouchEnabled(false);
-	parent->addClickEventListener([=](Ref *sender) {
-		 //YYXLayer::PLAYBUTTON();
-		 if (YYXVisitor::getInstance()->getVisitorMode())
-		 {
-			 //GoToParentScene();
-			 ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::ParentScene));
-			 return;
-		 }
-		addChild(SelectLayer([]() {
-			//App::GetInstance()->pushScene(IndexScene);
-			//GoToParentScene();
+	parent->addClickEventListener([=](Ref *sender) {		
+		if (YYXVisitor::getInstance()->getVisitorMode())
+		{
+			replace();
+			ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::ParentScene));
+			return;
+		}
+		addChild(SelectLayer([=]() {
+			replace();
 			ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::ParentScene));
 		}));
 	});
@@ -578,11 +562,13 @@ bool Index::init(SceneInfo* data)
 		portrait->setTouchEnabled(true);
 		//宝贝中心跳转
 		portrait->addClickEventListener([=](Ref* sender) {
-			ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::BabyCenterScene));
+			replace();
+			ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene)	, ControlScene::getInstance()->getSceneInfo(MySceneName::BabyCenterScene));
 		});
 		door_img->setTouchEnabled(true);
 		//点击门跳转书房
 		door_img->addClickEventListener([=](Ref* sender) {
+			replace();
 			door_img->setVisible(false);
 			door->setVisible(false);
 			//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
@@ -592,15 +578,11 @@ bool Index::init(SceneInfo* data)
 				FrameAnimation::createAnimate(7, plist, FORMAT_PICTURE_NAME_DOOR, 0.2f),
 				CallFuncN::create([=](Ref *sender) {
 				//跳转书房
-				ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::BookRoomScene));
+				ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(MySceneName::IndexScene)
+					, ControlScene::getInstance()->getSceneInfo(MySceneName::BookRoomScene));
 			}), NULL));
 		});
 	});
-	Director::getInstance()->getEventDispatcher()->addCustomEventListener("IndexSceneShowRedPacket", [=](EventCustom* e) {
-		showRedPacket();
-		//UserDefault::getInstance()->deleteValueForKey("accountRegisteUserId");
-		YYXLayer::deleteFileValue("accountRegisteUserId");
-	});	
 	zzz(init);
     return true;
 }
@@ -610,35 +592,22 @@ void Index::onEnterTransitionDidFinish() {
 	Layer::onEnterTransitionDidFinish();
 	//年卡服务提示
 	InitVIPCard();
+	//广告推送
+	if (VipNotify::getInstance()->controlAdvertisement())
+	{
+		auto pLayer11 = VipNotify::getInstance()->VipNotifyLayer();
+		if (pLayer11)
+		{
+			addChild(pLayer11, 100);
+			pLayer11->setOpacity(0);
+			auto fadein = FadeIn::create(2.0f);
+			pLayer11->runAction(fadein);
+		}
+	}
 	//消息推送
 	showNotification();
 	//版本比较
 	dealEllaVersion();
-	//注册送红包
-	//auto memberId = UserDefault::getInstance()->getIntegerForKey("accountRegisteUserId", -999);//注册成功标记, 首页提示红包
-	string memberIdstr = YYXLayer::getFileValue("accountRegisteUserId", "");
-	if (memberIdstr != "")
-	{
-		//网络请求有效红包
-		string url = string(IP).append(NET_USERREDPACKET).append("?memberId=").append(memberIdstr);
-		string runKey = "IndexSceneHttpGetUserRedPacketSuccess";
-		NetIntface::httpGet(url, runKey, [](string json) {
-			NetIntface::httpGetUserRedPacketsCallBack(json, []() {
-				App::GetInstance()->m_redPacket.clear();
-			}, [](int coupon_id, int coupon_amount100, string coupon_expire_time) {
-				if (coupon_id != -999 || coupon_amount100 != -99900) {
-					map<string, YYXStruct> mapresult;
-					YYXStruct::initMapYYXStruct(mapresult, "coupon_id", coupon_id);
-					YYXStruct::initMapYYXStruct(mapresult, "coupon_amount", coupon_amount100);
-					YYXStruct::initMapYYXStruct(mapresult, "coupon_expire_time", 0, coupon_expire_time);
-					App::GetInstance()->m_redPacket.push_back(mapresult);
-				}
-			}, [](int expiring_coupon_count) {
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "expiring_coupon_count", expiring_coupon_count);
-				YYXLayer::sendNotify("IndexSceneShowRedPacket");
-			}, []() {});
-		}, "", [](string str) {});
-	}
 	Toast::GetInstance()->SceneInitToast();
 	YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, "indexAnimator");
 	zzz(onEnterTransitionDidFinish);
@@ -647,98 +616,19 @@ void Index::onEnterTransitionDidFinish() {
 void Index::InitVIPCard()
 {
 	zz(InitVIPCard);
-	if (App::GetInstance()->m_me)
-	{		//检查vip
-		App::httpCheckVIP(App::GetInstance()->m_me->id);
-	}
+	if (YYXVisitor::getInstance()->getVisitorMode())
+		return;
+	AppHttp::getInstance()->httpVipHint_VipType(App::getMemberId());
 	//VIP网络请求回来后, 根据情况提示VIP到期时间
-	Director::getInstance()->getEventDispatcher()->addCustomEventListener("showVIPRenew", [=](EventCustom* e) {
-		if (App::m_debug != 0) {
-			//if (App::GetInstance()->getFromScene() != MySceneName::LoadScene)
-			if (ControlScene::getInstance()->getFromScene(false)->getName() != MySceneName::LoadScene)
-				return;
-		}
-		if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
+	auto listner1 = EventListenerCustom::create(TAG_SHOWVIPHINT, [=](EventCustom* e) {
+		if (VipNotify::getInstance()->controlVipxufei())
 		{
-			auto runable = [=]() {
-				auto vipRenew = XZLayer::showVIPRenew(nullptr);
-				if (vipRenew)
-					addChild(vipRenew);
-				vector<string> da = { "VIP_WEEK1","VIP_WEEK2","VIP_WEEK3","VIP_DAY1" ,"VIP_DAY2" ,"VIP_DAY3" ,"VIP_DAY4" ,"VIP_DAY5" ,"VIP_DAY6" ,"VIP_DAY7" };
-				for (auto it : da)
-					YYXLayer::deleteFileValue(it);
-			};			
-			if (App::GetInstance()->m_me->vipTime <= 86400 * 30)
-			{
-				if (App::GetInstance()->m_me->vipTime >= 86400 * 21) {
-					if (YYXLayer::getFileValue("VIP_WEEK1", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_WEEK1", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 14 && App::GetInstance()->m_me->vipTime < 86400 * 21) {
-					if (YYXLayer::getFileValue("VIP_WEEK2", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_WEEK2", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 7 && App::GetInstance()->m_me->vipTime < 86400 * 14) {
-					if (YYXLayer::getFileValue("VIP_WEEK3", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_WEEK3", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 6 && App::GetInstance()->m_me->vipTime < 86400 * 7) {
-					if (YYXLayer::getFileValue("VIP_DAY1", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_DAY1", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 5 && App::GetInstance()->m_me->vipTime < 86400 * 6) {
-					if (YYXLayer::getFileValue("VIP_DAY2", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_DAY2", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 4 && App::GetInstance()->m_me->vipTime < 86400 * 5) {
-					if (YYXLayer::getFileValue("VIP_DAY3", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_DAY3", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 3 && App::GetInstance()->m_me->vipTime < 86400 * 4) {
-					if (YYXLayer::getFileValue("VIP_DAY4", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_DAY4", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 2 && App::GetInstance()->m_me->vipTime < 86400 * 3) {
-					if (YYXLayer::getFileValue("VIP_DAY5", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_DAY5", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 1 && App::GetInstance()->m_me->vipTime < 86400 * 2) {
-					if (YYXLayer::getFileValue("VIP_DAY6", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_DAY6", "1");
-					}
-				}
-				else if (App::GetInstance()->m_me->vipTime >= 86400 * 0 && App::GetInstance()->m_me->vipTime < 86400 * 1) {
-					if (YYXLayer::getFileValue("VIP_DAY7", "0") == "0") {
-						runable();
-						YYXLayer::setFileValue("VIP_DAY7", "1");
-					}
-				}
-			}
-			else
-			{
-				vector<string> da = { "VIP_WEEK1","VIP_WEEK2","VIP_WEEK3","VIP_DAY1" ,"VIP_DAY2" ,"VIP_DAY3" ,"VIP_DAY4" ,"VIP_DAY5" ,"VIP_DAY6" ,"VIP_DAY7" };
-				for (auto it : da)
-					YYXLayer::deleteFileValue(it);
-			}
-		}		
+			auto layer = VipNotify::getInstance()->VipTimeOutLayer();
+			if (layer)
+				addChild(layer);
+		}
 	});
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listner1, this);
 	zzz(InitVIPCard);
 }
 
@@ -775,6 +665,8 @@ Layout* Index::createItem(int tag,const std::string& csbfilename,int startIndex,
 	layout3->setSize(layoutsize);
 	layout3->setTag(tag);
 	layout3->setTouchEnabled(true);
+	if(tag == BOOKCITY)
+		App::GetInstance()->showRef(huiben);
 	return layout3;
 }
 
@@ -816,248 +708,6 @@ void Index::creatFlows(Vec2 position, const std::string &imageFileName,float tim
 	});
 }
 
-//---------------------------转场函数-----------------------------------------------------
-//void Index::replaceSceneAnimation(std::function<void ()> runfunction)
-//{
-//	Director::getInstance()->replaceScene(Waiting::createScene(runfunction));
-//}
-
-////跳转书房
-//void Index::GoToBookRoomScene()
-//{
-//	YYXLayer::PLAYBUTTON();
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST4);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, BookRoom::createScene()));
-//	//Director::getInstance()->replaceScene( BookRoom::createScene());
-//}
-//
-////跳转父母设置
-//void Index::GoToParentScene()
-//{
-//	YYXLayer::PLAYBUTTON();
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST10);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, Parent::createScene()));
-//}
-//
-////跳转首页
-//void Index::GoToIndexScene()
-//{	 
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST6);
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST7);
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST8);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, Index::createScene()));
-//}
-//
-////跳转登录
-//void Index::GoToLoginScene()
-//{
-//	YYXLayer::PLAYBUTTON();
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST9);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, Login::createScene()));
-//}
-//
-////跳转宝贝中心
-//void Index::GoToBabyCenterScene()
-//{
-//	YYXLayer::PLAYBUTTON();
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST1);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, BabyCenter::createScene()));
-//	App::log(" Index::GoToBabyCenterScene()---END");
-//}
-//
-////跳转书城
-//void Index::GoToBookCity()
-//{
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST2);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, BookCityScene::createScene()));
-//	//Director::getInstance()->replaceScene( BookCityScene::createScene());
-//}
-//
-////跳转书城里的书店
-//void Index::GoToBookCityChildStore(int bookStoreId)
-//{	 
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookStore::createScene(bookStoreId)));
-//	//Director::getInstance()->replaceScene(BookStore::createScene(bookStoreId));
-//}
-//
-////跳转书籍详情
-//void Index::GoToBookInfo(int bookId)
-//{	 
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST3);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookInfo::createScene(bookId)));
-//	//Director::getInstance()->replaceScene(BookInfo::createScene(bookId));
-//}
-//
-////跳转绘本
-//void Index::GoToPictureBook()
-//{	 
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookStore::createScene(P_TRAIN_2)));
-//}
-//
-////跳转咿啦推荐
-//void Index::GoToRecommend()
-//{	 
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookStore::createScene(P_TRAIN_3)));
-//	//Director::getInstance()->replaceScene( BookStore::createScene(P_TRAIN_3));
-//}
-//
-////跳转限时免费
-//void Index::GoToFree()
-//{	 
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookStore::createScene(P_TRAIN_4)));
-//	//Director::getInstance()->replaceScene( BookStore::createScene(P_TRAIN_4));
-//}
-//
-////跳转五星好评
-//void Index::GoToGoodReputation()
-//{	 
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookStore::createScene(P_TRAIN_5)));
-//	//Director::getInstance()->replaceScene(BookStore::createScene(P_TRAIN_5));
-//}
-//
-////跳转咿啦新书
-//void Index::GoToNewBook()
-//{	 
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	////Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookStore::createScene(P_TRAIN_6)));
-//	//Director::getInstance()->replaceScene( BookStore::createScene(P_TRAIN_6));
-//}
-//
-////跳转康轩书店
-//void Index::GoToKangXuanStore()
-//{	 
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	////Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f,BookStore::createScene(P_TRAIN_7)));
-//}
-//
-////跳转VIP书店
-//void Index::GoToVIPBook()
-//{
-//	CocosAndroidJni::stopRequestByTag(-1);
-//	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-//	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-//	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
-//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(LOADSCENE_FIND_PLIST5);
-//	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, BookStore::createScene(BOOKSTOREID_TRAIN_8)));
-//}
-//
-//void Index::BackPreviousScene()
-//{
-//	CCLOG("%s","<=Back scene ");
-//	int id = 21;
-//	switch (App::GetInstance()->m_showScene)
-//	{
-//	case BookRoomScene:
-//		GoToBookRoomScene();
-//		break;
-//	case ParentScene:
-//		GoToParentScene();
-//		break;
-//	case IndexScene:
-//		GoToIndexScene();
-//		break;
-//	case LoginScene:
-//		GoToLoginScene();
-//		break;
-//	case BabyCenterScene:
-//		GoToBabyCenterScene();
-//		break;
-//	case BookCity:
-//		GoToBookCity();
-//		break;
-//	case BookInfoScene:
-//		GoToBookInfo(App::GetInstance()->m_showSceneData.intData);
-//		break;
-//	case PictureBook:
-//		GoToPictureBook();
-//		break;
-//	case Recommend:
-//		GoToRecommend();
-//		break;
-//	case MySceneName::Free:
-//		GoToFree();
-//		break;
-//	case GoodReputation:
-//		GoToGoodReputation();
-//		break;
-//	case NewBook:
-//		GoToNewBook();
-//		break;
-//	case KangXuanStore:
-//		GoToKangXuanStore();
-//		break;
-//	case BookCityCHILD:
-//		id = App::GetInstance()->m_showSceneData.intData;
-//		if (id < 0 || id >100000)
-//		{
-//			id = 21;
-//		}
-//		GoToBookCityChildStore(id);
-//		break;
-//	case VIPBOOK:
-//		GoToVIPBook();
-//		break;
-//	default:
-//		GoToIndexScene();
-//		break;
-//	}
-//}
-
 void Index::selectedItemEvent(Ref* pSender, ListViewEventType type) 
 {
 	auto listview = (ListView*)pSender;
@@ -1084,35 +734,39 @@ void Index::selectedItemEvent(Ref* pSender, ListViewEventType type)
 	}
 }
 
-Layer* Index::WaitLayer()
-{
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(PLIST_WAITMESSAGEBOX);
-	Data data;
-	Layer* wait;
-	ActionTimeline* timeline;
-	if (App::GetInstance()->getData(WAITMESSAGEBOX_CSB, data))
-	{
-		wait = (Layer*)CSLoader::createNode(data);
-		timeline = CSLoader::createTimeline(data, WAITMESSAGEBOX_CSB);
-	}
-	else
-	{
-		wait = (Layer*)CSLoader::createNode(WAITMESSAGEBOX_CSB);
-		timeline = CSLoader::createTimeline(WAITMESSAGEBOX_CSB);
-	}
-	wait->setAnchorPoint(Vec2(0.5f, 0.5f));
-	wait->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));	
-	wait->runAction(timeline);
-	timeline->gotoFrameAndPlay(0, 28, true);
-	auto imageview = (ImageView*)wait->getChildByName(FIND_IMAGEVIEW_BY_NAME_WAITMESSAGEBOX); 
-	imageview->setTouchEnabled(true);
-	imageview->setSwallowTouches(true);
-	imageview->addClickEventListener([](Ref* sender) {
-		CCLOG("dianji");
-	});
-	return wait;
-}
+//Layer* Index::WaitLayer()
+//{
+//	auto visibleSize = Director::getInstance()->getVisibleSize();
+//	SpriteFrameCache::getInstance()->addSpriteFramesWithFile(PLIST_WAITMESSAGEBOX);
+//	Data data;
+//	Layer* wait;
+//	ActionTimeline* timeline;
+//	if (App::GetInstance()->getData(WAITMESSAGEBOX_CSB, data))
+//	{
+//		wait = (Layer*)CSLoader::createNode(data);
+//		timeline = CSLoader::createTimeline(data, WAITMESSAGEBOX_CSB);
+//	}
+//	else
+//	{
+//		wait = (Layer*)CSLoader::createNode(WAITMESSAGEBOX_CSB);
+//		timeline = CSLoader::createTimeline(WAITMESSAGEBOX_CSB);
+//	}
+//	wait->setAnchorPoint(Vec2(0.5f, 0.5f));
+//	wait->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));	
+//	wait->runAction(timeline);
+//	timeline->gotoFrameAndPlay(0, 28, true);
+//	auto imageview = (ImageView*)wait->getChildByName(FIND_IMAGEVIEW_BY_NAME_WAITMESSAGEBOX); 
+//	imageview->setTouchEnabled(true);
+//	imageview->setSwallowTouches(true);
+//	imageview->addClickEventListener([=](Ref* sender) {
+//		wait->removeFromParent();
+//	});
+//	auto listener = EventListenerCustom::create(TAG_REMOVEWAITING, [=](Ref* sender) {
+//		wait->removeFromParent();
+//	});
+//	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, wait);
+//	return wait;
+//}
 
 Layer* Index::SelectLayer(std::function<void()> fun)
 {
@@ -1150,7 +804,8 @@ Layer* Index::SelectLayer(std::function<void()> fun)
 	closeButton->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
 		closeButton->setTouchEnabled(false);
-		parentMessageBox->removeFromParent();
+		parentMessageBox->removeAllChildrenWithCleanup(true);
+		parentMessageBox->removeFromParentAndCleanup(true);
 	});
 	//背景屏蔽层
 	bg->setSwallowTouches(true);
@@ -1285,13 +940,10 @@ Layer* Index::SelectLayer(std::function<void()> fun)
 		loadSelect(tag,imageview);
 		if (tag == answer)
 		{
-			parentMessageBox->removeFromParent();
 			fun();
 		}
-		else
-		{
-			parentMessageBox->removeFromParent();
-		}
+		parentMessageBox->removeAllChildrenWithCleanup(true);
+		parentMessageBox->removeFromParentAndCleanup(true);
 	};
 	first->addClickEventListener(lister);
 	second->addClickEventListener(lister);
@@ -1303,7 +955,7 @@ Layer* Index::SelectLayer(std::function<void()> fun)
 void Index::maskAnimation(Layout* layout, Point point)
 {
 	//auto touchSp = ImageView::create();
-
+	replace();
 	auto touchSp = (ImageView*)layout;
 	if (layout->getTag() == LOCOMOTIVE)
 		return;
@@ -1315,7 +967,10 @@ void Index::maskAnimation(Layout* layout, Point point)
 	clipingNode->addChild(maskColor);
 
 	Sprite* clipSprite = Sprite::create();
-	clipSprite->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(PICTURE_INDEXSCENE_CLIPPING));
+	auto sp_3 = SpriteFrameCache::getInstance()->getSpriteFrameByName(PICTURE_INDEXSCENE_CLIPPING);
+	if (sp_3 == nullptr)
+		return;
+	clipSprite->setSpriteFrame(sp_3);
 	clipSprite->getTexture()->setAliasTexParameters();
 	clipSprite->setPosition(ccpAdd(touchSp->getPosition(), ccp(point.x + 370 * 0.4, point.y + 530 * 0.4)));
 	//CCLOG("touchSp= (%f,%f)", touchSp->getPosition().x, touchSp->getPosition().y);
@@ -1332,35 +987,35 @@ void Index::maskAnimation(Layout* layout, Point point)
 			break;
 		case BOOKCITY:			
 			//GoToBookCity();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::BookCity));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::BookCity)->setData("index", Value(0)));
 			break;
 		case PICTUREBOOK:
 			//GoToPictureBook();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::PictureBook));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::PictureBook)->setData("index", Value(0)));
 			break;
 		case RECOMMEND:
 			//GoToRecommend();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::Recommend));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::Recommend)->setData("index", Value(0)));
 			break;
 		case LIMITFREE:
 			//GoToFree();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::Free));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::Free)->setData("index", Value(0)));
 			break;
 		case EXCELLENT_FIVE_STAR:
 			//GoToGoodReputation();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::GoodReputation));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::GoodReputation)->setData("index", Value(0)));
 			break;
 		case NEWBOOK:
 			//GoToNewBook();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::NewBook));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::NewBook)->setData("index", Value(0)));
 			break;
 		case KANGXUANBOOKSTORE:
 			//GoToKangXuanStore();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::KangXuanStore));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::KangXuanStore)->setData("index", Value(0)));
 			break;
 		case VIPBOOKSTORE:
 			//GoToVIPBook();
-			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::VIPBOOK));
+			control->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::VIPBOOK)->setData("index", Value(0)));
 			break;
 		default:
 			break;
@@ -1372,11 +1027,9 @@ void Index::maskAnimation(Layout* layout, Point point)
 
 void Index::showNotification() {
 	YYXLayer::logb("Index::showNotification()");
-	//if(App::GetInstance()->getFromScene() != MySceneName::LoadScene)
 	if (ControlScene::getInstance()->getFromScene(false)->getName() != MySceneName::LoadScene)
 		return;
 	int pushid = YYXStruct::getMapInt64(App::GetInstance()->myData, "pushId", -999);
-	//if (App::GetInstance()->m_notification == nullptr) 
 	if(pushid == -999)
 		return;
 	int oldPushId = 0;
@@ -1547,6 +1200,7 @@ void Index::huocheAnimation(ListView* listview, ImageView* parent, ImageView* po
 		portrait->setTouchEnabled(true);
 		//宝贝中心跳转
 		portrait->addClickEventListener([=](Ref* sender) {
+			replace();
 			ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::BabyCenterScene));
 		});
 		door_img->setTouchEnabled(true);
@@ -1560,6 +1214,7 @@ void Index::huocheAnimation(ListView* listview, ImageView* parent, ImageView* po
 				FrameAnimation::createAnimate(7, plist, FORMAT_PICTURE_NAME_DOOR, 0.2f),
 				CallFuncN::create([=](Ref *sender) {
 				//跳转书房
+				replace();
 				ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(IndexScene), ControlScene::getInstance()->getSceneInfo(MySceneName::BookRoomScene));
 			}), NULL));
 		});
@@ -1570,4 +1225,24 @@ Index::Index()
 {
 	zz(Index);
 	zzz(Index);
+}
+
+//跳转场景
+void Index::replace(const function<void()>& func)
+{
+	auto im = Sprite::create();
+	im->setAnchorPoint(Vec2(0.5, 0.5));
+	im->setPosition(Director::getInstance()->getWinSize() / 2);
+	auto lisntenre = EventListenerTouchOneByOne::create();
+	lisntenre->setEnabled(true);
+	lisntenre->onTouchBegan = [](Touch* t, Event* e) {
+		return true;
+	};
+	lisntenre->setSwallowTouches(true);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(lisntenre,im);
+	addChild(im);
+	if (func)
+	{
+		func();
+	}
 }

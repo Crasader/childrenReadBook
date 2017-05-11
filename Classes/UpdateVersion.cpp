@@ -34,37 +34,42 @@ UpdateVersion* UpdateVersion::create() {
 void UpdateVersion::onEnterTransitionDidFinish() {
 	string url = "http://download.ellabook.cn/android/ellabook-latest.apk";
 	App::log(url);
-	//DownloadRes::getInstans()->UpdateVersion(url, m_Version);
 	string version = YYXStruct::getMapString(App::GetInstance()->myData, "netVersion", "");
-	string dir = NetIntface::getDownloadDir();
+	string dir = CrossPlatform::getDownloadDir();
 	string fileName = "www_ellabook_cn.apk";
 	string path = dir + "/" + fileName;
-	YYXDownload::GetInstance()->download(url, dir, fileName,
-		"downloadApkBegin", [=](YYXStruct data) {
+	auto dat = DownLoadFileData::create();
+	dat->setUrl(url);
+	dat->setDir(dir);
+	dat->setFileName(fileName);
+	dat->setBeginFunc([](DownLoadFileData* ddata) {
+		string path = ddata->getPath();
 		if (FileUtils::getInstance()->isFileExist(path))
 			FileUtils::getInstance()->removeFile(path);
-	},
-		"downloadApkProgressing", [=](YYXStruct data) {
-		auto taskTag = data.stringData;
-		int progessing = data.intData;
-		if (progessing <= 0)
-			return;
-		if (progessing <= 99)
-		{
-			YYXLayer::controlTouchTime(1, "UpdataVersionDownloadingTime", [=]() {
-				YYXLayer::sendNotify("UpdataVersionDownloading", "UpdateVersion", progessing);
-			});
-		}
-		else
-		{
-			YYXLayer::sendNotify("UpdataVersionDownloading", "UpdateVersion", progessing);
-		}
-	},
-		"downloadApkEnd", [=](YYXStruct data) {
-		YYXLayer::sendNotify("UpdataVersionDownload_Success"); 
-		App::log("downloadApk=" + path);
-		NetIntface::installInstallationPackage(path);
 	});
+	dat->setDownloadingFunc([](DownLoadFileData* ddata) {
+		int progessing = ddata->getPausePint();
+		YYXLayer::sendNotify("UpdataVersionDownloading", "UpdateVersion", progessing);
+	});
+	dat->setEndFunc([](DownLoadFileData* ddata) {
+		if (ddata->getStatus() == _over)
+		{
+			string path = ddata->getPath();
+			auto fileCount = YYXLayer::getFileValue(ddata->getTag(), Value(0).asString(), FileUtils::getInstance()->getWritablePath() + "temp");
+			int total = Value(fileCount).asInt();
+			if (total > 0)
+			{
+				auto size = FileUtils::getInstance()->getFileSize(path);
+				if (size == total)
+				{
+					YYXLayer::sendNotify("UpdataVersionDownload_Success");
+					CrossPlatform::installInstallationPackage(path);
+					YYXLayer::deleteFileValue(ddata->getTag(), FileUtils::getInstance()->getWritablePath() + "temp");
+				}
+			}
+		}
+	});
+	YYXDownload::getInstance()->newDownloadFile(dat);	
 }
 
 bool UpdateVersion::init() {
@@ -121,7 +126,8 @@ bool UpdateVersion::init() {
 	auto button = (Button*)pLayer->getChildByName("button");
 	button->setTouchEnabled(true);
 	button->addClickEventListener([=](Ref* sender) {
-		pLayer->removeFromParent();
+		pLayer->removeAllChildrenWithCleanup(true);
+		pLayer->removeFromParentAndCleanup(true);
 	});
 
 	//下载进度通知
@@ -134,7 +140,8 @@ bool UpdateVersion::init() {
 	});
 	//下载成功事件注册
 	auto listenDownSuccess = EventListenerCustom::create("UpdataVersionDownload_Success", [=](EventCustom* event) {
-		this->removeFromParentAndCleanup(true);
+		removeAllChildrenWithCleanup(true);
+		removeFromParentAndCleanup(true);
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenDownloading, progressBar);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenDownSuccess, this);

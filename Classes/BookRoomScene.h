@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include "IndexScene.h"
 #include "FileNames.h"
-#include "NetIntface.h"
+#include "CrossPlatform.h"
 #include "App.h"
 #include "YYXDownload.h"
 #include "YYXLayer.h"
@@ -31,16 +31,6 @@ public:
 	void onEnterTransitionDidFinish();
 	void cleanup();
 
-	//void showDownloadRecord();
-	//void showReadRecord();
-	//最近下载界面, 计算得到当前页的所有书籍bookid, 如果越界, 进行滚动效果
-	//vector<int> getCurrentPageBookID4DownLoad();
-	//最近阅读界面, 计算得到当前页的所有书籍bookid, 如果越界, 进行滚动效果
-	//vector<int> getCurrentPageBookID4Read();
-	vector<int> getCurrentPageBookID4Collect();//收藏
-	vector<int> getCurrentPageBookID4VIP();//包年图书
-	//vector<int> getCurrentPageBookID4BuyBookDownload();//购书中下载部分
-	vector<int> getCurrentPageBookID4BuyBook();//购书列表
 	//展示按钮
 	void showImageView(int status, ImageView* view1, ImageView* view2, ImageView* view3, ImageView* view4);
 	//长按的效果是 一个背景图片盖住 上面一个书籍节点移动不同的位置 覆盖下面的书籍
@@ -65,11 +55,11 @@ public:
 	void RollingAnimation(Node* node1, Node* node2, function<void()> callback);
 	void showBookPageNumber();
 	void down(Node* book, int bookid);
+	void downloadBook(string url, string dir, string filename, int bookid);
 	int getCurrentPageNumber();
 	void setCurrentPageNumber(int val) { 
 		m_currentPageNumber = val; 
 	}
-	//void roolingAn(Node* node);
 private:
 	Layer* layer = nullptr;
 	Label *moveCircle = nullptr;//第几/几页
@@ -85,7 +75,6 @@ private:
 	//允许触发点击
 	bool m_click = true;
 	
-	//bool shangsuo = false;//过期上锁 点击失效
 	map<int , bool> canLongClinck;
 	int longClickId = -999;
 	Node* longClickNode = nullptr;
@@ -93,7 +82,6 @@ private:
 	Point reorder =Point(-1000,0);
 
 private:
-	//展示模式   已下载  = 0 已收藏 = 2 //购书列表 = 3 包年图书 = 4	 最近阅读 = 5
 	int bookMode = 0;
 	BookRoomSelectPage *bookRoomSelectPage;
 	vector<int> getPageData(vector<int> vecdata);

@@ -34,6 +34,7 @@ public:
 
 public:
 	Index();
+	void replace(const function<void()>& func = nullptr);
 	~Index();
 
     static cocos2d::Scene* createScene(SceneInfo* sceneInfo = nullptr);
@@ -56,61 +57,10 @@ public:
 	void selectedItemEvent(Ref *pSender, ListViewEventType type);
 
 	//添加等待messagebox
-	static Layer* WaitLayer();
+	//static Layer* WaitLayer();
 
 	//3种颜色 随机变化,正确选择颜色
-	static Layer * SelectLayer(std::function<void()>);
-
-	//---------------------------转场函数-----------------------------------------------------
-	//void replaceSceneAnimation(std::function<void()> runfunction);
-
-	////跳转书房
-	//static void GoToBookRoomScene();
-
-	////跳转父母设置
-	//static void GoToParentScene();
-
-	////跳转首页
-	//static void GoToIndexScene();
-
-	////跳转登录
-	//static void GoToLoginScene();
-
-	////跳转宝贝中心
-	//static void GoToBabyCenterScene();
-
-	////跳转书城
-	//static void GoToBookCity();
-
-	////跳转书城里的书店
-	//static void GoToBookCityChildStore(int bookStoreId);
-
-	////跳转书籍详情
-	//static void GoToBookInfo(int bookId);
-
-	////跳转绘本
-	//static void GoToPictureBook();
-
-	////跳转咿啦推荐
-	//static void GoToRecommend();
-
-	////跳转限时免费
-	//static void GoToFree();
-
-	////跳转五星好评
-	//static void GoToGoodReputation();
-
-	////跳转咿啦新书
-	//static void GoToNewBook();
-
-	////跳转vip书店
-	//static void GoToVIPBook();
-
-	////跳转康轩书店
-	//static void GoToKangXuanStore();
-
-	////返回前一场景
-	//static void BackPreviousScene();
+	static Layer * SelectLayer(std::function<void()>);	
 
 	//过渡遮罩
 	void maskAnimation(Layout* layout, Point point);

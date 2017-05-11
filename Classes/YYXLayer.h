@@ -96,13 +96,13 @@ public:
 	static void DownLoadNotify(string url, string dir, string fileName, string runKey, string errorKey);
 	static void DownLoad(string url, string dir, string fileName, std::function<void(string json)> runable, std::function<void()> errorRunable);
 	//使用转场场景进行转场
-	static void ChangeScene(std::function<void()> runable);
+	//static void ChangeScene(std::function<void()> runable);
 	//创建等待图层
-	static Layer* WaitLayer();
+	//static Layer* WaitLayer();
 	//创建一个loading图层
-	static YYXLayer* LoadingLayer(int dtimme, function<void()> runable);
+	//static YYXLayer* LoadingLayer(int dtimme, function<void()> runable);
 	//删除loading图层
-	static void deleteLoadingLayer(int t);
+	//static void deleteLoadingLayer(int t);
 	//创建场景,设置图层的tag
 	static Scene * createScene(map<string, int64String> paramter, int  tag, string sceneName);
 	//创建图层
@@ -117,24 +117,8 @@ public:
 	static void sendNotify4YYXStruct(string eventName, long long luserdata = -999, string userdata = "", string className = "");
 	//点击间隔控制函数
 	static void controlTouchTime(float outTime, string keyOfSaveTime, std::function<void()> runable, std::function<void()> unTouchRun = nullptr);
-	//打开数据库
-	//static sqlite3* OpenDataBase();
-	//关闭数据库
-	//static void CloseDataBase(sqlite3*);
-	//插入记录到表
-	//static bool InsertData(sqlite3*, string, unordered_map<string, string>, unordered_map<string, long long>);
-	//更新记录
-	//static bool UpdateData(sqlite3*, string, unordered_map<string, string>, unordered_map<string, long long>, string);
-	//删除记录
-	//static bool DeleteData(sqlite3*, string, string);
-	//查找记录或记录中的某些字段
-	//static vector<unordered_map<string, int64String>> SelectData(sqlite3*, string, vector<string>, string);
-	//判断记录是否存在
-	//static bool IsRecExist(sqlite3*, string, string);	
 	//判断获取时间 单位:秒
 	static long long getCurrentTime4Second();
-	//每次获取不同的随机数
-	static long long getRandom();
 	//删除文件夹
 	static void DeleteDirectory(string filePath);
 	static void WStrToUTF8(std::string& dest, const wstring& src);
@@ -149,10 +133,7 @@ public:
 	//键值对本地读出
 	static string getFileValue(string key, string defaultstr, string dirPath = "");
 	//删除键值对本地
-	static void deleteFileValue(string key);
-	//声音宏转换过来的函数 兼容性
-	//static bool getBoolFromXML(string str);
-	//static void PLAYBUTTON();
+	static void deleteFileValue(string key, string dirPath = "");
 	static void CopyDirectory(string sourceDir, string destDir);
 	//写json
 	static string getStringFormMap(map<string, string>);

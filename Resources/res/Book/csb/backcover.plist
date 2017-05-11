@@ -29,7 +29,7 @@
 			<key>Book/res/Backcover_try_Invitation-to-register_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{698,1080},{258,133}}</string>
+				<string>{{701,1080},{258,133}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,7 +51,7 @@
 			<key>Book/res/Backcover_comments_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{241,1377},{334,99}}</string>
+				<string>{{241,1379},{334,99}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -73,18 +73,18 @@
 			<key>Book/res/Backcover_goumainianka_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{338,1143},{332,113}}</string>
+				<string>{{362,1024},{335,115}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
-				<string>{332,113}</string>
+				<string>{335,115}</string>
 			</dict>
 			<key>Book/res/Backcover_goumaiwanzhengban_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1196},{332,113}}</string>
+				<string>{{677,1217},{332,113}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -117,7 +117,7 @@
 			<key>Book/res/Backcover_jixuyuedu_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{362,1024},{332,115}}</string>
+				<string>{{341,1143},{332,115}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -183,18 +183,18 @@
 			<key>Book/res/Backcover_goumainianka_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{674,1217},{332,113}}</string>
+				<string>{{2,1077},{335,115}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
-				<string>{332,113}</string>
+				<string>{335,115}</string>
 			</dict>
 			<key>Book/res/Backcover_goumaiwanzhengban_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{338,1260},{332,113}}</string>
+				<string>{{338,1262},{332,113}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -205,7 +205,7 @@
 			<key>Book/res/Backcover_jixuyuedu_press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1077},{332,115}}</string>
+				<string>{{2,1196},{332,115}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -271,7 +271,7 @@
 			<key>Book/res/Backcover_shenmeshinianka-moren_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1313},{235,113}}</string>
+				<string>{{2,1315},{235,113}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -282,7 +282,7 @@
 			<key>Book/res/Backcover_shenmeshinianka-press_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{2,1430},{235,113}}</string>
+				<string>{{2,1432},{235,113}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>

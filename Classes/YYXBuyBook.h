@@ -63,8 +63,6 @@ public:
 	void BookId(int val) { m_bookId = val; }
 	int MemberId() const { return m_memberId; }
 	void MemberId(int val) { m_memberId = val; }
-	int BookPrice() const { return m_bookPrice; }
-	void BookPrice(int val) { m_bookPrice = val; }
 	std::string BookName() const { return m_bookName; }
 	void BookName(std::string val) { m_bookName = val; }
 	int Money() const { return m_myMoney; }
@@ -75,5 +73,7 @@ public:
 	void Hongbao(int val) { m_hongbao = val; }
 	void loadRedPacketData(Node* leftRedPacket, int i);
 
+	int getBookPrice() const { return m_bookPrice; }
+	void setBookPrice(int val) { m_bookPrice = val; }
 };
 #endif 

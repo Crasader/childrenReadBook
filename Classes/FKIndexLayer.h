@@ -17,6 +17,7 @@ public:
     
     virtual bool init();
     void onClickBook(Ref* pSender);
+    void addBookInfo();
     
     // implement the "static create()" method manually
     CREATE_FUNC(IndexLayer);

@@ -6,42 +6,74 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "App.h"
-#include "NetIntface.h"
+#include "CrossPlatform.h"
 
 USING_NS_CC;
+
+#define WEIXIN 0
+#define ZHIFUBAO 1
+
+class ChargeData
+{
+public:
+	ChargeData();
+	~ChargeData();
+	static ChargeData* create();
+	static void del(ChargeData* );
+
+	int getHongbao() const { return m_hongbao; }
+	void setHongbao(int val) { m_hongbao = val; }
+	int getHongbaoId() const { return m_hongbaoId; }
+	void setHongbaoId(int val) { m_hongbaoId = val; }
+	int getPrice() const { return m_price; }
+	void setPrice(int val) { m_price = val; }
+	int getPayId() const { return m_payId; }
+	void setPayId(int val) { m_payId = val; }
+	int getIndex() const { return m_index; }
+	void setIndex(int val) { m_index = val; }
+private:
+	int m_hongbao = -999;
+	int m_hongbaoId = -999;
+	int m_price = -999;
+	int m_payId = -999;
+	int m_index = -999;
+};
 
 class Charger : public Layer 
 {
 private:
-	float m_payPrice;
-	int m_payType;//微信0 支付宝1
-	int m_payIndex;//点击充值金额的位置
-	Layer* pLayer;
-	function<void()> m_callback=nullptr;//充值成功的回调
+	static Charger* instance;
+	int m_payPlatform = 0;//微信0 支付宝1
+	int m_index = -999;//点击的位置
+	CallBackFunction m_callback=nullptr;//充值成功的回调
+	CallBackFunction m_callbackerror = nullptr;//充值失败的回调
+	std::unordered_map<int, ChargeData*> m_data;//充值金额容器
+
+	Layer* pLayer = nullptr;
+	void setNode(Node* node, ChargeData* data);
+
 public:
-	static Charger* create();
-	bool init();
-	static int getDatahongbao(int idx);
-	static int getDatamoney(int idx);
 	Charger();
-	~Charger();	
-	int PayType() const { return m_payType; }
-	void PayType(int val) { m_payType = val; }
-	int PayIndex()  {
-		if (m_payIndex < 0 || m_payIndex>6)
-			m_payIndex = 0;
-		return m_payIndex;
-	}
-	void PayIndex(int val) {
-		m_payIndex = val;
-		YYXLayer::setFileValue("chargerSelectIndex", StringUtils::format("%d", val));
-	}
-	void setNodePrice(int tag, bool sel=false);
-	static void httpChargerInfo();//网络请求充值的信息
-	virtual void cleanup();
-	float PayPrice() const { return m_payPrice; }
-	void PayPrice(float val) { m_payPrice = val; }
-	void setCallback(const function<void()>& val) { m_callback = val; }
+	~Charger();
+	static Charger* getInstance();
+
+	void show();//展示充值界面
+
+	void addData(ChargeData*);
+	ChargeData* getData(int idx);
+	bool haveData();//是否有数据
+	Layer* newChargeLayer();
+	void httpCallChargeLayer();//网络请求完成吊起界面
+
+	CallBackFunction getCallback() const { return m_callback; }
+	void setCallback(const CallBackFunction& val) { m_callback = val; }
+
+	CallBackFunction getCallbackerror() const { return m_callbackerror; }
+	void setCallbackerror(const CallBackFunction& val) { m_callbackerror = val; }
+	int getPayPlatform() const { return m_payPlatform; }
+	void setPayPlatform(int val) { m_payPlatform = val; }
+	int getIndex() const { return m_index; }
+	void setIndex(int val) { m_index = val; }
 };
 
 #endif

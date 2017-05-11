@@ -11,6 +11,7 @@
 #include "YYXStruct.h"
 #include "YYXLayer.h"
 #include "ControlScene.h"
+#include "User.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -22,30 +23,10 @@ class BabyCenter : public cocos2d::Layer
 private:
 	static int m_readBooks;
 	static long m_readTimes;
-
-	//Node* m_parentNode;
-	//Node* m_photoNode;
-	int m_childrenId;
-	//string selectPath="";//选中的原图
-	//string selectCutRoundPath = "";//选中的圆形图片 用于展示界面
 	
 public:
 	ImageView* m_BigPhoto;//大头像控件
 	ImageView* m_img_photo;//宝贝中心 小头像
-	static std::map<int, map<std::string, YYXStruct>> m_data;//数据源
-	std::vector<int> m_childID;//孩子的ID列表
-	/*
-	int ChildId
-	map 
-	{
-		int ChildId,
-		string Path,
-		int ChildSex,
-		string ChildName,
-		string ChildBirth,
-		string ChildAvatarUrl
-	}
-	*/
 
 public:
 	BabyCenter();
@@ -55,13 +36,9 @@ public:
 	static Scene* createScene(SceneInfo* sceneInfo = nullptr);
 	static BabyCenter* create(SceneInfo* data = nullptr);
 	virtual bool init(SceneInfo* sceneInfo = nullptr);
-
-	void initEvent();
-
-	void initHttp();
-
+	vector<Node*> m_dels;//需要删除的csb文件控件
 	virtual void onEnterTransitionDidFinish();
-
+	void cleanup();
 	//初始化宝贝中心
 	void initBabyCenter();
 
@@ -77,40 +54,16 @@ public:
 	//添加宝贝 对话框初始化
 	Layer* initAddChild();
 
-	void setNodeChild(Node* node, int index);
+	void setNodeChild(Node* node, int index , ChildInfo* child);
 
 	//网络请求阅读记录
 	void getReadRecord(int);
-	
-	//网络请求修改宝贝信息
-	//void modifyBabyInfo(int, string, int, string);
-	//void modifyBabyInfoCallback(string, int, string, int, string);
-
-	//通知修改宝贝信息成功
-	//void notifyModifySuccess();
-	//通知修改宝贝信息失败
-	//void notifyModifyFailed();
-
-	//获取宝贝信息的回调函数
-	//static void getChildDetailsCallback(std::string json);
 
 	//上传头像
 	void uploadAvatar();
 
-	//下载孩子头像的回调
-	void CallBackDownLoadChildPortrait(string str);
-
 	//展示头像
-	bool showPortrait(ImageView * imgview);
-
-	//获取孩子列表的业务回调
-	void getChildDetailsBusinessLogic(string json, function<void()> errorRunable);
-
-	static string getStringFrommyData(int id, string key);
-	static int getIntFrommyData(int id, string key);
-	static void setBabyInfoToXml(string name, string birthday, int sex, int id=-999);
-	//void makeRoundImage(string path);
-	//bool getBoolFromXML(string str);
+	bool showPortrait(ImageView* imgview, string path);
 };
 
-#endif // __BABYCENTE_SCENE_H__
+#endif

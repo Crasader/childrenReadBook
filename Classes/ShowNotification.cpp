@@ -228,7 +228,6 @@ void ShowNotification::initWord() {
 	update_btn->addClickEventListener([=](Ref* sender) {
 		if (sprSlected->isVisible()) {
 			//记录本地，下次将不会推送此消息
-			//UserDefault::getInstance()->setIntegerForKey("notification_push_id", App::GetInstance()->m_notification->pushId);
 			int pushId = YYXStruct::getMapInt64(App::GetInstance()->myData, "pushId", -999);
 			YYXLayer::setFileValue("notification_push_id", StringUtils::format("%d", pushId));
 		}
@@ -240,24 +239,19 @@ void ShowNotification::initWord() {
 	button->addClickEventListener([=](Ref* sender) {		
 		if (sprSlected->isVisible()) {
 			//记录本地，下次将不会推送此消息
-			//UserDefault::getInstance()->setIntegerForKey("notification_push_id", App::GetInstance()->m_notification->pushId);
-			//YYXLayer::setFileValue("notification_push_id", StringUtils::format("%d", App::GetInstance()->m_notification->pushId));
 			int pushId = YYXStruct::getMapInt64(App::GetInstance()->myData, "pushId", -999);
 			YYXLayer::setFileValue("notification_push_id", StringUtils::format("%d", pushId));
 		}
 		int pushType = YYXStruct::getMapInt64(App::GetInstance()->myData, "pushType", -999);
-		//if (App::GetInstance()->m_notification->pushType == 2) 
 		if (pushType == 2)
 		{//新书
-			//Index::GoToNewBook();
 			auto control = ControlScene::getInstance();
 			control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(NewBook));
 			return;
 		}
 		auto pushUrl = YYXStruct::getMapString(App::GetInstance()->myData, "pushUrl", "http://www.ellabook.cn");
 		//string httpstr = "http://www.ellabook.cn";
-		//httpstr = App::GetInstance()->m_notification->pushUrl.c_str();
-		if (&pushUrl)
+		if (&pushUrl && !pushUrl.empty())
 		{
 			//弹出网页
 			CocosAndroidJni::GotoUrl(pushUrl.c_str());

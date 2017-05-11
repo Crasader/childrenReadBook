@@ -1,5 +1,5 @@
 #include "YYXImageView.h"
-#include "NetIntface.h"
+#include "CrossPlatform.h"
 #include "YYXDownloadImages.h"
 
 YYXImageView* YYXImageView::create(string url, int memberId,string defaultPath)
@@ -91,7 +91,7 @@ void YYXImageView::downloadImage()
 		normal, 0, [=](string path) {
 		string yuanPath = FileUtils::getInstance()->getWritablePath() + "temp/" + StringUtils::format("user_%d.png", memberId);
 		FileUtils::getInstance()->removeFile(yuanPath);
-		NetIntface::cutTheRounded(path, yuanPath, 140, 140, "", [=](string yuandepath) {
+		CrossPlatform::cutTheRounded(path, yuanPath, 140, 140, "", [=](string yuandepath) {
 			YYXLayer::sendNotify(StringUtils::format("NotifyUserImage%d", memberId));
 		}, "",[=](string str) {
 			YYXLayer::sendNotify(StringUtils::format("NotifyUserImage%d", memberId));

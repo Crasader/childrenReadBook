@@ -97,21 +97,6 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Button_6" ActionTag="-1209929624" Tag="211" IconVisible="False" LeftMargin="758.1853" RightMargin="100.8147" TopMargin="23.8611" BottomMargin="477.1389" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="205" Scale9Height="91" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="235.0000" Y="113.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="875.6853" Y="533.6389" />
-            <Scale ScaleX="0.6600" ScaleY="0.6600" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.8004" Y="0.8691" />
-            <PreSize X="0.2148" Y="0.1840" />
-            <TextColor A="255" R="65" G="65" B="70" />
-            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
-            <PressedFileData Type="MarkedSubImage" Path="Book/res/Backcover_shenmeshinianka-press_736h.png" Plist="Book/csb/backcover.plist" />
-            <NormalFileData Type="MarkedSubImage" Path="Book/res/Backcover_shenmeshinianka-moren_736h.png" Plist="Book/csb/backcover.plist" />
-            <OutlineColor A="255" R="255" G="0" B="0" />
-            <ShadowColor A="255" R="110" G="110" B="110" />
-          </AbstractNodeData>
           <AbstractNodeData Name="Button_7" ActionTag="-1244330144" Tag="212" IconVisible="False" LeftMargin="381.3173" RightMargin="380.6827" TopMargin="20.2948" BottomMargin="478.7052" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="302" Scale9Height="93" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="332.0000" Y="115.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />

@@ -5,10 +5,15 @@ NS_FK_BEGIN
 
 AudioPlayer* AudioPlayer::_audioPlayer = nullptr;
 
+#ifdef ERROR
+#undef ERROR
+#endif // ERROR
+
 AudioPlayer* AudioPlayer::getInstance()
 {
     if (_audioPlayer == nullptr) {
-        _audioPlayer = new AudioPlayer();
+		_audioPlayer = new AudioPlayer();
+		AudioEngine::lazyInit();
     }
     return _audioPlayer;
 }
@@ -17,8 +22,6 @@ AudioPlayer::AudioPlayer()
 {
     _iMusicId = 0;
     _iSoundId = 0;
-    _audioEngine = new AudioEngine();
-    
 }
 
 AudioPlayer::~AudioPlayer()
@@ -28,9 +31,9 @@ AudioPlayer::~AudioPlayer()
 
 void AudioPlayer::end()
 {
-    _audioEngine->end();
-    delete _audioEngine;
-    if (_audioPlayer == nullptr) {
+    AudioEngine::end();
+    
+    if (_audioPlayer != nullptr) {
         delete _audioPlayer;
         _audioPlayer = nullptr;
     }
@@ -38,63 +41,74 @@ void AudioPlayer::end()
 
 void AudioPlayer::playBackgroundMusic(string filePath, bool loop)
 {
-    if (FileUtils::getInstance()->isFileExist(filePath) && filePath.find(".mp3") != filePath.npos)
+	AudioEngine::AudioState audioState = AudioEngine::getState(_iMusicId);
+    if (audioState == AudioEngine::AudioState::PLAYING) {
+		AudioEngine::stop(_iMusicId);
+    }
+	_iMusicId = AudioEngine::play2d(filePath, loop);
+    if (BookParser::getInstance()->getBookPlayModeState() == AUTOPLAY)
     {
-        if (_audioEngine->getState(_iMusicId) == AudioEngine::AudioState::PLAYING) {
-            _audioEngine->stop(_iMusicId);
-        }
-        _iMusicId = _audioEngine->play2d(filePath,loop);
-		if (BookParser::getInstance()->getBookPlayModeState() == AUTOPLAY)
-		{
-			_audioEngine->setFinishCallback(_iMusicId, _autoPlayCallBack);
-		}
+		AudioEngine::setFinishCallback(_iMusicId, _autoPlayCallBack);
+    }
+    if (BookParser::getInstance()->getPaused()) {
+        BookParser::getInstance()->pausePlay();
     }
 }
 
 void AudioPlayer::setAutoPlayCallBack(const AutoPlayCallBack& callback)
 {
 	_autoPlayCallBack = callback;
-	_audioEngine->setFinishCallback(_iMusicId, _autoPlayCallBack);
+	AudioEngine::setFinishCallback(_iMusicId, _autoPlayCallBack);
 }
 
 void AudioPlayer::playEffect(string filePath, string interrupt)
 {
     if (filePath.find(".mp3") != filePath.npos) {
         if (_iSoundId != 0) {
-            _audioEngine->stop(_iSoundId);
+			AudioEngine::stop(_iSoundId);
         }
         
-        if (_audioEngine->getState(_iMusicId) == AudioEngine::AudioState::PLAYING) {
+		if (AudioEngine::getState(_iMusicId) == AudioEngine::AudioState::PLAYING) {
             if (interrupt == "no") {
-                _audioEngine->setVolume(_iMusicId, 0.1);
+				AudioEngine::setVolume(_iMusicId, 0.1);
             }
             else
             {
-                _audioEngine->pause(_iMusicId);
+				AudioEngine::pause(_iMusicId);
             }
         }
-        _iSoundId = _audioEngine->play2d(filePath);
+		_iSoundId = AudioEngine::play2d(filePath);
     }
 }
 
 void AudioPlayer::setBackgroundMusicVolume(float volume)
 {
-    _audioEngine->setVolume(_iMusicId, volume);
+	AudioEngine::setVolume(_iMusicId, volume);
 }
 
 void AudioPlayer::stopAllEffect()
 {
-    _audioEngine->stopAll();
+	AudioEngine::stopAll();
+}
+
+void AudioPlayer::uncacheAll()
+{
+	AudioEngine::uncacheAll();
 }
 
 void AudioPlayer::resumeAllEffect()
 {
-    _audioEngine->resumeAll();
+	AudioEngine::resumeAll();
 }
 
 void AudioPlayer::pauseAllEffect()
 {
-    _audioEngine->pauseAll();
+	AudioEngine::pauseAll();
+}
+
+AudioEngine::AudioState AudioPlayer::getBackgroundPlayAudioState()
+{
+	return AudioEngine::getState(_iMusicId);
 }
 
 //字幕声音
@@ -102,12 +116,12 @@ void AudioPlayer::pauseOrResumeSubtitleMusic(string sPauseOrResume)
 {
     if(sPauseOrResume == "pause")
     {
-        _audioEngine->pause(_iMusicId);
+		AudioEngine::pause(_iMusicId);
     }
     else if(sPauseOrResume == "resume")
     {
-        _audioEngine->resume(_iMusicId);
-        _audioEngine->stop(_iSoundId);
+		AudioEngine::resume(_iMusicId);
+        AudioEngine::stop(_iSoundId);
     }
 }
 

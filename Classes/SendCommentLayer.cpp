@@ -4,6 +4,8 @@
 #include "BookInfoScene.h"
 #include "YYXVisitor.h"
 #include "YYXSound.h"
+#include "User.h"
+#include "AppHttp.h"
 
 USING_NS_CC;
 
@@ -162,20 +164,35 @@ bool SendComment::init(int bookId) {
 	{
 		yuying->setTouchEnabled(true);
 		yuying->addClickEventListener([=](Ref* sender) {
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "sendCommentData", m_bookId, "", (Ref*)star_score);
-			NetIntface::httpGetBookIsBuy(m_bookId, App::GetInstance()->m_me->id, -1, "bookinfoSceneGetBookIsBuySuccess", [=](string json) {
-				NetIntface::httpGetBookIsBuyCallBack(json, [=](string orderid, int types) {
-					auto userAccount = YYXLayer::getFileValue("userAccount", YYXVisitor::getInstance()->getVisitorName());
-					int bookid = YYXStruct::getMapInt64(App::GetInstance()->myData, "sendCommentData", -999);
+			YYXLayer::controlTouchTime(1, "sendCommentyuyingTime", [=]() {
+				YYXLayer::setFileValue("temp_bookid", Value(m_bookId).asString());
+				YYXLayer::setFileValue("temp_star_score", Value(star_score).asString());
+				AppHttp::getInstance()->httpBookOrderId(m_bookId, [=](string orderid, int types) {
+					if (orderid.empty())
+					{
+						Toast::create(App::getString("FAXIANNINWEICHENGYUEDU"));
+						return;
+					}
+					int temp_bookid = Value(YYXLayer::getFileValue("temp_bookid", "-1")).asInt();
+					int temp_star_score = Value(YYXLayer::getFileValue("temp_star_score", "-1")).asInt();
+					YYXLayer::deleteFileValue("temp_bookid");
+					YYXLayer::deleteFileValue("temp_star_score");
+					YYXLayer::deleteFileValue("temp_content");
 					YYXSound::getInstance()->stopAll();
+					YYXSound::getInstance()->pauseBackGroundMusic();
+					string account = "";
+					if (YYXVisitor::getInstance()->getVisitorMode())
+						account = YYXVisitor::getInstance()->getVisitorName();
+					else
+						account = User::getInstance()->getUserAccount();
 					//打开语音界面
-					NetIntface::goToSendRecording(m_bookId, App::GetInstance()->m_me->id, types, userAccount,  orderid, "goToSendRecordingSuccess", [](string json) {
+					CrossPlatform::goToSendRecording(temp_bookid, App::getMemberId(), types, account, orderid, "goToSendRecordingSuccess", [](string json) {
 						//语音成功的回调 - 
 						Toast::create(App::getString("COMMENT_SUCCESS"));
 						YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
 						YYXLayer::sendNotify("DeleteSendComment");
 						YYXSound::getInstance()->playBackGroundMusic();
-					}, "goToSendRecordingFail", [=](string str) {	
+					}, "goToSendRecordingFail", [=](string str) {
 						//语音失败的回调
 						Toast::create(App::getString("COMMENT_FAILED"));
 						YYXSound::getInstance()->playBackGroundMusic();
@@ -184,17 +201,9 @@ bool SendComment::init(int bookId) {
 						YYXSound::getInstance()->playBackGroundMusic();
 					});
 					YYXLayer::sendNotify("DeleteSendComment");
-				}, [](string errorstr) {
-					//没有购买或者没有vip下载记录
-					if (errorstr == "")
-						errorstr = App::getString("COMMENT_FAILED");
-					Toast::create(errorstr.c_str());
+				}, []() {
 					YYXSound::getInstance()->playBackGroundMusic();
 				});
-			}, "goToSendRecordingFail", [](string str) {
-				//orderid 获取的失败回调
-				Toast::create(App::getString("WUFAQIDONGYUYINGPINGLUN"));
-				YYXSound::getInstance()->playBackGroundMusic();
 			});
 		});
 	}
@@ -249,105 +258,23 @@ bool SendComment::init(int bookId) {
 
 //文字评论
 void SendComment::sendComment(string title, string content) {
-	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "sendCommentData", m_bookId, "", (Ref*)star_score);
-	NetIntface::httpGetBookIsBuy(m_bookId, App::GetInstance()->m_me->id, -1, "bookinfoSceneGetBookIsBuySuccess", [=](string json) {
-		NetIntface::httpGetBookIsBuyCallBack(json, [=](string orderid, int types) {
-			App::log("orderid=" + orderid);
-			auto userAccount = YYXLayer::getFileValue("userAccount", "");
-			int bookid = YYXStruct::getMapInt64(App::GetInstance()->myData, "sendCommentData", -999);
-			auto starScore = (long)YYXStruct::getMapRef(App::GetInstance()->myData, "sendCommentData", (Ref*)5);
-			NetIntface::httpSendComment(types, bookid, App::GetInstance()->m_me->id, starScore, orderid, userAccount, title, content, "bookinfoSceneSendCommentSuccess", [](string json) {
-				rapidjson::Document doc;
-				if (YYXLayer::getJsonObject4Json(doc, json))
-				{
-					string desc = App::getString("COMMENT_SUCCESS");
-					if (YYXLayer::getBoolForJson(false, doc, "result"))
-					{
-						YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
-					}
-					else
-					{
-						desc = YYXLayer::getStringForJson(App::getString("COMMENT_FAILED"), doc, "errorMessage");
-					}
-					Toast::create(desc.c_str());
-				}
-			}, "bookinfoSceneSendCommentFail", [](string sttr) {
-				Toast::create(App::getString("COMMENT_FAILED"));
-			});
-		}, [](string errorstr) {
-			//没有购买或者没有vip下载记录
-			if (errorstr == "")
-				errorstr = App::getString("COMMENT_FAILED");
-			Toast::create(errorstr.c_str());
-		});
-	}, "bookinfoSceneSendCommentFail", [](string str) {
-		Toast::create(App::getString("COMMENT_FAILED"));
-	});
-	//auto userAccount = YYXStruct::getMapString(App::GetInstance()->myData, "userAccount", "");
-	//CocosAndroidJni::Comment(App::GetInstance()->m_me->id,m_bookId, userAccount.c_str(),
-		//content.c_str(), title.c_str(), star_score);
-	/*HttpRequest* request = new HttpRequest();
-	request->setRequestType(HttpRequest::Type::POST);
-	request->setUrl(std::string(IP).append(NET_SEND_COMMENT).c_str());
-
-	auto postData = std::string("memberId=").append(App::getMemberID()).append("&memberName=").append(App::GetInstance()->m_acount->memberName).append
-	(StringUtils::format("&orderId=%d", m_orderId)).append(StringUtils::format("&bookId=%d", m_bookId)).append("&comment=").append(content).append
-	("&title=").append(title).append("&score=").append(StringUtils::format("%d", star_score));
-	request->setRequestData(postData.c_str(), strlen(postData.c_str()));
-
-	App::log(std::string(IP).append(NET_SEND_COMMENT).c_str());
-	App::log(postData.c_str());
-
-	//请求的回调函数
-	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {
-		if (!response)
+	YYXLayer::setFileValue("temp_bookid", Value(m_bookId).asString());
+	YYXLayer::setFileValue("temp_star_score", Value(star_score).asString());
+	YYXLayer::setFileValue("temp_content", content);
+	AppHttp::getInstance()->httpBookOrderId(m_bookId, [](string orderid, int types) {
+		if (orderid.empty())
 		{
-			sendOver(-1);
+			Toast::create(App::getString("FAXIANNINWEICHENGYUEDU"));
 			return;
 		}
-		if (!response->isSucceed())
-		{
-			sendOver(-1);
-			log("response failed! error buffer: %s", response->getErrorBuffer());
-			return;
-		}
-		
-		//json解析
-		std::string str(response->getResponseData()->begin(), response->getResponseData()->end());
-		App::log(str);
-		rapidjson::Document doc;
-		doc.Parse<0>(str.c_str());
-		if (doc.HasParseError()) {
-			sendOver(-1);
-			return;
-		}
-
-		if (!doc.IsObject() || !doc.HasMember("code")) {
-			sendOver(-1);
-			return;
-		}
-
-		rapidjson::Value &value = doc["code"];
-		if (!value.IsInt()) {
-			sendOver(-1);
-			return;
-		}
-
-		if (value.GetInt() == 0) {//评价成功
-			sendOver(0);
-			return;
-		}
-		else if(value.GetInt() == 1){//已评价过，不能再次评价
-			sendOver(1);
-			return;
-		}
-		else{//评价失败
-			sendOver(-1);
-			return;
-		}
+		int temp_bookid = Value(YYXLayer::getFileValue("temp_bookid", "-1" )).asInt();
+		int temp_star_score = Value(YYXLayer::getFileValue("temp_star_score", "-1")).asInt();
+		string content = YYXLayer::getFileValue("temp_content", "good book");
+		YYXLayer::deleteFileValue("temp_bookid");
+		YYXLayer::deleteFileValue("temp_star_score");
+		YYXLayer::deleteFileValue("temp_content");
+		AppHttp::getInstance()->httpSendComment(types, temp_bookid, temp_star_score, orderid, content);
 	});
-	cocos2d::network::HttpClient::getInstance()->send(request);
-	request->release();*/
 }
 
 void SendComment::sendOver(int tag) {

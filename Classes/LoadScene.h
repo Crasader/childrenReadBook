@@ -23,7 +23,7 @@ public:
 	void initData();//初始化本地数据
 	void initHttp();//初始化网络请求
 	void initMemberHttp();//根据memberID进行网络初始化
-	void initDir();//初始化创建文件夹
+	static void initDir();//初始化创建文件夹
 	// implement the "static create()" method manually
 	virtual void cleanup();
 	//缓存csb文件
@@ -31,12 +31,8 @@ public:
 	//异步加载plist大图
 	void loadPlistPng();
 	void loadPlistPngCallback(cocos2d::Texture2D* sender);
-	//网络请求书城信息和书店图标下载
-	void httpBookCityInfoAndDownLoad();
 	//网络请求消息推送
-	void getEllaNotification();
-	//网络请求版本号
-	void getEllaVersion();	
+	//void getEllaNotification();	
 	//用户不使用网络 自动通过本地数据登录
 	void getPhoneInfo();
 private:

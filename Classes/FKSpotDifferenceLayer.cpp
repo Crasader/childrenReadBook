@@ -18,7 +18,6 @@ bool SpotDifferenceLayer::init()
 void SpotDifferenceLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void SpotDifferenceLayer::onExitTransitionDidStart()

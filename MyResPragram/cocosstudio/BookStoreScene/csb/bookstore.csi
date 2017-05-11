@@ -7,6 +7,7 @@
       <FilePathData Path="BookStoreScene/res/Carriage_0006_board.png" />
       <FilePathData Path="BookStoreScene/res/Ellabook_new_736h.png" />
       <FilePathData Path="BookStoreScene/res/Carriage_night_window_568h.png" />
+      <FilePathData Path="BookStoreScene/res/yilahuiyuan.png" />
     </ImageFiles>
     <MaxSize Width="512" Height="512" />
   </Content>

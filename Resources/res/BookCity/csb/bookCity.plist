@@ -11,25 +11,25 @@
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{312,392}</string>
 			</dict>
 			<key>BookCity/res/border3.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,315},{193,245}}</string>
+				<string>{{1,691},{193,245}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{193,245}</string>
 			</dict>
 			<key>BookCity/res/l.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{395,1},{90,612}}</string>
+				<string>{{477,1},{90,612}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -40,7 +40,7 @@
 			<key>BookCity/res/r.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{282,315},{90,612}}</string>
+				<string>{{569,1},{90,612}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,13 +51,46 @@
 			<key>BookCity/res/jiazai.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1,615},{279,294}}</string>
+				<string>{{1,395},{279,294}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
 				<string>{279,294}</string>
+			</dict>
+			<key>BookCity/res/border1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{196,691},{193,245}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{193,245}</string>
+			</dict>
+			<key>BookCity/res/border2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{282,395},{193,245}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{193,245}</string>
+			</dict>
+			<key>BookCity/res/border4.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{391,642},{193,245}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{193,245}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>
@@ -69,14 +102,14 @@
 			<key>realTextureFileName</key>
 			<string>bookCity.png</string>
 			<key>size</key>
-			<string>{512,1024}</string>
+			<string>{660,937}</string>
 		</dict>
 		<key>texture</key>
 		<dict>
 			<key>width</key>
-			<integer>512</integer>
+			<integer>660</integer>
 			<key>height</key>
-			<integer>1024</integer>
+			<integer>937</integer>
 		</dict>
 	</dict>
 </plist>

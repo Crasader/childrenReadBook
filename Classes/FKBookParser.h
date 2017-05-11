@@ -11,11 +11,11 @@ class FK_DLL BookParser
 public:
     static BookParser* getInstance();
 
-	typedef std::function<void(const std::string&)>		BookEndCallBack;
 	typedef std::function<void(PlayModeState playMode)> PlayModeChangeCallBack;
 
 	typedef std::function<void()>						PageCallBack;
 	typedef std::function<void(RenderTexture*)>			ShareCallBack;
+    typedef std::function<void(Menu*)>                  PageMenuChangeCallBack;
 	
 	enum { NO_PAGE_TO_TURN = 0};
 
@@ -74,7 +74,7 @@ public:
 	*  @return int          ：[1,MAX_INT) 当前页数
 	*						：NO_PAGE_TO_TURN 当前书本已经在最后一页无法下翻
 	*/
-	int pageDown();
+	int pageDown(bool isByHand);
 
 	/**
 	*  退出当前书籍
@@ -94,6 +94,9 @@ public:
     //获取书籍按钮接口
     Menu *getPageMenu();
     void setPageMenu(Menu *pageMenu);
+    void setPageMenuChangeCallBack(const PageMenuChangeCallBack &pageMenuChangeCallBack);
+    PageMenuChangeCallBack getPageMenuChangeCallBack(){ return _pageMenuChangeCallBack; };
+    void runPageMenuChangeCallBack();
     
     //设置按钮调用接口
 	void setPageUpCallBack(const PageCallBack &pageUpCallBack);
@@ -112,8 +115,8 @@ public:
     void runBookShareCallBack();
 
 	//当前书本播放结束回调接口
-	void setBookEndCallBack(const BookEndCallBack &bookEndCallBack);
-	BookEndCallBack getBookEndCallBack(){ return _bookEndCallBack; };
+	void setBookEndCallBack(const PageCallBack &bookEndCallBack);
+	PageCallBack getBookEndCallBack(){ return _bookEndCallBack; };
 
 	//当前书本播放模式改变回调接口
 	void setPlayModeChangeCallBack(const PlayModeChangeCallBack &playModeChangeCallBack);
@@ -139,6 +142,10 @@ public:
     //比较屏幕宽高比和设计宽高比，计算坐标偏移量
     Vec2 computeWinSizeOffset();
 
+	//设置/获取资源文件的大小
+    void setResourceSize(const cocos2d::Size& resourceSize);
+	cocos2d::Size getResourceSize() const;
+
 private:
 	/**
 	*  保存绘画页
@@ -147,7 +154,7 @@ private:
 	/**
 	*  显示当前页
 	*/
-	void doPageTurn(bool backwards);
+	void doPageTurn(bool backwards, bool isByHand);
     
 private:
     float                       _fResourcesScale;
@@ -159,7 +166,6 @@ private:
     BookData                    _bookData;
     int                         _iCurrentPage;
     static BookParser*          _bookParser;
-    string                      _screenShotPath;
     PlayModeState               _playMode;
     Menu*                       _pageMenu;
  
@@ -168,10 +174,12 @@ private:
 	PageCallBack				_pageQuitCallBack;
 	ShareCallBack				_pageShareCallBack;
 
-	BookEndCallBack				_bookEndCallBack;
+	PageCallBack				_bookEndCallBack;
 	PlayModeChangeCallBack		_playModeChangeCallBack;
 
+    PageMenuChangeCallBack      _pageMenuChangeCallBack;
 	bool						_isPaused;//当前书本是否处于暂停状态
+	cocos2d::Size				_resourceSize;
 };
 
 NS_FK_END

@@ -26,7 +26,6 @@ bool ComplexLineLayer::init()
 void ComplexLineLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void ComplexLineLayer::onExitTransitionDidStart()

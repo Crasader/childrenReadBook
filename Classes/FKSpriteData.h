@@ -28,9 +28,11 @@ public:
     float               getRotation();
     float               getScale();
     string              getTouchEnable();
-    string              getIsSubtitle();
-    string              getIsReplay();
+    
+    //点击像素检测
     string              getIsAlpha();
+    void                setIsAlpha(string sIsAlpha);
+
     
     void                setImageId(string sImageId);
     void                setSoundId(string sSoundId);
@@ -43,9 +45,6 @@ public:
     void                setRotation(string sRotation);
     void                setScale(string sScale, float resourcesScale);
     void                setTouchEnable(string sTouchEnable);
-    void                setIsSubtitle(string sIsSubtitle);
-    void                setIsReplay(string sIsReplay);
-    void                setIsAlpha(string sIsAlpha);
     
     void                clear();
 private:
@@ -64,8 +63,6 @@ private:
     float               _fRotation;
     float               _fScale;
     string              _sTouchEnable;
-    string              _sIsSubtitle;
-    string              _sIsReplay;
     string              _sIsAlpha;
 };
 

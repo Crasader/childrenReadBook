@@ -70,7 +70,7 @@
     <key>STR_KANGXUANBOOKSTORE</key> 
     <string>康轩书店</string>
     <key>VIPZHUANSHUSHUDIAN</key>
-    <string>年卡书店</string>
+    <string>会员书店</string>
     <key>NO_SELECTED</key> 
     <string>未选择</string>
     <key>ABOUT_YLKS</key>
@@ -206,7 +206,7 @@
     <key>COMMENT_ALREADY</key>
     <string>不能重复评价！</string>
     <key>COMMENT_FAILED</key>
-    <string>评论失败</string>
+    <string>评论异常</string>
     <key>WUFAQIDONGYUYINGPINGLUN</key>
     <string>无法启动语音评论</string>
     <key>COMMENT_TIP_LOGIN</key>
@@ -228,7 +228,7 @@
     <key>GET_CODE</key>
     <string>请您获取验证码</string>
     <key>NETEXCEPTION</key>
-    <string>网络异常</string>
+    <string>网络超时, 音信全无</string>
     <key>RECHARGE</key>
     <string>充值 ￥</string>
     <key>YUAN</key>
@@ -254,9 +254,9 @@
     <key>QQKEFU</key>
     <string>QQ客服:2952377844</string>
     <key>BANBENHEZUO</key>
-    <string>版权合作QQ:641631640</string>
+    <string>版权合作QQ：379160279</string>
     <key>SHAGNWUHEZUO</key>
-    <string>商务合作QQ:641631640</string>
+    <string>商务合作QQ：379160279</string>
     <key>HONGBAOHUOQUSHIBAI</key>
     <string>红包获取失败</string>
     <key>MEIYOUKEYONGHONGBAO</key>
@@ -385,14 +385,14 @@
     <string>删 除</string>
     <key>SHANCHUPINGLUN</key>
     <string>删除评论?</string>
+  <key>SHANCHUPINGLUNSHIBAI</key>
+  <string>删除评论失败</string>
     <key>YUYINGBOFANGSHIBAI</key>
     <string>语音播放失败</string>
   <key>SHANGWEIDENGLU</key>
   <string>尚未登录</string>
   <key>OPENVIP</key>
-  <string>开通年卡服务</string>
-  <key>OPENVIPAGAIN</key>
-  <string>续费年卡服务</string>
+  <string>开通咿啦会员</string>
   <key>COLLECTSUCCESS</key>
   <string>收藏成功</string>
   <key>COLLECTFAIL</key>
@@ -406,9 +406,9 @@
   <key>GETVIPTSUC</key>
   <string>获取包年图书成功</string>
   <key>NIANKAFUWUJIEZHI</key>
-  <string>年卡用户     截止: </string>
+  <string>咿啦会员     到期: </string>
   <key>FAXIANNINWEICHENGYUEDU</key>
-  <string>发现您未曾阅读, 请先阅读再评论! </string>
+  <string>您未购买, 无法评论! </string>
   <key>NIHAIMEIYOUPINGLUNGUOCISHU</key>
   <string>您还没有评论过此书 </string>
   <key>HAIMEIYOURENPINGLUNGUOCISHU</key>
@@ -451,6 +451,32 @@
     <string>去续费</string>
     <key>QUXIANGXIANG</key>
     <string>再想想</string>
-  <key>NINDEVIPGUOQISHIFOUXUGEFI</key>
-  <string>您的VIP已经过期，是否续费？</string>
+    <key>NINDEVIPGUOQISHIFOUXUGEFI</key>
+    <string>您的VIP已经过期，是否续费？</string>
+  <key>SHUJIZHUANGTAIHUOQUSHIBAI</key>
+  <string>书籍状态获取失败</string>
+  <key>SHUJUYICHANG</key>
+  <string>获取书籍列表异常</string>
+  <key>YINGXINQUANWU</key>
+  <string>网络超时, 音信全无</string>
+    <key>YILATIYANHUIYUAN</key>
+    <string>咿啦体验会员</string>
+      <key>YILAHUIYUAN</key>
+    <string>咿啦会员</string>
+      <key>7TIAN</key>
+    <string>7天：</string>
+    <key>YUEKA</key>
+    <string>月卡：</string>
+    <key>NIANKA</key>
+    <string>年卡：</string>￥
+    <key>RENMINGBI</key>
+    <string>￥</string>
+  <key>ZHIFUBAOZHIFU</key>
+  <string>支付宝支付</string>
+  <key>WEIXINZHIFU</key>
+  <string>微信支付</string>
+  <key>GOUMAIHUIYUANCHENGGONG</key>
+  <string>购买会员成功</string>
+  <key>GOUMAIHUIYUANSHIBAI</key>
+  <string>购买会员失败</string>
 </dict> 

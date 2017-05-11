@@ -1,6 +1,8 @@
 ﻿#include "BookInfoControl.h"
 #include "cocos2d.h"
 #include "App.h"
+#include "YYXVisitor.h"
+#include "AppHttp.h"
 USING_NS_CC;
 
 BookInfoControl::BookInfoControl()
@@ -27,6 +29,7 @@ void BookInfoControl::setControl(int bookid, int memberid, int bookstauts)
 	BookId(bookid);
 	MemberId(memberid);
 	BookStauts(bookstauts);
+	App::log("bookstauts = ", bookstauts);
 }
 
 void BookInfoControl::BookId(int val)
@@ -80,7 +83,13 @@ void BookInfoControl::BookStauts(int val)
 
 	code = val & (1 << 4);
 	if (code > 0)
+	{
 		IsMemberVIP(true);
+		if (!YYXVisitor::getInstance()->getVisitorMode() && !User::getInstance()->getVip())
+		{
+			AppHttp::getInstance()->httpCheckVIP();
+		}
+	}
 	else
 		IsMemberVIP(false);
 
@@ -104,11 +113,8 @@ bool BookInfoControl::IsBookBuy()
 {
 	if (!isBookBuy)
 	{
-		if (App::GetInstance()->m_me)
-		{
-			if (App::GetInstance()->myBuyBook.find(bookId) != App::GetInstance()->myBuyBook.end())
-				isBookBuy = true;
-		}
+		if (App::GetInstance()->myBuyBook.find(bookId) != App::GetInstance()->myBuyBook.end())
+			isBookBuy = true;
 	}
 	return isBookBuy;
 }
