@@ -274,10 +274,10 @@ public class AppActivity extends Cocos2dxActivity {
 						.get("openPhotoAlbumSelectImageWidth");
 				String height = m_callbackKey
 						.get("openPhotoAlbumSelectImageHeight");
-//				Bitmap bp = ImageTool.readUri(uri, m_context, 600, 600, false);
+				Bitmap bp = ImageTool.readUri(uri, m_context, 600, 600, false);
 //				Bitmap rp = ImageTool.toRoundBitmap(bp);
 //				ImageTool.saveFile(rp, imageName, imageDir);
-				Bitmap bp = ImageTool.readUri(uri, m_context,Integer.parseInt(width), Integer.parseInt(height),false);
+//				Bitmap bp = ImageTool.readUri(uri, m_context,Integer.parseInt(width), Integer.parseInt(height),false);
 				ImageTool.saveFile(bp, imageName, imageDir);
 				String runKey = m_callbackKey.get("openPhotoAlbumSelectImageRunKey");
 				NetInterfaceCallback(runKey, imageDir + File.separator + imageName);

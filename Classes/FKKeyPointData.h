@@ -1,4 +1,4 @@
-﻿#ifndef KEY_POINT_DATA_H
+#ifndef KEY_POINT_DATA_H
 #define KEY_POINT_DATA_H
 
 #include "FKAnimationData.h"

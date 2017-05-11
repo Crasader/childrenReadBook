@@ -71,6 +71,7 @@ public:
 	ControlScene();
 	~ControlScene();
 	static ControlScene* getInstance();
+	static void showMemory();
 
 	SceneInfo* getSceneInfo(MySceneName);
 

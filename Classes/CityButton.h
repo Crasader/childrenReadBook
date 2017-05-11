@@ -5,16 +5,18 @@
 #include "extensions/cocos-ext.h"
 #include "App.h"
 #include "ui/UILayout.h"
+#include "BookStoreCache.h"
 
 USING_NS_CC;
 
 class CityButton : public cocos2d::ui::ImageView
 {
 public:
-	static CityButton * create(string url, int storeId, string defaultPath);
-	bool init(string url, int storeId, string defaultPath);
+	static CityButton * create(string url, int storeId, Size size = Size(150, 150), CityButtonType type2 = _double);
+	bool init(string url, int storeId, Size size = Size(150, 150), CityButtonType type2 = _double);
+	void addBorder();
 	void reloadUrl(string url, int storeId);
-	void addClickListener(const function<void(Ref*)>& callback);
+	void addClickListener(int storeId);
 
 	int getStoreId() const { return storeId; }
 	void setStoreId(int val) { storeId = val; }
@@ -25,6 +27,9 @@ private:
 	string url = "";
 	int storeId = -999;
 	string defaultPath = "";
+	Size m_size ;
+	CityButtonType m_type = _double;
+	TextureResType m_textureType = Widget::TextureResType::PLIST;
 	void loadImage();
 	void downloadImage();
 

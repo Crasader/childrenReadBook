@@ -121,34 +121,31 @@ bool Toast::getRuning()
 void Toast::SceneInitToast()
 {
 	YYXLayer::logb("void Toast::SceneInitToast()");
-	//thread([=]() {
-		//App::ccsleep(100);
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-			if (getRuning() && m_showLayer)
+	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+		if (getRuning() && m_showLayer)
+		{
+			auto text = (Text*)m_showLayer->getChildByName(FIND_TEXT_TOAST_CONTENT);
+			string content = m_dataQueue.front();
+			if (huifuMap.find(content) != huifuMap.end())
 			{
-				auto text = (Text*)m_showLayer->getChildByName(FIND_TEXT_TOAST_CONTENT);
-				string content = m_dataQueue.front();
-				if (huifuMap.find(content) != huifuMap.end())
-				{
-					return;
-				}
-				else
-				{
-					huifuMap[content] = 1;
-					if (content.length() > 54)
-						text->setFontSize(40);
-					else if (content.length() > 45)
-						text->setFontSize(50);
-					text->setText(content);
-					Size visiblesize = Director::getInstance()->getVisibleSize();
-					m_showLayer->setPosition(Vec2(visiblesize.width / 2, 100));
-					m_showLayer->removeFromParent();
-					m_showLayer->setVisible(true);
-					Director::getInstance()->getRunningScene()->addChild(m_showLayer);
-					m_time = YYXLayer::getCurrentTime4Second() + 1;
-					YYXLayer::loge("void Toast::SceneInitToast()");
-				}
+				return;
 			}
-		});
-	//}).detach();	
+			else
+			{
+				huifuMap[content] = 1;
+				if (content.length() > 54)
+					text->setFontSize(40);
+				else if (content.length() > 45)
+					text->setFontSize(50);
+				text->setText(content);
+				Size visiblesize = Director::getInstance()->getVisibleSize();
+				m_showLayer->setPosition(Vec2(visiblesize.width / 2, 100));
+				m_showLayer->removeFromParent();
+				m_showLayer->setVisible(true);
+				Director::getInstance()->getRunningScene()->addChild(m_showLayer);
+				m_time = YYXLayer::getCurrentTime4Second() + 1;
+				YYXLayer::loge("void Toast::SceneInitToast()");
+			}
+		}
+	});
 }

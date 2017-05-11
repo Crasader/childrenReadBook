@@ -61,6 +61,12 @@ void UpdateVersion::onEnterTransitionDidFinish() {
 		}
 	},
 		"downloadApkEnd", [=](YYXStruct data) {
+		int start = (int)YYXStruct::getRefData(data, 0);
+		if (start == 1)
+		{
+			Toast::create(App::getString("XIAZAICUOWUCHANGXINXIAZAI"));
+			return;
+		}
 		YYXLayer::sendNotify("UpdataVersionDownload_Success"); 
 		App::log("downloadApk=" + path);
 		NetIntface::installInstallationPackage(path);
@@ -121,7 +127,8 @@ bool UpdateVersion::init() {
 	auto button = (Button*)pLayer->getChildByName("button");
 	button->setTouchEnabled(true);
 	button->addClickEventListener([=](Ref* sender) {
-		pLayer->removeFromParent();
+		pLayer->removeAllChildrenWithCleanup(true);
+		pLayer->removeFromParentAndCleanup(true);
 	});
 
 	//下载进度通知
@@ -134,7 +141,8 @@ bool UpdateVersion::init() {
 	});
 	//下载成功事件注册
 	auto listenDownSuccess = EventListenerCustom::create("UpdataVersionDownload_Success", [=](EventCustom* event) {
-		this->removeFromParentAndCleanup(true);
+		removeAllChildrenWithCleanup(true);
+		removeFromParentAndCleanup(true);
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenDownloading, progressBar);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenDownSuccess, this);

@@ -4,6 +4,7 @@
 #include "YYXBookOver.h"
 #include "FKBookParser.h"
 #include "YYXSound.h"
+
 USING_NS_FK;
 USING_NS_CC;
 
@@ -13,7 +14,6 @@ static cocos2d::Size designResolutionSize = cocos2d::Size(1094, 614);
 //static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
 AppDelegate::AppDelegate() {
-
 }
 
 AppDelegate::~AppDelegate() 
@@ -102,7 +102,7 @@ void AppDelegate::applicationDidEnterBackground() {
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
-	if (YYXBookOver::getInstance()->BookCover())
+	if (YYXBookOver::getInstance()->getBookCoverRuning())
 	{
 		FK::AudioPlayer::getInstance()->stopAllEffect();
 		App::log("=====>>> AppDelegate::applicationWillEnterForeground()  ++  BookParser::getInstance()->pausePlay();");

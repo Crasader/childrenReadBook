@@ -10,7 +10,7 @@ using namespace std;
 class XZLayer : public YYXLayer
 {
 public:
-	static void showShareRedPacket(string redCount);
+	static void safe_ShowShareRedPacket(string redCount);
 	//提示续费包年服务
 	static YYXLayer* showVIPRenew(function<void()>runleave);
 	//续费包年服务,选择支付界面

@@ -7,7 +7,7 @@ using namespace std;
 USING_NS_CC;
 
 
-#define CALLBACK(X) 	callback = [=]() {Director::getInstance()->replaceScene(TransitionFade::create(0.5f, X::createScene(NextScene)));};
+#define REPLACESCENE(X) 	callback = [=]() {Director::getInstance()->replaceScene(TransitionFade::create(0.5f, X::createScene(NextScene)));};
 #define CALLBACKBOOKSTORE(X) 	callback = [=]() {Director::getInstance()->replaceScene(TransitionFade::create(0.5f, BookStore::createScene(NextScene->setData("bookStoreId", Value(X)))));};
 
 ControlScene* ControlScene::instance = nullptr;
@@ -70,7 +70,6 @@ void ControlScene::backFromScene()
 	m_nextScene = getFromScene();
 	if (replace(m_currentScene, m_nextScene, false))
 	{
-		//SceneInfo::del(m_currentScene);
 		m_currentScene = m_nextScene;
 	}
 	else
@@ -82,18 +81,10 @@ void ControlScene::backFromScene()
 void ControlScene::replaceScene(SceneInfo* CurrentScene, SceneInfo* NextScene, bool push)
 {
 	//当前场景信息保留，可以获取到
-	//if (m_currentScene && m_currentScene != CurrentScene)
-		//SceneInfo::del(m_currentScene);
 	m_currentScene = CurrentScene;
 	m_nextScene = NextScene;
-	if (!replace(m_currentScene , m_nextScene, push))
-	{
-		//SceneInfo::del(m_nextScene);
-	}
-	else
-	{
+	if (replace(m_currentScene , m_nextScene, push))
 		m_currentScene = m_nextScene;
-	}
 }
 
 void ControlScene::end()
@@ -124,7 +115,6 @@ SceneInfo* ControlScene::getFromScene(bool pop)
 	}
 	else
 	{
-		//inf = SceneInfo::create()->setName(NULLSCENE);
 		inf = getSceneInfo(NULLSCENE);
 	}
 	return inf;
@@ -134,7 +124,6 @@ SceneInfo* ControlScene::getCurrentScene()
 {
 	if (m_currentScene == nullptr)
 	{
-		//m_currentScene = SceneInfo::create()->setName(NULLSCENE);
 		m_currentScene = getSceneInfo(NULLSCENE);
 	}
 	return m_currentScene;
@@ -166,73 +155,74 @@ bool ControlScene::replace(SceneInfo* CurrentScene, SceneInfo* NextScene, bool p
 	YYXSound::getInstance()->playButtonSound();
 	vector<string> plist;
 	function<void()> callback = nullptr;
-	switch (NextScene->getName())
-	{		
-	case LoadScene:
-		CALLBACK(Load)
-		break;
-	case BookRoomScene:
+	auto name = NextScene->getName();
+	if (name == LoadScene)
+	{
+		plist.push_back("WaitMessageBox/csb/wait");
+		REPLACESCENE(Load)
+	}
+	else 	if (name == BookRoomScene) {
 		plist.push_back("BookRoom/csb/bookRoom");
-		CALLBACK(BookRoom)
-		break;
-	case ParentScene:
+		REPLACESCENE(BookRoom)
+	}
+	else 	if (name == ParentScene){
 		plist.push_back("ParentScene/csb/parent");
-		CALLBACK(Parent)
-		break;
-	case IndexScene:
+		REPLACESCENE(Parent)
+	}
+	else 	if (name == IndexScene) {
 		plist.push_back("IndexScene/csb/background");
 		plist.push_back("IndexScene/csb/train");
 		plist.push_back("IndexScene/csb/Index");
-		CALLBACK(Index)
-		break;
-	case LoginScene:
+		REPLACESCENE(Index)
+	}
+	else 	if (name == LoginScene) {
 		plist.push_back("LoginScene/csb/login");
-		CALLBACK(Login)
-		break;
-	case BabyCenterScene:
+		REPLACESCENE(Login)
+	}
+	else 	if (name == BabyCenterScene) {
 		plist.push_back("BabyCenter/csb/babyCenter");
-		CALLBACK(BabyCenter)
-		break;
-	case BookCity:
+		REPLACESCENE(BabyCenter)
+	}
+	else 	if (name == BookCity) {
 		plist.push_back("BookCity/csb/bookCity");
-		CALLBACK(BookCityScene)
-		break;
-	case BookInfoScene:
+		plist.push_back("BookCity/csb/buttons");
+		REPLACESCENE(BookCityScene)
+	}
+	else 	if (name == BookInfoScene) {
 		plist.push_back("BookInfo/csb/bookInfo");
-		CALLBACK(BookInfo)
-		break;
-	case BookCityCHILD:
+		REPLACESCENE(BookInfo)
+	}
+	else 	if (name == BookCityCHILD) {
 		plist.push_back("BookStoreScene/csb/bookstore");
-		CALLBACK(BookStore)
-		break;
-	case PictureBook:
+		REPLACESCENE(BookStore)
+	}
+	else 	if (name == PictureBook) {
 		plist.push_back("BookStoreScene/csb/bookstore");
 		CALLBACKBOOKSTORE(_huiben);
-		break;
-	case Recommend:
+	}
+	else 	if (name == Recommend) {
 		plist.push_back("BookStoreScene/csb/bookstore");
 		CALLBACKBOOKSTORE(_tuijian);
-		break;
-	case MySceneName::Free:
+	}
+	else 	if (name == Free) {
 		plist.push_back("BookStoreScene/csb/bookstore");
 		CALLBACKBOOKSTORE(_mianfei);
-		break;
-	case GoodReputation:
+	}
+	else 	if (name == GoodReputation) {
 		plist.push_back("BookStoreScene/csb/bookstore");
 		CALLBACKBOOKSTORE(_haoping);
-		break;
-	case NewBook:
+	}
+	else 	if (name == NewBook) {
 		plist.push_back("BookStoreScene/csb/bookstore");
 		CALLBACKBOOKSTORE(_xinshu);
-		break;
-	case KangXuanStore:
+	}
+	else 	if (name == KangXuanStore) {
 		plist.push_back("BookStoreScene/csb/bookstore");
 		CALLBACKBOOKSTORE(_kangxuan);
-		break;
-	case VIPBOOK:
+	}
+	else 	if (name == VIPBOOK) {
 		plist.push_back("BookStoreScene/csb/bookstore");
 		CALLBACKBOOKSTORE(_baonian);
-		break;
 	}
 	preLoadResources(plist, callback);
 	return true;
@@ -246,7 +236,6 @@ void ControlScene::preLoadResources(vector<string> plist, const function<void()>
 	for (auto it : plist)
 	{
 		Director::getInstance()->getTextureCache()->addImageAsync(it + ".png", [=](Texture2D* sender) {
-			//sender->retain();
 			SpriteFrameCache::getInstance()->addSpriteFramesWithFile(it + ".plist");
 			CCLOG("SpriteFrameCache::getInstance()->addSpriteFramesWithFile (%s).plist", it.c_str());
 			setLoadPlistCount(getLoadPlistCount() - 1);
@@ -254,13 +243,7 @@ void ControlScene::preLoadResources(vector<string> plist, const function<void()>
 			{
 				if (App::m_debug == 0)
 				{
-					App::log("**********************************************************************************************************************************************");
-					auto str = Director::getInstance()->getTextureCache()->getCachedTextureInfo();
-					YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath() + "temp/OOM.txt");
-					App::log(str);
-					int size = NetIntface::m_functionMap.size();
-					App::log(StringUtils::format("NetIntface::m_functionMap.size() =%d \n ", size));
-					App::log(StringUtils::format("App::GetInstance() ->myData.size() = %d  \n", App::GetInstance()->myData.size()));
+					showMemory();
 				}
 				if (callback)
 					callback();	
@@ -277,6 +260,18 @@ void ControlScene::show()
 		auto str= it->logName();
 		App::log(Value(coun ).asString()+"========================================>>>"+str + "\n");
 	}
+}
+
+void ControlScene::showMemory()
+{
+	App::log("\n**********************************************************************************************************************************************");
+	auto str = Director::getInstance()->getTextureCache()->getCachedTextureInfo();
+	//YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath() + "temp/OOM.txt");
+	App::log(str);
+	int size = NetIntface::m_functionMap.size();
+	App::log(StringUtils::format("NetIntface::m_functionMap.size() =%d \n ", size));
+	App::log(StringUtils::format("App::GetInstance() ->myData.size() = %d  \n", App::GetInstance()->myData.size()));
+	App::log("/n**********************************************************************************************************************************************\n");
 }
 
 SceneInfo::SceneInfo()

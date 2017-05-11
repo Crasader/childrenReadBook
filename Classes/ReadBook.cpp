@@ -45,7 +45,6 @@ void ReadBook::loadCache()
 void ReadBook::initData()
 {
 	App::log("ReadBook::initData()");
-
 }
 
 void ReadBook::addBook(int bookid, int time)

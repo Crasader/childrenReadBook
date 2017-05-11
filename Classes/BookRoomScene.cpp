@@ -4,12 +4,13 @@
 #include "YYXVisitor.h"
 #include "DownloadBook.h"
 #include "ReadBook.h"
-#include "BuyBook.h"
+#include "MyBook.h"
 #include "SetBook.h"
 #include "YYXDownloadImages.h"
 #include <assert.h>
 #include "User.h"
 #include "BookCache.h"
+#include "AppHttp.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -26,6 +27,9 @@ BookRoom::BookRoom() {
 BookRoom::~BookRoom() {
 	YYXLayer::logb("BookRoom::~BookRoom()");
 	ControlScene::getInstance()->end();
+	BookCache::getInstance()->clear();
+	DownloadBook::getInstance()->clearBook();
+	MyBook::getInstance()->clearBook();
 	YYXLayer::loge("BookRoom::~BookRoom()");
 }
 
@@ -65,7 +69,7 @@ bool BookRoom::init(SceneInfo* sceneInfo)
 	YYXVisitor::getInstance()->bookRoomSceneInit();
 	ReadBook::getInstance()->setIsSorted(true);
 	DownloadBook::getInstance()->setIsSorted(true);
-	BuyBook::getInstance()->setIsSorted(true);
+	MyBook::getInstance()->setIsSorted(true);
 	m_offline = !NetIntface::IsNetConnect();
 	if (App::m_debug == 0)
 	{
@@ -350,7 +354,7 @@ void BookRoom::initEvent()
 	auto listener1 = EventListenerCustom::create(TAG_BOOKROOMBOOKISEXIT, [=](EventCustom* e) {
 		ReadBook::getInstance()->setIsSorted(true);
 		DownloadBook::getInstance()->setIsSorted(true);
-		BuyBook::getInstance()->setIsSorted(true);
+		MyBook::getInstance()->setIsSorted(true);
 		refershPage(bookMode);
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener1, layer);
@@ -371,7 +375,7 @@ void BookRoom::initEvent()
 void BookRoom::initHttp()
 {
 	//zz(initHttp)
-	User::getInstance()->httpVipAndBuyBooks();
+	AppHttp::getInstance()->httpVipAndBuyBooks();
 	//zzz(initHttp)
 }
 
@@ -383,7 +387,7 @@ void BookRoom::refershPage(int status)
 	BookRoomSelectPage *bookRoomSelectPage=nullptr;
 	if (status == 3)//购书列表
 	{
-		bookRoomSelectPage = BuyBook::getInstance();
+		bookRoomSelectPage = MyBook::getInstance();
 	}
 	else if (status == 0)//下载
 	{
@@ -459,14 +463,11 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 	if (vip)
 	{
 		bool visible_vip = false;
-		if (App::GetInstance()->m_me)
-		{
-			auto uservip = userIsVip();
-			auto buy = bookIsMyBuyBooks(bookid);
-			auto rent = bookIsMyVipBooks(bookid);
-			if (uservip && rent && !buy)
-				visible_vip = true;
-		}
+		auto uservip = userIsVip();
+		auto buy = bookIsMyBuyBooks(bookid);
+		auto rent = bookIsMyVipBooks(bookid);
+		if (uservip && rent && !buy)
+			visible_vip = true;
 		vip->setVisible(visible_vip);
 	}
 	//zz(refershBookNode3);
@@ -482,7 +483,7 @@ void BookRoom::refershBookNode(Node* book, int bookid)
 		cover->loadTexture("other/Book_cover.png");
 		auto listener = EventListenerCustom::create(TAG_BOOKCOVERDOWNLOAD, [=](EventCustom* e) {
 			long _bookid = (long)e->getUserData();
-			if (_bookid == bookid)
+			if (_bookid == cover->getTag())
 			{
 				auto copath = App::getBookCoverPngPath(_bookid);
 				if (FileUtils::getInstance()->isFileExist(copath))
@@ -750,9 +751,9 @@ void BookRoom::down(Node* book, int bookid) {
 					int bookid = YYXStruct::getMapInt64(App::GetInstance()->myData, taskTag2, -999);
 					if (code == 0)
 					{
-						NetIntface::AddDownLoadRecord(App::GetInstance()->m_me->id, bookid, "", [](string str) {}, "", [](string str) {});
+						AppHttp::getInstance()->httpUploadDownloadRecord(bookid);
 						//下载成功,解压
-						std::thread(&YYXDownload::uncompress, App::getReadZipDir(), StringUtils::format("%d", bookid), App::getReadDir(), [=](string zipPath) {
+						std::thread mythread(&YYXDownload::uncompress, App::getReadZipDir(), StringUtils::format("%d", bookid), App::getReadDir(), [=](string zipPath) {
 							YYXLayer::sendNotify(taskTag2 + "_BookProgressing", "", 100);
 							//App::addDownloadBookRecord(bookid);
 							DownloadBook::getInstance()->addBook(bookid, (int)YYXLayer::getCurrentTime4Second());
@@ -770,7 +771,8 @@ void BookRoom::down(Node* book, int bookid) {
 							{
 								YYXLayer::sendNotify(taskTag2 + "_BookProgressing", "", 8000);
 							}
-						}).detach();
+						});
+						mythread.detach();
 					}
 					else
 					{
@@ -868,6 +870,8 @@ void BookRoom::cleanup()
 	//zz(cleanup)
 	_eventDispatcher->removeEventListener(touchmove);
 	_eventDispatcher->removeEventListener(touchlistener);
+	layer->removeAllChildrenWithCleanup(true);
+	layer->removeFromParentAndCleanup(true);
 	//zzz(cleanup)
 }
 
@@ -1091,25 +1095,12 @@ bool BookRoom::bookIsMyVipBooks(int bookid)
 
 bool BookRoom::userIsVip()
 {
-	////zz(userIsVip)
-	bool result = false;
-	if (m_offline)
-	{
-		auto vip = YYXLayer::getFileValue("vip","false");
-		if (vip == "true")
-			result = true;
-		else
-			result = false;
-	}
+	if (YYXVisitor::getInstance()->getVisitorMode())
+		return false;
+	else if (User::getInstance()->getVip())
+		return true;
 	else
-	{
-		if (App::GetInstance()->m_me && App::GetInstance()->m_me->vip)
-			result = true;
-		else
-			result = false;
-	}
-	////zzz(userIsVip)
-	return result;
+		return false;
 }
 
 bool BookRoom::bookIsMyBuyBooks(int bookid)

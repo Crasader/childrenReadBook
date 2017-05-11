@@ -31,9 +31,6 @@ public:
     void                setScale(string sScale, float resourcesScale);
     void                setPosition(string sPositionX, string sPositionY, float coordinateScale,Vec2 winSizeOffset);
     void                setTouchEnable(string sTouchEnable);
-    void                setIsSubtitle(string sSubtitle);
-    void                setIsReplay(string sIsReplay);
-    void                setIsAlpha(string sIsAlpha);
     
     
     string              getImageId();
@@ -47,8 +44,9 @@ public:
     float               getRotation();
     float               getScale();
     string              getTouchEnable();
-    string              getIsSubtitle();
-    string              getIsReplay();
+    
+    //点击像素检测
+    void                setIsAlpha(string sIsAlpha);
     string              getIsAlpha();
 
     void                setTimer(string sTimer);
@@ -145,9 +143,6 @@ private:
     string              _sRole;
     //胜利动画
     string              _sIsWin;
-    //字幕
-    string              _sIsSubtitle;
-    string              _sIsReplay;
 
 };
 

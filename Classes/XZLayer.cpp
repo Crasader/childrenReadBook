@@ -3,9 +3,12 @@
 #include "XZLayer.h"
 #include "App.h"
 #include "YYXVisitor.h"
+#include "User.h"
+#include "YYXTime.h"
+#include "AppHttp.h"
 
 //展示分享红包
-void XZLayer::showShareRedPacket(string redCount)
+void XZLayer::safe_ShowShareRedPacket(string redCount)
 {
 	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
 		map<string, int64String> parameter;
@@ -72,13 +75,13 @@ YYXLayer* XZLayer::showVIPRenew(function<void()>runleave)
 	auto time = (Text*)viphint->findControl("Text_2");
 	if (time)
 	{
-		time->setText(StringUtils::format("%d", App::GetInstance()->m_me->vipTime / 86400));
+		time->setText(StringUtils::format("%d", User::getInstance()->getVipTime() / 86400));
 	}
 	auto gopay = (Button*)viphint->findControl("Button_3");
 	if (gopay)
 	{
 		gopay->addClickEventListener([=](Ref* sender) {
-			if (App::GetInstance()->m_me)
+			if (!YYXVisitor::getInstance()->getVisitorMode())
 			{
 				viphint->removeFromParent();
 				auto layer = XZLayer::payVip_xufei();
@@ -128,13 +131,21 @@ YYXLayer * XZLayer::payVip_xufei()
 	auto phonenum = (Text*)viphint->findControl("Text_12");
 	if (phonenum)
 	{
-		string userAccount = YYXLayer::getFileValue("userAccount", "");
+		string userAccount = "***********";
+		if (YYXVisitor::getInstance()->getVisitorMode())
+		{
+			userAccount = YYXVisitor::getInstance()->getVisitorName();
+		}
+		else
+		{
+			userAccount = User::getInstance()->getUserAccount();
+		}
 		phonenum->setText(userAccount);
 	}
 	auto datenumuntil = (Text*)viphint->findControl("Text_13");
 	if (datenumuntil)
 	{
-		datenumuntil->setText(App::GetInstance()->m_me->endvip);
+		datenumuntil->setText(User::getInstance()->getEndTime());
 	}
 	auto datenumnow = (Text*)viphint->findControl("Text_15");
 	if (datenumnow)
@@ -170,11 +181,12 @@ YYXLayer * XZLayer::payVip_xufei()
 			if (wechatPay->getSelectedState())
 				paytype = "weixinpay";
 			App::log("支付启动");
-			if (App::GetInstance()->m_me)
 				NetIntface::httpVIPPay(App::GetInstance()->getMemberId(), payCount, m_price, paytype, info, "httpVIPPaySuccess", [](string str) {
 				//续费成功
 				Toast::create(App::getString("CHONGZHICHENGGONG"), false);
-				App::httpCheckVIP(App::GetInstance()->getMemberId());
+				AppHttp::getInstance()->httpCheckVIP([]() {
+					YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
+				});
 				vector<string> da = { "VIP_WEEK1","VIP_WEEK2","VIP_WEEK3","VIP_DAY1" ,"VIP_DAY2" ,"VIP_DAY3" ,"VIP_DAY4" ,"VIP_DAY5" ,"VIP_DAY6" ,"VIP_DAY7" };
 				for(auto it : da)
 					YYXLayer::deleteFileValue(it);
@@ -294,18 +306,21 @@ YYXLayer * XZLayer::payBuyVip(const function<void()>& callback)
 	auto phonenum = (Text*)viphint->findControl("Text_12");
 	if (phonenum)
 	{
-		string userAccount = YYXLayer::getFileValue("userAccount", "");
+		string userAccount = "***********";
 		if (YYXVisitor::getInstance()->getVisitorMode())
 		{
 			userAccount = YYXVisitor::getInstance()->getVisitorName();
 		}		
+		else
+		{
+			userAccount = User::getInstance()->getUserAccount();
+		}
 		phonenum->setText(userAccount);
 	}
 	auto datenum = (Text*)viphint->findControl("Text_15");
 	if (datenum)
 	{
-		//datenum->setText(App::GetInstance()->m_me->endvip);
-		datenum->setText(App::GetStringTime3());
+		datenum->setText(YYXTime::getStringFormLongLong(YYXTime::getInstance()->getNowTime4S()));
 	}
 	auto isalipaycheck = false;
 	auto wechatPay = (CheckBox*)viphint->findControl("CheckBox_3");
@@ -334,10 +349,11 @@ YYXLayer * XZLayer::payBuyVip(const function<void()>& callback)
 			if (wechatPay->getSelectedState())
 				paytype = "weixinpay";
 			App::log("支付启动");
-			if (App::GetInstance()->m_me)
 				NetIntface::httpVIPPay(App::GetInstance()->getMemberId(), payCount, m_price, paytype, info, "httpVIPPaySuccess", [=](string str) {
 				Toast::create(App::getString("CHONGZHICHENGGONG"), false);
-				App::httpCheckVIP(App::GetInstance()->getMemberId());
+				AppHttp::getInstance()->httpCheckVIP([]() {
+					YYXLayer::sendNotify("refershMemberIDVIP");//提示刷新父母设置界面
+				});
 				YYXLayer::sendNotify("initHttp","bookinfo");
 				if (callback)
 					callback();

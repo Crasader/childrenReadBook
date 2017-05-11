@@ -328,7 +328,7 @@
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.9874" Y="0.9122" />
             <PreSize X="0.0804" Y="0.3844" />
-            <FileData Type="MarkedSubImage" Path="BookInfo/res/yjgou.png" Plist="BookInfo/csb/bookInfo.plist" />
+            <FileData Type="Normal" Path="BookInfo/res/yjgou.png" Plist="" />
           </AbstractNodeData>
           <AbstractNodeData Name="goumainianka" ActionTag="-1418399294" Tag="109" IconVisible="False" LeftMargin="597.1050" RightMargin="96.8950" TopMargin="501.1064" BottomMargin="42.8936" TouchEnable="True" FontSize="28" ButtonText="购买年卡, 免费阅读本书&gt;&gt;&gt;" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="334" Scale9Height="11" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="400.0000" Y="70.0000" />

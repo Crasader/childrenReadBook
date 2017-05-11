@@ -17,6 +17,8 @@
 #include "BookCommentList.h"
 #include "SetBook.h"
 #include "YYXSound.h"
+#include "AppHttp.h"
+#include "BookCache.h"
 
 using namespace experimental;
 USING_NS_CC;
@@ -203,18 +205,38 @@ bool BookInfo::init(SceneInfo* sceneInfo)
 	refreshUI();
 
 	//封面
+	bool _downloadCover = true;
 	string dir = FileUtils::getInstance()->getWritablePath() + "bookCover";
 	std::string fileName = StringUtils::format("%d", m_bookId) + ".png";
 	string bookCoverPath = dir + "/" + fileName;
 	if (FileUtils::getInstance()->isFileExist(bookCoverPath))
 	{
-		App::log("存在");
-		cover->loadTexture(bookCoverPath);
+		auto length = FileUtils::getInstance()->getFileSize(bookCoverPath);
+		if (length > 1000)
+		{
+			cover->loadTexture(bookCoverPath);
+			_downloadCover = false;
+		}
+		else
+		{
+			FileUtils::getInstance()->removeFile(bookCoverPath);
+		}
 	}
-	else {
-		App::log("不存在");
-		cover->loadTexture(PICTURE_BOOKINFO_COVER, TextureResType::PLIST);
+	if (_downloadCover)
+	{
+		cover->loadTexture("other/Book_cover.png");
+		//downloadCover();
 	}
+	auto listener = EventListenerCustom::create("haveCover_"+Value(m_bookId).asString(), [=](EventCustom* e) {
+		string dir = FileUtils::getInstance()->getWritablePath() + "bookCover";
+		std::string fileName = StringUtils::format("%d", m_bookId) + ".png";
+		string bookCoverPath = dir + "/" + fileName;
+		if (FileUtils::getInstance()->isFileExist(bookCoverPath))
+		{
+			cover->loadTexture(bookCoverPath);
+		}
+	});
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, cover);
 	initHttp();
 
 	//返回按钮
@@ -292,10 +314,7 @@ bool BookInfo::init(SceneInfo* sceneInfo)
 
 	//1.8.0
 	onClickLister();
-	if (App::GetInstance()->m_me)
-		m_relation->setControl(m_bookId, App::GetInstance()->getMemberId(), m_bookStatus);
-	else
-		m_relation->setControl(m_bookId, -999, m_bookStatus);
+	m_relation->setControl(m_bookId, App::GetInstance()->getMemberId(), m_bookStatus);
 	//按钮界面单独初始化
 	ButtonControl();
 	App::log(" BookInfo::init--END", this->getReferenceCount());
@@ -311,7 +330,6 @@ void BookInfo::initEvent()
 	});
 	auto pinglunshuliang = (Text*)node->getChildByName("pinglunshuliang");
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener1, pinglunshuliang);
-	m_listenerName.push_back(TAG_PINGLUNCOUNT);
 
 	auto listener2 = EventListenerCustom::create(TAG_READBOOK, [=](EventCustom* e) {
 		int book = (int)e->getUserData();
@@ -319,20 +337,17 @@ void BookInfo::initEvent()
 			readBook();
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, node);
-	m_listenerName.push_back(TAG_READBOOK);
 
 	auto listener3 = EventListenerCustom::create(TAG_BUTTONCONTROL, [=](EventCustom* e) {
 		ButtonControl();
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener3, node);
-	m_listenerName.push_back(TAG_BUTTONCONTROL);
 
 	//没有WiFi连接的通知
 	auto listenNoWifi = EventListenerCustom::create("Down_No_Wifi", [=](EventCustom* event) {
 		Toast::create(App::getString("NO_WIFI"));
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenNoWifi, node);
-	m_listenerName.push_back("Down_No_Wifi");
 
 	//------------------------------接受通知:刷新支付状态--------------------------------------------------------------------------
 	auto listener4 = EventListenerCustom::create(TAG_BUYSUCCESSCALLBACK, [=](EventCustom* event) {
@@ -340,7 +355,6 @@ void BookInfo::initEvent()
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener4, node);
 	//------------------------------接受通知:刷新支付状态--------------------------------------------------------------------------
-	m_listenerName.push_back(TAG_BUYSUCCESSCALLBACK);
 
 	// ---------------------------- - 接受通知:充值成功后,自动继续购书--------------------------------------------------------------------------
 	auto listener5 = EventListenerCustom::create(TAG_PAYSUCCESSGOTOBUG, [=](EventCustom* event) {
@@ -348,120 +362,51 @@ void BookInfo::initEvent()
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener5, node);
 	//-----------------------------接受通知:充值成功后,自动继续购书--END --------------------------------------------------------------------------
-	m_listenerName.push_back(TAG_PAYSUCCESSGOTOBUG);
 
 	//刷新红包抵扣提示
 	auto listener6 = EventListenerCustom::create(TAG_DIKOUHONGBAO, [=](EventCustom* e) {
 		hintHongbao();
 	}); 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener6, node);
-	m_listenerName.push_back(TAG_DIKOUHONGBAO);
 
 	//评论成功
 	auto listener7 = EventListenerCustom::create(TAG_SENDCOMMENTSUCCESS, [=](EventCustom* e) {
-		App::httpComment(m_bookId, []() {
+		AppHttp::getInstance()->httpComments(m_bookId, []() {
 			YYXLayer::sendNotify("showCommentListView", "", -1);
 		});
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener7, node);
-	m_listenerName.push_back(TAG_SENDCOMMENTSUCCESS);
 
 	//------------------------------接受通知:刷新界面--------------------------------------------------------------------------
-	auto listener8 = EventListenerCustom::create(TAG_BOOKINFOREFERUI, [=](EventCustom* event) {
+	auto listener8 = EventListenerCustom::create(TAG_BOOKINFOREFERUI, [=](EventCustom* e) {
 		refreshUI();
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener8, node);
-	m_listenerName.push_back(TAG_BOOKINFOREFERUI);
 	//------------------------------接受通知:刷新界面--------------------------------------------------------------------------
-
-	////Began
-	//auto touchlistener = EventListenerTouchOneByOne::create();
-	//touchlistener->onTouchBegan = [=](Touch* t, Event* e) {
-	//	zz(EventListenerTouchOneByOne  onTouchBegan  touchlistener)
-	//		zzz(EventListenerTouchOneByOne  onTouchBegan  touchlistener)
-	//		return true;
-	//};
-	////Moved
-	//touchlistener->onTouchMoved = [=](Touch* t, Event* e) {
-	//	zz(EventListenerTouchOneByOne  onTouchMoved  touchlistener)
-
-	//	zzz(EventListenerTouchOneByOne  onTouchMoved  touchlistener)
-	//};
-	////Ended
-	//touchlistener->onTouchEnded = [=](Touch* t, Event* e) {
-	//	zz(EventListenerTouchOneByOne  onTouchMoved  touchlistener)
-	//		zzz(EventListenerTouchOneByOne  onTouchMoved  touchlistener)
-	//};
-	////add
-	//auto sp2 = Sprite::create();
-	//addChild(sp2);
-	//Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchlistener, sp2);
+	auto listener9 = EventListenerCustom::create(TAG_BOOKINFO_CONTROL, [=](EventCustom* e) {
+		long code = (long)e->getUserData();
+		m_bookStatus = code;
+		if (m_relation)
+			m_relation->setControl(m_bookId, App::GetInstance()->getMemberId(), code);
+	});
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener9, node);
 }
 
 void BookInfo::initHttp()
 {
 	//用户和书籍关系
-	if (App::GetInstance()->m_me)
-		App::whetherForVipDownloadJudgeInCharge(App::GetInstance()->getMemberId(), m_bookId, [=](int status) {
-		m_bookStatus = status;
-		App::log("whetherForVipDownloadJudgeInCharge_________________________=>", m_bookStatus);
-		if(App::GetInstance()->m_me && m_relation)
-			m_relation->setControl(m_bookId, App::GetInstance()->getMemberId(), status);
-		else
-			m_relation->setControl(m_bookId, -999, status);
-		YYXLayer::sendNotify(TAG_BUTTONCONTROL);	
+	AppHttp::getInstance()->httpThe_relationship_between_human_and_books(m_bookId, [=](int code) {		
+		YYXLayer::sendNotify(TAG_BOOKINFO_CONTROL, "", code);
+		YYXLayer::sendNotify(TAG_BUTTONCONTROL);
 		YYXLayer::sendNotify(TAG_DIKOUHONGBAO);
-	}, [](string error) {});
+	});
 	//书籍详情
-	string runKey = "bookInfoSceneHttpGetBookInfoSuccess";
-	string errorKey = "bookInfoSceneHttpGetBookInfoFail";
-	NetIntface::httpGetBookInfo(m_bookId, runKey, [](string json) {
-		NetIntface::httpGetBookInfoCallBack(json, [](float avgScore, bool isvip, int bookId, int bookPage, int bookPrice100, int bookmarketPrice100, int remainTime, string bookAuthor,
-			string bookSize, string bookPress, string bookIntroduction, string bookName, string bookPlayUrl, string bookCoverUrl, string bookViewUrl) {
-			//解析正常
-			//书籍信息 原价+书籍名称+ 书页数
-			string BookNameKey = StringUtils::format("bookName+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookNameKey, bookmarketPrice100, bookName, (Ref*)bookPage);
-			//现价+封面url+新书标记
-			string BookPriceKey = StringUtils::format("bookPrice+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPriceKey, bookPrice100, bookCoverUrl);
-			//下载封面
-			string dir = App::getCoverDir();
-			string filename = StringUtils::format("%d", bookId) + ".png";
-			if (!FileUtils::getInstance()->isFileExist(dir + "/" + filename))
-				YYXDownloadImages::GetInstance()->newDownloadImage(bookCoverUrl, dir, filename, high);
-			//购书标记+下载URL + 	是否是vip书籍
-			string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", bookId);
-			if (isvip)
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, -999, bookPlayUrl, (Ref*)1);
-			else
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, -999, bookPlayUrl, (Ref*)0);
-			//活动倒计时 + 书籍作者
-			string BookAuthorKey = StringUtils::format("bookAuthor+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookAuthorKey, remainTime, bookAuthor);
-			//出版社 + 书籍星级
-			string BookPressKey = StringUtils::format("bookPress+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPressKey, avgScore, bookPress);
-			//书籍资源大小
-			string BookSizeKey = StringUtils::format("bookSize+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookSizeKey, -999, bookSize);
-			//书籍介绍
-			string bookIntroductionKey = StringUtils::format("bookIntroduction+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, bookIntroductionKey, -999, bookIntroduction);
-			//试读url
-			string bookViewUrlKey = StringUtils::format("bookViewUrl+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, bookViewUrlKey, -999, bookViewUrl);
-			YYXLayer::sendNotify(TAG_BOOKINFOREFERUI);
-			YYXLayer::sendNotify(TAG_BUTTONCONTROL);
-		}, []() {
-			//解析错误
-			Toast::create(App::getString("HUOQUSHUJIXIANGQINGYICHANG"));
-		});
-	}, errorKey, [](string str) {
-		Toast::create(App::getString("NETEXCEPTION"));
+	AppHttp::getInstance()->httpBookInfo(m_bookId, [](string name) {
+		YYXLayer::sendNotify(TAG_BOOKINFOREFERUI);
+		YYXLayer::sendNotify(TAG_BUTTONCONTROL);
 	});
 	//获取评论
-	App::httpComment(m_bookId, []() {
+	AppHttp::getInstance()->httpComments(m_bookId, []() {
 		YYXLayer::sendNotify("showCommentListView", "", -1);
 		YYXLayer::sendNotify(TAG_PINGLUNCOUNT);
 	});
@@ -480,6 +425,13 @@ void BookInfo::cleanup()
 	App::log("BookInfo::cleanup");
 	YYXSound::getInstance()->stopAll();
 	YYXSound::getInstance()->resumeBackGroundMusic();
+	if (m_View_Comment)
+	{
+		m_View_Comment->removeAllChildrenWithCleanup(true);
+		m_View_Comment->removeFromParentAndCleanup(true);
+	}
+	node->removeAllChildrenWithCleanup(true);
+	node->removeFromParentAndCleanup(true);
 	App::log("BookInfo::cleanup-end");
 }
 
@@ -557,333 +509,8 @@ void BookInfo::showTime(long long MillSecond)
 void BookInfo::startSchedu()
 {	
 	App::log("BookInfo::startSchedu");
-	//schedule([=](float f) {		
-	//	showTime(m_startTime);
-	//	m_startTime = m_startTime - 1000;
-	//	if (m_startTime<=0)
-	//		unschedule(BookInfoCountdown);
-	//}, 1.0f, BookInfoCountdown);
 	App::log("BookInfo::startSchedu---END");
 }
-
-////网络请求书籍详情
-//void BookInfo::httpBookInfo(int BookId)
-//{
-//	App::log("BookInfo::httpBookInfo");
-//	//请求获取当前bookId的书籍详情
-//	HttpRequest* request = new HttpRequest();
-//	request->setRequestType(HttpRequest::Type::GET);
-//	auto strUrl = std::string(IP).append(NET_BOOKINFO).append(StringUtils::format("%d", BookId))
-//		.append("?memberId=").append(App::getMemberID()).append("&resource=").append(App::GetInstance()->m_resource);
-//	request->setUrl(strUrl.c_str());
-//	//App::log(strUrl.c_str());
-//	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {//请求回调
-//		if (!response)
-//		{
-//			notify(MESSAGEBOX, App::getString("STR_NETERROR"));
-//			App::log("BookInfo::httpBookInfo---END");
-//			return;
-//		}
-//		if (!response->isSucceed()) 
-//		{
-//			App::log("connect failed!  error buffer");
-//			notify(MESSAGEBOX, App::getString("STR_NETERROR"));
-//			App::log("BookInfo::httpBookInfo---END");
-//			return;
-//		}
-//		response->getHttpRequest();
-//		//json解析
-//		std::vector<char> *buffer = response->getResponseData();
-//		std::string str(buffer->begin(), buffer->end());
-//		App::log(str);
-//		std::thread callback(&BookInfo::httpBookInfoCallback,this,str, BookId);
-//		callback.detach();
-//	});
-//	HttpClient::getInstance()->send(request);
-//	request->release();
-//	App::log("BookInfo::httpBookInfo---END");
-//}
-
-//网络请求书籍详情回调函数
-//void BookInfo::httpBookInfoCallback(std::string str, int BookId)
-//{
-//	App::log("BookInfo::httpBookInfoCallback");
-//	if (App::GetInstance()->m_RunningScene != MySceneName::BookInfoScene)
-//	{
-//		App::log("BookInfo::httpBookInfoCallback---END");
-//		return;
-//	}
-//	rapidjson::Document doc;
-//	doc.Parse<0>(str.c_str());
-//	if (doc.HasParseError())//json parse error
-//	{
-//		notify(MESSAGEBOX, App::getString("STR_NETERROR"));
-//		App::log("BookInfo::httpBookInfoCallback--END");
-//		return;
-//	}
-//	if (!doc.IsObject() || !doc.HasMember("code") || !doc.HasMember("data"))
-//	{
-//		notify(MESSAGEBOX, App::getString("STR_NETERROR"));
-//		App::log("BookInfo::httpBookInfoCallback--END");
-//		return;
-//	}
-//	rapidjson::Value &value = doc["code"];
-//	if (value.IsInt() && value.GetInt() == 0) 
-//	{//请求正常		
-//		App::log("bookinfo connect successful!");
-//		rapidjson::Value &data = doc["data"];
-//		if (data.IsObject() ) {
-//			//1.解析
-//			auto bookId = App::analysisJsonInt(data, "bookId");
-//			auto bookDownloadSize = App::analysisJsonInt(data, "bookDownloadSize");
-//			auto avgScore100 = App::analysisJsonDouble(data, "avgScore") * 100;
-//			auto bookPage = App::analysisJsonInt(data, "bookPage");
-//			auto bookAge = App::analysisJsonString(data, "bookAge");
-//			auto remainTime = App::analysisJsonInt(data, "remainTime");
-//			auto bookPrice = App::analysisJsonDouble(data, "bookPrice") * 100;
-//			auto bookmarketPrice = App::analysisJsonDouble(data, "bookmarketPrice") * 100;
-//			auto bookName = App::analysisJsonString(data, "bookName");
-//			auto bookPress = App::analysisJsonString(data, "bookPress");
-//			auto bookCoverUrl = App::analysisJsonString(data, "bookCoverUrl");
-//			auto bookPlayUrl = App::analysisJsonString(data, "bookPlayUrl");
-//			auto bookViewUrl = App::analysisJsonString(data, "bookViewUrl");
-//			auto upTime = App::getCurrentTime();
-//			auto bookIntroduction = App::analysisJsonString(data, "bookIntroduction");
-//			auto bookAuthor = App::analysisJsonString(data, "bookAuthor");			
-//			//2.更新内存
-//			m_Selling100 = bookPrice;
-//			m_OriginalPrice100 = bookmarketPrice;
-//			m_time = remainTime;
-//			m_upTime = upTime;
-//			m_BookName = bookName;
-//			m_bookIntroduction = bookIntroduction;
-//			m_bookPress = bookPress;
-//			m_bookPage = bookPage;
-//			m_bookAuthor = bookAuthor;
-//			m_coverUrl = bookCoverUrl; 
-//			m_playUrl = bookPlayUrl;
-//			/*//查数据库更新一下 封面地址
-//			auto resultres = App::sqliteBookPicture(App::sqliteOpen(), m_bookId);
-//			if (resultres.size() > 0)
-//			{
-//				if(&m_cover)
-//					m_cover = resultres[0]["path"].stringPara;
-//				if(&m_DownloadTime)
-//					m_DownloadTime = resultres[0]["downloadtime"].intPara;
-//			}*/
-//
-//			//3.通知界面刷新
-//			auto moveTime = App::getCurrentTime() - m_upTime;
-//			m_startTime = (m_time - moveTime) * 1000;
-//			m_startTime = m_time * 1000;
-//			notify(REFRESHUI);			
-//			//startSchedu();
-//			//4.写入数据库			
-//			unordered_map<string, string> paraInfoSTR;
-//			unordered_map<string, long long> paraInfoINT;
-//			paraInfoINT["bookId"] = bookId;
-//			paraInfoINT["bookDownloadSize"] = bookDownloadSize;
-//			paraInfoINT["evaluation_good_star"] = avgScore100;
-//			paraInfoINT["bookPage"] = bookPage;
-//			paraInfoSTR["bookAge"] = bookAge;
-//			paraInfoINT["remainTime"] = remainTime;
-//			paraInfoINT["bookPrice"] = bookPrice;
-//			paraInfoINT["bookmarketPrice"] = bookmarketPrice;
-//			paraInfoSTR["bookName"] = bookName;
-//			paraInfoSTR["bookPress"] = bookPress;
-//			paraInfoSTR["bookPic"] = bookCoverUrl;
-//			paraInfoSTR["bookPlayUrl"] = bookPlayUrl;
-//			paraInfoSTR["bookViewUrl"] = bookViewUrl;
-//			paraInfoINT["upTime"] = upTime;
-//			paraInfoSTR["bookIntroduction"] = bookIntroduction;
-//			paraInfoSTR["bookAuthor"] = bookAuthor;
-//			SqliteManager::DeleteData(App::sqliteOpen(), DB_BOOKINFO, std::string("where bookId=").append(StringUtils::format("%d", BookId)));
-//			bool result = SqliteManager::InsertData(App::sqliteOpen(), DB_BOOKINFO, paraInfoSTR, paraInfoINT);
-//			App::sqliteClose();
-//		}
-//	}
-//	App::log("BookInfo::httpBookInfoCallback--END");
-//}
-
-/*void BookInfo::httpGetBookComment(int bookId)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	getBookComments(bookId);
-#endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	getBookComments(bookId);
-#endif
-}
-
-void BookInfo::getBookComments(int BookId)
-{
-	App::log("BookInfo::httpBookComments");
-	HttpRequest* request = new HttpRequest();
-	request->setRequestType(HttpRequest::Type::POST);
-	auto strUrl = std::string(IP).append(NET_BOOKCOMMENT).append(StringUtils::format("?bookId=%d", BookId))
-		.append("&memberId=").append(App::getMemberID()).append("&resource=").append(App::GetInstance()->m_resource);
-	request->setUrl(strUrl.c_str());
-	request->setResponseCallback([=](HttpClient* client, HttpResponse* response) {//请求回调
-		if (!response)
-		{
-			App::log("BookInfo::httpBookComments--END");
-			return;
-		}
-		if (!response->isSucceed())
-		{
-			App::log("connect failed!  error buffer");
-			App::log("BookInfo::httpBookComments--END");
-			return;
-		}
-		response->getHttpRequest();
-		//json解析
-		std::vector<char> *buffer = response->getResponseData();
-		std::string str(buffer->begin(), buffer->end());
-		App::log(str);
-		std::thread callback(&BookInfo::httpBookCommentsCallback, this, str);
-		callback.detach();
-	});
-	HttpClient::getInstance()->send(request);
-	request->release();
-	App::log("BookInfo::httpBookComments--END");
-}
-
-void BookInfo::httpBookCommentsCallback(std::string str)
-{
-	App::log("BookInfo::httpBookCommentsCallback");
-	if (App::GetInstance()->m_RunningScene != MySceneName::BookInfoScene)
-	{
-		App::log("BookInfo::httpBookCommentsCallback---END");
-		return;
-	}
-	rapidjson::Document doc;
-	doc.Parse<0>(str.c_str());
-	if (doc.HasParseError())//json parse error
-	{
-		App::log("BookInfo::httpBookCommentsCallback--END");
-		return;
-	}
-	if (!doc.IsObject() || !doc.HasMember("code") || !doc.HasMember("data"))
-	{
-		App::log("BookInfo::httpBookCommentsCallback--END");
-		return;
-	}
-	rapidjson::Value &value = doc["code"];
-	if (value.IsInt() && value.GetInt() == 0)
-	{//请求正常		
-		App::log("connect successful!");
-		rapidjson::Value &data = doc["data"];
-		if (data.IsArray())
-		{
-			m_comment.clear();
-			for (rapidjson::SizeType i = 0; i < data.Size(); i++)
-			{
-				rapidjson::Value &item = data[i];
-				int gevalId = App::analysisJsonInt(item, "gevalId");
-				auto memberId = App::analysisJsonInt(item, "memberId");
-				auto memberName = App::analysisJsonString(item, "memberName");
-				auto title = App::analysisJsonString(item, "title");
-				auto score = App::analysisJsonInt(item, "score");
-				auto content = App::analysisJsonString(item, "content");
-				auto commentTime = App::analysisJsonInt(item, "commentTime");
-				auto gevalState = App::analysisJsonInt(item, "gevalState");
-				auto gevalOrderid = App::analysisJsonInt(item, "gevalOrderid");
-				//更新数据
-				std::map<std::string, ParaType> map;
-				App::initParaType(map, "gevalId", gevalId, "");
-				App::initParaType(map, "memberId", memberId, "");
-				App::initParaType(map, "memberName", -999, memberName);
-				App::initParaType(map, "title", -999, title);
-				App::initParaType(map, "score", score, "");
-				App::initParaType(map, "content", -999, content);
-				App::initParaType(map, "commentTime", commentTime, "");
-				App::initParaType(map, "gevalState", gevalState, "");
-				App::initParaType(map, "gevalOrderid", gevalOrderid, "");
-				m_comment.push_back(map);
-			}
-		}
-	}	
-	Director::getInstance()->getScheduler()->performFunctionInCocosThread([]() {
-		EventCustom event("showComment");
-		Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-	});
-	App::log("BookInfo::httpBookCommentsCallback--END");
-}*/
-
-//重新写入数据库
-//void BookInfo::retryInsertData(string tableName, unordered_map<string, string> paraInfoSTR, unordered_map<string, long long> paraInfoINT)
-//{
-//	App::log("BookInfo::retryInsertData");
-//	int num = 0;
-//	bool result = false;
-//	do 
-//	{
-//		App::ccsleep(300);
-//		if (num >3)
-//			break;
-//		SqliteManager::DeleteData(App::sqliteOpen(), DB_BOOKINFO, std::string("where bookId=").append(StringUtils::format("%d", paraInfoINT["bookId"])));
-//		result = SqliteManager::InsertData(App::sqliteOpen(), DB_BOOKINFO, paraInfoSTR, paraInfoINT);
-//		App::sqliteClose();
-//		++num;
-//	} while (!result);
-//	if (result)
-//		App::log("[重新写入数据库成功]");
-//	else
-//		App::log("[重新写入数据库失败]");
-//	App::log("BookInfo::retryInsertData---END");
-//}
-
-//初始化封面,价格,时间
-/*void BookInfo::loadBackGroundData()
-{
-	App::log("BookInfo::loadBackGroundData");
-	//从数据库中读出数据
-	long long bookPrice100 = -999, originalPrice100 = -999, bookDownloadSize = -999
-		, evaluation_good_star100 = -999, bookPage = -999, remainTime = -999
-		, upTime = 0, downloadtime = 0;
-	std::string bookName = "", bookPress = "", bookPicURL = "", bookAge = ""
-		, bookPlayUrl = "", bookViewUrl = "", path = "", bookIntroduction = "", bookAuthor = "";
-	auto result = App::sqliteBookInfo(App::sqliteOpen(), m_bookId);
-	if (result.size() > 0)
-	{
-		bookName = result[0]["bookName"].stringPara;
-		bookPress = result[0]["bookPress"].stringPara;
-		bookPicURL = result[0]["bookPic"].stringPara;
-		bookPrice100 = result[0]["bookPrice"].intPara;
-		originalPrice100 = result[0]["bookmarketPrice"].intPara;
-		bookDownloadSize = result[0]["bookDownloadSize"].intPara;
-		evaluation_good_star100 = result[0]["evaluation_good_star"].intPara;
-		bookPage = result[0]["bookPage"].intPara;
-		bookAge = result[0]["bookAge"].stringPara;
-		bookPlayUrl = result[0]["bookPlayUrl"].stringPara;
-		bookViewUrl = result[0]["bookViewUrl"].stringPara;
-		remainTime = result[0]["remainTime"].intPara;
-		upTime = result[0]["upTime"].intPara;
-		bookIntroduction = result[0]["bookIntroduction"].stringPara;
-		bookAuthor = result[0]["bookAuthor"].stringPara;
-	}
-	auto resultres = App::sqliteBookPicture(App::sqliteOpen(), m_bookId);
-	if (resultres.size() > 0)
-	{
-		path = resultres[0]["path"].stringPara;
-		downloadtime = resultres[0]["downloadtime"].intPara;
-	}
-	//获取信息保存在内存中
-	m_Selling100 = bookPrice100;
-	m_OriginalPrice100 = originalPrice100;
-	m_time = remainTime;
-	m_upTime = upTime;
-	//m_cover = path;
-	m_coverUrl = bookPicURL;
-	m_playUrl = bookPlayUrl;
-	m_DownloadTime = downloadtime;
-	m_BookName = bookName;
-	m_bookPress = bookPress;
-	m_bookPage = bookPage;
-	m_bookAuthor = bookAuthor;
-	m_bookIntroduction = bookIntroduction;
-	App::log("BookInfo::loadBackGroundData---END");
-}*/
 
 //展示价格
 void BookInfo::showPrice()
@@ -1090,7 +717,7 @@ Layer* BookInfo::initCommonView()
 	App::log("BookInfo::initCommonView");
 	//图层
 	Data data;
-	Layer* pinglun;
+	Layer* pinglun = nullptr;
 	if (App::GetInstance()->getData(BOOKINFO_PINGLUN_CSB,data))
 		pinglun = (Layer*)CSLoader::createNode(data);
 	else
@@ -1103,11 +730,6 @@ Layer* BookInfo::initCommonView()
 	commentMe->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "BookInfoScenecommentMe", [=]() {
 			YYXSound::getInstance()->playButtonSound();
-			//用户未登录
-			if (App::GetInstance()->m_me == nullptr) {
-				Toast::create(App::getString("COMMENT_TIP_LOGIN"));
-				return;
-			}
 			//未购买
 			if (m_relation->IsBookBuy() == false && m_relation->IsMemberVIP() == false) {
 				Toast::create(App::getString("COMMENT_TIP_BUY"));
@@ -1180,34 +802,6 @@ void BookInfo::recharge()
 	});
 }
 
-//获取有效红包
-void BookInfo::httpGetUserRedPackets()
-{
-	string url = string(IP).append(NET_USERREDPACKET).append("?memberId=").append(App::GetInstance()->getMemberID());
-	string runKey = "BookInfoSceneHttpGetUserRedPacketSuccess";
-	string errorKey = "BookInfoSceneHttpGetUserRedPacketFail";
-	NetIntface::httpGet(url, runKey, [](string json) {
-		NetIntface::httpGetUserRedPacketsCallBack(json, []() {
-			App::GetInstance()->m_redPacket.clear();
-		}, [](int coupon_id, int coupon_amount100, string coupon_expire_time) {
-			if (coupon_id != -999 || coupon_amount100 != -99900) {
-				map<string, YYXStruct> mapresult;
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_id", coupon_id);
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_amount", coupon_amount100);
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_expire_time", 0, coupon_expire_time);
-				App::GetInstance()->m_redPacket.push_back(mapresult);
-			}
-		}, [](int expiring_coupon_count) {
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "expiring_coupon_count", expiring_coupon_count);
-			YYXLayer::sendNotify("referRedPackets", "BookInfo");
-		}, []() {
-			Toast::create(App::getString("HONGBAOHUOQUSHIBAI"));
-		});
-	}, errorKey, [](string str) {
-		Toast::create(App::getString("NETEXCEPTION"));
-	});
-}
-
 //红包抵扣提示
 void BookInfo::hintHongbao()
 {
@@ -1256,9 +850,9 @@ string BookInfo::DownLoadBook(int bookId, string bookPlayUrl, string ZipName)
 		int bookid = YYXStruct::getMapInt64(App::GetInstance()->myData, taskTag2, -999);
 		if (code == 0)
 		{
-			NetIntface::AddDownLoadRecord(App::GetInstance()->getMemberId(), bookId, "", [](string str) {}, "", [](string str) {});
+			AppHttp::getInstance()->httpUploadDownloadRecord(bookid);
 			//下载成功,解压									
-			std::thread(&YYXDownload::uncompress, App::getReadZipDir(), StringUtils::format("%d", bookid), App::getReadDir(), [=](string zipPath) {
+			std::thread mythread(&YYXDownload::uncompress, App::getReadZipDir(), StringUtils::format("%d", bookid), App::getReadDir(), [=](string zipPath) {
 				YYXLayer::sendNotify(taskTag2 + "_BookProgressing", "", 100);
 				//App::addDownloadBookRecord(bookid);
 				DownloadBook::getInstance()->addBook(bookid, (int)YYXLayer::getCurrentTime4Second());
@@ -1269,7 +863,8 @@ string BookInfo::DownLoadBook(int bookId, string bookPlayUrl, string ZipName)
 				Toast::create(bookNameError.c_str());
 				YYXLayer::sendNotify(taskTag2 + "_BookProgressing", "", 999);
 				App::downloadFailDeleteFiles(App::getReadZipDir() + "/" + ZipName, App::getBookReadPath(bookId));
-			}).detach();
+			});
+			mythread.detach();
 		}
 		else
 		{
@@ -1795,11 +1390,11 @@ void BookInfo::hintIsBuyIsRent()
 	}
 	ygou->setVisible(true);
 	if (m_relation->IsBookBuy())
-		ygou->loadTexture("BookInfo/res/pager_yigou_736h.png", TextureResType::PLIST);
+		ygou->loadTexture("BookInfo/res/pager_yigou_736h.png");
 	else
 	{
 		if (m_relation->IsMemberVIP() && m_relation->IsBookRent())			//显示VIP已购
-			ygou->loadTexture("BookInfo/res/yjgou.png", TextureResType::PLIST);
+			ygou->loadTexture("BookInfo/res/yjgou.png");
 		else
 			ygou->setVisible(false);
 	}
@@ -1909,5 +1504,19 @@ void BookInfo::readbook_download_pause_tryreadbook(Button* bt)
 			bt->setTitleText("0%");
 			//addDownloadListener(bt);
 		}
+	}
+}
+
+void BookInfo::downloadCover()
+{
+	auto _book = BookCache::getInstance()->getBook(m_bookId);
+	if (_book)
+	{
+		auto url = _book->getCoverURL();
+		string dir = FileUtils::getInstance()->getWritablePath() + "bookCover";
+		std::string fileName = StringUtils::format("%d", m_bookId) + ".png";
+		YYXDownloadImages::GetInstance()->newDownloadImage(url, dir, fileName, high, 0, [=](string downpath) {
+			YYXLayer::sendNotify("haveCover_" + Value(m_bookId).asString());
+		});
 	}
 }

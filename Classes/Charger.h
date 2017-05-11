@@ -37,7 +37,7 @@ public:
 		YYXLayer::setFileValue("chargerSelectIndex", StringUtils::format("%d", val));
 	}
 	void setNodePrice(int tag, bool sel=false);
-	static void httpChargerInfo();//网络请求充值的信息
+	//static void httpChargerInfo();//网络请求充值的信息
 	virtual void cleanup();
 	float PayPrice() const { return m_payPrice; }
 	void PayPrice(float val) { m_payPrice = val; }

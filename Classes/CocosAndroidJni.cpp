@@ -308,29 +308,29 @@ void CocosAndroidJni::httpGetVIPOrderID(long memberid, long rechargeCount, long 
 }
 
 // JNI 获取分享成功的红包
-void CocosAndroidJni::httpShareWithCoupon(long memberID, const char* runKey, const char* errorKey)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void httpShareWithCoupon(int memberID, String runKey, String errorKey)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpShareWithCoupon", "(ILjava/lang/String;Ljava/lang/String;)V");
-	if (!isHave)
-	{
-		App::log("jni:httpShareWithCoupon did not exist");
-	}
-	else
-	{
-		//App::log("jni:httpShareWithCoupon exist");
-		jint _memberID = memberID;
-		jstring _runKey = function.env->NewStringUTF(runKey);
-		jstring _errorKey = function.env->NewStringUTF(errorKey);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberID, _runKey, _errorKey);
-		function.env->DeleteLocalRef(_runKey);
-		function.env->DeleteLocalRef(_errorKey);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
+//void CocosAndroidJni::httpShareWithCoupon(long memberID, const char* runKey, const char* errorKey)
+//{
+//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
+//	JniMethodInfo function;
+//	//原型函数public static void httpShareWithCoupon(int memberID, String runKey, String errorKey)
+//	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpShareWithCoupon", "(ILjava/lang/String;Ljava/lang/String;)V");
+//	if (!isHave)
+//	{
+//		App::log("jni:httpShareWithCoupon did not exist");
+//	}
+//	else
+//	{
+//		//App::log("jni:httpShareWithCoupon exist");
+//		jint _memberID = memberID;
+//		jstring _runKey = function.env->NewStringUTF(runKey);
+//		jstring _errorKey = function.env->NewStringUTF(errorKey);
+//		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberID, _runKey, _errorKey);
+//		function.env->DeleteLocalRef(_runKey);
+//		function.env->DeleteLocalRef(_errorKey);
+//		function.env->DeleteLocalRef(function.classID);
+//	}
+//#endif
+//}
 
 // JNI 获取书店当前页的书籍列表信息
 void CocosAndroidJni::httpBookStoreSceneCurrentlyPageBookListInfo(long memberID, long BookStoreId, long pageIndex, const char* visitFrom, const char* runKey, const char* errorKey)
@@ -408,166 +408,30 @@ void CocosAndroidJni::httpGetUserBuyBooks(long memberID, const char* runKey, con
 #endif
 }
 
-// JNI 获取用户安卓的账户余额
-void CocosAndroidJni::httpGetUserBalance(long memberID, const char* runKey, const char* errorKey)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void httpGetUserBalance(int memberID, String runKey, String errorKey)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpGetUserBalance", "(ILjava/lang/String;Ljava/lang/String;)V");
-	if (!isHave)
-	{
-		App::log("jni:httpGetUserBalance did not exist");
-	}
-	else
-	{
-		App::log("jni:httpGetUserBalance exist");
-		jint _memberID = memberID;
-		jstring _runKey = function.env->NewStringUTF(runKey);
-		jstring _errorKey = function.env->NewStringUTF(errorKey);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberID,  _runKey, _errorKey);
-		function.env->DeleteLocalRef(_runKey);
-		function.env->DeleteLocalRef(_errorKey);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
-
-// JNI 注册
-void CocosAndroidJni::httpAccountRegiste( const char* memberName, const char* memberPasswd, const char* runKey, const char* errorKey)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void httpAccountRegiste(String memberName, String memberPasswd, String runKey, String errorKey)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpAccountRegiste", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
-	if (!isHave)
-	{
-		App::log("jni:httpAccountRegiste did not exist");
-	}
-	else
-	{
-		App::log("jni:httpAccountRegiste exist");
-		jstring _memberName = function.env->NewStringUTF(memberName);
-		jstring _memberPasswd = function.env->NewStringUTF(memberPasswd);
-		jstring _runKey = function.env->NewStringUTF(runKey);
-		jstring _errorKey = function.env->NewStringUTF(errorKey);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberName, _memberPasswd, _runKey, _errorKey);
-		function.env->DeleteLocalRef(_memberName);
-		function.env->DeleteLocalRef(_memberPasswd);
-		function.env->DeleteLocalRef(_runKey);
-		function.env->DeleteLocalRef(_errorKey);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
-
-// JNI 修改用户信息
-void CocosAndroidJni::httpAmendUserInfo(long memberId, long sex, const char* city, const char* province, const char* runKey, const char* errorKey)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void httpAmendUserInfo(int memberId, int sex, String city,String province, String runKey, String errorKey) 
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpAmendUserInfo", "(IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
-	if (!isHave)
-	{
-		App::log("jni:httpAmendUserInfo did not exist");
-	}
-	else
-	{
-		App::log("jni:httpAmendUserInfo exist");
-		jint _memberId = memberId;
-		jint _sex = sex;
-		jstring _city = function.env->NewStringUTF(city);
-		jstring _province = function.env->NewStringUTF(province);
-		jstring _runKey = function.env->NewStringUTF(runKey);
-		jstring _errorKey = function.env->NewStringUTF(errorKey);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberId, _sex, _city, _province, _runKey, _errorKey);
-		function.env->DeleteLocalRef(_city);
-		function.env->DeleteLocalRef(_province);
-		function.env->DeleteLocalRef(_runKey);
-		function.env->DeleteLocalRef(_errorKey);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
-
-// JNI UTF-8转GBK
-void CocosAndroidJni::UTF82GBK(const char* GBK, const char* UTF)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void UTF82GBK(String GBK, String UTF)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "UTF82GBK", "(Ljava/lang/String;Ljava/lang/String;)V");
-	if (!isHave)
-	{
-		App::log("jni:UTF82GBK did not exist");
-	}
-	else
-	{
-		App::log("jni:UTF82GBK exist");
-		jstring _GBK = function.env->NewStringUTF(GBK);
-		jstring _UTF = function.env->NewStringUTF(UTF);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _GBK, _UTF);
-		function.env->DeleteLocalRef(_GBK);
-		function.env->DeleteLocalRef(_UTF);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
-
-// JNI GBK转UTF-8
-void CocosAndroidJni::GBK2UTF8(const char* GBK, const char* UTF)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void GBK2UTF8(String GBK, String UTF)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "GBK2UTF8", "(Ljava/lang/String;Ljava/lang/String;)V");
-	if (!isHave)
-	{
-		App::log("jni:GBK2UTF8 did not exist");
-	}
-	else
-	{
-		App::log("jni:GBK2UTF8 exist");
-		jstring _GBK = function.env->NewStringUTF(GBK);
-		jstring _UTF = function.env->NewStringUTF(UTF);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _GBK, _UTF);
-		function.env->DeleteLocalRef(_GBK);
-		function.env->DeleteLocalRef(_UTF);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
-
-// JNI 修改孩子信息
-void CocosAndroidJni::httpAmendBabyInfo(long childrenId, const char* childrenName, long childrenSex,  const char* childrenBirth, const char* runKey, const char* errorKey)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void httpAmendBabyInfo(int childrenId, String childrenName, int childrenSex,String childrenBirth, final String runKey, final String errorKey)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpAmendBabyInfo", "(ILjava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
-	if (!isHave)
-	{
-		App::log("jni:httpAmendBabyInfo did not exist");
-	}
-	else
-	{
-		App::log("jni:httpAmendBabyInfo exist");
-		jint _childrenId = childrenId;
-		jstring _childrenName = function.env->NewStringUTF(childrenName);
-		jint _childrenSex = childrenSex;
-		jstring _childrenBirth = function.env->NewStringUTF(childrenBirth);
-		jstring _runKey = function.env->NewStringUTF(runKey);
-		jstring _errorKey = function.env->NewStringUTF(errorKey);
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _childrenId, _childrenName, _childrenSex, _childrenBirth, _runKey, _errorKey);
-		function.env->DeleteLocalRef(_childrenName);
-		function.env->DeleteLocalRef(_childrenBirth);
-		function.env->DeleteLocalRef(_runKey);
-		function.env->DeleteLocalRef(_errorKey);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
+//// JNI 获取用户安卓的账户余额
+//void CocosAndroidJni::httpGetUserBalance(long memberID, const char* runKey, const char* errorKey)
+//{
+//#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
+//	JniMethodInfo function;
+//	//原型函数public static void httpGetUserBalance(int memberID, String runKey, String errorKey)
+//	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "httpGetUserBalance", "(ILjava/lang/String;Ljava/lang/String;)V");
+//	if (!isHave)
+//	{
+//		App::log("jni:httpGetUserBalance did not exist");
+//	}
+//	else
+//	{
+//		App::log("jni:httpGetUserBalance exist");
+//		jint _memberID = memberID;
+//		jstring _runKey = function.env->NewStringUTF(runKey);
+//		jstring _errorKey = function.env->NewStringUTF(errorKey);
+//		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberID,  _runKey, _errorKey);
+//		function.env->DeleteLocalRef(_runKey);
+//		function.env->DeleteLocalRef(_errorKey);
+//		function.env->DeleteLocalRef(function.classID);
+//	}
+//#endif
+//}
 
 // JNI 拍照,图片保存到指定位置
 void CocosAndroidJni::photographAlbumSelectImage(const char* name, const char* dir, const char* runKey, const char* errorKey)
@@ -956,28 +820,6 @@ void CocosAndroidJni::httpGetUserRedPackets(long memberId, const char* runKey, c
 		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberId, _runKey, _errorKey);
 		function.env->DeleteLocalRef(_runKey);
 		function.env->DeleteLocalRef(_errorKey);
-		function.env->DeleteLocalRef(function.classID);
-	}
-#endif
-}
-
-// JNI 上传下载记录
-void CocosAndroidJni::AddDownLoadRecord(long memberId, long bookId)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo function;
-	//原型函数public static void AddDownLoadRecord(int memberId, int bookId)
-	bool isHave = JniHelper::getStaticMethodInfo(function, "org/cocos2dx/cpp/AppActivity", "AddDownLoadRecord", "(II)V");
-	if (!isHave)
-	{
-		App::log("jni:AddDownLoadRecord did not exist");
-	}
-	else
-	{
-		App::log("jni:AddDownLoadRecord exist");
-		jint _memberId = memberId;
-		jint _bookId = bookId;
-		function.env->CallStaticVoidMethod(function.classID, function.methodID, _memberId, _bookId);
 		function.env->DeleteLocalRef(function.classID);
 	}
 #endif

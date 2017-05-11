@@ -16,7 +16,6 @@ bool FindItLayer::init()
 void FindItLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void FindItLayer::onExitTransitionDidStart()

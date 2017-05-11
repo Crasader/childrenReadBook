@@ -4,6 +4,9 @@ enum MyEnum
 	SELECT = 0, UNSELECT = 1
 };
 
+#define YYXCallBack const function<void()>&
+#define HttpCallBack function<void(HttpData*)>
+
 #define FIND_IMAGEVIEW_BY_NAME_BACKGROUND "background"//背景 控件名称 复用
 
 //------------------------------------首页场景---------------------------------------------------------
@@ -1155,6 +1158,7 @@ enum MyEnum
 #define TAG_DIKOUHONGBAO "addHint"
 #define TAG_SENDCOMMENTSUCCESS "HttpSendCommentSuccess"
 #define TAG_BOOKINFOREFERUI "bookinfoscene_referui"
+#define TAG_BOOKINFO_CONTROL "bookinfoscene_referControl"
 
 #define TAG_RECOVERBOOKSTORE "huifuyuanyang"
 
@@ -1163,3 +1167,16 @@ enum MyEnum
 #define TAG_BOOKROOMBOOKISEXIT "BookDeleteOrDownloadInBookRoom"
 #define TAG_BOOKCOVERDOWNLOAD "BookCoverDownloadInBookRoom"
 #define TAG_CHILDHEADDOWNLOADOVER "ChildHeadDownloadSuccess"
+#define TAG_DELETEWAITLAYER "DeleteWaitLayer"
+
+#define TAG_BABYCENTERSCENECHANGECHILDREN "BabyCenterSceneChangeChildren"
+#define TAG_BABYCENTERSCENESHOWDELETEBUTTON "BabyCenterSceneShowDeleteButton"
+#define TAG_BABYCENTERSCENESHOWCHILD "BabyCenterSceneShowChild"
+#define TAG_BABYCENTERSCENEAMENDBABYINFO "BabyCenterSceneAmendBabyInfo"
+
+#define TAG_CITYSCENEERFERVIEW "CitySceneReferView"
+
+#define TAG_INDEXSCENEDOWNLOADCHILDHEAD "IndexSceneDownloadHead"
+
+#define TAG1 "httpMoneyOver"
+#define TAG2 "httpRedPacketOver"

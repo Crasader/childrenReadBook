@@ -7,6 +7,8 @@
 #include "FKGameLayer.h"
 #include "FKPreLoadResourcesController.h"
 #include "FKUtil.h"
+#include "FKSubtitleController.h"
+#include "FKParticleSystemController.h"
 //视屏
 #include "ui/UIVideoPlayer.h"
 #include "ui/CocosGUI.h"
@@ -38,6 +40,7 @@ public:
     void videoPlayOverCallback();
     void showVideo();
     
+    void playBackgroundMusic();
     void initResource();
     void pageUp(Ref* pSender);
     void pageDown(Ref* pSender);
@@ -46,13 +49,15 @@ public:
     
     void setMenuOpacity(float opacity);
     
-    //粒子系统
-    void showParticleEffect(string sAutoOrTouch);
+    void pauseSubtitles();
     
     //Andriod和ios平台有效
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     void videoEventCallback(Ref* sender, experimental::ui::VideoPlayer::EventType eventType);
 #endif
+    
+private:
+	void doAutoPlay(float time);
         
 private:
     bool                            _isButtonEnable;
@@ -62,7 +67,8 @@ private:
     BookParser*                     _bookParser;
     EventListenerTouchOneByOne*     _oneTouch;
     
-    Point                           _touchLocation;
+    SubtitleController              _subtitleController;
+    ParticleSystemController        _particleSystemController;
 };
 
 NS_FK_END

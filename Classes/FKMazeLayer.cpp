@@ -15,7 +15,6 @@ bool MazeLayer::init()
 void MazeLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void MazeLayer::onExitTransitionDidStart()

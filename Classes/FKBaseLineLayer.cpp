@@ -19,7 +19,6 @@ bool BaseLineLayer::init()
 void BaseLineLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void BaseLineLayer::onExitTransitionDidStart()

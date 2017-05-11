@@ -17,7 +17,6 @@ bool OrderPuzzleLayer::init()
 void OrderPuzzleLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void OrderPuzzleLayer::onExitTransitionDidStart()

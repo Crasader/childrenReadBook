@@ -13,7 +13,7 @@ private:
 	int m_memberId = 0;
 	bool m_isUserVip = false;
 	bool m_isUserBuy = false;
-	bool m_isBookCover = false;//app界面和后台切换的时候使用 获取当前是否在封底界面 在封底就不恢复 在书籍就恢复
+	bool m_isBookCoverRuning = false;//app界面和后台切换的时候使用 获取当前是否在封底界面 在封底就不恢复 在书籍就恢复
 
 	void buySuccessMessageBox(ImageView* goumaichenggongLayer);
 	void yaoqingzhuce();
@@ -30,7 +30,7 @@ public:
 	void UserVip(bool val) { m_isUserVip = val; }
 	bool UserBuy() const { return m_isUserBuy; }
 	void UserBuy(bool val) { m_isUserBuy = val; }
-	bool BookCover() const { return m_isBookCover; }
-	void BookCover(bool val) { m_isBookCover = val; }
+	bool getBookCoverRuning() const { return m_isBookCoverRuning; }
+	void setBookCoverRuning(bool val) { m_isBookCoverRuning = val; }
 };
 #endif 

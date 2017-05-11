@@ -16,7 +16,6 @@ bool PuzzleLayer::init()
 void PuzzleLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void PuzzleLayer::onExitTransitionDidStart()

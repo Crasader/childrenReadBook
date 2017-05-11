@@ -1,4 +1,4 @@
-﻿#ifndef FKEllaBook_h
+#ifndef FKEllaBook_h
 #define FKEllaBook_h
 
 #include "FKBookParser.h"

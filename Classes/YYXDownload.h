@@ -76,8 +76,6 @@ public:
 	void downloadThreadRuning();
 private:
 	std::mutex down_mtx;
-	//线程容器
-	map<string, thread::id> threadData;
 	//数据容器
 	map<string, YYXStruct> data;
 	//代码容器

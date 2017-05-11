@@ -94,17 +94,53 @@
             <Project Name="bigButtonLayer.csd" Type="Node" />
             <PlistInfo Name="bookCity.csi" Type="Plist" />
             <Project Name="bookCityScene.csd" Type="Layer" />
+            <PlistInfo Name="buttons.csi" Type="Plist" />
             <Project Name="doubleButtonLayer.csd" Type="Node" />
           </Folder>
           <Folder Name="res">
+            <Image Name="bg_10.png" />
+            <Image Name="bg_100.png" />
+            <Image Name="bg_101.png" />
+            <Image Name="bg_14.png" />
+            <Image Name="bg_17.png" />
+            <Image Name="bg_18.png" />
+            <Image Name="bg_2.png" />
+            <Image Name="bg_20.png" />
+            <Image Name="bg_21.png" />
+            <Image Name="bg_22.png" />
+            <Image Name="bg_23.png" />
+            <Image Name="bg_25.png" />
+            <Image Name="bg_3.png" />
+            <Image Name="bg_39.png" />
+            <Image Name="bg_4.png" />
+            <Image Name="bg_46.png" />
+            <Image Name="bg_47.png" />
+            <Image Name="bg_49.png" />
+            <Image Name="bg_5.png" />
+            <Image Name="bg_50.png" />
+            <Image Name="bg_51.png" />
+            <Image Name="bg_63.png" />
+            <Image Name="bg_65.png" />
+            <Image Name="bg_7.png" />
+            <Image Name="bg_8.png" />
+            <Image Name="bg_80.png" />
+            <Image Name="bg_81.png" />
+            <Image Name="bg_82.png" />
+            <Image Name="bg_83.png" />
+            <Image Name="bg_84.png" />
+            <Image Name="bg_85.png" />
+            <Image Name="bg_86.png" />
+            <Image Name="bg_87.png" />
+            <Image Name="bg_89.png" />
+            <Image Name="bg_90.png" />
+            <Image Name="bg_91.png" />
+            <Image Name="bg_92.png" />
             <Image Name="BookStore_background_b.png" />
             <Image Name="BookStore_background_t.png" />
             <Image Name="border1.png" />
             <Image Name="border2.png" />
             <Image Name="border3.png" />
             <Image Name="border4.png" />
-            <Image Name="Common_Return.png" />
-            <Image Name="Common_Return_Selected.png" />
             <Image Name="img_937.png" />
             <Image Name="jiazai.png" />
             <Image Name="l.png" />

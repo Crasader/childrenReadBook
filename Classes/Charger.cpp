@@ -1,34 +1,11 @@
 ﻿#include "Charger.h"
 #include "YYXSound.h"
+#include "AppHttp.h"
 
 #define qq(d) App::log(#d);
 
-void Charger::httpChargerInfo()
-{
-	string url = string(IP) + NET_GETCHARGEACITIVITY+"?type=2";
-	NetIntface::httpPost(url, map<string, string>(),"", [](string json) {
-		NetIntface::httpGetRechargeActivityCallBack(json, [&](int index, int hongbaoid, int hongbao) {
-			//赠送红包列表
-			string key = StringUtils::format("charger+index=%d", index);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, hongbao, StringUtils::format("%d", hongbaoid));
-		}, [](int index, int charger) {
-			//充值金额列表
-			string key = StringUtils::format("charger+index=%d", index);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, key, -999, "", (Ref*)charger);
-		}, []() {
-			//解析结束的操作
-			YYXLayer::sendNotify("setNodePrice", "", -1);
-		}, []() {
-			//解析异常的操作
-		});
-	}, "", [](string str) {
-		//网络异常的操作
-	});
-}
-
 void Charger::cleanup()
-{
-	qq(Charger::cleanup())
+{	
 }
 
 Charger* Charger::create()
@@ -53,7 +30,7 @@ bool Charger::init()
 		return false;
 	}
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	httpChargerInfo();	
+	AppHttp::getInstance()->httpChargerInfo();
 	Data data;
 	string csb = RECHARGE_CSB;
 	if (App::GetInstance()->getData(csb, data))
@@ -132,8 +109,7 @@ bool Charger::init()
 			if (PayType() == 1)
 				paytype = "alipay";
 			App::log(paytype + StringUtils::format(" paymoney = %f", PayPrice() * 100));
-			if (App::GetInstance()->m_me)
-				NetIntface::httpPay(App::GetInstance()->m_me->id, payCount, PayPrice() * 100, paytype, info, "", [=](string str) {
+			NetIntface::httpPay(App::getMemberId(), payCount, PayPrice() * 100, paytype, info, "", [=](string str) {
 				if (m_callback)
 				{
 					Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
@@ -146,15 +122,15 @@ bool Charger::init()
 				auto money = getDatamoney(atoi(value.c_str()));
 				auto count = getDatahongbao(atoi(value.c_str()));
 				if (count > 0)
-					XZLayer::showShareRedPacket(StringUtils::format("%d%s", count, App::getString("YUAN")));
+					XZLayer::safe_ShowShareRedPacket(StringUtils::format("%d%s", count, App::getString("YUAN")));
 			}, "", [](string error) {
 				Toast::create(error.c_str());
 			});
 			pLayer->removeFromParentAndCleanup(true);
 		});
-	});	
+	});
 	qq(Charger::init end)
-	return true;
+		return true;
 }
 
 int Charger::getDatahongbao(int idx)

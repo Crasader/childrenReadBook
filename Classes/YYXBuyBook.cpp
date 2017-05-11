@@ -1,18 +1,16 @@
 ﻿#include "YYXBuyBook.h"
-#include "NetIntface.h"
 #include "YYXVisitor.h"
 #include "Charger.h"
-#include "BuyBook.h"
+#include "MyBook.h"
+#include "User.h"
+#include "AppHttp.h"
 
 YYXBuyBook* YYXBuyBook::instance = nullptr;
-
-#define TAG1 "httpMoneyOver"
-#define TAG2 "httpRedPacketOver"
 
 void YYXBuyBook::buyBook(const function<void(int)>& buyBookCallBack, const function<void()>& goToLoginCallBack)
 {
 	m_buyBookSuccessCallBack = [=](int bookid) {
-		BuyBook::getInstance()->addBook(bookid, (int)YYXLayer::getCurrentTime4Second());
+		MyBook::getInstance()->addBook(bookid, (int)YYXLayer::getCurrentTime4Second());
 		if (buyBookCallBack)
 			buyBookCallBack(bookid);
 	};
@@ -29,143 +27,42 @@ void YYXBuyBook::setOutScene(const function<void()>& goToLoginCallBack /*= nullp
 
 void YYXBuyBook::httpMoney()
 {
-	NetIntface::httpGetUserBalance(m_memberId, "", [=](string json) {
-		//解析json 
-		//写入内存和xml
-		NetIntface::httpGetUserBalanceCallBack(json, [=](int id, int userBalance, long long uptime) {
-			//正确解析
-			if (App::GetInstance()->m_me)
-				App::GetInstance()->m_me->momey = userBalance;
-			m_myMoney = userBalance;
-			if (YYXVisitor::getInstance()->getVisitorMode())
-				YYXLayer::setFileValue("visitorBalance", StringUtils::format("%d", userBalance), YYXVisitor::getInstance()->m_dirpath);
-			else
-				YYXLayer::setFileValue("userBalance", StringUtils::format("%d", userBalance));
-			YYXLayer::sendNotify(TAG1);
-		}, []() {
-			//返回错误,或者解析错误
-			Toast::create(App::getString("NETEXCEPTION"),false);
-		});
-	}, "", [](string str) {
-		//网络错误
-		Toast::create(App::getString("NETEXCEPTION"),false);
+	AppHttp::getInstance()->httpUserBalance([=](int userBalance) {
+		m_myMoney = userBalance;
+		YYXLayer::sendNotify(TAG1);
 	});
 }
 
 void YYXBuyBook::httpRedPacket()
 {
-	string url = string(IP).append(NET_USERREDPACKET).append(StringUtils::format("?memberId=%d", m_memberId));
-	NetIntface::httpGet(url, "", [](string json) {
-		NetIntface::httpGetUserRedPacketsCallBack(json, []() {
-			App::GetInstance()->m_redPacket.clear();
-		}, [](int coupon_id, int coupon_amount100, string coupon_expire_time) {
-			if (coupon_id != -999 || coupon_amount100 != -99900) {
-				map<string, YYXStruct> mapresult;
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_id", coupon_id);
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_amount", coupon_amount100);
-				YYXStruct::initMapYYXStruct(mapresult, "coupon_expire_time", 0, coupon_expire_time);
-				App::GetInstance()->m_redPacket.push_back(mapresult);
-			}
-		}, [](int expiring_coupon_count) {
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "expiring_coupon_count", expiring_coupon_count);
-			YYXLayer::sendNotify(TAG2);
-		}, []() {
-			Toast::create(App::getString("HONGBAOHUOQUSHIBAI"),false);
-		});
-	}, "", [](string str) {
-		Toast::create(App::getString("NETEXCEPTION"),false);
+	AppHttp::getInstance()->httpUserRedPackets([]() {
+		YYXLayer::sendNotify(TAG2);
 	});
 }
 
 void YYXBuyBook::httpBookInfo()
 {
-	NetIntface::httpGetBookInfo(m_bookId, "", [=](string json) {
-		NetIntface::httpGetBookInfoCallBack(json, [=](float avgScore, bool isvip, int bookId, int bookPage, int bookPrice100, int bookmarketPrice100, int remainTime, string bookAuthor,
-			string bookSize, string bookPress, string bookIntroduction, string bookName, string bookPlayUrl, string bookCoverUrl, string bookViewUrl) {
-			//解析正常
-			m_bookName = bookName;
-			m_bookPrice = bookPrice100;
-			//书籍信息 原价+书籍名称+ 书页数
-			string BookNameKey = StringUtils::format("bookName+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookNameKey, bookmarketPrice100, bookName, (Ref*)bookPage);
-			//现价+封面url+新书标记
-			string BookPriceKey = StringUtils::format("bookPrice+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPriceKey, bookPrice100, bookCoverUrl);
-			//购书标记+下载URL + 	是否是vip书籍
-			string BookPlayUrlKey = StringUtils::format("bookPlayUrl+bookID=%d", bookId);
-			if (isvip)
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, -999, bookPlayUrl, (Ref*)1);
-			else
-				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPlayUrlKey, -999, bookPlayUrl, (Ref*)0);
-			//活动倒计时 + 书籍作者
-			string BookAuthorKey = StringUtils::format("bookAuthor+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookAuthorKey, remainTime, bookAuthor);
-			//出版社 + 书籍星级
-			string BookPressKey = StringUtils::format("bookPress+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookPressKey, avgScore, bookPress);
-			//书籍资源大小
-			string BookSizeKey = StringUtils::format("bookSize+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, BookSizeKey, -999, bookSize);
-			//书籍介绍
-			string bookIntroductionKey = StringUtils::format("bookIntroduction+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, bookIntroductionKey, -999, bookIntroduction);
-			//试读url
-			string bookViewUrlKey = StringUtils::format("bookViewUrl+bookID=%d", bookId);
-			YYXStruct::initMapYYXStruct(App::GetInstance()->myData, bookViewUrlKey, -999, bookViewUrl);
-			Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-				buyBookFirst();
-			});
-		}, []() {
-			//解析错误
-			Toast::create(App::getString("HUOQUSHUJIXIANGQINGYICHANG"),false);
+	AppHttp::getInstance()->httpBookInfo(m_bookId, [=](string name) {
+		m_bookName = name;
+		Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+			buyBookFirst();
 		});
-	}, "", [](string str) {
-		Toast::create(App::getString("NETEXCEPTION"),false);
-	});
+	});	
 }
 
 void YYXBuyBook::httpBuyBook()
 {
 	if (m_hongbao <= 0)
 	{//无红包购书
-		NetIntface::httpBuyBookWithOutRedPacket(m_memberId, m_bookId, "", [=](string json) {
-			NetIntface::httpBuyBookWithOutRedPacketCallback(json, [=]() {
-				//购书成功
-				if (m_buyBookSuccessCallBack)
-					m_buyBookSuccessCallBack(m_bookId);
-				//httpRedPacket();
-				//httpMoney();
-				//Toast::create(App::getString("BUY_SCEESSE"));
-			}, [=]() {
-				//余额不足
-				//YYXLayer::sendNotify("yuebuzuAddMessagebox");
-				Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-					feeCharging();
-				});
-			}, []() {
-				//购书失败
-				Toast::create(App::getString("BUY_FAIL"));
+		AppHttp::getInstance()->httpBuyBookWithOutRedPacket(m_bookId, m_buyBookSuccessCallBack, [=]() {
+			Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+				feeCharging();
 			});
-		}, "", [](string str) {
-			//网络异常
-			Toast::create(App::getString("NETEXCEPTION"),false);
 		});
 	}
 	else
 	{//有红包购书
-		NetIntface::httpBuyBookWithRedPacket(m_memberId, m_hongbaoId, m_bookId, "", [=](string json) {
-			NetIntface::httpBuyBookWithRedPacketCallback(json, [=](string str) {
-				if (m_buyBookSuccessCallBack)
-					m_buyBookSuccessCallBack(m_bookId);
-				httpRedPacket();
-				httpMoney();
-				Toast::create(App::getString("BUY_SCEESSE"));
-			}, [](string error) {
-				Toast::create(error.c_str(),false);
-			});
-		}, "", [](string str) {
-			Toast::create(App::getString("NETEXCEPTION"),false);
-		});
+		AppHttp::getInstance()->httpBuyBookWithRedPacket(m_hongbaoId, m_bookId, m_buyBookSuccessCallBack);
 	}
 }
 
@@ -336,7 +233,13 @@ Layer* YYXBuyBook::buyBookFirst()
 		selcetRedPacket2->addClickEventListener(listenfunction);
 	}
 	if (bookname)
+	{
+		if (m_bookName.length() >25 )
+		{
+			bookname->setFontSize(bookname->getFontSize() - 8);
+		}
 		bookname->setText(m_bookName);
+	}
 	if (bookprice)
 		bookprice->setText(StringUtils::format("%.02f", m_bookPrice / 100.0) + App::getString("YUAN"));
 	if (balance)

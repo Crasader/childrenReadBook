@@ -23,7 +23,7 @@ Sprite* SpriteController::getSpriteFromSpriteData(SpriteData spData,string sImag
             spTmp = Sprite::createWithTexture(texture);
         }else
         {
-            spTmp = Sprite::create(FileUtils::getInstance()->fullPathForFilename(sImagePath));
+            spTmp = Sprite::create(sImagePath);
         }
         spTmp->setPosition(spData.getPosition());
         spTmp->setTag(spData.getTag());

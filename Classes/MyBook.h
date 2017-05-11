@@ -5,13 +5,13 @@
 
 using namespace std;
 
-class BuyBook :public BookRoomSelectPage
+class MyBook :public BookRoomSelectPage
 {
 public:
-	static BuyBook* BuyBookinstance;
-	static BuyBook* getInstance();
-	BuyBook();
-	~BuyBook();
+	static MyBook* BuyBookinstance;
+	static MyBook* getInstance();
+	MyBook();
+	~MyBook();
 
 	void initDir();//硬盘文件夹
 	void loadCache();//硬盘缓存读入

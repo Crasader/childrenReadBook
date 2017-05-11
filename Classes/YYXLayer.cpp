@@ -25,6 +25,7 @@ YYX框架
 #include <string>   
 #include "NetIntface.h"
 #include "YYXSound.h"
+#include "AppHttp.h"
 
 using namespace std;
 using namespace cocostudio::timeline;
@@ -728,20 +729,6 @@ long long YYXLayer::getCurrentTime4Second()
 	return times;
 }
 
-//每次获取不同的随机数
-long long YYXLayer::getRandom()
-{
-	long long times = -999;
-	times = time(0);
-	auto num = YYXStruct::getMapInt64(App::GetInstance()->myData, "getRandom", -999);
-	if (times <= num)
-		++num;
-	else
-		num = times;
-	YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "getRandom", num);
-	return num;
-}
-
 bool YYXLayer::getJsonObject4Json(rapidjson::Document& doc, string json)
 {
 	doc.Parse<0>(json.c_str());
@@ -1296,10 +1283,12 @@ YYXLayer* YYXLayer::LoadingLayer(int dtimme, function<void()> runable)
 //删除loading图层
 void YYXLayer::deleteLoadingLayer(int t)
 {
-	thread([=]() {
+	thread mythread([=]() {
 		App::ccsleep(t*1000);
 		YYXLayer::sendNotify("deleteMyLoadingLayer");
-	}).detach();
+		YYXLayer::sendNotify(TAG_DELETEWAITLAYER);
+	});
+	mythread.detach();
 }
 
 void YYXLayer::DownLoadNotify(string url, string dir, string fileName, string runKey, string errorKey)
@@ -1664,17 +1653,6 @@ void YYXLayer::deleteFileValue(string key)
 	}
 }
 
-//bool YYXLayer::getBoolFromXML(string str)
-//{
-//	string data = YYXLayer::getFileValue(str, "true");
-//	if (data == "false")
-//	{
-//		return false;
-//	}
-//	else
-//		return true;
-//}
-
 std::string YYXLayer::getStringTimeFromInt64Time(long long t)
 {
 	struct tm *lt;
@@ -1686,343 +1664,6 @@ std::string YYXLayer::getStringTimeFromInt64Time(long long t)
 	strftime(nowtime, 24, "%Y-%m-%d", lt);
 	return string(nowtime);
 }
-
-//void YYXLayer::showCommentListView(ListView * listview, map<string, map<string, YYXStruct>>& data, vector<string>& sortData, 
-//	int titleMaxLength, int listviewMaxWidth, int contentTextMaxLength,int voiceMaxLength)
-//{
-//	App::log("    ---------------------          YYXLayer::showCommentListView", data.size());
-//	if (!listview) {
-//		loge("listview = null");
-//		return;
-//	}
-//
-//	listview->setVisible(true);
-//	listview->removeAllItems();
-//	for (auto it : sortData)
-//	{
-//		auto result = data.find(it);
-//		if (result == data.end())
-//			continue;
-//		auto mapData = result->second;
-//		int score = atoi(mapData["score"].stringData.c_str());//星级
-//		auto memberName = mapData["memberName"].stringData;//用户名
-//		time_t commentTime = atoi(mapData["commentTime"].stringData.c_str());//评论时间
-//		auto state = mapData["gevalState"].stringData;//只打星 过滤不展示
-//		auto titileText = mapData["title"].stringData;//文字标题
-//		auto contentText = mapData["content"].stringData;//文字内容
-//		auto commentType = mapData["gevalType"].stringData;//文字=""0 语音="1"
-//		string voiceLength = mapData["gevalTime"].stringData;//语音时间
-//		int gevalId = atoi(mapData["gevalId"].stringData.c_str());//评论id
-//		App::log("memberName" + memberName);
-//		auto memberId = mapData["memberId"].stringData;
-//		double beishu = 3;
-//		//评分+账号+日期 800*80
-//		auto item2 = Layout::create();
-//		memberName.replace(3, 4, "****");
-//		Data dataCSB;
-//		Layer* scorelayer;
-//		if (App::GetInstance()->getData(BOOKINFO_SCORE_CSB, dataCSB))
-//			scorelayer = (Layer*)CSLoader::createNode(dataCSB);
-//		else
-//			scorelayer = (Layer*)CSLoader::createNode(BOOKINFO_SCORE_CSB);//整行图层
-//		if (scorelayer == nullptr) {
-//			App::log("scorelayer == nullptr");
-//			continue;
-//		}
-//		scorelayer->setAnchorPoint(Vec2(0, 0));
-//		auto first = (ImageView*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_FIRST);//第1个星
-//		auto second = (ImageView*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_SECOND);//第2个星
-//		auto three = (ImageView*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_THREE);//第3个星
-//		auto fourth = (ImageView*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_FOURTH);//第4个星
-//		auto fifth = (ImageView*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_FIFTH);//第5个星
-//		auto menbername = (Text*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_MEMBERNAME);//手机号码
-//		auto time = (Text*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_TIME);//日期
-//		menbername->setString(memberName);
-//		time->setString(App::getFormatTime(commentTime));
-//		item2->addChild(scorelayer);
-//		item2->setContentSize(Size(listviewMaxWidth, scorelayer->getContentSize().height));
-//		//间隔横线
-//		auto item4 = Layout::create();
-//		auto view = Text::create("________________________________________________________________________________________________", "FZHLJW.TTF", 20 * beishu);
-//		view->setScale(1 / beishu);
-//		view->setAnchorPoint(Vec2(0, 0));
-//		view->setTextColor(Color4B::GRAY);
-//		item4->addChild(view);
-//		item4->setContentSize(Size(listviewMaxWidth, view->getContentSize().height / beishu - 10));
-//		if (commentType == "0")//文字
-//		{
-//			if (state == "1")
-//			{
-//				App::log("state == 1");
-//				continue;
-//			}
-//			//标题
-//			auto item1 = Layout::create();
-//			if (titileText.length() > titleMaxLength)
-//				titileText = titileText.substr(0, titleMaxLength).append("...");
-//			auto titil = Label::create(titileText, "wdtyj.TTF", 16 * beishu);
-//			titil->setAnchorPoint(Vec2(0, 0));
-//			titil->setTextColor(Color4B(251, 133,54, 255));
-//			titil->setAdditionalKerning(4 * beishu);//字体间距
-//			titil->setLineHeight(16 * beishu);//行间距
-//			titil->setMaxLineWidth(listviewMaxWidth * beishu);
-//			titil->setScale(1 / beishu);
-//			item1->addChild(titil);
-//			item1->setContentSize(Size(listviewMaxWidth, titil->getContentSize().height / beishu + 4));
-//			//内容
-//			auto item3 = Layout::create();
-//			if (contentText.length() > contentTextMaxLength)
-//				contentText = contentText.substr(0, contentTextMaxLength).append("...");
-//			auto content = Label::create(contentText, "wdtyj.TTF", 14 * beishu);
-//			content->setAnchorPoint(Vec2(0, 0));
-//			content->setTextColor(Color4B(108, 72, 49, 255));
-//			content->setAdditionalKerning(2 * beishu);//字体间距
-//			content->setLineHeight(26 * beishu);//行间距
-//			content->setTextColor(Color4B::BLACK);
-//			content->setMaxLineWidth(listviewMaxWidth * beishu);
-//			content->setScale(1 / beishu);
-//			if (memberId == App::getMemberID())
-//			{
-//				auto imview = ImageView::create();
-//				imview->setAnchorPoint(Vec2(0, 0));
-//				imview->setPosition(Vec2(0, 0));
-//				imview->setSize(Size(listviewMaxWidth, content->getContentSize().height / beishu + 4));
-//				imview->setScale9Enabled(true);
-//				imview->loadTexture("other/block.png");
-//				imview->setOpacity(1);
-//				imview->setTag(gevalId);
-//				imview->setSwallowTouches(false);
-//				imview->setTouchEnabled(true);
-//				imview->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type) {
-//					auto view = (ImageView*)sender;
-//					if (type == Widget::TouchEventType::BEGAN)
-//					{
-//						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 0);//0=点击有效 1=点击无效
-//					}
-//					else if (type == Widget::TouchEventType::MOVED)
-//					{
-//						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
-//					}
-//					else	if (type == Widget::TouchEventType::ENDED)
-//					{
-//						auto click = YYXStruct::getMapInt64(App::GetInstance()->myData, "listviewClickAble", 0);//0=点击有效 1=点击无效
-//						if (click == 1)
-//							return;
-//						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
-//						//删除
-//						auto message = YYXLayer::MyMessageBox(App::getString("SHANCHUPINGLUN"), App::getString("SHANCHU"), [=]() {
-//							auto id = view->getTag();
-//							NetIntface::httpDeleteComment(id, [=](int commentID) {
-//								YYXLayer::sendNotify("DeleteCommentRefershListView", "", commentID);
-//							}, [](string str) {
-//								Toast::create(str.c_str());
-//							});
-//						}, "", []() {});
-//						Director::getInstance()->getRunningScene()->addChild(message);
-//					}
-//					else if (type == Widget::TouchEventType::CANCELED)
-//					{
-//					}
-//				});
-//				item3->addChild(imview);
-//			}
-//			item3->addChild(content);
-//			item3->setContentSize(Size(listviewMaxWidth, content->getContentSize().height / beishu + 4));
-//
-//			//插入
-//			listview->pushBackCustomItem(item1);
-//			listview->pushBackCustomItem(item2);
-//			listview->pushBackCustomItem(item3);
-//			listview->pushBackCustomItem(item4);
-//		}
-//		else if (commentType == "1")//语音
-//		{
-//			//语音
-//			auto item3 = Layout::create();
-//			int lengthv = atoi(voiceLength.c_str());
-//			if (lengthv <= 0)
-//				lengthv = 1;
-//			if (lengthv >= 29)
-//				lengthv = 30;
-//			string voiceCSB = "BookInfo/csb/voicecomment.csb";
-//			Data dataCSB;
-//			Node* voiceLayer;
-//			if (App::GetInstance()->getData(voiceCSB, dataCSB))
-//				voiceLayer = CSLoader::createNode(dataCSB);
-//			else
-//				voiceLayer = CSLoader::createNode(voiceCSB);
-//			if (voiceLayer == nullptr)
-//			{
-//				App::log("voiceLayer == nullptr");
-//				continue;
-//			}
-//			voiceLayer->setTag(0);
-//			auto bgView = (ImageView*)voiceLayer->getChildByName("Image_2");
-//			bgView->setSize(Size(listviewMaxWidth,40));
-//			auto voiceCommentView = (ImageView*)voiceLayer->getChildByName("Image_1");//100-220伸缩
-//			auto voiceTimeView = (Text*)voiceLayer->getChildByName("Text_4");
-//			if (voiceCommentView)
-//			{
-//				voiceCommentView->setTag(gevalId);
-//				voiceCommentView->setSwallowTouches(false);
-//				int width = (voiceMaxLength - 100) / 30 * lengthv + 100;
-//				voiceCommentView->setSize(Size(width, voiceCommentView->getSize().height));
-//				voiceCommentView->setTouchEnabled(true);
-//				voiceCommentView->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type) {
-//					auto view = (ImageView*)sender;
-//					if (type == Widget::TouchEventType::BEGAN)
-//					{
-//						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 0);//0=点击有效 1=点击无效
-//					}
-//					else if (type == Widget::TouchEventType::MOVED)
-//					{
-//						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
-//					}
-//					else	if (type == Widget::TouchEventType::ENDED)
-//					{
-//						auto click = YYXStruct::getMapInt64(App::GetInstance()->myData, "listviewClickAble", 0);//0=点击有效 1=点击无效
-//						if (click == 1)
-//							return;
-//						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
-//						if (voiceLayer->getTag() == 1)
-//						{//停止播放
-//							AudioEngine::stopAll();
-//							YYXLayer::sendNotify("StopAnimation");
-//							if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-//								SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-//							else
-//								SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-//						}
-//						else
-//						{//播放
-//							YYXLayer::sendNotify("StopAnimation", "", (int)voiceLayer);
-//							voiceLayer->setTag(1);
-//							int id = view->getTag();
-//							string paht = FileUtils::getInstance()->getWritablePath() + "voiceComment/" + StringUtils::format("%d.mp3", id);
-//							if (!paht.empty() && FileUtils::getInstance()->isFileExist(paht))
-//							{
-//								if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
-//								{
-//									SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-//									SimpleAudioEngine::getInstance()->pauseAllEffects();
-//								}
-//								AudioEngine::stopAll();
-//								auto AEplay = new AudioEngine();
-//								auto animate = FrameAnimation::createAnimate(3, "other/vioceplist.plist", "other/Backcover_vioce%d_736h.png", 0.2f);
-//								auto seqDoor = Sequence::create(animate, animate->reverse(), NULL);
-//								auto act = RepeatForever::create(seqDoor);
-//								auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
-//								if (voiceSp)
-//									voiceSp->runAction(act);
-//								auto playId = AEplay->play2d(paht);
-//								AEplay->setFinishCallback(playId, [=](int id, string path) {
-//									App::log(" music finish " + paht);
-//									// 音乐结束回调
-//									auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
-//									if (voiceSp) {
-//										voiceSp->stopAllActions();
-//										voiceSp->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("other/Backcover_vioce2_736h.png"));
-//									}
-//									voiceLayer->setTag(0);
-//									if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-//										SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-//									else
-//										SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-//									if (AEplay)
-//										delete AEplay;
-//								});
-//							}
-//							else
-//								Toast::create(App::getString("YUYINGBOFANGSHIBAI"));
-//						}
-//					}
-//					else if (type == Widget::TouchEventType::CANCELED)
-//					{
-//					}
-//				});
-//			}
-//			if (voiceTimeView)
-//				voiceTimeView->setText(StringUtils::format("%d\"", lengthv));
-//			if (bgView)
-//			{
-//				bgView->setTag(gevalId);
-//				bgView->setSwallowTouches(false);
-//				if (memberId == App::getMemberID())
-//				{
-//					bgView->setTouchEnabled(true);
-//					bgView->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type) {
-//						auto view = (ImageView*)sender;
-//						if (type == Widget::TouchEventType::BEGAN)
-//						{
-//							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 0);//0=点击有效 1=点击无效
-//						}
-//						else if (type == Widget::TouchEventType::MOVED)
-//						{
-//							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
-//						}
-//						else	if (type == Widget::TouchEventType::ENDED)
-//						{
-//							auto click = YYXStruct::getMapInt64(App::GetInstance()->myData, "listviewClickAble", 0);//0=点击有效 1=点击无效
-//							if (click == 1)
-//								return;
-//							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "listviewClickAble", 1);//0=点击有效 1=点击无效
-//							//删除
-//							auto message = YYXLayer::MyMessageBox(App::getString("SHANCHUPINGLUN"), App::getString("SHANCHU"), [=]() {
-//								auto id = view->getTag();
-//								NetIntface::httpDeleteComment(id, [=](int commentID) {
-//									YYXLayer::sendNotify("DeleteCommentRefershListView", "", commentID);
-//								}, [](string str) {
-//									Toast::create(str.c_str());
-//								});
-//							}, "", []() {});
-//							Director::getInstance()->getRunningScene()->addChild(message);
-//						}
-//						else if (type == Widget::TouchEventType::CANCELED)
-//						{
-//						}
-//					});
-//				}
-//			}
-//			item3->addChild(voiceLayer);
-//			item3->setContentSize(Size(listviewMaxWidth, voiceLayer->getContentSize().height + 5));
-//			//删除评论后刷新列表
-//			auto listenerDeleteComment = EventListenerCustom::create("DeleteCommentRefershListView", [&](EventCustom* e) {
-//				auto commentID = (int)e->getUserData();
-//				string commentid = StringUtils::format("%d", commentID);
-//				if (data.find(commentid) != data.end())
-//				{
-//					data.erase(commentid);
-//					AudioEngine::stopAll();
-//					if (YYXLayer::getBoolFromXML(MUSIC_KEY))
-//						SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-//					else
-//						SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-//					showCommentListView(listview, data, sortData);
-//				}
-//			});
-//			Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerDeleteComment, listview);
-//			//停止动画
-//			auto listenerStopVoicePlay = EventListenerCustom::create("StopAnimation", [=](EventCustom* e) {
-//				if ((int)e->getUserData() != (int)voiceLayer)
-//				{
-//					auto voiceSp = (Sprite*)voiceLayer->getChildByName("Sprite_11");
-//					if (voiceSp) {
-//						voiceSp->stopAllActions();
-//						voiceSp->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("other/Backcover_vioce2_736h.png"));
-//					}
-//					voiceLayer->setTag(0);
-//				}
-//			});
-//			Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerStopVoicePlay, voiceLayer);
-//			//插入
-//			listview->pushBackCustomItem(item2);
-//			listview->pushBackCustomItem(item3);
-//			listview->pushBackCustomItem(item4);
-//		}
-//	}
-//	listview->jumpToTop();
-//	loge("YYXLayer::showCommentListView");
-//}
 
 //重新展示评论列表
 void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid, int titleMaxLength, int listviewMaxWidth, int contentTextMaxLength, int voiceMaxLength)
@@ -2090,10 +1731,8 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 		double beishu = 3;
 		//评分+账号+日期 800*80
 		auto item2 = Layout::create();
-		if (memberName.size() >= 7)
-		{
+		if (memberName.size() == 11)
 			memberName.replace(3, 4, "****");
-		}
 		Data dataCSB;
 		Layer* scorelayer;
 		if (App::GetInstance()->getData(BOOKINFO_SCORE_CSB, dataCSB))
@@ -2185,12 +1824,10 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 							auto index = view->getTag();
 							string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);//bookid + 下标顺序
 							int thisCommentID = YYXStruct::getMapInt64(App::GetInstance()->myData, idKey, 0);//评论id + 类型
-							NetIntface::httpDeleteComment(thisCommentID, [=](int commentID) {
+							AppHttp::getInstance()->httpDeleteComment(thisCommentID, [=]() {
 								string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);
 								YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, idKey);
 								YYXLayer::sendNotify("showCommentListView", "111111111111111111111", memberid);
-							}, [](string str) {
-								Toast::create(str.c_str());
 							});
 						}, "", []() {});
 						Director::getInstance()->getRunningScene()->addChild(message);
@@ -2325,12 +1962,10 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 								auto index = view->getTag();
 								string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);//bookid + 下标顺序
 								int thisCommentID = YYXStruct::getMapInt64(App::GetInstance()->myData, idKey, 0);//评论id + 类型
-								NetIntface::httpDeleteComment(thisCommentID, [=](int commentID) {
+								AppHttp::getInstance()->httpDeleteComment(thisCommentID, [=]() {
 									string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);
 									YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, idKey);
 									YYXLayer::sendNotify("showCommentListView", "222222222222222", memberid);
-								}, [](string str) {
-									Toast::create(str.c_str());
 								});
 							}, "", []() {});
 							Director::getInstance()->getRunningScene()->addChild(message);

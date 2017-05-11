@@ -2,6 +2,7 @@
 #include "YYXImageView.h"
 #include "NetIntface.h"
 #include "YYXSound.h"
+#include "AppHttp.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -67,7 +68,7 @@ vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid, int memberID)
 			voiceLength = (long)YYXStruct::getMapRef(App::GetInstance()->myData, voiceKey, 0);//语音时间
 			url = YYXStruct::getMapString(App::GetInstance()->myData, voiceKey, "");//语音url
 		}
-		if (memberName.size() >= 7)
+		if (memberName.length() == 11)
 			memberName.replace(3, 4, "****");
 		string AvatarUrlKey = StringUtils::format("comment_gevalId=%d+memberId+AvatarUrl", commentID);
 		int memberId = YYXStruct::getMapInt64(App::GetInstance()->myData, AvatarUrlKey, 0);//用户id
@@ -138,7 +139,7 @@ vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid)
 			voiceLength = (int)YYXStruct::getMapRef(App::GetInstance()->myData, voiceKey, 0);//语音时间
 			url = YYXStruct::getMapString(App::GetInstance()->myData, voiceKey, "");//语音url
 		}
-		if(memberName.size() >=7)
+		if(memberName.length() == 11)
 			memberName.replace(3, 4, "****");
 		string AvatarUrlKey = StringUtils::format("comment_gevalId=%d+memberId+AvatarUrl", commentID);
 		int memberId = YYXStruct::getMapInt64(App::GetInstance()->myData, AvatarUrlKey, 0);//用户id
@@ -517,14 +518,11 @@ void YYXTableView::handleYourOwnComments(TableView* table, TableViewCell* cell)
 	{//删除
 		auto message = YYXLayer::MyMessageBox(App::getString("SHANCHUPINGLUN"), App::getString("SHANCHU"), [=]() {
 			int commentID = YYXStruct::getMapInt64(data, "voicepath", -999);
-			NetIntface::httpDeleteComment(commentID, [=](int commentID) {
+			AppHttp::getInstance()->httpDeleteComment(commentID, [=]() {
 				int bookid = YYXStruct::getMapInt64(data, "userName", -999);
 				string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);
 				YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, idKey);
 				YYXLayer::sendNotify("showCommentListView", "", m_memberID);
-			}, [=](string str) {
-				YYXLayer::sendNotify("showCommentListView", "", m_memberID);
-				Toast::create(str.c_str());
 			});
 		}, "", []() {});
 		Director::getInstance()->getRunningScene()->addChild(message);

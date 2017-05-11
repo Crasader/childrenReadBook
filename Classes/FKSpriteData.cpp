@@ -27,8 +27,6 @@ void SpriteData::clear()
     _fOpacity = 0.0f;
     _fRotation = 0.0f;
     _fScale = 0.0f;
-    _sIsSubtitle.clear();
-    _sIsReplay.clear();
     _sIsAlpha.clear();
 }
 
@@ -90,14 +88,7 @@ void SpriteData::setScale(string sScale, float resourcesScale)
 {
     _fScale = stringTo<float>(sScale)*resourcesScale;
 }
-void SpriteData::setIsSubtitle(string sIsSubtitle)
-{
-    _sIsSubtitle = sIsSubtitle;
-}
-void SpriteData::setIsReplay(string sIsReplay)
-{
-    _sIsReplay = sIsReplay;
-}
+
 void SpriteData::setIsAlpha(string sIsAlpha)
 {
     _sIsAlpha = sIsAlpha;
@@ -148,14 +139,6 @@ float SpriteData::getScale()
 string SpriteData::getTouchEnable()
 {
     return _sTouchEnable;
-}
-string SpriteData::getIsSubtitle()
-{
-    return _sIsSubtitle;
-}
-string SpriteData::getIsReplay()
-{
-    return _sIsReplay;
 }
 string SpriteData::getIsAlpha()
 {

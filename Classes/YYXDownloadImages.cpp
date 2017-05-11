@@ -1,5 +1,6 @@
 ﻿#include "YYXDownloadImages.h"
 #include "NetIntface.h"
+#include "YYXTime.h"
 
 YYXDownloadImages* YYXDownloadImages::instance = nullptr;
 
@@ -14,7 +15,9 @@ YYXDownloadImages::~YYXDownloadImages()
 YYXDownloadImages* YYXDownloadImages::GetInstance()
 {
 	if (instance == nullptr)
+	{
 		instance = new YYXDownloadImages();
+	}
 	return instance;
 }
 
@@ -24,16 +27,21 @@ void YYXDownloadImages::newDownloadImage(string url, string dir, string filename
 	string path = dir + "/" + filename;
 	App::log("YYXDownloadImages::newDownloadImage ===>>>" + path);
 	string taskTag = getTaskTag(path);
-	data->Url(url)->Path(path)->Priority(priority)->Dir(dir)->FileName(filename)->Task(taskTag)->Callback([=](string downpath) {
+	data->setUrl(url)->setPath(path)->Priority(priority)->setDir(dir)->setFileName(filename)->Task(taskTag)->setCallback([=](string downpath) {
 		if (callback)
 			callback(downpath);
+		auto nowtime = YYXTime::getInstance()->getNowTime4S();
+		auto httptime = nowtime - data->StartTime();
+		if (httptime < outTime)
+		{
+			change4GoodTime();
+		}
 		deleteTask(taskTag);
-		startTask();
-	})->Callbackerror([=](string error) {
+	})->setCallbackerror([=](string error) {		
 		if (callbackerror)
 			callbackerror(error);
+		change4OutTime();
 		deleteTask(taskTag);
-		startTask();
 	});
 	data->retain();
 	data->autorelease();
@@ -50,7 +58,7 @@ void YYXDownloadImages::newDownloadImage(string url, string dir, string filename
 		lowList.push_back(taskTag);
 		break;
 	}
-	startTask();
+	App::GetInstance()->addMessage();
 }
 
 
@@ -63,48 +71,52 @@ std::string YYXDownloadImages::getTaskTag(string path)
 	}
 	else
 	{
-		taskTag = StringUtils::format("%d_downloadImage_", (int)YYXLayer::getRandom()) + path;
+		taskTag = StringUtils::format("%d_downloadImage_", YYXTime::getInstance()->getRandomL()) + path;
 	}
 	return taskTag;
 }
 
 void YYXDownloadImages::getList()
 {
-	App::log("*****************************************************************************************************************");
 	for (auto it : downloadList)
 	{
 		string name = it.first;
-		string path = it.second->Path();
+		string path = it.second->getPath();
 		App::log(name + "===>>" + path);
 	}
-	App::log("*****************************************************************************************************************");
 }
 
 void YYXDownloadImages::startTask()
 {
-	m.lock();
 	if (downloadList.size() > 0)
 	{
 		vector<string> data;
 		for (auto it : downloadList)
 		{
 			auto task = it.second;
-			auto timestart = task->StartTime();
-			if (timestart <= 0)
+			if (task)
 			{
-				timestart = YYXLayer::getCurrentTime4Second();
-				task->StartTime(timestart);
+				auto timestart = task->StartTime();
+				if (timestart <= 0)
+				{
+					timestart = YYXLayer::getCurrentTime4Second();
+					task->StartTime(timestart);
+				}
+				auto nowtime = YYXLayer::getCurrentTime4Second() - timestart;
+				if (nowtime > outTime)
+				{
+					data.push_back(task->Task());
+					change4OutTime();
+				}
 			}
-			auto nowtime = YYXLayer::getCurrentTime4Second() - timestart;
-			if (nowtime > outTime)
-			{
-				data.push_back(task->Task());
-			}
+			else
+				data.push_back(it.first);
 		}
 		for (auto it : data)
 		{
 			deleteTask(it);
-			App::log("deleteTask out 10s ==>>" + it);
+			//cocos2d::network::HttpClient::getInstance()->destroyInstance();
+			App::log(it+"  ==> deleteTask outTime ", outTime);
 		}
 	}
 	if (downloadList.size() < m_concurrence)
@@ -121,14 +133,45 @@ void YYXDownloadImages::startTask()
 	}
 	if (downloadList.size() > 0)
 	{
-		Start(true);
+		setStart(true);
 	}
 	else
 	{
-		Start(false);
+		setStart(false);
 	}
-	App::log("YYXDownloadImages::startTask() =========================>>> downloadList.size() =", downloadList.size());
+	auto c = downloadList.size();
+	if (c>0)
+	{
+		App::log("YYXDownloadImages::startTask() =========================>>> downloadList.size() =",c );
+		App::log("YYXDownloadImages::startTask() =========================>>> outTime =", outTime);
+		App::log("YYXDownloadImages::startTask() =========================>>>  m_concurrence(bingfa)=", m_concurrence);
+	}
+}
+
+void YYXDownloadImages::clearAllReadyTask()
+{
+	m.lock();
+	vector<string> dels;
+	for (auto it : m_Tasks)
+	{
+		string key = it.first;
+		auto data = it.second;
+		auto res = downloadList.find(key);
+		if (res == downloadList.end() && data)
+		{
+			data->release();
+			data = nullptr;
+			dels.push_back(key);
+		}
+	}
+	for (auto item : dels)
+	{
+		m_Tasks.erase(item);
+	}
 	m.unlock();
+	highList.clear();
+	normalList.clear();
+	lowList.clear();
 }
 
 bool YYXDownloadImages::addDownloadListFormHighList()
@@ -142,7 +185,8 @@ bool YYXDownloadImages::addDownloadListFormHighList()
 			auto data = m_Tasks[deat];
 			downloadImage(data);
 			downloadList[deat] = data;
-			highList.pop_back();			
+			if(!highList.empty())
+				highList.pop_back();			
 			App::log("YYXDownloadImages::addDownloadListFormHighList() ==>>"+ deat);
 		}
 	}
@@ -194,19 +238,160 @@ void YYXDownloadImages::downloadImage(YYXDownloadImagesData * data)
 {
 	if (data)
 	{
-		thread([=]() {
+		thread mythread([=]() {
 			App::ccsleep(data->DelayTime());
-			NetIntface::DownLoadImage(data->Url(), data->Dir(), data->FileName(), "", data->Callback(), "", data->Callbackerror());
-			data->StartTime(YYXLayer::getCurrentTime4Second());
-		}).detach();
+			data->StartTime(YYXTime::getInstance()->getNowTime4S());
+			//NetIntface::DownLoadImage(data->getUrl(), data->Dir(), data->getFileName(), "", data->getCallback(), "", data->getCallbackerror());
+			downloadImage_Curl(data);
+		});
+		mythread.detach();
 	}
+}
+
+void YYXDownloadImages::downloadImage_Curl(YYXDownloadImagesData *downDate)
+{
+	if (downDate == nullptr)
+		return;
+	CURL *pCurl = nullptr;
+	string url = downDate->getUrl();
+	auto callback = downDate->getCallback();
+	auto callbackerror = downDate->getCallbackerror();
+	string path = downDate->getPath();
+
+	pCurl = curl_easy_init();//初始化CURL取得初始化成功后的CURL指针
+	if (pCurl == nullptr)
+	{
+		if (callbackerror)
+			callbackerror("");
+		return;
+	}
+	FILE *pFile = nullptr;
+	pFile = fopen(path.c_str(), "ab+");
+	if (pFile == nullptr || url.empty())
+	{
+		if (callbackerror)
+			callbackerror("");
+		return;
+	}
+	curl_easy_setopt(pCurl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(pCurl, CURLOPT_FILE, pFile);                  //指定写入的文件指针
+	curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, pWriteCallback);//设置写数据的回调函数
+	curl_easy_setopt(pCurl, CURLOPT_VERBOSE, true);                //让CURL报告每一件意外的事情
+	curl_easy_setopt(pCurl, CURLOPT_TIMEOUT, 10000);                 //设置超时时间
+	curl_easy_setopt(pCurl, CURLOPT_NOPROGRESS, false);
+	curl_easy_setopt(pCurl, CURLOPT_PROGRESSFUNCTION, DownProgresss);//指定显示进度的回调函数
+	curl_easy_setopt(pCurl, CURLOPT_RESUME_FROM, getLocalFileSize(path.c_str()));// 从本地大小位置进行请求数据
+	curl_easy_setopt(pCurl, CURLOPT_PROGRESSDATA, downDate);//DownProgresss函数的第一个参数	
+	CURLcode nResCode = curl_easy_perform(pCurl);//执行上面设定的动作并返回状态码
+	curl_easy_cleanup(pCurl);//释放相关资源
+	fclose(pFile);
+	App::GetInstance()->addMessage();
+	if (nResCode == CURLcode::CURLE_OK)
+	{
+		auto size = FileUtils::getInstance()->getFileSize(path);
+		if (size == downDate->getNetFileSize())
+		{
+			if (callback)
+				callback(path);
+			return;
+		}
+	}
+	if (FileUtils::getInstance()->isFileExist(path))
+		FileUtils::getInstance()->removeFile(path);
+	if (callbackerror)
+		callbackerror(Value(nResCode).asString());
+}
+
+size_t YYXDownloadImages::pWriteCallback(void *pData, size_t n, size_t nDataSize, FILE *stream)
+{
+	size_t nWritten = fwrite(pData, n, nDataSize, (FILE *)stream);
+	return nWritten;
+}
+
+int YYXDownloadImages::DownProgresss(void* clientp, double fDownLoadTotal, double fDownLoaded, double fUpTotal, double fUpLoaded)
+{
+	auto downDate = (YYXDownloadImagesData*)clientp;//传过来的自定义的参数
+	downDate->setNetFileSize(fDownLoadTotal);
+	int pragress = fDownLoaded / fDownLoadTotal *100.0;
+	return 0;
+}
+
+long YYXDownloadImages::getLocalFileSize(const char *filePath)
+{
+	if (!FileUtils::getInstance()->isFileExist(filePath))
+		return 0;
+	FILE * pFile = fopen(filePath, "rb");
+	fseek(pFile, 0, SEEK_END);
+	long size = ftell(pFile);
+	fclose(pFile);
+	return size;
 }
 
 void YYXDownloadImages::deleteTask(string taskTag)
 {
-	downloadList.erase(taskTag);
+	m.lock();
 	auto data = m_Tasks[taskTag];
 	if (data)
+	{
 		data->release();
-	m_Tasks.erase(taskTag);	
+		data = nullptr;
+	}
+	downloadList[taskTag] = nullptr;
+	m_Tasks[taskTag] = nullptr;
+	downloadList.erase(taskTag);
+	m_Tasks.erase(taskTag);
+	m.unlock();
+}
+
+void YYXDownloadImages::addMaxTask()
+{
+	m_concurrence += 1;
+	if (m_concurrence > 6)
+	{
+		m_concurrence = 6;
+	}
+}
+
+void YYXDownloadImages::decreaseMaxTask()
+{
+	m_concurrence = 3;
+}
+
+void YYXDownloadImages::change4OutTime()
+{
+	decreaseMaxTask();
+	//addOutTime();
+	clearAllReadyTask();
+}
+
+void YYXDownloadImages::change4GoodTime()
+{
+	addMaxTask();
+	//decreaseOutTime();
+}
+
+void YYXDownloadImages::addOutTime()
+{
+	outTime = outTime * 2.0;
+	if (outTime>120)
+	{
+		outTime = 120;
+	}
+	else if (outTime <15)//减小到非常小的时候 突然增加时间 恢复初始值
+	{
+		outTime = 40;
+	}
+}
+
+void YYXDownloadImages::decreaseOutTime()
+{
+	outTime = outTime / 2.0;
+	if (outTime < 5)
+	{
+		outTime = 5;
+	}
+	else if (outTime >100)//增大到非常大的时候 突然正常下载了 恢复初始值
+	{
+		outTime = 40;
+	}
 }

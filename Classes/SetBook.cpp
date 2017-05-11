@@ -9,6 +9,8 @@
 #include "FKAudioPlayer.h"
 #include "FKPageLayer.h"
 #include "YYXSound.h"
+#include "YYXTime.h"
+#include "AppHttp.h"
 USING_NS_CC;
 USING_NS_FK;
 
@@ -37,17 +39,18 @@ void SetBook::readBook(int bookId, bool isview)
 {
 	auto wait = YYXLayer::WaitLayer();
 	Director::getInstance()->getRunningScene()->addChild(wait, 1000);
-	int childrenid = YYXStruct::getMapInt64(App::GetInstance()->myData, "ShowChildID", -999);
+	int childrenid = User::getInstance()->getChildId();
 	setChildrenId(childrenid);
 	setBookId(bookId);
 	setIsView(isview);
 	setMemberId(App::GetInstance()->getMemberId());
-	thread([=]() {
+	thread mythread([=]() {
 		App::ccsleep(1000);
 		Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
 			readBook();
 		});
-	}).detach();
+	});
+	mythread.detach();
 }
 
 void SetBook::readBook()
@@ -65,12 +68,14 @@ void SetBook::readBook()
 	//退出按钮
 	BookParser::getInstance()->setPageQuitCallBack([=]() {
 		YYXLayer::controlTouchTime(1, "setPageQuitCallBackTime", [=]() {
+			BookParser::getInstance()->bookQuit();
 			auto control = ControlScene::getInstance();
 			control->backFromScene();
-			thread([=]() {
+			thread mythread([=]() {
 				App::ccsleep(3000);
 				control->end();
-			}).detach();
+			});
+			mythread.detach();
 			//保存阅读记录
 			saveReadRecordEnd();
 			YYXSound::getInstance()->resumeBackGroundMusic();
@@ -92,7 +97,7 @@ void SetBook::readBook()
 				{
 					if (YYXBookOver::getInstance()->UserBuy() || YYXBookOver::getInstance()->UserVip())
 					{
-						BookParser::getInstance()->pageDown();						
+						BookParser::getInstance()->pageDown(true);						
 					}
 					else
 					{
@@ -106,7 +111,7 @@ void SetBook::readBook()
 				}
 				else
 				{
-					if (BookParser::getInstance()->pageDown() == 0)
+					if (BookParser::getInstance()->pageDown(true) == 0)
 					{
 						AudioPlayer::getInstance()->stopAllEffect();
 						Layer* it = YYXBookOver::getInstance()->readBookOverLayer();
@@ -118,6 +123,10 @@ void SetBook::readBook()
 				}
 			});
 		});
+	});
+	BookParser::getInstance()->setPageMenuChangeCallBack([](Menu* m) {
+		auto down =(MenuItemImage*) m->getChildByTag(BUTTON_TAG_PAGE_DOWN);
+		down->setVisible(true);
 	});
 	//分享
 	BookParser::getInstance()->setBookShareCallBack([=](RenderTexture* img) {
@@ -152,6 +161,8 @@ void SetBook::readBook()
 
 void SetBook::saveReadRecordStart()
 {
+	if (childrenId <= 0)
+		return;
 	if (m_CurrentReadBook == nullptr)
 		m_CurrentReadBook = ReadBookRecord::create();
 	else
@@ -175,6 +186,8 @@ void SetBook::saveReadRecordStart()
 
 void SetBook::saveReadRecording()
 {
+	if (childrenId <= 0)
+		return;
 	//中间翻页
 	string time = App::GetInstance()->GetStringTime2();
 	if (m_CurrentReadBook == nullptr)
@@ -190,6 +203,8 @@ void SetBook::saveReadRecording()
 
 void SetBook::saveReadRecordEnd()
 {
+	if (childrenId <= 0)
+		return;
 	//结束阅读最后一页
 	//将数据上传，如果失败就存本地，下次app启动时候再读出来上传
 	string time = App::GetInstance()->GetStringTime2();
@@ -207,59 +222,38 @@ void SetBook::saveReadRecordEnd()
 
 void SetBook::ShareBook(RenderTexture* img, int bookId)
 {
-	string fileName = StringUtils::format("temp/share_%d.png", (int)YYXLayer::getRandom());
+	string fileName = StringUtils::format("temp/share_%d.png", YYXTime::getInstance()->getRandomL());
 	string dir = FileUtils::getInstance()->getWritablePath() + "temp";
 	if (!FileUtils::getInstance()->isFileExist(dir))
 		FileUtils::getInstance()->createDirectory(dir);
 	bool savebool = img->saveToFile(fileName, false, [=](RenderTexture* r, string savepath) {
-		App::log("saveToFile path = " + savepath);
-		NetIntface::httpGetBookInfo(bookId, "", [=](string json) {
-			//获取书名然后分享
+		AppHttp::getInstance()->httpBookInfo(bookId, [=](string name) {
+			//分享
 			string path = savepath;
-			if (path == "" || !FileUtils::getInstance()->isFileExist(path))
+			if (path.empty() || !FileUtils::getInstance()->isFileExist(path))
 			{
 				App::log(path + " is error");
 				Toast::create(App::getString("FENXIANGSHIBAI"));
 				return;
 			}
-			rapidjson::Document doc;
-			YYXLayer::getJsonObject4Json(doc, json);
-			int code = YYXLayer::getIntForJson(-999, doc, "code");
-			string name = "";
-			if (code == 0)
-				name = YYXLayer::getStringForJson("", doc, "data", "bookName");
-			if (name == "")
-				name = App::getString("TEBIEHAOKANDESHU");
-			//分享
-			auto headpath = YYXStruct::getMapString(App::GetInstance()->myData, "ShowChildHeadPortrait", "");
 			const char* headstr = "";
-			if (headpath != "" && FileUtils::getInstance()->isFileExist(headpath))
-				headstr = headpath.c_str();
+			auto it = User::getInstance()->getChild(User::getInstance()->getChildId());
+			if (it)
+			{
+				auto headpath = it->getPath();
+				if (!headpath.empty() && FileUtils::getInstance()->isFileExist(headpath))
+					headstr = headpath.c_str();
+			}
 			NetIntface::share(path.c_str(), name.c_str(), "http://www.ellabook.cn", headstr, "", "", [](string json) {
 				//分享成功				
-				if (App::GetInstance()->getMemberId() <= 0)
-				{
+				if (User::getInstance()->getMemberId() <= 0)
 					Toast::create(App::getString("DENGLUHOUFENXIANGKEHUODEYILAHONGBAO"));
-				}
-				NetIntface::httpShareWithCoupon(App::GetInstance()->getMemberId(), "", [](string json) {
-					//分享得红包 网络请求成功
-					NetIntface::httpShareWithCouponCallBack(json, [](int coupon_amount) {
-						//解析成功 红包数值
-						XZLayer::showShareRedPacket(StringUtils::format("%d", coupon_amount / 100) + App::getString("YUAN"));
-					}, []() {
-						//解析成功后
-					}, []() {
-						//解析失败
-					});
-				}, "", [](string str) {
-					//网络请求失败
-				});
+				else
+					AppHttp::getInstance()->httpShareHongBao();
 			}, "", [](string str) {
 				//分享失败或者取消
 			});
 			return;
-		}, "", [](string str) {
-			Toast::create(App::getString("NETEXCEPTION"));
 		});
 	});
 	if (!savebool)
@@ -273,47 +267,47 @@ void SetBook::ShareBook(RenderTexture* img, int bookId)
 void SetBook::initResource(Layer * layer)
 {
 	Size winSize = Director::getInstance()->getWinSize();
-	float highScale = winSize.height / 1536;
-	auto pageUp = MenuItemImage::create("ReadBook_PageUp_ipad.png",
-		"ReadBook_PageUp_Selected_ipad.png",
+	float highScale = 1;
+	auto pageUp = MenuItemImage::create("ReadBook_PageUp_667h.png",
+		"ReadBook_PageUp_Selected_667h.png",
 		[=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
 			Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), true));
 		});
 	});
 	pageUp->setPosition(-winSize.width / 2, -winSize.height / 2);
-	pageUp->setScale(highScale*0.63);
+	pageUp->setScale(highScale);
 	pageUp->setAnchorPoint(Vec2(0, 0));
 	pageUp->setTag(BUTTON_TAG_PAGE_UP);
 
 
-	auto pageDown = MenuItemImage::create("ReadBook_PageDown_ipad.png",
-		"ReadBook_PageDown_Selected_ipad.png",
+	auto pageDown = MenuItemImage::create("ReadBook_PageDown_667h.png",
+		"ReadBook_PageDown_Selected_667h.png",
 		[](Ref* sender) {
-		BookParser::getInstance()->pageDown();
+		BookParser::getInstance()->pageDown(true);
 	});
 	pageDown->setPosition(winSize.width / 2, -winSize.height / 2);
-	pageDown->setScale(highScale*0.63);
+	pageDown->setScale(highScale);
 	pageDown->setAnchorPoint(Vec2(1.0f, 0));
 	pageDown->setTag(BUTTON_TAG_PAGE_DOWN);
 
-	auto pageQuit = MenuItemImage::create("Common_Return_ipad@2x.png",
-		"Common_Return_Selected_ipad@2x.png",
+	auto pageQuit = MenuItemImage::create("Common_Return_667h.png",
+		"Common_Return_Selected_667h.png",
 		[](Ref* sender) {
-
 		YYXLayer::controlTouchTime(1, "setPageQuitCallBackTime", [=]() {
 			BookParser::getInstance()->bookQuit();
 			auto control = ControlScene::getInstance();
 			control->backFromScene();
-			thread([=]() {
+			thread mythread([=]() {
 				App::ccsleep(3000);
 				control->end();
-			}).detach();
+			});
+			mythread.detach();
 			YYXSound::getInstance()->resumeBackGroundMusic();
 		});
 	});
 	pageQuit->setPosition(-winSize.width / 2, winSize.height / 2);
-	pageQuit->setScale(highScale*0.8);
+	pageQuit->setScale(highScale);
 	pageQuit->setAnchorPoint(Vec2(0, 1.0f));
 	pageQuit->setTag(BUTTON_TAG_PAGE_QUIT);
 
@@ -356,7 +350,7 @@ void ReadBookRecord::del(ReadBookRecord* pRet)
 
 void ReadBookRecord::WriteFile()
 {
-	string path = FileUtils::getInstance()->getWritablePath() + "readBookRecord/" + StringUtils::format("%d.json", (int)YYXLayer::getRandom());
+	string path = FileUtils::getInstance()->getWritablePath() + "readBookRecord/" + StringUtils::format("%d.json", YYXTime::getInstance()->getRandomL());
 	map<string, string> parater;
 	parater["readBookId"] = StringUtils::format("%d", getReadBookId());
 	parater["readMemberId"] = StringUtils::format("%d", getReadMemberId());
@@ -371,33 +365,14 @@ void ReadBookRecord::httpUploadReadingRecord(function<void(ReadBookRecord* )> ca
 {
 	if (!getIsHttp())
 		return;
-	map<string, string> paramter;
-	paramter["memberId"] = StringUtils::format("%d", readMemberId);
-	paramter["childrenId"] = StringUtils::format("%d", readChildren);
-	paramter["bookId"] = StringUtils::format("%d", readBookId); 
-	paramter["readStartTime"] = readStartTime;
-	paramter["readEndTime"] = readEndTime;
-	paramter["resource"] = App::m_resource;
-	string url = string(IP).append(NET_SAVE_READHISTORY);
-	NetIntface::httpPost(url, paramter, "", [=](string json) {
-		NetIntface::saveReadRecordCallBack(json, [=]() {
-			//上传成功
-			setIsHttp(false);
-			if (callback)
-				callback(this);
-		}, [=]() {
-			//上传错误
-			setIsHttp(true);
-			WriteFile();
-			if (callback)
-				callback(this);
-		});
-	}, "", [=](string str) {
-		//上传失败
+	AppHttp::getInstance()->httpUploadReadBookRecord(this, [=](ReadBookRecord* r) {
+		setIsHttp(false);
+		if (callback)
+			callback(r);
+	}, [=](ReadBookRecord* r) {
 		setIsHttp(true);
 		WriteFile();
 		if (callback)
-			callback(this);
+			callback(r);
 	});
-
 }

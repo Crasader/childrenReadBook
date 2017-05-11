@@ -19,7 +19,6 @@ bool OrderLineLayer::init()
 void OrderLineLayer::onExit()
 {
     Layer::onExit();
-    this->removeAllChildrenWithCleanup(true);
 }
 
 void OrderLineLayer::onExitTransitionDidStart()

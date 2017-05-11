@@ -15,6 +15,7 @@
 #include "FKAnimationGroupMemberData.h"
 #include "FKAnimationGroupSetData.h"
 #include "FKAnimationComboData.h"
+#include "FKSubtitleData.h"
 
 NS_FK_BEGIN
 
@@ -36,6 +37,10 @@ protected:
     int                         setPageDataToBookData(const rapidjson::Value &book);
 
 /*------------------------------------ 页面 ------------------------------------*/
+    /*------------------ subtitle ---------------------*/
+    int                         setSubtitleDataToPageData(const rapidjson::Value &subtitleSet);
+    int                         setJsonToSubtitleData(const rapidjson::Value &subtitle);
+    
     /*------------------ standard ---------------------*/
     int                         setStandardPageDataToBookData(int i, const rapidjson::Value &pageDic);
     int                         setSpriteDataToStandard(const rapidjson::Value &spriteSet);
@@ -79,6 +84,7 @@ private:
     string                                  _Event;
     BookData                                _bookData;
     PageData                                _pageData;
+    SubtitleData                            _subtitleData;
     MovieData                               _movieData;
     SpriteData                              _spriteData;
     KeyPathData                             _keyPathData;

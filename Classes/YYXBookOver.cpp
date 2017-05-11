@@ -6,6 +6,7 @@
 #include "SendCommentLayer.h"
 #include "YYXVisitor.h"
 #include "YYXSound.h"
+#include "AppHttp.h"
 USING_NS_FK;
 
 YYXBookOver* YYXBookOver::instance = nullptr;
@@ -34,7 +35,7 @@ void YYXBookOver::init(int bookId, int memberId, bool isTry)
 {
 	m_bookId = bookId;
 	m_memberId = memberId;
-	m_isBookCover = false;
+	m_isBookCoverRuning = false;
 	if (isTry)
 	{
 		m_isUserBuy = false;
@@ -49,7 +50,7 @@ void YYXBookOver::init(int bookId, int memberId, bool isTry)
 
 Layer* YYXBookOver::tryReadBookOverLayer()
 {
-	App::httpComment(m_bookId, []() {
+	AppHttp::getInstance()->httpComments(m_bookId, []() {
 		YYXLayer::sendNotify("showCommentListView", "", -1);
 	});
 	map<string, int64String> parameter;
@@ -57,7 +58,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	YYXLayer::insertMap4ParaType(parameter, "csb", -999, "Book/csb/tryReadBookEndPage.csb");
 	map<string, function<void(YYXLayer*)>> runmap;
 	runmap["cleanup"] = [=](YYXLayer* sender) {
-		m_isBookCover = false;
+		m_isBookCoverRuning = false;
 	};
 	auto layer = YYXLayer::create(parameter, runmap);
 	layer->getParentNode()->setAnchorPoint(Vec2(0.5, 0.5));
@@ -93,7 +94,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		jixuyueduBox->setTitleColor(Color3B::WHITE);
 		jixuyueduBox->addClickEventListener([=](Ref* sneder) {
 			//Director::getInstance()->popScene();
-			BookParser::getInstance()->pageDown();
+			BookParser::getInstance()->pageDown(true);
 		});
 	}
 	if (closed)
@@ -147,7 +148,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 		yaoqing->setAnchorPoint(Vec2(1, 0));
 		yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
 		yaoqing->addClickEventListener([=](Ref* sender) {
-			if (App::GetInstance()->m_me)
+			if (!YYXVisitor::getInstance()->getVisitorMode())
 			{
 				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
@@ -199,13 +200,10 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 						[=]() {
 						Director::getInstance()->getRunningScene()->addChild(XZLayer::payBuyVip(
 							[=]() {
-							if (App::GetInstance()->m_me)
-							{
-								YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-									m_isUserVip = true;
-									buySuccessMessageBox(goumaichenggong);
-								});
-							}
+							YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
+								m_isUserVip = true;
+								buySuccessMessageBox(goumaichenggong);
+							});
 						}));
 					}));
 				}, "  ", false);
@@ -224,13 +222,10 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 					auto control = ControlScene::getInstance();
 					control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 				}, [=]() {
-					if (App::GetInstance()->m_me)
-					{
-						YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-							m_isUserVip = true;
-							buySuccessMessageBox(goumaichenggong);
-						});
-					}
+					YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
+						m_isUserVip = true;
+						buySuccessMessageBox(goumaichenggong);
+					});
 				}));
 			});
 		});
@@ -240,7 +235,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	{
 		jixuyuedu->addClickEventListener([=](Ref* sender) {
 			//Director::getInstance()->popScene();
-			BookParser::getInstance()->pageDown();
+			BookParser::getInstance()->pageDown(true);
 		});
 	}
 
@@ -278,13 +273,13 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(changeListener, layer);
 	goumaichenggong->removeFromParent();
 	layer->addChild(goumaichenggong);
-	m_isBookCover = true;
+	m_isBookCoverRuning = true;
 	return layer;
 }
 
 Layer* YYXBookOver::readBookOverLayer()
 {
-	App::httpComment(m_bookId, []() {
+	AppHttp::getInstance()->httpComments(m_bookId, []() {
 		YYXLayer::sendNotify("showCommentListView", "", -1);
 	});
 	map<string, int64String> parameter;
@@ -306,7 +301,7 @@ Layer* YYXBookOver::readBookOverLayer()
 		yaoqing->setAnchorPoint(Vec2(1, 0));
 		yaoqing->setPosition(Vec2((1094 + Director::getInstance()->getVisibleSize().width) / 2, 50));
 		yaoqing->addClickEventListener([=](Ref* sender) {
-			if (App::GetInstance()->m_me)
+			if (!YYXVisitor::getInstance()->getVisitorMode())
 			{
 				YYXSound::getInstance()->stopAll();
 				YYXTableView::stopAllAnimation();
@@ -362,7 +357,7 @@ Layer* YYXBookOver::readBookOverLayer()
 		int memberid = -1;
 		if (MyComment->getTag() == 1)
 			memberid = m_memberId;
-		App::httpComment(m_bookId, [=]() {
+		AppHttp::getInstance()->httpComments(m_bookId, [=]() {
 			YYXLayer::sendNotify("showCommentListView", "", memberid);
 		});
 	});
@@ -430,8 +425,7 @@ Layer* YYXBookOver::readBookOverLayer()
 				YYXTableView::stopAllAnimation();
 			});
 		});
-		if (App::GetInstance()->m_me)
-			goComment->setVisible(true);
+		goComment->setVisible(true);
 	}
 	return layer;
 }

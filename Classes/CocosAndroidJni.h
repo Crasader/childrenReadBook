@@ -61,7 +61,7 @@ public:
 	static void httpGetVIPOrderID(long memberid, long rechargeCount, long price100, const char * payType, const char * payInfo, const char * runKey, const char * errorKey);
 
 	// JNI 获取分享成功的红包
-	static void httpShareWithCoupon(long memberID, const char* runKey, const char* errorKey);
+	//static void httpShareWithCoupon(long memberID, const char* runKey, const char* errorKey);
 
 	// JNI 获取书店当前页的书籍列表信息
 	static void httpBookStoreSceneCurrentlyPageBookListInfo(long memberID, long BookStoreId, long pageIndex, const char* visitFrom, const char* runKey, const char* errorKey);
@@ -73,22 +73,22 @@ public:
 	static void httpGetUserBuyBooks(long memberID, const char* runKey, const char* errorKey);
 
 	// JNI 获取用户安卓的账户余额
-	static void httpGetUserBalance(long memberID, const char* runKey, const char* errorKey);
+	//static void httpGetUserBalance(long memberID, const char* runKey, const char* errorKey);
 
 	// JNI 注册
-	static void httpAccountRegiste(const char* memberName, const char* memberPasswd, const char* runKey, const char* errorKey);
+	//static void httpAccountRegiste(const char* memberName, const char* memberPasswd, const char* runKey, const char* errorKey);
 
 	// JNI 修改用户信息
-	static void httpAmendUserInfo(long memberId, long sex, const char * city, const char * province, const char * runKey, const char * errorKey);
+	//static void httpAmendUserInfo(long memberId, long sex, const char * city, const char * province, const char * runKey, const char * errorKey);
 
 	// JNI UTF-8转GBK
-	static void UTF82GBK(const char* GBK, const char* UTF);
+	//static void UTF82GBK(const char* GBK, const char* UTF);
 
 	// JNI GBK转UTF-8
-	static void GBK2UTF8(const char* GBK, const char* UTF);
+	//static void GBK2UTF8(const char* GBK, const char* UTF);
 
 	// JNI 修改孩子信息
-	static void httpAmendBabyInfo(long childrenId, const char* childrenName, long childrenSex, const char* childrenBirth, const char* runKey, const char* errorKey);
+	//static void httpAmendBabyInfo(long childrenId, const char* childrenName, long childrenSex, const char* childrenBirth, const char* runKey, const char* errorKey);
 
 	// JNI 拍照,裁切成圆形图片保存到指定位置
 	static void photographAlbumSelectImage(const char* name, const char* dir, const char* runKey, const char* errorKey);
@@ -134,9 +134,6 @@ public:
 	//JNI 获取用户红包列表
 	static void httpGetUserRedPackets(long memberId, const char* runKey, const char* errorKey);
 	/*--------------------------以上采用跨平台消息循环机制------------------------------*/
-	// JNI 上传下载记录
-	static void AddDownLoadRecord(long memberId, long bookId);
-
 	//JNI 发表评论
 	static void Comment(long memberId, long bookId, const char * memberName, const char * comment, const char * title, long score);
 	

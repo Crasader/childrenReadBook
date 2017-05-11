@@ -14,8 +14,6 @@ private:
 	int m_bookId = 0;
 	int m_memberId = 0;
 	string m_bookName = "";
-	void httpRentBook();
-	void httpBookInfo();
 
 public:
 	YYXRentBook();

@@ -1,0 +1,45 @@
+<PlistInfoProjectFile>
+  <PropertyGroup Name="buttons" Type="Plist" ID="1df67394-6ac4-4bdc-9bf1-f3e11fb42c95" Version="3.10.0.0" />
+  <Content ExportType="Png" SortAlgorithm="MaxRects" PicturePadding="1" AllowRotation="False" AllowAnySize="True" AllowTrim="False" ctype="PlistInfoData">
+    <ImageFiles>
+      <FilePathData Path="BookCity/res/bg_10.png" />
+      <FilePathData Path="BookCity/res/bg_100.png" />
+      <FilePathData Path="BookCity/res/bg_101.png" />
+      <FilePathData Path="BookCity/res/bg_14.png" />
+      <FilePathData Path="BookCity/res/bg_17.png" />
+      <FilePathData Path="BookCity/res/bg_18.png" />
+      <FilePathData Path="BookCity/res/bg_2.png" />
+      <FilePathData Path="BookCity/res/bg_20.png" />
+      <FilePathData Path="BookCity/res/bg_21.png" />
+      <FilePathData Path="BookCity/res/bg_22.png" />
+      <FilePathData Path="BookCity/res/bg_23.png" />
+      <FilePathData Path="BookCity/res/bg_25.png" />
+      <FilePathData Path="BookCity/res/bg_3.png" />
+      <FilePathData Path="BookCity/res/bg_39.png" />
+      <FilePathData Path="BookCity/res/bg_4.png" />
+      <FilePathData Path="BookCity/res/bg_46.png" />
+      <FilePathData Path="BookCity/res/bg_47.png" />
+      <FilePathData Path="BookCity/res/bg_49.png" />
+      <FilePathData Path="BookCity/res/bg_5.png" />
+      <FilePathData Path="BookCity/res/bg_50.png" />
+      <FilePathData Path="BookCity/res/bg_51.png" />
+      <FilePathData Path="BookCity/res/bg_63.png" />
+      <FilePathData Path="BookCity/res/bg_65.png" />
+      <FilePathData Path="BookCity/res/bg_7.png" />
+      <FilePathData Path="BookCity/res/bg_8.png" />
+      <FilePathData Path="BookCity/res/bg_80.png" />
+      <FilePathData Path="BookCity/res/bg_81.png" />
+      <FilePathData Path="BookCity/res/bg_82.png" />
+      <FilePathData Path="BookCity/res/bg_83.png" />
+      <FilePathData Path="BookCity/res/bg_84.png" />
+      <FilePathData Path="BookCity/res/bg_85.png" />
+      <FilePathData Path="BookCity/res/bg_86.png" />
+      <FilePathData Path="BookCity/res/bg_87.png" />
+      <FilePathData Path="BookCity/res/bg_89.png" />
+      <FilePathData Path="BookCity/res/bg_90.png" />
+      <FilePathData Path="BookCity/res/bg_91.png" />
+      <FilePathData Path="BookCity/res/bg_92.png" />
+    </ImageFiles>
+    <MaxSize Width="4096" Height="1024" />
+  </Content>
+</PlistInfoProjectFile>

@@ -13,6 +13,7 @@ PageData::~PageData()
 
 void PageData::clear()
 {
+    _sSubtitleSoundId.clear();
     _sSoundId.clear();
     _sInterrupt.clear();
     _sPageType.clear();
@@ -21,13 +22,13 @@ void PageData::clear()
     _vGameSpriteData.clear();
     _mSpriteData.clear();
     _vMovieData.clear();
+    _vSubtitleSet.clear();
     _vAnimationGroupSet.clear();
     _vParticleSystemData.clear();
     _fRenderRectX = 0.0f;
     _fRenderRectY = 0.0f;
     _fRenderRectW = 0.0f;
     _fRenderRectH = 0.0f;
-    _sHasSubtitle.clear();
 }
 
 map<int, SpriteData> PageData::getSpriteData()
@@ -95,6 +96,26 @@ void PageData::setGameType(string sGameType)
 {
     _sGameType = sGameType;
 }
+
+void PageData::setSubtitleSoundId(string sSubtitleSoundId)
+{
+    _sSubtitleSoundId = sSubtitleSoundId;
+}
+string PageData::getSubtitleSoundId()
+{
+    return _sSubtitleSoundId;
+}
+
+void PageData::setSubtitleSet(SubtitleData &subtitleData)
+{
+    _vSubtitleSet.push_back(subtitleData);
+}
+
+vector<SubtitleData> PageData::getSubtitleSet()
+{
+    return _vSubtitleSet;
+}
+
 void PageData::setAnimationGroupSet(AnimationGroupSetData &animationGroupSetData)
 {
     _vAnimationGroupSet.push_back(animationGroupSetData);
@@ -115,10 +136,10 @@ void PageData::setIsOrder(string sIsOrder)
 }
 
 //画板游戏
-void PageData::setRenderRect(string sRenderRectX, string sRenderRectY, string sRenderRectW, string sRenderRectH, float coordinateScale)
+void PageData::setRenderRect(string sRenderRectX, string sRenderRectY, string sRenderRectW, string sRenderRectH, float coordinateScale,Vec2 winSizeOffset)
 {
-    _fRenderRectX = stringTo<float>(sRenderRectX)*coordinateScale;
-    _fRenderRectY = stringTo<float>(sRenderRectY)*coordinateScale;
+    _fRenderRectX = stringTo<float>(sRenderRectX)*coordinateScale - winSizeOffset.x;
+    _fRenderRectY = stringTo<float>(sRenderRectY)*coordinateScale - winSizeOffset.y;
     _fRenderRectW = stringTo<float>(sRenderRectW)*coordinateScale;
     _fRenderRectH = stringTo<float>(sRenderRectH)*coordinateScale;
 }
@@ -161,15 +182,6 @@ void PageData::setParticleSystemData(ParticleSystemData &psData)
 vector<ParticleSystemData> PageData::getParticleSystemData()
 {
     return _vParticleSystemData;
-}
-//字幕相关
-void  PageData::setHasSubtitle(string sHasSubtitle)
-{
-    _sHasSubtitle = sHasSubtitle;
-}
-string PageData::getHasSubtitle()
-{
-    return _sHasSubtitle;
 }
 
 NS_FK_END

@@ -42,11 +42,7 @@ bool IndexLayer::init()
     shelf3->setPosition(Vec2(screenSize.x/2,screenSize.y*0.1));
     this->addChild(shelf3,2);
     
-    //添加书籍
-    _vbookInfo.push_back("test");
-    _vbookInfo.push_back("cyj");
-	_vbookInfo.push_back("bld");
-	_vbookInfo.push_back("cf");
+    addBookInfo();
     
     int lable_x1, lable_x2, lable_x3;
     lable_x3 = lable_x2 = lable_x1 = screenSize.x/5 - 80;
@@ -58,7 +54,7 @@ bool IndexLayer::init()
         {
             int lable_y1 = screenSize.y * 0.7 + BOOK_LABLE_HIGH_OFFSET * _fIconScaleY;
             int item_y1 = lable_y1 - screenSize.y/2 + BOOK_ITEM_HIGH_OFFSET * _fIconScaleY;
-            auto label = Label::createWithTTF(_vbookInfo[i], "fonts/Marker Felt.ttf", 20);
+            auto label = Label::createWithTTF(_vbookInfo[i], "fonts/FZHLJW.TTF", 20);
             label->setPosition(Vec2(lable_x1,lable_y1));
             label->setScale(_fIconScaleX,_fIconScaleY);
             this->addChild(label, 4);
@@ -78,7 +74,7 @@ bool IndexLayer::init()
         {
             int lable_y2 = screenSize.y * 0.4 + BOOK_LABLE_HIGH_OFFSET * _fIconScaleY;
             int item_y2 = lable_y2 - screenSize.y/2 + BOOK_ITEM_HIGH_OFFSET * _fIconScaleY;
-            auto label = Label::createWithTTF(_vbookInfo[i], "fonts/Marker Felt.ttf", 20);
+            auto label = Label::createWithTTF(_vbookInfo[i], "fonts/FZHLJW.TTF", 20);
             label->setPosition(Vec2(lable_x2,lable_y2));
             label->setScale(_fIconScaleX,_fIconScaleY);
             this->addChild(label, 4);
@@ -100,7 +96,7 @@ bool IndexLayer::init()
         {
             int lable_y3 = screenSize.y * 0.1 + BOOK_LABLE_HIGH_OFFSET * _fIconScaleY;
             int item_y3 = lable_y3 - screenSize.y/2 + BOOK_ITEM_HIGH_OFFSET * _fIconScaleY;
-            auto label = Label::createWithTTF(_vbookInfo[i], "fonts/Marker Felt.ttf", 20);
+            auto label = Label::createWithTTF(_vbookInfo[i], "fonts/FZHLJW.TTF", 20);
             label->setPosition(Vec2(lable_x3,lable_y3));
             label->setScale(_fIconScaleX,_fIconScaleY);
             this->addChild(label, 4);
@@ -120,6 +116,12 @@ bool IndexLayer::init()
     return true;
 }
 
+void IndexLayer::addBookInfo()
+{
+    _vbookInfo.push_back("test");
+    _vbookInfo.push_back("ramtest");
+}
+
 void IndexLayer::onClickBook(Ref* pSender)
 {
     int iTag;
@@ -136,8 +138,8 @@ void IndexLayer::onClickBook(Ref* pSender)
 	bookParser->setBookPlayModeState(PlayModeState::READ);
 
 	//书本播放结束回调
-	bookParser->setBookEndCallBack([](const std::string &str){
-		log("book end: %s",str.c_str());
+	bookParser->setBookEndCallBack([](){
+		log("book end.");
 	});
     //分享按钮接口调用
     bookParser->setBookShareCallBack([](RenderTexture *renderTexture){
@@ -148,29 +150,54 @@ void IndexLayer::onClickBook(Ref* pSender)
         node->addChild(renderTexture,10000);
     });
     //翻页按钮接口调用
-    //bookParser->setPageUpCallBack([]() {
-    //    log("page up");
-    //});
-    //bookParser->setPageDownCallBack([]() {
-    //    log("page Down");
-    //});
-    ////返回按钮接口调用
-    //bookParser->setPageQuitCallBack([]() {
-    //    log("page quit");
-    //});
+    bookParser->setPageUpCallBack([]() {
+        BookParser::getInstance()->pageUp();
+        log("page up");
+    });
+    bookParser->setPageDownCallBack([]() {
+        BookParser::getInstance()->pageDown(true);
+        log("page Down");
+    });
+    //返回按钮接口调用
+    bookParser->setPageQuitCallBack([]() {
+        BookParser::getInstance()->bookQuit();
+        log("page quit");
+    });
+    //修改书籍按钮接口
+    bookParser->setPageMenuChangeCallBack([](Menu* menu){
+    #ifdef CC_PLATFORM_WIN32_DOT_NET
+        Size winSize = Director::getInstance()->getWinSize();
+        float highScale = winSize.height/1536;
+        
+        auto pageUp = (MenuItemImage *)menu->getChildByTag(BUTTON_TAG_PAGE_UP);
+        auto pageDown = (MenuItemImage *)menu->getChildByTag(BUTTON_TAG_PAGE_DOWN);
+        auto pageQuit = (MenuItemImage *)menu->getChildByTag(BUTTON_TAG_PAGE_QUIT);
+        auto pageShare = (MenuItemImage *)menu->getChildByTag(BUTTON_TAG_PAGE_SHARE);
+        
+        pageUp->setNormalImage(Sprite::create("page_up_normal.png"));
+        pageUp->setSelectedImage(Sprite::create("page_up_selected.png"));
+        pageUp->setPosition(-winSize.width / 2 + pageUp->getContentSize().width / 6, 0);
+        pageUp->setScale(highScale*1.5);
+        pageUp->setAnchorPoint(Vec2(0.0f, 0.5f));
+        
+        pageDown->setNormalImage(Sprite::create("page_down_normal.png"));
+        pageDown->setSelectedImage(Sprite::create("page_down_selected.png"));
+        pageDown->setPosition(winSize.width / 2 - pageDown->getContentSize().width / 6, 0);
+        pageDown->setScale(highScale*1.5);
+        pageDown->setAnchorPoint(Vec2(1.0f, 0.5f));
+        
+        pageQuit->setVisible(false);
+        pageShare->setVisible(false);
+    #endif
+    });
+    
+	//设置资源尺寸
+//	bookParser->setResourceSize(Size(2048, 1536));
     //书籍解析主函数
-    int code = bookParser->bookJsonParser(bookPath, 640.0/750.0, 640.0/640.0, "ios");
+	//坐标比例基准： iphone：640；ipad：768
+	int code = bookParser->bookJsonParser(bookPath, 1.0, bookParser->getResourceSize().height/ 640, "ios");
     log("error code ==== %d",code);
-    //获取书籍中按钮
-    Menu *menu = bookParser->getPageMenu();
-    auto pageUp = menu->getChildByTag(BUTTON_TAG_PAGE_UP);
-    auto pageDown = menu->getChildByTag(BUTTON_TAG_PAGE_DOWN);
-    auto pageQuit = menu->getChildByTag(BUTTON_TAG_PAGE_QUIT);
-    auto pageShare = menu->getChildByTag(BUTTON_TAG_PAGE_SHARE);
-    pageUp->setOpacity(255);
-    pageDown->setOpacity(255);
-    pageQuit->setOpacity(255);
-    pageShare->setOpacity(255);
+    
 }
 
 

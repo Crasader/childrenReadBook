@@ -6,6 +6,7 @@
 3.在书房, 游客正常显示书籍
 4.在宝贝中心和父母设置, 游客显示请登录
 5.在书城和书店里, 提示选择游客购买还是登陆后购买
+6.游客有账号ID，有账号余额，有购书列表，其他都没有
 */
 #ifndef _YYXVISITOR_H__
 #define _YYXVISITOR_H__
@@ -20,18 +21,11 @@ public:
 	static YYXVisitor* instance;
 	static YYXVisitor* getInstance();
 	int VisitorMode;
-	string m_dirpath;
+	string m_dirpath;//本地存储的文件夹路径
 	void setVisitorMode(bool sets);//设置游客模式 true=游客 false=非游客
 	bool getVisitorMode();
-	void httpGetVisitorMemberId(string deviceStr);//获取游客账号
-	void httpGetVisitorInfo(bool hint);//获取游客的全部信息
-	void httpCheckVIP(bool hint);//获取包年服务信息
-	void httpGetVipBook(bool hint);//获取包年图书列表
-	void httpGetCollectBook(bool hint);//获取收藏列表
-	void httpGetBuyBook(bool hint);//网络获取购书列表
-	void httpGetChildren(bool hint);//获取孩子信息
-	void httpGetBalance(bool hint);//获取游客余额
 	void loadLocationVisitorData();//本地加载游客信息
+	void initDir();
 
 	void hintLogin(function<void()> youke, function<void()> toLogin = nullptr, function<void()> user = nullptr, string visitorStr="", bool Notime=true);//提示选择游客购买还是登陆后购买
 	void indexSceneInit(ImageView* portrait);//首页初始化游客
@@ -48,5 +42,13 @@ public:
 	void logoutVisitor();//登出游客账号
 	void meIsNull();//判断本地账号是否是空的, 如果是空的就登入游客
 	string getVisitorName();//获取游客的账号
+
+	int getMemberId();
+	void setMemberId(int val);
+	int getMoney();
+	void setMoney(int val);
+private:
+	int memberId = -999;//游客的账号ID
+	int money = 0;//账户余额（分）
 };
 #endif

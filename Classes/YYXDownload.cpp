@@ -1,4 +1,5 @@
 ﻿#include "YYXDownload.h"
+#include "YYXTime.h"
 
 YYXDownload* YYXDownload::instance = nullptr;
 //	string statusKey = taskTag + "+status";//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
@@ -33,7 +34,7 @@ std::string YYXDownload::download(string url, string dir, string fileName, strin
 	auto taskTag = getTaskTag(dir, fileName);
 	string statusKey = taskTag + "+status";
 	YYXStruct::initMapYYXStruct(data, statusKey, 1);
-	std::thread([=]() {
+	std::thread mythread([=]() {
 		setMapFunction(beginstr, beginFunction);
 		setMapFunction(downloadingstr, downloadingFunction);
 		setMapFunction(endstr, endFunction);
@@ -61,9 +62,8 @@ std::string YYXDownload::download(string url, string dir, string fileName, strin
 		{
 			addReadyQueue(taskTag);
 		}
-
-		//autoFullDownload();
-	}).detach();
+	});
+	mythread.detach();
 	App::log("YYXDownload::download--END" + taskTag);
 	return taskTag;
 }
@@ -177,7 +177,7 @@ string YYXDownload::getTaskTag(string dir, string fileName)
 	if (taskTag == "")
 	{
 		//生成下载任务的唯一标识符
-		taskTag = StringUtils::format("%s_downloadTag_%d", fileName.c_str(), (int)YYXLayer::getRandom());
+		taskTag = StringUtils::format("%s_downloadTag_%d", fileName.c_str(), YYXTime::getInstance()->getRandomL());
 		YYXStruct::initMapYYXStruct(data, dir + "/" + fileName, -999, taskTag);
 		string statusKey = taskTag + "+status";
 		YYXStruct::initMapYYXStruct(data, statusKey, YYXDownloadStatus::_null);
@@ -320,7 +320,8 @@ void YYXDownload::startAll()
 	YYXLayer::logb("YYXDownload::startAll");
 	for (int i = 0; i < getDownloadMaxCount();i++)
 	{
-		thread(&YYXDownload::downloadThreadRuning, this).detach();
+		thread mythread(&YYXDownload::downloadThreadRuning, this);
+		mythread.detach();
 	}
 	YYXLayer::loge("YYXDownload::startAll");
 }
@@ -332,31 +333,6 @@ bool YYXDownload::isExitDownloadQueue(string taskTag)
 	else
 		return true;
 }
-
-//int YYXDownload::startTask(string taskTag)
-//{
-//	YYXLayer::logb("YYXDownload::startTask"+ taskTag );
-//	string urlKey = taskTag + "+url";
-//	string url = YYXStruct::getMapString(data, urlKey, "");
-//	string pathKey = taskTag + "+path";
-//	string path = YYXStruct::getMapString(data, pathKey, "");
-//	string statusKey = taskTag + "+status";
-//	int status = YYXStruct::getMapInt64(data, statusKey, 1);
-//	if (url != "" && path != "") 
-//	{//下载状态 0=下载 1=准备下载   2=暂停  3=下载结束
-//		if (status == 1)
-//		{
-//			thread(&YYXDownload::downLoadFile, this, url, path, taskTag).detach();
-//			//downLoadFile(url, path, taskTag);
-//		}
-//		else if (status == 2 || status == 3)
-//		{
-//			deleteDownloadQueue(taskTag);
-//		}
-//	}
-//	YYXLayer::loge("******YYXDownload::startTask / path=   " + path);
-//	return downloadQueue.size();
-//}
 
 void YYXDownload::taskBegin(string taskTag)
 {
@@ -392,12 +368,21 @@ void YYXDownload::taskEnd(string taskTag, int resultCode)
 	string endstr = YYXStruct::getMapString(data, endKey, "");
 	auto run = getMapFunction(endstr);
 	if (resultCode == -1)
-		App::log("CURL init error");
+		App::log("CURL callbackCode error");
+	string total = YYXLayer::getFileValue(taskTag, "-1", FileUtils::getInstance()->getWritablePath() + "temp");
+	double totald = Value(total).asDouble();
+	string pathKey = taskTag + "+path";
+	string path = YYXStruct::getMapString(data, pathKey, "");
+	int size = FileUtils::getInstance()->getFileSize(path);
+	App::log("file size = " + Value(size).asString());
+	App::log("total = " + total);
 	deleteDownloadQueue(taskTag);
-	//autoFullDownload();
 	if (run)
 	{		
-		run(YYXStruct(resultCode, taskTag, nullptr));
+		if (size != totald)
+			run(YYXStruct(resultCode, taskTag, (Ref*)1));
+		else
+			run(YYXStruct(resultCode, taskTag, nullptr));
 	}
 	YYXLayer::loge("YYXDownload::taskEnd");
 }
@@ -447,7 +432,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 	if (!zipfile) {
 		string errorstr = zipPath + " error : Unable to open the zip file";
 		App::log(errorstr);
-		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat",(int)YYXLayer::getRandom()),2);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat",YYXTime::getInstance()->getRandomL()),2);
 		//通知解压失败
 		if (failRun)
 			failRun(zipPath);
@@ -459,7 +444,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 	if (unzGetGlobalInfo(zipfile, &global_info) != UNZ_OK) {
 		string errorstr = zipPath + " error : Unable to get the zip file information";
 		App::log(errorstr);
-		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+		App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 		//通知解压失败
 		if (failRun)
 			failRun(zipPath);
@@ -483,7 +468,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 			//通知解压失败
 			string errorstr = zipPath + " error : "+ string(fileName) +" =>Read the current file information failure";
 			App::log(errorstr);
-			App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+			App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 			if (failRun)
 				failRun(zipPath);
 			return false;
@@ -506,7 +491,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : "+ fullPath +"=>Failed to create the folder";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -529,7 +514,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 						//通知解压失败
 						string errorstr = zipPath + " error : "+ dir +"=>Failed to create the folder";
 						App::log(errorstr);
-						App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+						App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 						if (failRun)
 							failRun(zipPath);
 						return false;
@@ -549,7 +534,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : " + string(fileName) + " =>unzOpenCurrentFile is Failed";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -562,7 +547,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : "+ fullPath +" =>Failed to open the file";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -578,7 +563,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 					//通知解压失败
 					string errorstr = zipPath + " error : " + string(fileName) + " =>unzReadCurrentFile is Failed";
 					App::log(errorstr);
-					App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+					App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 					if (failRun)
 						failRun(zipPath);
 					return false;
@@ -599,7 +584,7 @@ bool YYXDownload::uncompress(string zipDir, string zipName, string unzipDirPath,
 				//通知解压失败
 				string errorstr = zipPath + " error : " + string(fileName) + " =>unzGoToNextFile is Failed";
 				App::log(errorstr);
-				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", (int)YYXLayer::getRandom()),2);
+				App::addErrorLog(errorstr, StringUtils::format("uncompress_%d.dat", YYXTime::getInstance()->getRandomL()),2);
 				if (failRun)
 					failRun(zipPath);
 				return false;
@@ -738,6 +723,9 @@ int YYXDownload::DownProgresss(void* clientp, double fDownLoadTotal, double fDow
 {
 	//YYXLayer::logb("YYXDownload::DownProgresss");
 	auto tag = (string*)clientp;
+	YYXLayer::controlTouchTime(5, *tag + "Time", [=]() {
+		YYXLayer::setFileValue(*tag,Value(fDownLoadTotal).asString(),FileUtils::getInstance()->getWritablePath()+"temp");
+	});
 	int pragress = fDownLoaded / fDownLoadTotal *100.0;
 	int pausePint = YYXStruct::getMapInt64(YYXDownload::GetInstance()->data, *tag + "+pause", 0);
 	if (pragress < pausePint)

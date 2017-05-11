@@ -147,14 +147,15 @@ void Java_org_cocos2dx_cpp_AppActivity_CallBackBookInfoSceneSendComment(JNIEnv *
 void Java_org_cocos2dx_cpp_AppActivity_takePotos(JNIEnv *env, jobject thiz) {
 	CCLOG("%s", "拍照返回");
 	//开启一个线程找头像然后发消息
-	CocosAndroidJni::ToastAndroid(App::getString("STR_PICTUREING"));
+	//CocosAndroidJni::ToastAndroid(App::getString("STR_PICTUREING"));
+	Toast::create(App::getString("STR_PICTUREING"));
 	std::thread thread_1(
 			[]() {
 				int i = 0;
 				string path;
 				CocosAndroidJni::GetPhotoPath(path);
 				string fullpath = path + "/" + App::m_photsName;
-				while (!App::IsHaveFile(fullpath))
+				while (!FileUtils::getInstance()->isFileExist(fullpath))
 				{
 					if (i > 10)
 					return;

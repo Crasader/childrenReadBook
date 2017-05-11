@@ -206,7 +206,7 @@
     <key>COMMENT_ALREADY</key>
     <string>不能重复评价！</string>
     <key>COMMENT_FAILED</key>
-    <string>评论失败</string>
+    <string>评论异常</string>
     <key>WUFAQIDONGYUYINGPINGLUN</key>
     <string>无法启动语音评论</string>
     <key>COMMENT_TIP_LOGIN</key>
@@ -228,7 +228,7 @@
     <key>GET_CODE</key>
     <string>请您获取验证码</string>
     <key>NETEXCEPTION</key>
-    <string>网络异常</string>
+    <string>网络超时, 音信全无</string>
     <key>RECHARGE</key>
     <string>充值 ￥</string>
     <key>YUAN</key>
@@ -385,6 +385,8 @@
     <string>删 除</string>
     <key>SHANCHUPINGLUN</key>
     <string>删除评论?</string>
+  <key>SHANCHUPINGLUNSHIBAI</key>
+  <string>删除评论失败</string>
     <key>YUYINGBOFANGSHIBAI</key>
     <string>语音播放失败</string>
   <key>SHANGWEIDENGLU</key>
@@ -408,7 +410,7 @@
   <key>NIANKAFUWUJIEZHI</key>
   <string>年卡用户     截止: </string>
   <key>FAXIANNINWEICHENGYUEDU</key>
-  <string>发现您未曾阅读, 请先阅读再评论! </string>
+  <string>您未购买, 无法评论! </string>
   <key>NIHAIMEIYOUPINGLUNGUOCISHU</key>
   <string>您还没有评论过此书 </string>
   <key>HAIMEIYOURENPINGLUNGUOCISHU</key>
@@ -451,6 +453,12 @@
     <string>去续费</string>
     <key>QUXIANGXIANG</key>
     <string>再想想</string>
-  <key>NINDEVIPGUOQISHIFOUXUGEFI</key>
-  <string>您的VIP已经过期，是否续费？</string>
+    <key>NINDEVIPGUOQISHIFOUXUGEFI</key>
+    <string>您的VIP已经过期，是否续费？</string>
+  <key>SHUJIZHUANGTAIHUOQUSHIBAI</key>
+  <string>书籍状态获取失败</string>
+  <key>SHUJUYICHANG</key>
+  <string>获取书籍列表异常</string>
+  <key>YINGXINQUANWU</key>
+  <string>网络超时, 音信全无</string>
 </dict> 

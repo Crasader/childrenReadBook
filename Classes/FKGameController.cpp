@@ -75,17 +75,6 @@ string GameController::getPlayBackgroundMusic()
     return _pageData.getSoundId();
 }
 
-GameSpriteData GameController::getSpriteDataFromSpriteTag(int iTag)
-{
-    GameSpriteData gsData;
-    vector<GameSpriteData> vTmp = _pageData.getGameSpriteData();
-    for (unsigned int i = 0; i < vTmp.size(); i++) {
-        if (iTag == vTmp[i].getTag()) {
-            gsData = vTmp[i];
-        }
-    }
-    return gsData;
-}
 //迷宫游戏
 vector<KeyPathData> GameController::getKeyPathDataVector()
 {

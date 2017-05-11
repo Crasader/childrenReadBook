@@ -1,35 +1,35 @@
-﻿#include "BuyBook.h"
+﻿#include "MyBook.h"
 
-BuyBook* BuyBook::BuyBookinstance = nullptr;
+MyBook* MyBook::BuyBookinstance = nullptr;
 
-BuyBook* BuyBook::getInstance()
+MyBook* MyBook::getInstance()
 {
 	if (BuyBookinstance == nullptr)
 	{
-		BuyBookinstance = new BuyBook();
+		BuyBookinstance = new MyBook();
 	}
 	return BuyBookinstance;
 }
 
-BuyBook::BuyBook()
+MyBook::MyBook()
 {
 	App::log("BuyBook()");
 }
 
-BuyBook::~BuyBook()
+MyBook::~MyBook()
 {
 	App::log("~BuyBook()");
 }
 
-void BuyBook::initDir()
+void MyBook::initDir()
 {
-	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "buyBook"))
-		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "buyBook");
+	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "myBook"))
+		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "myBook");
 }
 
-void BuyBook::loadCache()
+void MyBook::loadCache()
 {
-	string cfilename = "buyBook/buyBook_" + App::getMemberID() + ".json";
+	string cfilename = "myBook/bybook_" + App::getMemberID() + ".json";
 	string path = FileUtils::getInstance()->getWritablePath() + cfilename;
 	map<string, string> data;
 	App::getMapFromFile(path, data);
@@ -42,7 +42,7 @@ void BuyBook::loadCache()
 	}
 }
 
-void BuyBook::initData()
+void MyBook::initData()
 {
 	App::log("BuyBook::initData()");
 	if (!needSort())
@@ -52,7 +52,7 @@ void BuyBook::initData()
 	m_inputbooks.insert(App::GetInstance()->VIPbook.begin(), App::GetInstance()->VIPbook.end());
 }
 
-void BuyBook::addBook(int bookid, int time, bool write)
+void MyBook::addBook(int bookid, int time, bool write)
 {
 	//App::log("BuyBook::addBook()",bookid);
 	//App::log("BuyBook::addBook() time=", time);
@@ -73,7 +73,7 @@ void BuyBook::addBook(int bookid, int time, bool write)
 	}
 }
 
-void BuyBook::deleteBook(int bookid)
+void MyBook::deleteBook(int bookid)
 {
 	App::log("BuyBook::deleteBook()",bookid);
 	auto it = m_inputbooks.find(bookid);
@@ -86,7 +86,7 @@ void BuyBook::deleteBook(int bookid)
 		m_buyTimes.erase(t);
 }
 
-void BuyBook::writeDownXml()
+void MyBook::writeDownXml()
 {
 	map<string, string> data;
 	for (auto it : m_buyTimes)
@@ -95,11 +95,11 @@ void BuyBook::writeDownXml()
 		data[key] = StringUtils::format("%d", it.second);
 	}
 	string json = YYXLayer::getStringFormMap(data);
-	string filename = StringUtils::format("buyBook/buyBook_%d.json", App::GetInstance()->getMemberId());
+	string filename = StringUtils::format("myBook/mybook_%d.json", App::GetInstance()->getMemberId());
 	YYXLayer::writeFile(json, FileUtils::getInstance()->getWritablePath() + filename);
 }
 
-void BuyBook::clearBook()
+void MyBook::clearBook()
 {
 	m_inputbooks.clear();
 	m_buyTimes.clear();
@@ -107,7 +107,7 @@ void BuyBook::clearBook()
 	m_tempbooks.clear();
 }
 
-void BuyBook::filtrate()
+void MyBook::filtrate()
 {
 	if (!needSort())
 		return;
@@ -126,7 +126,7 @@ void BuyBook::filtrate()
 	}
 }
 
-void BuyBook::sort()
+void MyBook::sort()
 {
 	if (!needSort())
 		return;
@@ -139,14 +139,14 @@ void BuyBook::sort()
 	}
 }
 
-vector<int> BuyBook::getResultData()
+vector<int> MyBook::getResultData()
 {
 	count = m_buyTimes.size();
 	IsSorted = false;
 	return m_outputbooks;
 }
 
-bool BuyBook::needSort()
+bool MyBook::needSort()
 {
 	if (IsSorted)
 	{
