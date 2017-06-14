@@ -164,7 +164,9 @@ void AppHttp::addHttpList(int id)
 void AppHttp::delHttpList(int id)
 {
 	m_MhttpList.lock();
-	httpList.erase(id);
+	auto it = httpList.find(id);
+	if(it != httpList.end())
+		httpList.erase(id);
 	m_MhttpList.unlock();
 }
 
@@ -794,11 +796,9 @@ void AppHttp::httpChildren()
 				child->setChildrenBirth(childrenBirth);
 				child->setUrl(url);
 				User::getInstance()->addChild(child);
-				string path = child->getPath();
-				if (!FileUtils::getInstance()->isFileExist(path))
-				{
+				//头像更新
 					YYXDownloadImages::GetInstance()->newDownloadImage(url, child->getDir(), 
-						ChildInfo::getChildImageFileName(child->getChildrenId()),
+						YYXTime::getInstance()->getRandomFileName()+".png",
 						high, 
 						0, 
 						[childrenId](string downpath)
@@ -808,7 +808,7 @@ void AppHttp::httpChildren()
 							return;
 						auto child = User::getInstance()->getChild(childrenId);
 						User::getInstance()->addChild(child);//getchild中可能是new出来的，需要释放，addchild中可以管理或者释放
-						string savepath = child->getDir() + "/_" + ChildInfo::getChildImageFileName(childrenId);
+						string savepath = child->getDir() + "/" + YYXTime::getInstance()->getRandomFileName() + ".png";
 						CrossPlatform::cutTheRounded(downpath, savepath, 300, 300, "", [childrenId](string _savepath)
 						{
 							if (FileUtils::getInstance()->isFileExist(_savepath))
@@ -820,7 +820,6 @@ void AppHttp::httpChildren()
 							YYXLayer::sendNotify(TAG_BABYCENTERSCENECHANGECHILDREN);
 						}, "", nullptr);
 					});
-				}
 				ChildInfo* child2 = User::getInstance()->getChild(User::getInstance()->getChildId());
 				if (child2->getChildrenId() <= 0 && i == 0 )
 				{
@@ -828,8 +827,9 @@ void AppHttp::httpChildren()
 				}
 			}
 			YYXLayer::sendNotify(TAG_BABYCENTERSCENESHOWCHILD);
-			YYXLayer::sendNotify("BaByCenterSceneChildInfoReferHeadPortrait");
+			YYXLayer::sendNotify(TAG_BABYCENTERSCENEREFERHEAD);
 			YYXLayer::sendNotify(TAG_INDEXSCENEDOWNLOADCHILDHEAD);
+			YYXLayer::sendNotify(TAG_REMOVEWAITING);
 		}
 	});
 	newHttp(httpData);
@@ -2319,5 +2319,59 @@ void AppHttp::httpMyMoneyPayVip(int memberId, int cardType, int waitkey)
 		Toast::create(App::getString("NETEXCEPTION"));
 		YYXLayer::sendNotify(TAG_REMOVEWAITING);
 	});
+	newHttp(httpData);
+}
+
+void AppHttp::httpUserIsOffLine()
+{
+	map<string, string> p;
+	p["memberId"] = App::getMemberID();
+	p["equipmentCode"] = CrossPlatform::getPhoneModel(3);
+	auto parameter = signPostData("ellabook.member.signInStatus", p, "1.0");
+
+	string url = string(IP).append("/ellabook-server/rest/api/service");
+	HttpData* httpData = HttpData::create();
+	httpData->setUrl(url);
+	httpData->setParamter(parameter);
+	httpData->setPriority(HttpPriority::_high);
+	httpData->setHttpType(HttpRequest::Type::POST);
+	httpData->setCallback([](HttpData* data) {
+		string json = data->getJson();
+		rapidjson::Document doc;
+		bool result = YYXLayer::getJsonObject4Json(doc, json);
+		if (!result)
+		{
+			return;
+		}
+		auto status = YYXLayer::getIntForJson(0, doc, "status");
+		int youke = 2;
+		if (status == 1)
+		{
+			string statusId = YYXLayer::getStringForJson("-1", doc, "data", "statusId");
+			if (Value(statusId).asInt() == 0)
+			{
+				//在线
+				youke = 0;
+			}
+			else if (Value(statusId).asInt() == 1)
+			{
+				//离线
+				youke = 1;
+				//弹出下线
+				App::cancelData();
+				YYXVisitor::getInstance()->loginVisitor();
+				ControlScene::getInstance()->setDangqianScene(ControlScene::getInstance()->getCurrentScene()->getName());
+				Director::getInstance()->getScheduler()->performFunctionInCocosThread([youke]() {
+					CrossPlatform::getInstance()->newOffLine();
+				});
+			}
+		}
+		else
+		{
+			//游客
+			youke = 2;
+		}		
+	});
+	httpData->setCallbackerror([](HttpData* data) {	});
 	newHttp(httpData);
 }

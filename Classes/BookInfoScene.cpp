@@ -22,6 +22,7 @@
 #include "HttpWaiting.h"
 #include "BuyVip.h"
 #include "YYXTime.h"
+#include "LoginControl.h"
 
 using namespace experimental;
 USING_NS_CC;
@@ -171,7 +172,7 @@ bool BookInfo::init(SceneInfo* sceneInfo)
 	//售价小数部分 控件名称
 	m_price_x = (Text*)node->getChildByName(BOOKINFO_FIND_TEXT_SELLINGPRICE_X);
 	//原价格
-	m_originalPrice = (Text*)node->getChildByName(BOOKINFO_FIND_TEXT_ORIGINALPRICE);
+	//m_originalPrice = (Text*)node->getChildByName(BOOKINFO_FIND_TEXT_ORIGINALPRICE);
 	//书名
 	m_name = (Text*)node->getChildByName(BOOKINFO_FIND_BOOKNAME);
 	//简介黄色
@@ -557,7 +558,7 @@ void BookInfo::showPrice()
 	auto width = m_price_z->getSize().width;
 	m_price_x->setText(str_price_x);
 	m_price_x->setPosition(Vec2(m_price_z->getPosition() .x+width , m_price_x->getPosition().y));
-	m_originalPrice->setText(str_or);
+	//m_originalPrice->setText(str_or);
 	App::log("BookInfo::showPrice---END");
 }
 
@@ -1391,8 +1392,12 @@ void BookInfo::hintIsBuyIsRent()
 
 void BookInfo::gotoLogin()
 {
-	auto control = ControlScene::getInstance();
-	control->replaceScene(ControlScene::getInstance()->getSceneInfo(BookInfoScene)->setData("bookId", Value(m_bookId)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+	//auto control = ControlScene::getInstance();
+	//control->replaceScene(ControlScene::getInstance()->getSceneInfo(BookInfoScene)->setData("bookId", Value(m_bookId)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+	ControlScene::getInstance()->setDangqianScene(BookInfoScene);
+	LoginControl::getInstance()->Login([](string json) {
+		LoginControl::getInstance()->LoginCallback(json);
+	}, nullptr);
 }
 
 void BookInfo::addDownloadListener(Button* button)

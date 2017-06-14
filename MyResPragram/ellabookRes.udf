@@ -31,16 +31,11 @@
     <Item Key="TabsParamsKey">
       <Value ctype="TabsInfo">
         <OpenedDocuments>
-          <FilePathData Path="Notification/csb/zhongbanglaixi.csd" />
-          <FilePathData Path="Notification/csb/kaitonghuiyuan.csd" />
-          <FilePathData Path="Notification/csb/pay.csd" />
-          <FilePathData Path="Notification/csb/viptimeout.csd" />
-          <FilePathData Path="Notification/csb/version.csd" />
-          <FilePathData Path="Notification/csb/huiyuantype.csd" />
-          <FilePathData Path="Notification/csb/kaitonghuiyuan7day.csd" />
-          <FilePathData Path="Pay/csb/paylayer.csd" />
+          <FilePathData Path="Book/csb/readbook.csd" />
+          <FilePathData Path="BookInfo/csb/bookInfo.csd" />
+          <FilePathData Path="IndexScene/csb/background.csi" />
         </OpenedDocuments>
-        <ActiveDocument Path="Pay/csb/paylayer.csd" />
+        <ActiveDocument Path="IndexScene/csb/background.csi" />
       </Value>
     </Item>
   </Properties>

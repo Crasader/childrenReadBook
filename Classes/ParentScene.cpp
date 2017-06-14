@@ -23,6 +23,7 @@
 #include "HttpWaiting.h"
 #include "BuyVip.h"
 #include "vipNotifyLayer.h"
+#include "LoginControl.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -76,7 +77,8 @@ bool Parent::init(SceneInfo* sceneinfo )
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
+	m_showhongbao = sceneinfo->getData("show", Value(-1)).asInt();
+	sceneinfo->delData("show");
 	//整体场景
 	Data data;
 	if (App::GetInstance()->getData(PARENT_BACKGROUND_CSB, data))
@@ -247,6 +249,63 @@ Layer* Parent::initNode_Account()
 	auto myRedPacket = (Button*)account->getChildByName(FIND_BUTTON_BY_NAME_PARENTSCENE_MYREDPACKET);
 	//充值VIP
 	auto VIPButton = (Button*)account->getChildByName(FIND_BUTTON_BY_NAME_PARENTSCENE_VIP);
+	//绑定手机
+	auto bindphone = (Button*)account->getChildByName("bangding");
+	//微信
+	auto clickweixin = (Button*)account->getChildByName("clickweixin");
+	//qq
+	auto clickqq = (Button*)account->getChildByName("clickqq");
+	//微博
+	auto clickweibo = (Button*)account->getChildByName("clickweibo");
+	//微信状态
+	auto weixin = (Text*)account->getChildByName("weixin");
+	//qq状态
+	auto qq = (Text*)account->getChildByName("qq");
+	//微博状态
+	auto weibo = (Text*)account->getChildByName("weibo");
+	//微信图片
+	auto Iweixin = (ImageView*)account->getChildByName("Image_1");
+	//qq图片
+	auto Iqq = (ImageView*)account->getChildByName("Image_2");
+	//微博图片
+	auto Iweibo = (ImageView*)account->getChildByName("Image_3");
+
+	if (bindphone)
+	{
+		string member_name = User::getInstance()->getUserAccount();
+		if (member_name.length() != 11)
+			bindphone->setVisible(true);
+		else
+			bindphone->setVisible(false);
+		bindphone->addClickEventListener([](Ref* sender) {
+			auto user = User::getInstance();
+			string platform = "";
+			string uid = "";
+			uid = user->getWeixinBind();
+			if (uid.length() >5)
+				platform = "WEIXIN";
+			else
+			{
+				uid = user->getQqBind();
+				if (uid.length() >5)
+					platform = "QQ";
+				else 
+				{
+					uid = user->getSinaBind();
+					if (uid.length() >5)
+						platform = "SINA";
+				}
+			}
+			if (!uid.empty())
+				ControlScene::getInstance()->setDangqianScene(ParentScene);
+				CrossPlatform::getInstance()->newBindPhone(uid, platform, [](string json) {
+				LoginControl::getInstance()->LoginCallback(json);
+			}, nullptr);
+		});
+	}
+	setBindStatus(weixin, User::getInstance()->getWeixinBind(),"WEIXIN", clickweixin,Iweixin,"ParentScene/res/umeng_socialize_wechat.png", "ParentScene/res/umeng_wechat.png");
+	setBindStatus(qq, User::getInstance()->getQqBind(),"QQ",clickqq,Iqq,"ParentScene/res/umeng_socialize_qq.png","ParentScene/res/umeng_qq.png");
+	setBindStatus(weibo, User::getInstance()->getSinaBind(),"SINA",clickweibo,Iweibo,"ParentScene/res/umeng_socialize_sina.png","ParentScene/res/umeng_sina.png");
 	if (VIPButton) {
 		VIPButton->setTitleText(App::getString("OPENVIP"));
 		VIPButton->addClickEventListener([](Ref* sender) {
@@ -298,6 +357,15 @@ Layer* Parent::initNode_Account()
 	string str = StringUtils::format("%.02f", myMomey/100.0) + App::getString("YUAN");
 	if (momey)
 		momey->setString(str);
+	if (m_showhongbao == 1)
+	{
+		//要求展示出来
+		showRedPacket();
+		AppHttp::getInstance()->httpUserRedPackets([]() {
+			YYXLayer::sendNotify("httpUserRedPacketSuccess");
+		});
+		m_showhongbao = -1;
+	}
 	if (myRedPacket)
 	{
 		myRedPacket->addClickEventListener([=](Ref* sender) {
@@ -399,135 +467,13 @@ Layer* Parent::initNode_Account()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	//注销按钮 点击事件
 	logoff->addClickEventListener([=](Ref* sender) {
-
 		YYXSound::getInstance()->playButtonSound();
-		//弹框确认
-		auto messagebox = CSLoader::createNode(MESSAGEBOX_LOGOFF_YESORNO_CSB);
-		messagebox->setAnchorPoint(Vec2(0.5f, 0.5f));
-		messagebox->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-		this->addChild(messagebox);
-		auto bgImg = (ImageView*)messagebox->getChildByTag(64);
-		bgImg->setTouchEnabled(true);
-		auto b_yes = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_LOGOFF_YES);
-		auto b_no = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_LOGOFF_NO);
-		//确认按钮 添加点击事件
-		b_yes->addClickEventListener([=](Ref* sender) {
-			YYXSound::getInstance()->playButtonSound();
-			this->removeChild(messagebox);
-			App::cancelData();
-			// 删除当前图层,添加登陆图层
-			m_parentNode->removeChild(m_show);
-			m_show = initNode_Login();
-			m_parentNode->addChild(m_show);	
-			YYXVisitor::getInstance()->parentSceneLogout();
-		});
-		//取消按钮 添加点击事件
-		b_no->addClickEventListener([=](Ref* sender) {
-			YYXSound::getInstance()->playButtonSound();
-
-			this->removeChild(messagebox);			
-		});
+		accountCancel();
 	});
 	//修改密码 点击事件
 	changepassword->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
-
-		//弹框 修改密码
-		auto changepasswordMessagebox = CSLoader::createNode(MESSAGEBOX_CHANGEPASSWORD_CSB);
-		changepasswordMessagebox->setAnchorPoint(Vec2(0.5f, 0.5f));
-		changepasswordMessagebox->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-		this->addChild(changepasswordMessagebox);
-
-		auto bgImg = (ImageView*)changepasswordMessagebox->getChildByTag(55);
-		bgImg->setTouchEnabled(true);
-		auto inpit_phoneNum = MyEditBox::create(Size(260, 45), App::getString("EDITBOX_PHONE"));
-		inpit_phoneNum->setMyFontSize(20);
-		inpit_phoneNum->setBoxMaxLength(11);
-		inpit_phoneNum->setMyInputMode(cocos2d::ui::EditBox::InputMode::NUMERIC);
-		inpit_phoneNum->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
-		inpit_phoneNum->setPosition(Vec2(590, 343));
-		changepasswordMessagebox->addChild(inpit_phoneNum);
-
-		auto inpit_code = MyEditBox::create(Size(100, 45), App::getString("EDITBOX_SURE_CODE"));
-		inpit_code->setMyFontSize(20);
-		inpit_code->setBoxMaxLength(6);
-		inpit_code->setMyInputMode(cocos2d::ui::EditBox::InputMode::ANY);
-		inpit_code->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
-		inpit_code->setPosition(Vec2(507, 281));
-		changepasswordMessagebox->addChild(inpit_code);
-
-		auto inpit_newPassword = MyEditBox::create(Size(260, 45), App::getString("EDITBOX_NEW_PASSWORD"));
-		inpit_newPassword->setMyFontSize(20);
-		inpit_newPassword->setBoxMaxLength(20);
-		inpit_newPassword->setMyInputMode(cocos2d::ui::EditBox::InputMode::SINGLE_LINE);
-		inpit_newPassword->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
-		inpit_newPassword->setPosition(Vec2(590, 218));
-		changepasswordMessagebox->addChild(inpit_newPassword);
-		
-		//确认修改密码 点击事件
-		auto b_change = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_CHANGE);
-		b_change->addClickEventListener([=](Ref* sender) {
-			if (!CrossPlatform::IsNetConnect(true))
-				return;
-			int xmlCodeTime = 0;
-			string xmlCode = YYXLayer::getFileValue("yanzhengCode", "");
-			string xmlCodeTimestr = YYXLayer::getFileValue("codeTime","");
-			xmlCodeTime = atoi(xmlCodeTimestr.c_str());
-			auto movT = xmlCodeTime - (int)App::getCurrentTime();
-			if (xmlCode == "" || movT > 1800)
-			{
-				Toast::create(App::getString("GET_CODE"));
-				return;
-			}
-			auto code = inpit_code->getString();
-			if (xmlCode != code)
-			{
-				Toast::create(App::getString("MESAAGEBOX_CODE_ERROR"));
-				return;
-			}
-			if (code.length()!= 6){
-				Toast::create( App::getString("MESAAGEBOX_CODE_ERROR"));
-				return;
-			}
-			if (inpit_newPassword->getString().length() < 6){
-				Toast::create( App::getString("MESAAGEBOX_PASSWORD_ERROR"));
-				return;
-			}
-			unschedule("ModifyPsd_Code");
-			AppHttp::getInstance()->httpChangePassword(inpit_phoneNum->getString(), inpit_newPassword->getString());
-			this->removeChild(changepasswordMessagebox);
-		});
-		//获取验证码 点击事件
-		auto b_getcode = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_GETCODE);
-		m_times = 60;
-		b_getcode->addClickEventListener([=](Ref* sender) {
-			if (inpit_phoneNum->getString().length() != 11){
-				Toast::create(App::getString("MESAAGEBOX_USERNAME_ERROR"));
-				return;
-			}
-			AppHttp::getInstance()->httpCAPTCHA(inpit_phoneNum->getString());
-			b_getcode->setTouchEnabled(false);
-			b_getcode->setTitleText(StringUtils::format("%d%s", m_times, App::getString("seconds")));
-			schedule([=](float f) {
-				m_times--;
-				b_getcode->setTitleText(StringUtils::format("%d%s", m_times, App::getString("seconds")));
-				if (m_times == 0)
-				{
-					m_times = 60;
-					b_getcode->setTouchEnabled(true);
-					b_getcode->setTitleText(App::getString("GetCode"));
-					unschedule("ModifyPsd_Code");
-				}
-			}, 1.0f, "ModifyPsd_Code");
-		});
-		//关闭按钮 点击事件
-		auto b_close = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_CLOSE);
-		b_close->addClickEventListener([=](Ref* sender) {
-			YYXSound::getInstance()->playButtonSound();
-
-			this->removeChild(changepasswordMessagebox);
-			unschedule("ModifyPsd_Code");
-		});
+		changePassword();
 	});
 	//充值 点击事件
 	rechange->addClickEventListener([=](Ref* sender) {
@@ -656,6 +602,7 @@ Layer* Parent::initNode_Account()
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listner, VIPButton);
 	//网络请求用户信息可以不刷新,登录会自动获取到,刷新意义不大
+
 	return (Layer*)account;
 }
 //联系我们界面的初始化
@@ -979,9 +926,20 @@ Layer* Parent::initNode_Login()
 		layer = CSLoader::createNode(LOGIN_CSB);
 	auto login = (Button*)layer->getChildByName(FIND_BUTTON_BY_NAME_LOGIN);
 	login->addClickEventListener([=](Ref* sender){
-		auto control = ControlScene::getInstance();
-		control->replaceScene(ControlScene::getInstance()->getSceneInfo(ParentScene), ControlScene::getInstance()->getSceneInfo(LoginScene));
+		ControlScene::getInstance()->setDangqianScene(ParentScene);
+		LoginControl::getInstance()->Login([](string json) {
+			LoginControl::getInstance()->LoginCallback(json);
+		}, nullptr);
 	});
+
+	auto listener1 = EventListenerCustom::create(TAG_REFERSHEVERYSCENE, [=](EventCustom* e) {
+		if (!YYXVisitor::getInstance()->getVisitorMode())
+		{
+			auto cts = ControlScene::getInstance();
+			cts->replaceScene(cts->getCurrentScene(), cts->getSceneInfo(ParentScene), false);
+		}
+	});
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener1, layer);
 	return (Layer *)layer;
 }
 
@@ -1326,4 +1284,183 @@ void Parent::loadRedPacketData(Node* node, int index)
 		//红包封面
 		auto redPacket = (ImageView*)node->getChildByName(FIND_IMAGEVIE_BY_NAME_EVERYREDPACKET_COVER);
 	}
+}
+
+void Parent::setBindStatus(Text* text, string uid, string platform, Button* bt,ImageView* view ,string imageBind,string imageUnBind)
+{
+	bool show = false;
+	if (uid.length() >3)
+		show = true;
+	if (text && bt && view)
+	{
+		if (show)
+		{
+			text->setText(App::getString("YIBANGDING"));
+			text->setTextColor(Color4B(110,110,114,255));
+			view->loadTexture(imageBind, TextureResType::PLIST);
+		}
+		else
+		{
+			text->setText(App::getString("WEIBANGDING"));
+			text->setTextColor(Color4B(228, 133, 68, 255));		
+			view->loadTexture(imageUnBind, TextureResType::PLIST);
+		}
+		bt->setVisible(true);
+		bt->addClickEventListener([platform, uid](Ref* sender) {
+			ControlScene::getInstance()->setDangqianScene(ParentScene);
+			CrossPlatform::getInstance()->newBindThird(User::getInstance()->getUserAccount(), uid, User::getInstance()->getMemberId(), platform, [](string json) {
+				LoginControl::getInstance()->LoginCallback(json);
+			}, nullptr);
+		});
+	}
+}
+
+void Parent::accountCancel()
+{
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	//弹框确认
+	auto messagebox = CSLoader::createNode(MESSAGEBOX_LOGOFF_YESORNO_CSB);
+	messagebox->setAnchorPoint(Vec2(0.5f, 0.5f));
+	messagebox->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	this->addChild(messagebox);
+	auto bgImg = (ImageView*)messagebox->getChildByTag(64);
+	bgImg->setTouchEnabled(true);
+	auto b_yes = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_LOGOFF_YES);
+	auto b_no = (Button*)messagebox->getChildByName(FIND_BUTTON_BY_NAME_LOGOFF_NO);
+	//确认按钮 添加点击事件
+	b_yes->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
+		this->removeChild(messagebox);
+		App::cancelData();
+		// 删除当前图层,添加登陆图层
+		m_parentNode->removeChild(m_show);
+		m_show = initNode_Login();
+		m_parentNode->addChild(m_show);
+		YYXVisitor::getInstance()->parentSceneLogout();
+	});
+	//取消按钮 添加点击事件
+	b_no->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
+		this->removeChild(messagebox);
+	});
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	ControlScene::getInstance()->setDangqianScene(ParentScene);
+	CrossPlatform::getInstance()->newAccountCancel(User::getInstance()->getUserAccount(), User::getInstance()->getMemberId(), [](string json) {
+		App::cancelData();
+		YYXVisitor::getInstance()->parentSceneLogout();
+	}
+	,nullptr );
+#endif
+}
+
+void Parent::changePassword()
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	//弹框 修改密码
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	auto changepasswordMessagebox = CSLoader::createNode(MESSAGEBOX_CHANGEPASSWORD_CSB);
+	changepasswordMessagebox->setAnchorPoint(Vec2(0.5f, 0.5f));
+	changepasswordMessagebox->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	this->addChild(changepasswordMessagebox);
+
+	auto bgImg = (ImageView*)changepasswordMessagebox->getChildByTag(55);
+	bgImg->setTouchEnabled(true);
+	auto inpit_phoneNum = MyEditBox::create(Size(260, 45), App::getString("EDITBOX_PHONE"));
+	inpit_phoneNum->setMyFontSize(20);
+	inpit_phoneNum->setBoxMaxLength(11);
+	inpit_phoneNum->setMyInputMode(cocos2d::ui::EditBox::InputMode::NUMERIC);
+	inpit_phoneNum->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
+	inpit_phoneNum->setPosition(Vec2(590, 343));
+	changepasswordMessagebox->addChild(inpit_phoneNum);
+
+	auto inpit_code = MyEditBox::create(Size(100, 45), App::getString("EDITBOX_SURE_CODE"));
+	inpit_code->setMyFontSize(20);
+	inpit_code->setBoxMaxLength(6);
+	inpit_code->setMyInputMode(cocos2d::ui::EditBox::InputMode::ANY);
+	inpit_code->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
+	inpit_code->setPosition(Vec2(507, 281));
+	changepasswordMessagebox->addChild(inpit_code);
+
+	auto inpit_newPassword = MyEditBox::create(Size(260, 45), App::getString("EDITBOX_NEW_PASSWORD"));
+	inpit_newPassword->setMyFontSize(20);
+	inpit_newPassword->setBoxMaxLength(20);
+	inpit_newPassword->setMyInputMode(cocos2d::ui::EditBox::InputMode::SINGLE_LINE);
+	inpit_newPassword->setMyInputFlag(cocos2d::ui::EditBox::InputFlag::SENSITIVE);
+	inpit_newPassword->setPosition(Vec2(590, 218));
+	changepasswordMessagebox->addChild(inpit_newPassword);
+
+	//确认修改密码 点击事件
+	auto b_change = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_CHANGE);
+	b_change->addClickEventListener([=](Ref* sender) {
+		if (!CrossPlatform::IsNetConnect(true))
+			return;
+		int xmlCodeTime = 0;
+		string xmlCode = YYXLayer::getFileValue("yanzhengCode", "");
+		string xmlCodeTimestr = YYXLayer::getFileValue("codeTime", "");
+		xmlCodeTime = atoi(xmlCodeTimestr.c_str());
+		auto movT = xmlCodeTime - (int)App::getCurrentTime();
+		if (xmlCode == "" || movT > 1800)
+		{
+			Toast::create(App::getString("GET_CODE"));
+			return;
+		}
+		auto code = inpit_code->getString();
+		if (xmlCode != code)
+		{
+			Toast::create(App::getString("MESAAGEBOX_CODE_ERROR"));
+			return;
+		}
+		if (code.length() != 6) {
+			Toast::create(App::getString("MESAAGEBOX_CODE_ERROR"));
+			return;
+		}
+		if (inpit_newPassword->getString().length() < 6) {
+			Toast::create(App::getString("MESAAGEBOX_PASSWORD_ERROR"));
+			return;
+		}
+		unschedule("ModifyPsd_Code");
+		AppHttp::getInstance()->httpChangePassword(inpit_phoneNum->getString(), inpit_newPassword->getString());
+		this->removeChild(changepasswordMessagebox);
+	});
+	//获取验证码 点击事件
+	auto b_getcode = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_GETCODE);
+	m_times = 60;
+	b_getcode->addClickEventListener([=](Ref* sender) {
+		if (inpit_phoneNum->getString().length() != 11) {
+			Toast::create(App::getString("MESAAGEBOX_USERNAME_ERROR"));
+			return;
+		}
+		AppHttp::getInstance()->httpCAPTCHA(inpit_phoneNum->getString());
+		b_getcode->setTouchEnabled(false);
+		b_getcode->setTitleText(StringUtils::format("%d%s", m_times, App::getString("seconds")));
+		schedule([=](float f) {
+			m_times--;
+			b_getcode->setTitleText(StringUtils::format("%d%s", m_times, App::getString("seconds")));
+			if (m_times == 0)
+			{
+				m_times = 60;
+				b_getcode->setTouchEnabled(true);
+				b_getcode->setTitleText(App::getString("GetCode"));
+				unschedule("ModifyPsd_Code");
+			}
+		}, 1.0f, "ModifyPsd_Code");
+	});
+	//关闭按钮 点击事件
+	auto b_close = (Button*)changepasswordMessagebox->getChildByName(FIND_BUTTON_BY_NAME_CHANGEPASSWORD_CLOSE);
+	b_close->addClickEventListener([=](Ref* sender) {
+		YYXSound::getInstance()->playButtonSound();
+
+		this->removeChild(changepasswordMessagebox);
+		unschedule("ModifyPsd_Code");
+	});
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	CrossPlatform::getInstance()->newChangePassword([](string json) {
+		App::cancelData();
+		YYXVisitor::getInstance()->parentSceneLogout();
+	}, nullptr );
+#endif
 }

@@ -61,30 +61,54 @@ void SetBook::readBook()
 	string bookIdstr = StringUtils::format("%d", getBookId());
 	bookPath = FileUtils::getInstance()->getWritablePath() + "bookUNZip/" + bookIdstr + "/Iphone1334";
 	drawPath = "bookUNZip/" + bookIdstr + "/";
-	if (App::getMemberID() == "5656")
-	{
-		BookParser::getInstance()->setBookPlayModeState(AUTOPLAY);
-	}
+	//if (App::getMemberID() == "5656")
+	//{
+	//	BookParser::getInstance()->setBookPlayModeState(AUTOPLAY);
+	//}
+	BookParser::getInstance()->setBookPlayModeState(READ);
 	BookParser::getInstance()->setDrawFilePath(drawPath);
 	//退出按钮
-	BookParser::getInstance()->setPageQuitCallBack([=]() {
-		YYXLayer::controlTouchTime(1, "setPageQuitCallBackTime", [=]() {
-			BookParser::getInstance()->bookQuit();
-			auto control = ControlScene::getInstance();
-			control->backFromScene();
-			thread mythread([=]() {
-				App::ccsleep(3000);
-				control->end();
-			});
-			mythread.detach();
-			//保存阅读记录
-			saveReadRecordEnd();
-			YYXSound::getInstance()->resumeBackGroundMusic();
+	BookParser::getInstance()->setPageQuitCallBack([]() {
+		YYXLayer::controlTouchTime(1, "setPageQuitCallBackTime", []() {
+			SetBook::getInstance()->setButtonOpacity();
+			auto node = CSLoader::createNode("Book/csb/readbook.csb");
+			if (node)
+			{
+				Button* tuichu = (Button*)node->getChildByName("Button_1");
+				Button* fenxiang = (Button*)node->getChildByName("Button_2");
+				Button* close = (Button*)node->getChildByName("Button_3");
+				tuichu->addClickEventListener([=](Ref* sender) {
+					SetBook::getInstance()->setButtonOpacity();
+					node->removeFromParentAndCleanup(true);
+					BookParser::getInstance()->bookQuit();
+					auto control = ControlScene::getInstance();
+					control->backFromScene();
+					thread mythread([=]() {
+						App::ccsleep(3000);
+						control->end();
+					});
+					mythread.detach();
+					//保存阅读记录
+					SetBook::getInstance()->saveReadRecordEnd();
+					YYXSound::getInstance()->resumeBackGroundMusic();
+				});
+				fenxiang->addClickEventListener([=](Ref* sender) {
+					SetBook::getInstance()->setButtonOpacity();
+					node->removeFromParentAndCleanup(true);
+					SetBook::getInstance()->ShareBook(BookParser::getInstance()->pageScreenShot(), SetBook::getInstance()->getBookId());
+				});
+				close->addClickEventListener([=](Ref* sender) {
+					SetBook::getInstance()->setButtonOpacity();
+					node->removeFromParentAndCleanup(true);
+				});
+				Director::getInstance()->getRunningScene()->addChild(node,10000);
+			}			
 		});
 	});
 	//向前按钮
 	BookParser::getInstance()->setPageUpCallBack([=]() {
 		YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
+			SetBook::getInstance()->setButtonOpacity();
 			BookParser::getInstance()->pageUp();
 			saveReadRecording();
 		});
@@ -92,13 +116,14 @@ void SetBook::readBook()
 	//向后按钮
 	BookParser::getInstance()->setPageDownCallBack([=]() {
 		YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
+			SetBook::getInstance()->setButtonOpacity();
 			Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
 				saveReadRecording();
 				if (BookParser::getInstance()->getCurrentPage() == 5)
 				{
 					if (YYXBookOver::getInstance()->UserBuy() || YYXBookOver::getInstance()->UserVip())
 					{
-						BookParser::getInstance()->pageDown(true);						
+						BookParser::getInstance()->pageDown(true);
 					}
 					else
 					{
@@ -125,19 +150,20 @@ void SetBook::readBook()
 			});
 		});
 	});
-	BookParser::getInstance()->setPageMenuChangeCallBack([](Menu* m) {
-		auto down =(MenuItemImage*) m->getChildByTag(BUTTON_TAG_PAGE_DOWN);
-		down->setVisible(true);
-	});
+	//BookParser::getInstance()->setPageMenuChangeCallBack([](Menu* m) {
+		//auto down =(MenuItemImage*) m->getChildByTag(BUTTON_TAG_PAGE_DOWN);
+		//down->setVisible(true);
+	//});
 	//分享
-	BookParser::getInstance()->setBookShareCallBack([=](RenderTexture* img) {
-		YYXLayer::controlTouchTime(3, "ClickShareTime", [=]()
-		{
-			ShareBook(img, getBookId());
-		}, []() {
-			Toast::create(App::getString("CAOZUOGUOYUPINGFAN"));
-		});
-	});
+	//BookParser::getInstance()->setBookShareCallBack([=](RenderTexture* img) {
+	//	YYXLayer::controlTouchTime(3, "ClickShareTime", [=]()
+	//	{
+	//		ShareBook(img, getBookId());
+	//	}, []() {
+	//		Toast::create(App::getString("CAOZUOGUOYUPINGFAN"));
+	//	});
+	//});
+	readButton();
 	int result = -999;
 	HttpWaiting::getInstance()->remove();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
@@ -159,6 +185,70 @@ void SetBook::readBook()
 		YYXSound::getInstance()->pauseBackGroundMusic();
 		ReadBook::getInstance()->addBook(getBookId(), (int)YYXLayer::getCurrentTime4Second());
 	}
+}
+
+void SetBook::readButton()
+{
+	BookParser::getInstance()->setPageMenuChangeCallBack([](Menu* menu) {
+		auto myup = (MenuItemImage*)menu->getChildByTag(BUTTON_TAG_PAGE_UP);
+		auto mydown = (MenuItemImage*)menu->getChildByTag(BUTTON_TAG_PAGE_DOWN);
+		auto mymenu = (MenuItemImage*)menu->getChildByTag(BUTTON_TAG_PAGE_QUIT);
+		auto myshare = (MenuItemImage*)menu->getChildByTag(BUTTON_TAG_PAGE_SHARE);
+		if (myshare)
+			myshare->setVisible(false);
+		mydown->setVisible(true);
+		myup->setNormalImage(Sprite::create("other/yueduyemianyouhua-button-shangyiye-nor_736h.png"));
+		myup->setSelectedImage(Sprite::create("other/yueduyemianyouhua-button-shangyiye-pre_736h.png"));
+		mydown->setNormalImage(Sprite::create("other/yueduyemianyouhua-button-xiayiye-nor_736h.png"));
+		mydown->setSelectedImage(Sprite::create("other/yueduyemianyouhua-button-xiayiye-pre_736h.png"));
+		mymenu->setNormalImage(Sprite::create("other/yueduyemianyouhua-button-liebiao-nor_736h.png"));
+		mymenu->setSelectedImage(Sprite::create("other/yueduyemianyouhua-button-liebiao-pre_736h.png"));
+		auto visibleSize = Director::getInstance()->getVisibleSize();
+		auto sc = visibleSize.height / 1536;
+		myup->setScale(sc);
+		mydown->setScale(sc);
+		mymenu->setScale(sc);
+		auto time = SetBook::getInstance()->getOpacityTime();
+		long long nowts = YYXTime::getInstance()->getNowTime4S() - time;
+		int op = 150;
+		if (nowts < 10)
+			op = 255;
+		myup->setOpacity(op);
+		mydown->setOpacity(op);
+		mymenu->setOpacity(op);
+		
+		auto listenerup = EventListenerCustom::create(TAG_SETOPACITY, [=](EventCustom* e) {
+			int op2 = (int)e->getUserData();
+			if (op2 == 255)
+			{
+				myup->setOpacity(op2);
+				mydown->setOpacity(op2);
+				mymenu->setOpacity(op2);
+			}
+			else
+			{
+				auto time = SetBook::getInstance()->getOpacityTime();
+				long long nowts = YYXTime::getInstance()->getNowTime4S() - time;
+				if (nowts >= 10)
+				{
+					myup->setOpacity(op2);
+					mydown->setOpacity(op2);
+					mymenu->setOpacity(op2);
+				}
+			}
+		});
+		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerup, myup);
+	});
+}
+
+void SetBook::setButtonOpacity(int time)
+{
+	YYXLayer::sendNotify(TAG_SETOPACITY, "", 255);
+	setOpacityTime(YYXTime::getInstance()->getNowTime4S());
+	thread([time]() {
+		App::ccsleep(time * 1000);
+		YYXLayer::sendNotify(TAG_SETOPACITY,"", 70);
+	}).detach();
 }
 
 void SetBook::saveReadRecordStart()
@@ -267,11 +357,16 @@ void SetBook::ShareBook(RenderTexture* img, int bookId)
 }
 
 void SetBook::initResource(Layer * layer)
-{
+{/*		myup->setNormalImage(Sprite::create("other/yueduyemianyouhua-button-shangyiye-nor_736h.png"));
+		myup->setSelectedImage(Sprite::create("other/yueduyemianyouhua-button-shangyiye-pre_736h.png"));
+		mydown->setNormalImage(Sprite::create("other/yueduyemianyouhua-button-xiayiye-nor_736h.png"));
+		mydown->setSelectedImage(Sprite::create("other/yueduyemianyouhua-button-xiayiye-pre_736h.png"));
+		mymenu->setNormalImage(Sprite::create("other/yueduyemianyouhua-button-liebiao-nor_736h.png"));
+		mymenu->setSelectedImage(Sprite::create("other/yueduyemianyouhua-button-liebiao-pre_736h.png"));*/
 	Size winSize = Director::getInstance()->getWinSize();
-	float highScale = 1;
-	auto pageUp = MenuItemImage::create("ReadBook_PageUp_667h.png",
-		"ReadBook_PageUp_Selected_667h.png",
+	float highScale = winSize.height/1536;
+	auto pageUp = MenuItemImage::create("other/yueduyemianyouhua-button-shangyiye-nor_736h.png",
+		"other/yueduyemianyouhua-button-shangyiye-pre_736h.png",
 		[=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
 			Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, PageLayer::createScene(), true));
@@ -283,8 +378,8 @@ void SetBook::initResource(Layer * layer)
 	pageUp->setTag(BUTTON_TAG_PAGE_UP);
 
 
-	auto pageDown = MenuItemImage::create("ReadBook_PageDown_667h.png",
-		"ReadBook_PageDown_Selected_667h.png",
+	auto pageDown = MenuItemImage::create("other/yueduyemianyouhua-button-xiayiye-nor_736h.png",
+		"other/yueduyemianyouhua-button-xiayiye-pre_736h.png",
 		[](Ref* sender) {
 		BookParser::getInstance()->pageDown(true);
 	});
@@ -293,8 +388,8 @@ void SetBook::initResource(Layer * layer)
 	pageDown->setAnchorPoint(Vec2(1.0f, 0));
 	pageDown->setTag(BUTTON_TAG_PAGE_DOWN);
 
-	auto pageQuit = MenuItemImage::create("Common_Return_667h.png",
-		"Common_Return_Selected_667h.png",
+	auto pageQuit = MenuItemImage::create("other/yueduyemianyouhua-button-liebiao-nor_736h.png",
+		"other/yueduyemianyouhua-button-liebiao-pre_736h.png",
 		[](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "setPageQuitCallBackTime", [=]() {
 			BookParser::getInstance()->bookQuit();

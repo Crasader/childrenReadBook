@@ -11,6 +11,7 @@
 #include "User.h"
 #include "YYXTime.h"
 #include "HttpWaiting.h"
+#include "LoginControl.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -77,51 +78,43 @@ void BabyCenter::onEnterTransitionDidFinish()
 	App::log("BabyCenter::onEnterTransitionDidFinish");
 	Layer::onEnterTransitionDidFinish();
 	Toast::GetInstance()->SceneInitToast();
+	schedule([](float f) {
+		YYXLayer::sendNotify(TAG_BABYCENTERSCENEREFERHEAD);
+	}, 2, "changerHead");
+	scheduleOnce([](float f) {
+		YYXLayer::sendNotify(TAG_BABYCENTERSCENESHOWCHILD);
+	}, 3,"refershBabyInfo");
 	App::log("BabyCenter::onEnterTransitionDidFinish---END");
 }
 
 void BabyCenter::cleanup()
 {
-	for (auto it : m_dels)
+	App::log("BabyCenter::cleanup()");
+	if (babyinfo)
 	{
-		int  cot = it->getReferenceCount();
-		if (cot>0  && cot <5)
-		{
-			it->removeAllChildrenWithCleanup(true);
-			it->removeFromParentAndCleanup(true);
-		}
+		babyinfo->removeAllChildrenWithCleanup(true);
+		babyinfo->removeFromParentAndCleanup(true);
 	}
+	//更换头像回来之后 定时刷新 
+	unschedule("changerHead");
+	unschedule("refershBabyInfo");
 }
 
 //初始化宝贝中心
 void BabyCenter::initBabyCenter() {
 	App::log("BabyCenter::initBabyCenter");
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Data csb;
-	Node* babyinfo;
+	Data csb;	
 	if (App::GetInstance()->getData(BABYCENTER_CENTERMAIN_CSB, csb))
 		babyinfo = (Layer*)CSLoader::createNode(csb);
 	else
 		babyinfo = (Layer*)CSLoader::createNode(BABYCENTER_CENTERMAIN_CSB);
-	auto lsit = EventListenerCustom::create("babyCenterSceneReLogin", [=](EventCustom* e) {
-		babyinfo->removeAllChildrenWithCleanup(true);
-		babyinfo->removeFromParentAndCleanup(true);
-		initLoginLayer();
-	});
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(lsit, babyinfo);
 	//网络请求宝贝列表
-	if(App::getMemberId() > 0)
-	{
-		AppHttp::getInstance()->httpChildren();
-	}
-	else
-	{
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-			babyinfo->removeAllChildrenWithCleanup(true);
-			babyinfo->removeFromParentAndCleanup(true);
-			initLoginLayer();
-		});
-	}
+	auto wlayer = HttpWaiting::getInstance()->newWaitingLayer();
+	if (wlayer)
+		addChild(wlayer, 1000);
+	AppHttp::getInstance()->httpChildren();
+
 	babyinfo->setAnchorPoint(Vec2(0.5, 0.5));
 	babyinfo->setPosition(Director::getInstance()->getVisibleSize() / 2);
 	//文本-昵称
@@ -151,18 +144,35 @@ void BabyCenter::initBabyCenter() {
 	//点击更换头像
 	m_img_photo->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
-		initPhotoLayer();
-		babyinfo->removeAllChildrenWithCleanup(true);
-		babyinfo->removeFromParentAndCleanup(true);
-	});	
-	auto listener41 = EventListenerCustom::create(TAG_BABYCENTERSCENECHANGECHILDREN, [=](EventCustom* e) {
-		auto child_ = User::getInstance()->getChild(User::getInstance()->getChildId());
-		if (child_)
+		auto childid = User::getInstance()->getChildId();
+		auto child = User::getInstance()->getChild(childid);
+		if (child)
 		{
-			showPortrait(m_img_photo, child_->getPath());
+			string old = child->getPath();
+			string newpath = child->getDir() + "/" + YYXTime::getInstance()->getRandomFileName() + ".png";
+			if (newpath != old && FileUtils::getInstance()->isFileExist(newpath))
+				FileUtils::getInstance()->removeFile(newpath);
+			CrossPlatform::getInstance()->newAlbumChangeHead(childid, old, newpath, [](string json) {
+				App::log("--------------********------------newAlbumChangeHeadCall1-------");
+				rapidjson::Document doc;
+				bool result = YYXLayer::getJsonObject4Json(doc, json);
+				if (result)
+				{
+					auto childId = YYXLayer::getStringForJson("", doc, "childId");
+					auto oldHead = YYXLayer::getStringForJson("", doc, "oldHead");
+					auto newHead = YYXLayer::getStringForJson("", doc, "newHead");
+					auto child = User::getInstance()->getChild(Value(childId).asInt());
+					if (child)
+						child->setPath(newHead);
+					YYXLayer::sendNotify(TAG_BABYCENTERSCENECHANGECHILDREN);
+					Toast::create(App::getString("SHANGCHUANTOUXIANGCHEGNGONG"));
+				}
+			}, [](string json) {
+				Toast::create(App::getString("TOUXIANGGEGNXINSHIBAI"));
+			});
 		}
-	});
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener41, m_img_photo);
+		//initPhotoLayer();
+	});		
 	//编辑控件节点-----------
 	auto editNode = (Node*)babyinfo->getChildByName(BABYCENTE_FIND_EDITNODE);
 	//切换孩子
@@ -171,8 +181,6 @@ void BabyCenter::initBabyCenter() {
 		changChild->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
 		initChangeChild();
-		babyinfo->removeAllChildrenWithCleanup(true);
-		babyinfo->removeFromParentAndCleanup(true);
 	});
 	//输入框-姓名
 	//auto input_name = (ui::TextField*)editNode->getChildByTag(258);
@@ -273,10 +281,10 @@ void BabyCenter::initBabyCenter() {
 	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners("REFRESH_READ_RECORD");
 	auto listenRefreshReadRecord = EventListenerCustom::create("REFRESH_READ_RECORD", [=](EventCustom* event) {
 		CCLOG("----------------%d--------------%d", m_readBooks, m_readTimes);
-		if (m_readBooks > 0) {
+		if (m_readBooks >= 0) {
 			text_read_books->setString(StringUtils::format("%d", m_readBooks));
 		}
-		if (m_readTimes > 0) {
+		if (m_readTimes >= 0) {
 			text_read_hours->setString(StringUtils::format("%d", m_readTimes / 60));
 			text_read_mins->setString(StringUtils::format("%d", m_readTimes % 60));
 		}
@@ -352,7 +360,6 @@ void BabyCenter::initBabyCenter() {
 	else
 		showPortrait(m_img_photo, "");
 	//更新信息
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(TAG_BABYCENTERSCENESHOWCHILD);
 	auto listenerShowbabycenterinfo = EventListenerCustom::create(TAG_BABYCENTERSCENESHOWCHILD, [=](EventCustom* e) {
 		App::log("babycenterInfo更新信息");
 		auto _child = User::getInstance()->getChild(User::getInstance()->getChildId());
@@ -392,22 +399,25 @@ void BabyCenter::initBabyCenter() {
 			birthday = _child->getChildrenBirth();
 		text_birth->setString(birthday);
 		drop_birth->setDateText(birthday);
+		if (_child)
+			showPortrait(m_img_photo, _child->getPath());
+		else
+			showPortrait(m_img_photo, "");
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerShowbabycenterinfo, babyinfo);
 	//更新头像
-	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners("BaByCenterSceneChildInfoReferHeadPortrait");
-	auto listner2 = EventListenerCustom::create("BaByCenterSceneChildInfoReferHeadPortrait", [=](EventCustom* e) {
+	auto listner2 = EventListenerCustom::create(TAG_BABYCENTERSCENEREFERHEAD, [=](EventCustom* e) {
 		auto _child = User::getInstance()->getChild(User::getInstance()->getChildId());
 		if (_child)
 			showPortrait(m_img_photo, _child->getPath());
 		else
 			showPortrait(m_img_photo, "");
 	});
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listner2, babyinfo);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listner2, m_img_photo);
 	babyinfo->setAnchorPoint(Vec2(0.5f, 0.5f));
 	babyinfo->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	addChild(babyinfo);	
-	m_dels.push_back(babyinfo);
+	//m_dels.push_back(babyinfo);
 	App::log("BabyCenter::initBabyCenter--END");
 }
 
@@ -424,118 +434,50 @@ void BabyCenter::initLoginLayer() {
 	loginNode->setAnchorPoint(Vec2(0.5f, 0.5f));
 	loginNode->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	addChild(loginNode);
-	m_dels.push_back(loginNode);
 	//登录按钮
 	auto loginButton = (Button*)loginNode->getChildByName(BABYCENTE_FIND_LOGIN_BUTTON);
 	loginButton->setTouchEnabled(true);
-	loginButton->addClickEventListener([=](Ref* sender) {
-		auto control = ControlScene::getInstance();
-		control->replaceScene(ControlScene::getInstance()->getSceneInfo(BabyCenterScene), ControlScene::getInstance()->getSceneInfo(LoginScene));
-	});
+	//loginButton->addClickEventListener([=](Ref* sender) {
+	//	loginNode->removeFromParentAndCleanup(true);
+	//	auto control = ControlScene::getInstance();
+	//	control->replaceScene(ControlScene::getInstance()->getSceneInfo(BabyCenterScene), ControlScene::getInstance()->getSceneInfo(LoginScene));
+	//});
 
 	//返回按钮
 	auto homeButton = (Button*)loginNode->getChildByName(BABYCENTE_FIND_BACK);
 	homeButton->setPositionX((1094 - visibleSize.width) / 2 + 14);
 	homeButton->setTouchEnabled(true);
 	homeButton->addClickEventListener([=](Ref* sender) {
+		loginNode->removeFromParentAndCleanup(true);
 		auto control = ControlScene::getInstance();
 		control->backFromScene();
 	});
+
+	loginButton->addClickEventListener([=](Ref* sender) {
+		ControlScene::getInstance()->setDangqianScene(BabyCenterScene);
+		LoginControl::getInstance()->Login([](string json) {
+			/* * balanceAppleAmount : 204.00
+			* memberCity : 七台河市
+			* memberGrade : 0
+			* memberId : 15383
+			* memberName : 13123901077
+			* memberProvince : 黑龙江省
+			* memberSex : 1
+			* qq :
+			* weixin :*/
+			App::log("-----------------------------------LoginControl call1          vvvv-----------------------------------------");
+			App::log(json);
+			LoginControl::getInstance()->LoginCallback(json);
+			App::log("-----------------------------------LoginControl call1          ^^^-----------------------------------------");
+		}, nullptr);
+	});
+
+	auto listener1 = EventListenerCustom::create(TAG_REFERSHEVERYSCENE, [](EventCustom* e) {
+		auto control = ControlScene::getInstance();
+		control->replaceScene(ControlScene::getInstance()->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(BabyCenterScene), false);
+	});
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener1, loginNode);
 	App::log("BabyCenter::initLoginLayer---END");
-}
-
-//初始化头像界面
-void BabyCenter::initPhotoLayer() {
-	App::log("BabyCenter::initPhotoLayer");
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-
-	Data data;
-	Node* SelcetHeadPortrait;
-	if (App::GetInstance()->getData(BABYCENTER_PHOTOSHOW_CSB, data))
-		SelcetHeadPortrait = (Layer*)CSLoader::createNode(data);
-	else
-		SelcetHeadPortrait = (Layer*)CSLoader::createNode(BABYCENTER_PHOTOSHOW_CSB);
-	SelcetHeadPortrait->setAnchorPoint(Vec2(0.5f, 0.5f));
-	SelcetHeadPortrait->setPosition(visibleSize / 2);
-	addChild(SelcetHeadPortrait);
-	m_dels.push_back(SelcetHeadPortrait);
-	// 大头像
-	m_BigPhoto = (ImageView*)SelcetHeadPortrait->getChildByName(PHOTOSHOW_FIND_BIGPHOTO);
-	auto _child2 = User::getInstance()->getChild(User::getInstance()->getChildId());
-	if (_child2)
-		showPortrait(m_BigPhoto, _child2->getPath());
-	else
-		showPortrait(m_BigPhoto, "");
-	auto listenerShowPhoto = EventListenerCustom::create("PhotoLayerShowFullPathImage", [=](EventCustom* e) {
-		string path = YYXLayer::getFileValue("upHeadImage", "");
-		showPortrait(m_BigPhoto, path);
-	});
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listenerShowPhoto, m_BigPhoto);
-	//调用本地相册
-	auto localPhoto = (Button*)SelcetHeadPortrait->getChildByName(PHOTOSHOW_FIND_LOCALPHOTO);
-	localPhoto->setTouchEnabled(true);
-	localPhoto->addClickEventListener([=](Ref* sender) {
-		YYXLayer::controlTouchTime(1, "PHOTOSHOW_FIND_LOCALPHOTOTime", [=]() {
-			YYXSound::getInstance()->playButtonSound();
-			string filename = StringUtils::format("_%d.png", YYXTime::getInstance()->getRandomL());
-			string dir = User::getInstance()->getChild(User::getInstance()->getChildId())->getDir();
-			CrossPlatform::openPhotoAlbumSelectImage(filename,dir	, 300, 300, "", [=](string path) {
-				string savePath = User::getInstance()->getChild(User::getInstance()->getChildId())->getDir() + "/" + StringUtils::format("_%d.png", YYXTime::getInstance()->getRandomL());
-				App::makeRoundImage(path, savePath);
-				YYXLayer::setFileValue("upHeadImage", savePath);
-				YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
-			}, "", [](string str) {
-				YYXLayer::setFileValue("upHeadImage", "");
-				Toast::create(App::getString("QUXIAOCAOZUO"));
-			});
-		});
-	});
-
-	//打开相机拍照
-	auto takePhoto = (Button*)SelcetHeadPortrait->getChildByName(PHOTOSHOW_FIND_TAKEPHOTO);
-	//takePhoto->setScale9Enabled(true);
-	takePhoto->setTouchEnabled(true);
-	takePhoto->addClickEventListener([=](Ref* sender) {
-		YYXLayer::controlTouchTime(1, "PHOTOSHOW_FIND_LOCALPHOTOTime", [=]() {
-			YYXSound::getInstance()->playButtonSound();
-			string filename = StringUtils::format("_%d.png", YYXTime::getInstance()->getRandomL());
-			string dir = User::getInstance()->getChild(User::getInstance()->getChildId())->getDir();
-			CrossPlatform::photograph(filename, dir, "", [=](string path) {
-				string savePath = User::getInstance()->getChild(User::getInstance()->getChildId())->getDir() + "/" + StringUtils::format("_%d.png", YYXTime::getInstance()->getRandomL());
-				App::makeRoundImage(path, savePath);
-				YYXLayer::setFileValue("upHeadImage", savePath);
-				YYXLayer::sendNotify("PhotoLayerShowFullPathImage");
-			}, "", [](string str) {
-				YYXLayer::setFileValue("upHeadImage", "");
-				Toast::create(App::getString("QUXIAOCAOZUO"));
-			});
-		});
-	});
-
-	//点击按钮,上传头像
-	auto photoEnd = (Button*)SelcetHeadPortrait->getChildByName(PHOTOSHOW_FIND_PHOTOEND);
-	//photoEnd->setScale9Enabled(true);
-	photoEnd->setTouchEnabled(true);
-	photoEnd->addClickEventListener([=](Ref* sender) {
-		YYXLayer::controlTouchTime(3, "upimagetime", [=]() {
-			Toast::create(App::getString("UPIMAGE"));
-			YYXSound::getInstance()->playButtonSound();
-			uploadAvatar();
-		});
-	});
-
-	//返回按钮
-	auto homeButton = (Button*)SelcetHeadPortrait->getChildByName(BABYCENTE_FIND_BACK);
-	homeButton->setTouchEnabled(true);
-	homeButton->setPositionX((1094 - visibleSize.width) / 2 + 14);
-	homeButton->addClickEventListener([=](Ref* sender) {
-		YYXSound::getInstance()->playButtonSound();
-		SelcetHeadPortrait->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-		SelcetHeadPortrait->removeAllChildrenWithCleanup(true);
-		SelcetHeadPortrait->removeFromParentAndCleanup(true);
-		initBabyCenter();
-	});
-	App::log("BabyCenter::initPhotoLayer--END");
 }
 
 //切换孩子界面
@@ -551,9 +493,9 @@ void BabyCenter::initChangeChild()
 	//返回按钮
 	if (back)
 	{
+		auto visibleSize = Director::getInstance()->getVisibleSize();
 		back->setAnchorPoint(Vec2(0, 1));
-		back->setPosition(Vec2(orgpor.x + 14, orgpor.y + sizew.height - 14));
-		back->setZOrder(100);
+		back->setPositionX((1094 - visibleSize.width) / 2 + 14);
 		back->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "FIND_BUTTON_BYNAME_BABYCENTER_CHANGECHILD_BACK_Time", [=]() {
 				YYXSound::getInstance()->playButtonSound();
@@ -562,7 +504,8 @@ void BabyCenter::initChangeChild()
 					changeChildLayer->removeAllChildrenWithCleanup(true);
 					changeChildLayer->removeFromParentAndCleanup(true);
 				}
-				initBabyCenter();
+				YYXLayer::sendNotify(TAG_BABYCENTERSCENESHOWCHILD);
+				//initBabyCenter();
 			});
 		});
 	}
@@ -718,6 +661,9 @@ Layer* BabyCenter::initAddChild()
 			child->setChildrenBirth(day);
 			child->setChildrenSex(IsMan ? 1 : 2);
 			AppHttp::getInstance()->httpAddChild(child);
+			auto wlayer = HttpWaiting::getInstance()->newWaitingLayer();
+			if (wlayer)
+				addChild(wlayer, 100);
 		});
 	});
 	auto listener1 = EventListenerCustom::create(TAG_BABYCENTERSCENECHANGECHILDREN, [=](EventCustom* e) {
@@ -859,32 +805,10 @@ void BabyCenter::getReadRecord(int child_id) {
 	App::log("BabyCenter::getReadRecord----END");
 }
 
-//上传头像
-void BabyCenter::uploadAvatar() {
-	App::log("BabyCenter::uploadAvatar");
-	string path = YYXLayer::getFileValue("upHeadImage", "");
-	if (path.empty() || !FileUtils::getInstance()->isFileExist(path))
-	{
-		Toast::create(App::getString("SHANGCHUANDETOUXIANGTUPIANYICHANG"));
-		return;
-	}
-	CrossPlatform::httpUpImage(User::getInstance()->getChildId(), path, App::getMemberId(), "", [=](string fullpath) {	
-		auto _child3 = User::getInstance()->getChild(User::getInstance()->getChildId());
-		if (_child3)
-		{
-			_child3->setPath(path);
-			YYXLayer::deleteFileValue("upHeadImage");
-			Toast::create(App::getString("SHANGCHUANTOUXIANGCHEGNGONG"));
-		}
-	}, "", [](string str) {
-		Toast::create(App::getString("STR_UPPICTURE_ERROR"));
-	});
-	App::log("BabyCenter::uploadAvatar---END");
-}
-
 bool BabyCenter::showPortrait(ImageView* imgview,string path)
 {
 	//展示头像
+	App::log("--------------********------------showPortrait(m_img_photo, child_->getPath());-------"+ path);
 	if (!path.empty() && FileUtils::getInstance()->isFileExist(path))
 	{
 		if(imgview)

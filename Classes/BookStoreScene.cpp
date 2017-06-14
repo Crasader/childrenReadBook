@@ -11,6 +11,7 @@
 #include "BookStoreCache.h"
 #include "BuyVip.h"
 #include "HttpWaiting.h"
+#include "LoginControl.h"
 
 using namespace cocostudio::timeline;
 
@@ -703,9 +704,12 @@ void BookStore::baonianStore()
 		if (YYXVisitor::getInstance()->getVisitorMode())
 		{
 			auto control = ControlScene::getInstance();
-			control->replaceScene(control->getCurrentScene()->
-				setData("bookStoreId", Value(m_bookStoreId))->setData("index", Value(m_selectPageIndex[1])),
-				ControlScene::getInstance()->getSceneInfo(LoginScene));
+			control->getCurrentScene()->
+				setData("bookStoreId", Value(m_bookStoreId))->setData("index", Value(m_selectPageIndex[1]));
+			ControlScene::getInstance()->setDangqianScene(control->getCurrentScene()->getName());
+			LoginControl::getInstance()->Login([](string json) {
+				LoginControl::getInstance()->LoginCallback(json);
+			}, nullptr);
 		}
 		else
 		{

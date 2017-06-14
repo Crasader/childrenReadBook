@@ -223,8 +223,9 @@ Layer* BuyVip::payLayer()
 				}, [](string json) {
 					string error = "";
 					rapidjson::Document doc;
-					YYXLayer::getJsonObject4Json(doc, json);
-					error = YYXLayer::getStringForJson("", doc, "error");
+					bool result = YYXLayer::getJsonObject4Json(doc, json);
+					if (result)
+						error = YYXLayer::getStringForJson("", doc, "error");
 					if (error.empty())
 						error = App::getString("GOUMAIHUIYUANSHIBAI");
 					Toast::create(error.c_str());

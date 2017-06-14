@@ -18,7 +18,7 @@
 			<key>ParentScene/res/ChangePasswd_bg_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1118,1034},{143,53}}</string>
+				<string>{{1045,1206},{143,53}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -29,7 +29,7 @@
 			<key>ParentScene/res/ChangePasswd_bg_Selected_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1281,1044},{143,53}}</string>
+				<string>{{835,1269},{143,53}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -40,7 +40,7 @@
 			<key>ParentScene/res/ChangePasswd_Determine_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{847,1121},{175,47}}</string>
+				<string>{{850,1202},{175,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,7 +51,7 @@
 			<key>ParentScene/res/ChangePasswd_Determine_Selected_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{640,1131},{175,47}}</string>
+				<string>{{640,1237},{175,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -62,7 +62,7 @@
 			<key>ParentScene/res/Common_Popup_Close_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1946,618},{76,66}}</string>
+				<string>{{1946,630},{76,66}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -73,7 +73,7 @@
 			<key>ParentScene/res/Common_Popup_Close_Selected_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1946,704},{76,66}}</string>
+				<string>{{1946,716},{76,66}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -84,7 +84,7 @@
 			<key>ParentScene/res/Common_Return.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1916,10},{109,110}}</string>
+				<string>{{1258,984},{109,110}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -95,7 +95,7 @@
 			<key>ParentScene/res/Common_Return_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1916,140},{109,110}}</string>
+				<string>{{756,1020},{109,110}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -117,7 +117,7 @@
 			<key>ParentScene/res/Feedback_Btn_ipad.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1927,1201},{96,47}}</string>
+				<string>{{437,764},{96,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -128,7 +128,7 @@
 			<key>ParentScene/res/Feedback_Btn_Selected_ipad.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{872,1255},{96,47}}</string>
+				<string>{{437,831},{96,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -139,7 +139,7 @@
 			<key>ParentScene/res/icorn.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1308,848},{121,78}}</string>
+				<string>{{1095,1028},{121,78}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -150,7 +150,7 @@
 			<key>ParentScene/res/icorn1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1308,946},{121,78}}</string>
+				<string>{{1236,1114},{121,78}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -161,7 +161,7 @@
 			<key>ParentScene/res/logoff.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1765,472},{244,126}}</string>
+				<string>{{1765,484},{244,126}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -172,7 +172,7 @@
 			<key>ParentScene/res/no.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1042,1183},{134,47}}</string>
+				<string>{{1594,1156},{134,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -183,7 +183,7 @@
 			<key>ParentScene/res/no2.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{835,1188},{134,47}}</string>
+				<string>{{1377,1165},{134,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -194,7 +194,7 @@
 			<key>ParentScene/res/Parents_about_border_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{724,1489},{694,192}}</string>
+				<string>{{874,1525},{694,192}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -227,7 +227,7 @@
 			<key>ParentScene/res/Parents_Binding_border_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1693},{694,106}}</string>
+				<string>{{698,1737},{694,106}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -238,7 +238,7 @@
 			<key>ParentScene/res/Parents_book_border_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1143,1260},{694,209}}</string>
+				<string>{{998,1296},{694,209}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -260,7 +260,7 @@
 			<key>ParentScene/res/Parents_button_1_Selected_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1847,270},{161,182}}</string>
+				<string>{{1847,282},{161,182}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -282,7 +282,7 @@
 			<key>ParentScene/res/Parents_button_2_Selected_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1765,618},{161,182}}</string>
+				<string>{{1765,630},{161,182}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -293,7 +293,7 @@
 			<key>ParentScene/res/block.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1927,1121},{109,60}}</string>
+				<string>{{1095,1126},{109,60}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -337,7 +337,7 @@
 			<key>ParentScene/res/Parents_button_3_Selected_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1678,820},{161,182}}</string>
+				<string>{{1678,832},{161,182}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -348,7 +348,7 @@
 			<key>ParentScene/res/Parents_button_4_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1859,820},{161,182}}</string>
+				<string>{{1859,832},{161,182}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -403,7 +403,7 @@
 			<key>ParentScene/res/Parents_button_Cancellation.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1449,869},{190,67}}</string>
+				<string>{{546,975},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -414,7 +414,7 @@
 			<key>ParentScene/res/Parents_button_Cancellation_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1449,956},{190,67}}</string>
+				<string>{{278,991},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -425,7 +425,7 @@
 			<key>ParentScene/res/Parents_button_Change-password.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1449,1043},{190,67}}</string>
+				<string>{{10,1045},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -436,7 +436,7 @@
 			<key>ParentScene/res/Parents_button_Change-password_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{278,855},{190,67}}</string>
+				<string>{{488,1062},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -447,7 +447,7 @@
 			<key>ParentScene/res/Parents_button_Check-and-update.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{278,942},{190,67}}</string>
+				<string>{{220,1078},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -458,7 +458,7 @@
 			<key>ParentScene/res/Parents_button_Check-and-update_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{789,884},{190,67}}</string>
+				<string>{{10,1132},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -469,7 +469,7 @@
 			<key>ParentScene/res/Parents_button_Clean-cache.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,946},{190,67}}</string>
+				<string>{{430,1149},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -480,7 +480,7 @@
 			<key>ParentScene/res/Parents_button_Clean-cache_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{488,965},{190,67}}</string>
+				<string>{{220,1165},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -491,7 +491,7 @@
 			<key>ParentScene/res/Parents_button_Complete.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{220,1029},{190,67}}</string>
+				<string>{{10,1219},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -502,7 +502,7 @@
 			<key>ParentScene/res/Parents_button_Complete_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1033},{190,67}}</string>
+				<string>{{1387,1005},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -513,7 +513,7 @@
 			<key>ParentScene/res/Parents_button_Edit.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{999,947},{190,67}}</string>
+				<string>{{885,1028},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -524,7 +524,7 @@
 			<key>ParentScene/res/Parents_button_Edit_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{698,971},{190,67}}</string>
+				<string>{{885,1115},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -535,7 +535,7 @@
 			<key>ParentScene/res/Parents_button_Feedback.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{430,1052},{190,67}}</string>
+				<string>{{640,1150},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -546,7 +546,7 @@
 			<key>ParentScene/res/Parents_button_Feedback_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{220,1116},{190,67}}</string>
+				<string>{{430,1236},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -557,7 +557,7 @@
 			<key>ParentScene/res/Parents_button_input_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1283},{432,29}}</string>
+				<string>{{1597,1034},{432,29}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -568,7 +568,7 @@
 			<key>ParentScene/res/Parents_button_Not-selected_1_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1659,1121},{248,71}}</string>
+				<string>{{10,863},{248,71}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -579,7 +579,7 @@
 			<key>ParentScene/res/Parents_button_Not-selected_2_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,764},{248,71}}</string>
+				<string>{{553,884},{248,71}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -601,7 +601,7 @@
 			<key>ParentScene/res/Parents_button_QR-code_Selected.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1659,1022},{271,79}}</string>
+				<string>{{10,764},{271,79}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -612,7 +612,7 @@
 			<key>ParentScene/res/Parents_button_recovering.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{580,1198},{126,44}}</string>
+				<string>{{1902,1159},{126,44}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -623,7 +623,7 @@
 			<key>ParentScene/res/Parents_button_restore_fail.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{370,1215},{126,44}}</string>
+				<string>{{1902,1223},{126,44}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -634,7 +634,7 @@
 			<key>ParentScene/res/Parents_button_restore_success.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{726,1255},{126,44}}</string>
+				<string>{{1531,1223},{126,44}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -645,7 +645,7 @@
 			<key>ParentScene/res/Parents_button_return_buy.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{516,1262},{126,44}}</string>
+				<string>{{1362,1232},{126,44}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -656,7 +656,7 @@
 			<key>ParentScene/res/Parents_button_Selected_1_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{278,764},{248,71}}</string>
+				<string>{{278,900},{248,71}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -667,7 +667,7 @@
 			<key>ParentScene/res/Parents_button_Selected_2_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,855},{248,71}}</string>
+				<string>{{10,954},{248,71}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -678,7 +678,7 @@
 			<key>ParentScene/res/Parents_Cache_border_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{724,1701},{694,62}}</string>
+				<string>{{10,1863},{694,62}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -689,7 +689,7 @@
 			<key>ParentScene/res/Parents_centent_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1332},{694,197}}</string>
+				<string>{{160,1415},{694,197}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -722,7 +722,7 @@
 			<key>ParentScene/res/Parents_Download_border_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{724,1783},{694,62}}</string>
+				<string>{{10,1945},{694,62}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -733,7 +733,7 @@
 			<key>ParentScene/res/Parents_Login_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1418,1130},{187,53}}</string>
+				<string>{{1597,1083},{187,53}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -744,7 +744,7 @@
 			<key>ParentScene/res/Parents_Login_Selected_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{640,1058},{187,53}}</string>
+				<string>{{1387,1092},{187,53}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -777,7 +777,7 @@
 			<key>ParentScene/res/Parents_Title_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{488,884},{281,61}}</string>
+				<string>{{957,947},{281,61}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -788,7 +788,7 @@
 			<key>ParentScene/res/Parents_us_border_ipad@2x.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1819},{694,62}}</string>
+				<string>{{724,1863},{694,62}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -810,7 +810,7 @@
 			<key>ParentScene/res/yes.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1196,1193},{134,47}}</string>
+				<string>{{1208,1212},{134,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -821,7 +821,7 @@
 			<key>ParentScene/res/yes2.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{989,1250},{134,47}}</string>
+				<string>{{1748,1159},{134,47}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -832,7 +832,7 @@
 			<key>ParentScene/res/yn.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1549},{668,124}}</string>
+				<string>{{10,1632},{668,124}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -843,7 +843,7 @@
 			<key>ParentScene/res/Parents_button_recharge_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1120},{190,67}}</string>
+				<string>{{220,1252},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -854,7 +854,7 @@
 			<key>ParentScene/res/Parents_button_recharge_Selected__03_736h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{908,1034},{190,67}}</string>
+				<string>{{10,1306},{190,67}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -876,7 +876,7 @@
 			<key>ParentScene/res/Parents_button_QQ_568h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1118,1107},{130,56}}</string>
+				<string>{{640,1304},{130,56}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -887,7 +887,7 @@
 			<key>ParentScene/res/Parents_button_copyrightQQ_568h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{1268,1117},{130,56}}</string>
+				<string>{{430,1323},{130,56}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -898,7 +898,7 @@
 			<key>ParentScene/res/Parents_button_copyrightQQ_Selected_568h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{430,1139},{130,56}}</string>
+				<string>{{220,1339},{130,56}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -909,7 +909,7 @@
 			<key>ParentScene/res/Parents_button_businessQQ_568h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{220,1203},{130,56}}</string>
+				<string>{{10,1393},{130,56}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -920,13 +920,79 @@
 			<key>ParentScene/res/Parents_button_businessQQ_Selected_568h.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{10,1207},{130,56}}</string>
+				<string>{{1804,1083},{130,56}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
 				<string>{130,56}</string>
+			</dict>
+			<key>ParentScene/res/umeng_qq.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1916,10},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
+			</dict>
+			<key>ParentScene/res/umeng_sina.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1916,146},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
+			</dict>
+			<key>ParentScene/res/umeng_socialize_qq.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1308,848},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
+			</dict>
+			<key>ParentScene/res/umeng_socialize_sina.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1444,869},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
+			</dict>
+			<key>ParentScene/res/umeng_socialize_wechat.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{301,764},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
+			</dict>
+			<key>ParentScene/res/umeng_wechat.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{821,884},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>

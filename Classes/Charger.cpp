@@ -191,7 +191,14 @@ cocos2d::Layer* Charger::newChargeLayer()
 					}
 				});
 			}, [](string json) {
-				Toast::create(json.c_str());
+				string error = "";
+				rapidjson::Document doc;
+				bool result = YYXLayer::getJsonObject4Json(doc, json);
+				if (result)
+					error = YYXLayer::getStringForJson("", doc, "error");
+				if (error.empty())
+					error = App::getString("QUXIAOCAOZUO");
+				Toast::create(error.c_str());
 			});
 		});
 	});	

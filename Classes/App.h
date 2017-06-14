@@ -105,9 +105,9 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.8.3";//应用版本
+	string version = "1.9.0";//应用版本
 
-	long long versioncode = 179;
+	long long versioncode = 182;
 
 	static string m_photsName;//照片路径
 

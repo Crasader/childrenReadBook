@@ -6,7 +6,7 @@
       <ObjectData Name="Layer" Tag="64" ctype="GameLayerObjectData">
         <Size X="1094.0000" Y="614.0000" />
         <Children>
-          <AbstractNodeData Name="zhanghao" ActionTag="-2049935284" Tag="188" IconVisible="False" LeftMargin="143.8399" RightMargin="838.1601" TopMargin="159.6266" BottomMargin="388.3734" FontSize="50" LabelText="账号:" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="zhanghao" ActionTag="-2049935284" Tag="188" IconVisible="False" LeftMargin="143.8411" RightMargin="838.1589" TopMargin="159.6278" BottomMargin="388.3722" FontSize="50" LabelText="账号:" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="112.0000" Y="66.0000" />
             <AnchorPoint ScaleX="0.5029" ScaleY="0.4584" />
             <Position X="200.1659" Y="418.6266" />
@@ -18,14 +18,14 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="zhanghao_content" ActionTag="-214867159" Tag="189" IconVisible="False" LeftMargin="260.0000" RightMargin="655.0000" TopMargin="152.0000" BottomMargin="404.0000" FontSize="44" LabelText="咿啦父母" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
-            <Size X="179.0000" Y="58.0000" />
+          <AbstractNodeData Name="zhanghao_content" ActionTag="-214867159" Tag="189" IconVisible="False" LeftMargin="260.0000" RightMargin="547.0000" TopMargin="152.0000" BottomMargin="404.0000" FontSize="44" LabelText="13562589410" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="287.0000" Y="58.0000" />
             <AnchorPoint />
             <Position X="260.0000" Y="404.0000" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="110" G="110" B="114" />
             <PrePosition X="0.2377" Y="0.6580" />
-            <PreSize X="0.1636" Y="0.0945" />
+            <PreSize X="0.2623" Y="0.0945" />
             <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
@@ -102,13 +102,13 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="money" ActionTag="-75206012" Tag="78" IconVisible="False" LeftMargin="144.0000" RightMargin="838.0000" TopMargin="401.0000" BottomMargin="147.0000" FontSize="50" LabelText="余额:" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="money" ActionTag="-75206012" Tag="78" IconVisible="False" LeftMargin="138.3467" RightMargin="843.6533" TopMargin="401.9417" BottomMargin="146.0583" FontSize="50" LabelText="余额:" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="112.0000" Y="66.0000" />
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="200.0000" Y="180.0000" />
+            <AnchorPoint ScaleX="0.6010" ScaleY="0.5285" />
+            <Position X="205.6587" Y="180.9393" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="110" G="110" B="114" />
-            <PrePosition X="0.1828" Y="0.2932" />
+            <PrePosition X="0.1880" Y="0.2947" />
             <PreSize X="0.1024" Y="0.1075" />
             <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
@@ -259,6 +259,139 @@
             <Scale ScaleX="0.4000" ScaleY="0.4000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.7861" Y="0.2182" />
+            <PreSize X="0.2806" Y="0.1759" />
+            <FontResource Type="Normal" Path="wdtyj.TTF" Plist="" />
+            <TextColor A="255" R="255" G="255" B="255" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <PressedFileData Type="Normal" Path="ParentScene/res/Parents_button_Change-wdhb_yy_736h.png" Plist="" />
+            <NormalFileData Type="Normal" Path="ParentScene/res/Parents_button_Change-wdhb_736h.png" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="disanfeng" ActionTag="1940608761" Tag="48" IconVisible="False" LeftMargin="172.0000" RightMargin="622.0000" TopMargin="452.0081" BottomMargin="98.9919" FontSize="48" LabelText="更多登录方式:" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="300.0000" Y="63.0000" />
+            <AnchorPoint />
+            <Position X="172.0000" Y="98.9919" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="110" G="110" B="114" />
+            <PrePosition X="0.1572" Y="0.1612" />
+            <PreSize X="0.2742" Y="0.1026" />
+            <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Image_1" ActionTag="-802736500" Tag="49" IconVisible="False" LeftMargin="340.7842" RightMargin="637.2158" TopMargin="436.4100" BottomMargin="61.5900" LeftEage="26" RightEage="26" TopEage="26" BottomEage="26" Scale9OriginX="26" Scale9OriginY="26" Scale9Width="64" Scale9Height="64" ctype="ImageViewObjectData">
+            <Size X="116.0000" Y="116.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="398.7842" Y="119.5900" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.3645" Y="0.1948" />
+            <PreSize X="0.1060" Y="0.1889" />
+            <FileData Type="MarkedSubImage" Path="ParentScene/res/umeng_socialize_wechat.png" Plist="ParentScene/csb/parent.plist" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Image_2" ActionTag="-303123848" Tag="50" IconVisible="False" LeftMargin="449.5260" RightMargin="528.4740" TopMargin="436.4100" BottomMargin="61.5900" LeftEage="26" RightEage="26" TopEage="26" BottomEage="26" Scale9OriginX="26" Scale9OriginY="26" Scale9Width="64" Scale9Height="64" ctype="ImageViewObjectData">
+            <Size X="116.0000" Y="116.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="507.5260" Y="119.5900" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.4639" Y="0.1948" />
+            <PreSize X="0.1060" Y="0.1889" />
+            <FileData Type="MarkedSubImage" Path="ParentScene/res/umeng_socialize_qq.png" Plist="ParentScene/csb/parent.plist" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="Image_3" ActionTag="728070763" Tag="51" IconVisible="False" LeftMargin="558.2324" RightMargin="419.7676" TopMargin="436.4100" BottomMargin="61.5900" LeftEage="26" RightEage="26" TopEage="26" BottomEage="26" Scale9OriginX="26" Scale9OriginY="26" Scale9Width="64" Scale9Height="64" ctype="ImageViewObjectData">
+            <Size X="116.0000" Y="116.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="616.2324" Y="119.5900" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.5633" Y="0.1948" />
+            <PreSize X="0.1060" Y="0.1889" />
+            <FileData Type="MarkedSubImage" Path="ParentScene/res/umeng_socialize_sina.png" Plist="ParentScene/csb/parent.plist" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="weixin" ActionTag="-1463943496" Tag="53" IconVisible="False" LeftMargin="336.0825" RightMargin="634.9175" TopMargin="495.4777" BottomMargin="65.5223" FontSize="40" LabelText="已绑定" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="123.0000" Y="53.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="397.5825" Y="92.0223" />
+            <Scale ScaleX="0.3000" ScaleY="0.3000" />
+            <CColor A="255" R="110" G="110" B="114" />
+            <PrePosition X="0.3634" Y="0.1499" />
+            <PreSize X="0.1124" Y="0.0863" />
+            <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="qq" ActionTag="-743566614" Tag="54" IconVisible="False" LeftMargin="446.8326" RightMargin="524.1674" TopMargin="495.4777" BottomMargin="65.5223" FontSize="40" LabelText="已绑定" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="123.0000" Y="53.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="508.3326" Y="92.0223" />
+            <Scale ScaleX="0.3000" ScaleY="0.3000" />
+            <CColor A="255" R="110" G="110" B="114" />
+            <PrePosition X="0.4647" Y="0.1499" />
+            <PreSize X="0.1124" Y="0.0863" />
+            <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="weibo" ActionTag="-1293019429" Tag="55" IconVisible="False" LeftMargin="555.0831" RightMargin="415.9169" TopMargin="495.4777" BottomMargin="65.5223" FontSize="40" LabelText="已绑定" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="123.0000" Y="53.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="616.5831" Y="92.0223" />
+            <Scale ScaleX="0.3000" ScaleY="0.3000" />
+            <CColor A="255" R="110" G="110" B="114" />
+            <PrePosition X="0.5636" Y="0.1499" />
+            <PreSize X="0.1124" Y="0.0863" />
+            <FontResource Type="Normal" Path="wryh.TTF" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="clickweixin" ActionTag="-1943174565" Tag="56" IconVisible="False" LeftMargin="323.9823" RightMargin="650.0177" TopMargin="453.4760" BottomMargin="40.5240" TouchEnable="True" FontSize="14" LeftEage="15" RightEage="15" TopEage="4" BottomEage="4" Scale9OriginX="-15" Scale9OriginY="-4" Scale9Width="30" Scale9Height="8" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="120.0000" Y="120.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="383.9823" Y="100.5240" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.3510" Y="0.1637" />
+            <PreSize X="0.1097" Y="0.1954" />
+            <TextColor A="255" R="65" G="65" B="70" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="clickqq" ActionTag="-1909303883" Tag="57" IconVisible="False" LeftMargin="447.8482" RightMargin="526.1519" TopMargin="453.4760" BottomMargin="40.5240" TouchEnable="True" FontSize="14" LeftEage="15" RightEage="15" TopEage="4" BottomEage="4" Scale9OriginX="-15" Scale9OriginY="-4" Scale9Width="30" Scale9Height="8" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="120.0000" Y="120.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="507.8482" Y="100.5240" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.4642" Y="0.1637" />
+            <PreSize X="0.1097" Y="0.1954" />
+            <TextColor A="255" R="65" G="65" B="70" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="clickweibo" ActionTag="732507382" Tag="58" IconVisible="False" LeftMargin="571.7133" RightMargin="402.2867" TopMargin="453.4760" BottomMargin="40.5240" TouchEnable="True" FontSize="14" LeftEage="15" RightEage="15" TopEage="4" BottomEage="4" Scale9OriginX="-15" Scale9OriginY="-4" Scale9Width="30" Scale9Height="8" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="120.0000" Y="120.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="631.7133" Y="100.5240" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.5774" Y="0.1637" />
+            <PreSize X="0.1097" Y="0.1954" />
+            <TextColor A="255" R="65" G="65" B="70" />
+            <DisabledFileData Type="Default" Path="Default/Button_Disable.png" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="bangding" ActionTag="2084042641" Tag="59" IconVisible="False" LeftMargin="357.1534" RightMargin="429.8466" TopMargin="140.9999" BottomMargin="365.0001" TouchEnable="True" FontSize="60" ButtonText="绑定手机" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="277" Scale9Height="86" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+            <Size X="307.0000" Y="108.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="510.6534" Y="419.0001" />
+            <Scale ScaleX="0.4000" ScaleY="0.4000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.4668" Y="0.6824" />
             <PreSize X="0.2806" Y="0.1759" />
             <FontResource Type="Normal" Path="wdtyj.TTF" Plist="" />
             <TextColor A="255" R="255" G="255" B="255" />

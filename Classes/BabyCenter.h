@@ -36,17 +36,15 @@ public:
 	static Scene* createScene(SceneInfo* sceneInfo = nullptr);
 	static BabyCenter* create(SceneInfo* data = nullptr);
 	virtual bool init(SceneInfo* sceneInfo = nullptr);
-	vector<Node*> m_dels;//需要删除的csb文件控件
+	//vector<Node*> m_dels;//需要删除的csb文件控件
 	virtual void onEnterTransitionDidFinish();
 	void cleanup();
 	//初始化宝贝中心
+	Node* babyinfo = nullptr;
 	void initBabyCenter();
 
 	//初始化登录界面
 	void initLoginLayer();
-
-	//初始化头像界面
-	void initPhotoLayer();
 
 	//切换孩子界面
 	void initChangeChild();
@@ -58,9 +56,6 @@ public:
 
 	//网络请求阅读记录
 	void getReadRecord(int);
-
-	//上传头像
-	void uploadAvatar();
 
 	//展示头像
 	bool showPortrait(ImageView* imgview, string path);

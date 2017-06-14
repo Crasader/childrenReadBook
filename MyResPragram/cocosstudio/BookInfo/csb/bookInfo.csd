@@ -20,7 +20,7 @@
             <Size X="529.0000" Y="131.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="302.1618" Y="118.7253" />
-            <Scale ScaleX="0.7000" ScaleY="0.7000" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.2762" Y="0.1934" />
             <PreSize X="0.4835" Y="0.2134" />
@@ -47,14 +47,14 @@
             <PreSize X="0.0768" Y="0.1270" />
             <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_Comment.png" Plist="BookInfo/csb/bookInfo.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="pinglunshuliang" ActionTag="-1921713625" Tag="99" IconVisible="False" LeftMargin="773.4854" RightMargin="232.5146" TopMargin="46.2300" BottomMargin="531.7700" FontSize="36" LabelText="(999)" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
-            <Size X="88.0000" Y="36.0000" />
+          <AbstractNodeData Name="pinglunshuliang" ActionTag="-1921713625" Tag="99" IconVisible="False" LeftMargin="791.4854" RightMargin="250.5146" TopMargin="46.2300" BottomMargin="531.7700" FontSize="36" LabelText="(1)" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="52.0000" Y="36.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="817.4854" Y="549.7700" />
             <Scale ScaleX="0.3000" ScaleY="0.3000" />
             <CColor A="255" R="12" G="168" B="137" />
             <PrePosition X="0.7472" Y="0.8954" />
-            <PreSize X="0.0804" Y="0.0586" />
+            <PreSize X="0.0475" Y="0.0586" />
             <FontResource Type="Normal" Path="wdtyj.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
@@ -103,7 +103,7 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="originalPrice" ActionTag="-764335172" Tag="72" IconVisible="False" LeftMargin="316.5751" RightMargin="602.4249" TopMargin="459.3114" BottomMargin="95.6886" TouchEnable="True" FontSize="50" LabelText="￥ 8.00" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="originalPrice" ActionTag="-764335172" VisibleForFrame="False" Tag="72" IconVisible="False" LeftMargin="316.5751" RightMargin="602.4249" TopMargin="459.3114" BottomMargin="95.6886" TouchEnable="True" FontSize="50" LabelText="￥ 8.00" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="175.0000" Y="59.0000" />
             <AnchorPoint />
             <Position X="316.5751" Y="95.6886" />
@@ -115,13 +115,13 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="cheapPrice" ActionTag="-2037685406" Tag="73" IconVisible="False" LeftMargin="233.1900" RightMargin="839.8100" TopMargin="471.7280" BottomMargin="93.2720" TouchEnable="True" FontSize="40" LabelText="8" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="cheapPrice" ActionTag="-2037685406" Tag="73" IconVisible="False" LeftMargin="286.1871" RightMargin="786.8129" TopMargin="471.7285" BottomMargin="93.2715" TouchEnable="True" FontSize="40" LabelText="8" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="21.0000" Y="49.0000" />
             <AnchorPoint />
-            <Position X="233.1900" Y="93.2720" />
+            <Position X="286.1871" Y="93.2715" />
             <Scale ScaleX="1.0000" ScaleY="1.0000" />
             <CColor A="255" R="255" G="0" B="0" />
-            <PrePosition X="0.2132" Y="0.1519" />
+            <PrePosition X="0.2616" Y="0.1519" />
             <PreSize X="0.0192" Y="0.0798" />
             <FontResource Type="Normal" Path="Impact.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />
@@ -149,7 +149,7 @@
             <PreSize X="0.0238" Y="0.0423" />
             <FileData Type="MarkedSubImage" Path="BookInfo/res/BookInfo_Time.png" Plist="BookInfo/csb/bookInfo.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Text_10" ActionTag="-144606110" Tag="30" IconVisible="False" LeftMargin="316.1624" RightMargin="594.8376" TopMargin="438.7235" BottomMargin="105.2765" FontSize="60" LabelText="______" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="Text_10" ActionTag="-144606110" VisibleForFrame="False" Tag="30" IconVisible="False" LeftMargin="316.1624" RightMargin="594.8376" TopMargin="438.7235" BottomMargin="105.2765" FontSize="60" LabelText="______" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="183.0000" Y="70.0000" />
             <AnchorPoint />
             <Position X="316.1624" Y="105.2765" />
@@ -161,24 +161,24 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Text_11" ActionTag="914924829" Tag="31" IconVisible="False" LeftMargin="201.4196" RightMargin="852.5804" TopMargin="475.2300" BottomMargin="98.7700" FontSize="40" LabelText="￥" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="Text_11" ActionTag="914924829" Tag="31" IconVisible="False" LeftMargin="254.4188" RightMargin="799.5812" TopMargin="475.2300" BottomMargin="98.7700" FontSize="40" LabelText="￥" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="40.0000" Y="40.0000" />
             <AnchorPoint />
-            <Position X="201.4196" Y="98.7700" />
+            <Position X="254.4188" Y="98.7700" />
             <Scale ScaleX="0.7500" ScaleY="0.7500" />
             <CColor A="255" R="255" G="0" B="0" />
-            <PrePosition X="0.1841" Y="0.1609" />
+            <PrePosition X="0.2326" Y="0.1609" />
             <PreSize X="0.0366" Y="0.0651" />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Text_12" ActionTag="-1114291828" Tag="32" IconVisible="False" LeftMargin="253.5377" RightMargin="801.4623" TopMargin="481.7280" BottomMargin="95.2720" FontSize="30" LabelText=".99" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+          <AbstractNodeData Name="Text_12" ActionTag="-1114291828" Tag="32" IconVisible="False" LeftMargin="306.5336" RightMargin="748.4664" TopMargin="481.7280" BottomMargin="95.2720" FontSize="30" LabelText=".99" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
             <Size X="39.0000" Y="37.0000" />
             <AnchorPoint />
-            <Position X="253.5377" Y="95.2720" />
+            <Position X="306.5336" Y="95.2720" />
             <Scale ScaleX="1.0000" ScaleY="1.0000" />
             <CColor A="255" R="255" G="0" B="0" />
-            <PrePosition X="0.2318" Y="0.1552" />
+            <PrePosition X="0.2802" Y="0.1552" />
             <PreSize X="0.0356" Y="0.0603" />
             <FontResource Type="Normal" Path="Impact.TTF" Plist="" />
             <OutlineColor A="255" R="255" G="0" B="0" />

@@ -14,6 +14,7 @@
 #include "BuyVip.h"
 #include "YYXTime.h"
 #include "HttpWaiting.h"
+#include "LoginControl.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -94,7 +95,7 @@ bool BookRoom::init(SceneInfo* sceneInfo)
 	//string bookmode = App::GetInstance()->m_showSceneData.stringData;
 	//bookMode = atoi(bookmode.c_str());
 	//--------------初始化场景信息----------------
-	bookMode = sceneInfo->getData("bookMode", Value(0)).asInt();
+	bookMode = sceneInfo->getData("bookMode", Value(3)).asInt();
 	setCurrentPageNumber(sceneInfo->getData("currentPageNumber", Value(0)).asInt());
 
 	if (bookMode == 0 || bookMode == 3 || bookMode == 5)
@@ -620,12 +621,20 @@ void BookRoom::bookClick(Node* book, int bookid)
 				addChild(YYXLayer::MyMessageBox(App::getString("NINDEVIPGUOQISHIFOUXUGEFI"), App::getString("QUXUFEI"), [=]() {
 					YYXVisitor::getInstance()->hintLogin([=](){
 						//youke
-						ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
-							setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+						//ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
+							//setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+						ControlScene::getInstance()->setDangqianScene(BookRoomScene);
+						LoginControl::getInstance()->Login([](string json) {
+							LoginControl::getInstance()->LoginCallback(json);
+						}, nullptr);
 					}, [=]() {
 						//qudenglu
-						ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
-							setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+						//ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
+							//setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+						ControlScene::getInstance()->setDangqianScene(BookRoomScene);
+						LoginControl::getInstance()->Login([](string json) {
+							LoginControl::getInstance()->LoginCallback(json);
+						}, nullptr);
 					}, [=]() {
 						auto layer = BuyVip::getInstance()->show();
 						if (layer)

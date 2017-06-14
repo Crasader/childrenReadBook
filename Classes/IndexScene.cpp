@@ -1027,6 +1027,8 @@ void Index::maskAnimation(Layout* layout, Point point)
 
 void Index::showNotification() {
 	YYXLayer::logb("Index::showNotification()");
+	if (!YYXVisitor::getInstance()->getVisitorMode() && User::getInstance()->getMemberId() > 0)
+		AppHttp::getInstance()->httpUserIsOffLine();
 	if (ControlScene::getInstance()->getFromScene(false)->getName() != MySceneName::LoadScene)
 		return;
 	int pushid = YYXStruct::getMapInt64(App::GetInstance()->myData, "pushId", -999);

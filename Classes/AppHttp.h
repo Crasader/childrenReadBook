@@ -105,6 +105,7 @@ public:
 	void httpVisitorMemberId(string deviceStr, const function<void(int)>& callback1, YYXCallBack callback2);//获取游客ID
 	void httpVipHint_VipType(int memberId, int key = -999); //会员提醒到期，购买会员类型列表
 	void httpMyMoneyPayVip(int memberId, int cardType, int waitkey);//账户余额购买会员
+	void httpUserIsOffLine();//账户是否离线
 	//***********************************************************       管理队列        ****************************************************
 	void deleteTask(int taskTag, bool del=true);//删除任务
 	void clearAllReadyTask();//准备队列的任务全部取消

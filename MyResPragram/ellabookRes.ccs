@@ -56,6 +56,7 @@
           <Folder Name="csb">
             <PlistInfo Name="backcover.csi" Type="Plist" />
             <Project Name="BookEndPage.csd" Type="Layer" />
+            <Project Name="readbook.csd" Type="Layer" />
             <Project Name="tryReadBookEndPage.csd" Type="Layer" />
           </Folder>
           <Folder Name="res">
@@ -631,6 +632,8 @@
             <Image Name="commit1.png" />
             <Image Name="commit2.png" />
           </Folder>
+          <Image Name="0170606122824.jpg" />
+          <Image Name="1111.jpg" />
           <Project Name="AAA.csd" Type="Layer" />
           <Image Name="Backcover_kaitongniankafuwu_ipad@2x.png" />
           <Image Name="Backcover_star1_736h.png" />
@@ -674,6 +677,7 @@
           <Image Name="qiehuanhaizi2.png" />
           <Image Name="shufang_button_1_736h.png" />
           <Image Name="shufang_button_2_736h.png" />
+          <Image Name="tanchuang-bg_736h.png" />
           <Image Name="title.png" />
           <Image Name="User_bg_ipad@2x.png" />
           <Image Name="Userinfo_childcenter_close__ipad@2x.png" />
@@ -692,6 +696,18 @@
           <Image Name="yilahuiyuan_zhifufangshi_weixuanzhong_736h.png" />
           <Image Name="yilahuiyuan_zhifufangshi_xuanzhong_736h.png" />
           <Image Name="yjgou.png" />
+          <Image Name="yueduyemianyouhua-button-fenxiang-nor_736h.png" />
+          <Image Name="yueduyemianyouhua-button-fenxiang-pre_736h.png" />
+          <Image Name="yueduyemianyouhua-button-guanbi-nor_736h.png" />
+          <Image Name="yueduyemianyouhua-button-guanbi-pre_736h.png" />
+          <Image Name="yueduyemianyouhua-button-liebiao-nor_736h.png" />
+          <Image Name="yueduyemianyouhua-button-liebiao-pre_736h.png" />
+          <Image Name="yueduyemianyouhua-button-shangyiye-nor_736h.png" />
+          <Image Name="yueduyemianyouhua-button-shangyiye-pre_736h.png" />
+          <Image Name="yueduyemianyouhua-button-tuichu-nor_736h.png" />
+          <Image Name="yueduyemianyouhua-button-tuichu-pre_736h.png" />
+          <Image Name="yueduyemianyouhua-button-xiayiye-nor_736h.png" />
+          <Image Name="yueduyemianyouhua-button-xiayiye-pre_736h.png" />
           <PlistInfo Name="yuying.csi" Type="Plist" />
         </Folder>
         <Folder Name="ParentScene">
@@ -795,6 +811,12 @@
             <Image Name="Parents_Title_ipad@2x.png" />
             <Image Name="Parents_us_border_ipad@2x.png" />
             <Image Name="title.png" />
+            <Image Name="umeng_qq.png" />
+            <Image Name="umeng_sina.png" />
+            <Image Name="umeng_socialize_qq.png" />
+            <Image Name="umeng_socialize_sina.png" />
+            <Image Name="umeng_socialize_wechat.png" />
+            <Image Name="umeng_wechat.png" />
             <Image Name="yes.png" />
             <Image Name="yes2.png" />
             <Image Name="yn.png" />
@@ -935,6 +957,8 @@
             <Image Name="loading 4_00007.png" />
           </Folder>
         </Folder>
+        <Image Name="0170606122824.jpg" />
+        <Image Name="1111.jpg" />
         <TTF Name="FZHLJW.TTF" />
         <TTF Name="hkhb.TTF" />
         <TTF Name="Impact.TTF" />

@@ -1,2 +1,0 @@
-cocos2dx 3.9
-NDK r9d

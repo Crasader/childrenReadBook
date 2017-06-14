@@ -527,10 +527,7 @@ void YYXDownload::curlDownloadFile(DownLoadFileData* data)
 int YYXDownload::DownProgress(void* clientp, double fDownLoadTotal, double fDownLoaded, double fUpTotal, double fUpLoaded)
 {
 	auto date = (DownLoadFileData*)clientp;
-	string taskTag = date->getTag();
-	YYXLayer::controlTouchTime(5, taskTag + "Time", [=]() {
-		YYXLayer::setFileValue(taskTag, Value(fDownLoadTotal).asString(), FileUtils::getInstance()->getWritablePath() + "temp");
-	});
+	date->setSize(fDownLoadTotal);
 	int pragress = fDownLoaded / fDownLoadTotal *100.0;
 	auto pausePint = date->getPausePint();
 	if (pragress < pausePint)

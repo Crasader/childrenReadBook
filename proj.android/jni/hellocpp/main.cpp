@@ -15,6 +15,8 @@
 #include "../../Classes/YYXStruct.h"
 #include "../../Classes/CrossPlatform.h"
 #include "../../Classes/WeixinPay.h"
+#include "../../Classes/YYXVisitor.h"
+#include "../../Classes/LoginControl.h"
 
 #define  LOG_TAG    "main"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
@@ -35,7 +37,7 @@ extern "C"
 	//原型函数public native static void CrossPlatformCallback(String json);
 	void Java_org_cocos2dx_cpp_AppActivity_CrossPlatformCallback(JNIEnv *env, jobject thiz, jstring json) {
 		const char* _json = env->GetStringUTFChars(json, NULL);
-		App::log("Java_org_cocos2dx_cpp_AppActivity_CrossPlatformCallback");
+		App::log("Java_org_cocos2dx_cpp_AppActivity_CrossPlatformCallback\n");
 		App::log(_json);
 		rapidjson::Document doc;
 		auto result = YYXLayer::getJsonObject4Json(doc, _json);
@@ -50,18 +52,34 @@ extern "C"
 				call = WeixinPay::getInstance()->getCallback();
 				if (call)
 					call(_json);
-				break;
+				return;
 			case 4:
 				call = WeixinPay::getInstance()->getCallbackerror();
 				if (call)
 					call(_json);
-				break;
+				return;
 			case 5:
 				WeixinPay::getInstance()->writeOrderId(_json);
-				break;
+				return;
+			case 6:
+			    App::cancelData();
+			    YYXVisitor::getInstance()->loginVisitor();
+			    Director::getInstance()->getScheduler()->performFunctionInCocosThread([]() {
+			        auto control = ControlScene::getInstance();
+			        control->replaceScene(control->getCurrentScene(), control->getSceneInfo(ParentScene));
+			    });
+			    return;
+			case 7:
+				LoginControl::getInstance()->LoginCallback(_json);
+				return;
+			case 8:
+				auto key = YYXLayer::getStringForJson("", doc, "key");
+				auto json = YYXLayer::getStringForJson("", doc, "json");
+				CocosAndroidJni::getInstance()->addfunc(Value(key).asInt(), json);
+				return;
 			}
-			return;
 			auto taskname = YYXLayer::getStringForJson("", doc, "task");
+			App::log("JNI--task" + taskname);
 			auto data = CrossPlatform::getInstance()->getTask(Value(taskname).asInt());
 			if (data)
 			{
@@ -71,12 +89,25 @@ extern "C"
 				case 1:
 					func = data->getCall1Key();
 					if (func)
+					{
 						func(_json);
+						App::log("JNI--task------find call1");
+					}
+					else
+						App::log("JNI--task------call1 = null");
 					break;
 				case 2:
 					func = data->getCall2Key();
 					if (func)
+					{
 						func(_json);
+						App::log("JNI--task------find call2");
+					}
+					else
+						App::log("JNI--task------call2 = null");
+					break;
+				default:
+					App::log("JNI--task------find call = null", callNum);
 					break;
 				}
 			}

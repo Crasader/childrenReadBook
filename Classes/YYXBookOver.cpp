@@ -9,6 +9,7 @@
 #include "AppHttp.h"
 #include "BuyVip.h"
 #include "IndexScene.h"
+#include "LoginControl.h"
 USING_NS_FK;
 
 YYXBookOver* YYXBookOver::instance = nullptr;
@@ -415,10 +416,14 @@ void YYXBookOver::yaoqingzhuce()
 
 void YYXBookOver::GotoLogin()
 {
-	auto control = ControlScene::getInstance();
+	/*auto control = ControlScene::getInstance();
 	control->replaceScene(control->getCurrentScene(), ControlScene::getInstance()->getSceneInfo(LoginScene));
 	thread ([=]() {
 		App::ccsleep(3000);
 		control->end();
-	}).detach();
+	}).detach();*/
+	ControlScene::getInstance()->setDangqianScene(BOOK);
+	LoginControl::getInstance()->Login([](string json) {
+		LoginControl::getInstance()->LoginCallback(json);
+	}, nullptr);
 }

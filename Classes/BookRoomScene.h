@@ -82,7 +82,7 @@ private:
 	Point reorder =Point(-1000,0);
 
 private:
-	int bookMode = 0;
+	int bookMode = 3;
 	BookRoomSelectPage *bookRoomSelectPage;
 	vector<int> getPageData(vector<int> vecdata);
 	EventListenerTouchOneByOne *touchmove, *touchlistener;

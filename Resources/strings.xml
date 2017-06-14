@@ -110,7 +110,7 @@
     <key>MESAAGEBOX_FORGETPASSWORD_SUCCESS</key> 
     <string>修改密码成功</string>
     <key>STR_READ</key> 
-    <string>阅读</string>
+    <string>阅 读</string>
     <key>STR_DOWNLOADING</key> 
     <string>下载中</string>
     <key>STR_SHIDU</key> 
@@ -356,7 +356,7 @@
     <key>WEIZHAODAOXIAZAIDIZHI</key>
     <string>未找到下载地址</string>
     <key>ZANTING</key>
-    <string>暂停</string>
+    <string>暂 停</string>
     <key>ZHESHISHIDUSHUJI</key>
     <string>这是试读书籍</string>
     <key>YOUARENOTVIP</key>
@@ -479,4 +479,8 @@
   <string>购买会员成功</string>
   <key>GOUMAIHUIYUANSHIBAI</key>
   <string>购买会员失败</string>
+  <key>WEIBANGDING</key>
+  <string>绑定</string>
+  <key>YIBANGDING</key>
+  <string>已绑定</string>
 </dict> 

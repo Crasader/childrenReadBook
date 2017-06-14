@@ -58,6 +58,7 @@ public:
 
 	cocos2d::Value getData(string key, Value def);
 	SceneInfo* setData(string key, Value val);
+	void delData(std::string key);
 	string logName();
 private:
 	MySceneName name = LoadScene;
@@ -92,6 +93,8 @@ public:
 		CCLOG("setLoadPlistCount = %d", m_loadPlistCount);
 		lock.unlock();
 	}
+	MySceneName getDangqianScene() const { return dangqianScene; }
+	void setDangqianScene(MySceneName val) { dangqianScene = val; }
 private:
 	static ControlScene* instance;
 	bool m_replace = true;
@@ -105,6 +108,7 @@ private:
 
 	bool replace(SceneInfo* CurrentScene, SceneInfo* NextScene, bool push =true);//核心函数;
 	void preLoadResources(vector<string> plist, const function<void()> & callback);
-
+	//针对原生登录来回切换
+	MySceneName dangqianScene;
 };
 #endif

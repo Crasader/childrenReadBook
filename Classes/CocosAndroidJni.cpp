@@ -5,6 +5,51 @@ CocosAndroidJni::CocosAndroidJni(){}
 CocosAndroidJni::~CocosAndroidJni(){}
 using namespace std;
 
+CocosAndroidJni* CocosAndroidJni::m_pInstance = nullptr;
+
+CocosAndroidJni* CocosAndroidJni::getInstance()
+{
+	if (m_pInstance == nullptr)
+	{
+		m_pInstance = new CocosAndroidJni();
+	}
+	return m_pInstance;
+}
+
+void CocosAndroidJni::addfunc(int key, string val)
+{
+	m_runkey = key;
+	m_func[key] = val;
+}
+
+string CocosAndroidJni::getfunc(int key)
+{
+	string func = "";
+	auto it = m_func.find(key);
+	if (it != m_func.end())
+	{
+		func = it->second;
+	}
+	return func;
+}
+
+void CocosAndroidJni::delfunc(int key)
+{
+	auto it = m_func.find(key);
+	if (it != m_func.end())
+		m_func.erase(key);
+}
+
+int CocosAndroidJni::getRuningKey()
+{
+	return m_runkey;
+}
+
+void CocosAndroidJni::clearRuningKey()
+{
+	m_runkey = -999;
+}
+
 //JNI 通用接口
 void CocosAndroidJni::callJavaFunction(string className, string functionName, string jsonParamter, string & result)
 {
@@ -14,11 +59,11 @@ void CocosAndroidJni::callJavaFunction(string className, string functionName, st
 	bool isHave = JniHelper::getStaticMethodInfo(function, className.c_str(), functionName.c_str(), "(Ljava/lang/String;)Ljava/lang/String;");
 	if (!isHave)
 	{
-		App::log(" ( Not exist ) jni === >> " + className + functionName);
+		App::log(" ( Not exist ) jni === >> " + className +"/ "+ functionName);
 	}
 	else
 	{
-		App::log(" ( Exist ) jni === >> " + className + functionName);
+		App::log(" ( Exist ) jni === >> " + className +"/ "+ functionName);
 		jstring _jsonParamter = function.env->NewStringUTF(jsonParamter.c_str());
 		jstring jret = (jstring)function.env->CallStaticObjectMethod(function.classID, function.methodID, _jsonParamter);
 		result = JniHelper::jstring2string(jret);

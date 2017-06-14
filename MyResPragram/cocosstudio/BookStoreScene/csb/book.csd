@@ -27,14 +27,14 @@
             <PreSize X="1.0000" Y="1.0000" />
             <FileData Type="Normal" Path="other/Book_cover.png" Plist="" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Book_Mask_3" ActionTag="-1139060796" Tag="70" IconVisible="False" LeftMargin="43.0000" RightMargin="43.0000" TopMargin="65.0000" BottomMargin="65.0000" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Book_Mask_3" ActionTag="-1139060796" Tag="70" IconVisible="False" ctype="SpriteObjectData">
             <Size X="132.0000" Y="176.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
             <Position X="66.0000" Y="88.0000" />
             <Scale ScaleX="1.0000" ScaleY="1.0000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.5000" Y="0.5000" />
-            <PreSize X="0.3485" Y="0.2614" />
+            <PreSize X="1.0000" Y="1.0000" />
             <FileData Type="Normal" Path="other/Book_Mask.png" Plist="" />
             <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>

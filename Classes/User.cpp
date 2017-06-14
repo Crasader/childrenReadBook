@@ -31,6 +31,7 @@ void User::deleteInstance()
 	if (instance)
 	{
 		instance->clearChildren();
+		CrossPlatform::getInstance()->newSetMemberId(Value(-999).asString());
 		delete instance;
 		instance = nullptr;
 	}
@@ -133,7 +134,7 @@ void User::setChildId(int val)
 
 int User::getMemberId()
 {
-	if (memberId < 0)
+	if (memberId <= 0)
 	{
 		memberId = Value(YYXLayer::getFileValue("userId", "-999", dir)).asInt();
 	}
@@ -144,6 +145,7 @@ void User::setMemberId(int val)
 {
 	memberId = val;
 	YYXLayer::setFileValue("userId", Value(memberId).asString(), dir);
+	CrossPlatform::getInstance()->newSetMemberId(Value(val).asString());
 }
 
 std::string User::getUserAccount()
@@ -312,6 +314,51 @@ std::vector<int> User::getAllChildId()
 	}
 	m_Mchildren.unlock();
 	return data;
+}
+
+std::string User::getQqBind()
+{
+	if (qqBind.empty())
+	{
+		qqBind = YYXLayer::getFileValue("qq", "", dir);
+	}
+	return qqBind;
+}
+
+void User::setQqBind(std::string val)
+{
+	qqBind = val;
+	YYXLayer::setFileValue("qq", qqBind, dir);
+}
+
+std::string User::getWeixinBind()
+{
+	if (weixinBind.empty())
+	{
+		weixinBind = YYXLayer::getFileValue("weixin", "", dir);
+	}
+	return weixinBind;
+}
+
+void User::setWeixinBind(std::string val)
+{
+	weixinBind = val;
+	YYXLayer::setFileValue("weixin", weixinBind, dir);
+}
+
+std::string User::getSinaBind()
+{
+	if (sinaBind.empty())
+	{
+		sinaBind = YYXLayer::getFileValue("sina", "", dir);
+	}
+	return sinaBind;
+}
+
+void User::setSinaBind(std::string val)
+{
+	sinaBind = val;
+	YYXLayer::setFileValue("sina", sinaBind, dir);
 }
 
 ChildInfo::ChildInfo()

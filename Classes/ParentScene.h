@@ -14,6 +14,7 @@ private:
 	Node* m_parentNode;//整个场景
 	int m_times;//获取验证码计时
 	map<string,void*> m_voids;//存指针
+	int m_showhongbao = -1;
 public:
 	~Parent();
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
@@ -65,10 +66,10 @@ public:
 	void listViewShowRedPacket(ListView * listview);
 
 	void loadRedPacketData(Node * node, int index);
-	//获取有效红包
-	//void httpGetUserRedPacket();
 
-	//void stringHttpRequest(HttpRequest::Type type, string url, map<string, string> paramter, int outTime, std::function<void(string json)> runable, std::function<void()> errorRunable);
+	void setBindStatus(Text* text, string uid, string platform, Button* bt, ImageView* view, string imageBind, string imageUnBind);
+	void accountCancel();
+	void changePassword();
 };
 
 #endif // __Parent_SCENE_H__

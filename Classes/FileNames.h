@@ -943,6 +943,7 @@ enum MyEnum
 
 #define IP "http://cloud.ellabook.cn"//网络域名
 
+//#define IP "http://192.168.10.164:8080"
 //#define  IP "http://114.55.175.152"
 
 #define NET_LOGIN "/ellabook-server/member/login.do"//登录post (username String 用户名& password String 密码) ----0男1女2保密
@@ -1171,6 +1172,7 @@ enum MyEnum
 #define TAG_BABYCENTERSCENESHOWDELETEBUTTON "BabyCenterSceneShowDeleteButton"
 #define TAG_BABYCENTERSCENESHOWCHILD "BabyCenterSceneShowChild"
 #define TAG_BABYCENTERSCENEAMENDBABYINFO "BabyCenterSceneAmendBabyInfo"
+#define TAG_BABYCENTERSCENEREFERHEAD "BaByCenterSceneChildInfoReferHeadPortrait"
 
 #define TAG_CITYSCENEERFERVIEW "CitySceneReferView"
 
@@ -1190,3 +1192,7 @@ enum MyEnum
 #define TAG_SHOWVIPHINT "showVIPRenew"//vip到期
 
 #define TAG_ChargerSelectNode "ChargerLayerSelectNode"//充值界面选择节点
+
+#define TAG_REFERSHEVERYSCENE "everySceneRefresh"//刷新当前任何场景
+
+#define TAG_SETOPACITY  "setopacity"//恢复半透明按钮

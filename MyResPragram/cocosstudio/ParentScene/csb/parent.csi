@@ -86,6 +86,12 @@
       <FilePathData Path="ParentScene/res/Parents_button_copyrightQQ_Selected_568h.png" />
       <FilePathData Path="ParentScene/res/Parents_button_businessQQ_568h.png" />
       <FilePathData Path="ParentScene/res/Parents_button_businessQQ_Selected_568h.png" />
+      <FilePathData Path="ParentScene/res/umeng_qq.png" />
+      <FilePathData Path="ParentScene/res/umeng_sina.png" />
+      <FilePathData Path="ParentScene/res/umeng_socialize_qq.png" />
+      <FilePathData Path="ParentScene/res/umeng_socialize_sina.png" />
+      <FilePathData Path="ParentScene/res/umeng_socialize_wechat.png" />
+      <FilePathData Path="ParentScene/res/umeng_wechat.png" />
     </ImageFiles>
     <MaxSize Width="2048" Height="2048" />
   </Content>

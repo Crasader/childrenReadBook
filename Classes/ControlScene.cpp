@@ -153,7 +153,8 @@ bool ControlScene::replace(SceneInfo* CurrentScene, SceneInfo* NextScene, bool p
 	{
 		auto from = getFromScene(false)->getName();
 		auto current = CurrentScene->getName();
-		if(from != current)
+		auto next = NextScene->getName();
+		if(from != current && next != current)
 			sceneStack.push_back(CurrentScene);//堆栈规则
 	}
 	m_replace = false;
@@ -332,6 +333,15 @@ SceneInfo* SceneInfo::setData(std::string key, Value val)
 {
 	data[key] = val;
 	return this;
+}
+
+void SceneInfo::delData(std::string key)
+{
+	auto it = data.find(key);
+	if (it != data.end())
+	{
+		data.erase(key);
+	}
 }
 
 std::string SceneInfo::logName()

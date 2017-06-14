@@ -67,8 +67,7 @@ public:
 	static void installInstallationPackage(string path);
 	// 支付
 	//static void httpPay(int memberId, int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
-	//最新的支付宝支付接口
-	void pay(int memberId, int payObjectId, string card_or_recharge, string payPlatform, const CallBack_String & call1 = nullptr, const CallBack_String & call2 = nullptr);
+
 	//开通包年服务
 	static void httpVIPPay(int memberId, int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	//获取当前版本号
@@ -98,6 +97,26 @@ public:
 	static void inviteRegister(int memberId, string url, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction);
 	//获取机型
 	static string getPhoneModel(int um);
+
+
+	//最新的支付宝支付接口
+	void pay(int memberId, int payObjectId, string card_or_recharge, string payPlatform, const CallBack_String & call1 = nullptr, const CallBack_String & call2 = nullptr);
+	//新的相册换头像
+	void newAlbumChangeHead(int childId, string oldHead, string newHead, const CallBack_String & call1, const CallBack_String & call2);
+	//新的绑定手机
+	void newBindPhone(string uid, string platform, const CallBack_String & call1, const CallBack_String & call2);
+	//新的绑定第三方
+	void newBindThird(string phone, string uid, int memberId, string platform, const CallBack_String & call1, const CallBack_String & call2);
+	//新的注销
+	void newAccountCancel(string memberAccount, int memberId, const CallBack_String & call1, const CallBack_String & call2);
+	//新的解绑第三方
+	void newUnBindThird(int memberId, const CallBack_String & call1, const CallBack_String & call2);
+	//新的修改密码
+	void newChangePassword(const CallBack_String & call1, const CallBack_String & call2);
+	//新的踢下线
+	void newOffLine();
+	//设置memberid
+	void newSetMemberId(string memberid);
 };
 
 #endif // __NETINTFACE_SCENE_H__

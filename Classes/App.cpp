@@ -69,32 +69,9 @@ cocos2d::Ref* App::getRef()
 //0=正式  1=测试  支付价格0.01
 void App::runTestFunction()
 {
-	//auto con = AppHttp::getInstance();
-	//con->setControlRun(!con->getControlRun());
-	//if (con->getControlRun())
-	//	Toast::create("run");
-	//else
-	//	Toast::create("stop");
-	//Director::getInstance()->end();
-	//auto show = ShowNotification::create(true);
-	//if (show)
-	//	Director::getInstance()->getRunningScene()->addChild(show);
-	thread([]() {
-		auto http = AppHttp::getInstance();
-		http->httpAppVersion();
-		http->httpBookCityInfo();
-		for (int i = 1; i < 300; i += 1)
-		{
-			http->httpBookInfo(i);
-			ccsleep(500);
-		}
-		for (int i = 0; i < 200; i++)
-		{
-			string str = "111";
-			http->httpLogIn(str, "111");
-			ccsleep(500);
-		}
-	}).detach();
+	auto show = ShowNotification::create(true);
+	if (show)
+		Director::getInstance()->getRunningScene()->addChild(show);
 }
 
 string App::m_photsName ="0";
@@ -228,37 +205,37 @@ bool App::getNetSetAndHintSet()
 	bool net = CrossPlatform::IsNetConnect(true);
 	if (!net)
 		return false;
-	if (App::GetInstance()->isOnlyWifi)//无设置或者仅wifi
-	{
-		App::log("jin wifi----------");
-		bool wifistauts = CrossPlatform::isWifi();
-		if (!wifistauts)
-		{//无wifi
-			Toast::create(App::getString("WEIJIANCEDAOWIFI"));
-			string hintS = YYXLayer::getFileValue("wifiHint", "");
-			if (hintS == "1")
-			{//已经提示过, 不再提示				
-				return wifistauts;
-			}
-			else
-			{//第一次提示, 是否愿意用流量下载
-				auto lay = YYXLayer::MyMessageBox(App::getString("YUNXULIULIANGXIAZAI"), "", []() {
-					//允许
-					YYXLayer::setFileValue("wifiHint", "1");
-					App::GetInstance()->isOnlyWifi = false;
-					YYXLayer::setFileValue("IS_ONLY_WIFI", "1");
-					return true;
-				}, "", []() {
-					//不允许
-					App::GetInstance()->isOnlyWifi = true;
-					YYXLayer::setFileValue("IS_ONLY_WIFI", "0");
-					YYXLayer::setFileValue("wifiHint", "1");
-					return false;
-				});
-				Director::getInstance()->getRunningScene()->addChild(lay);
-			}
-		}
-	}
+	//if (App::GetInstance()->isOnlyWifi)//无设置或者仅wifi
+	//{
+	//	App::log("jin wifi----------");
+	//	bool wifistauts = CrossPlatform::isWifi();
+	//	if (!wifistauts)
+	//	{//无wifi
+	//		Toast::create(App::getString("WEIJIANCEDAOWIFI"));
+	//		string hintS = YYXLayer::getFileValue("wifiHint", "");
+	//		if (hintS == "1")
+	//		{//已经提示过, 不再提示				
+	//			return wifistauts;
+	//		}
+	//		else
+	//		{//第一次提示, 是否愿意用流量下载
+	//			auto lay = YYXLayer::MyMessageBox(App::getString("YUNXULIULIANGXIAZAI"), "", []() {
+	//				//允许
+	//				YYXLayer::setFileValue("wifiHint", "1");
+	//				App::GetInstance()->isOnlyWifi = false;
+	//				YYXLayer::setFileValue("IS_ONLY_WIFI", "1");
+	//				return true;
+	//			}, "", []() {
+	//				//不允许
+	//				App::GetInstance()->isOnlyWifi = true;
+	//				YYXLayer::setFileValue("IS_ONLY_WIFI", "0");
+	//				YYXLayer::setFileValue("wifiHint", "1");
+	//				return false;
+	//			});
+	//			Director::getInstance()->getRunningScene()->addChild(lay);
+	//		}
+	//	}
+	//}
 	return true;
 }
 

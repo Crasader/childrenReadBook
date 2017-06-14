@@ -55,18 +55,16 @@ void UpdateVersion::onEnterTransitionDidFinish() {
 		if (ddata->getStatus() == _over)
 		{
 			string path = ddata->getPath();
-			auto fileCount = YYXLayer::getFileValue(ddata->getTag(), Value(0).asString(), FileUtils::getInstance()->getWritablePath() + "temp");
-			int total = Value(fileCount).asInt();
+			auto total = ddata->getSize();
 			if (total > 0)
 			{
 				auto size = FileUtils::getInstance()->getFileSize(path);
 				if (size == total)
 				{
-					YYXLayer::sendNotify("UpdataVersionDownload_Success");
 					CrossPlatform::installInstallationPackage(path);
-					YYXLayer::deleteFileValue(ddata->getTag(), FileUtils::getInstance()->getWritablePath() + "temp");
 				}
 			}
+			YYXLayer::sendNotify("UpdataVersionDownload_Success");
 		}
 	});
 	YYXDownload::getInstance()->newDownloadFile(dat);	

@@ -228,7 +228,7 @@ void YYXVisitor::loadSceneInit()
 		FileUtils::getInstance()->createDirectory(m_dirpath);
 	int memberid = -999;
 	memberid = User::getInstance()->getMemberId();
-	if (memberid < 0)
+	if (memberid <= 0)
 	{
 		loginVisitor();
 	}
@@ -246,11 +246,13 @@ void YYXVisitor::loginVisitor()
 		string str = CrossPlatform::getPhoneModel(3);
 		if (!str.empty() && str.size() > 5)
 		{
-			App::log(" YYXVisitor::loginVisitor() phone Str= >" + str);
 			AppHttp::getInstance()->httpVisitorMemberId(str, [=](int memberId) {
-				setVisitorMode(true);
-				setMemberId(memberId);
-				User::getInstance()->setMemberId(-999);
+				App::log(" YYXVisitor::loginVisitor() callback1= > User = " , User::getInstance()->getMemberId());
+				if (User::getInstance()->getMemberId() <= 0) {
+					setVisitorMode(true);
+					setMemberId(memberId);
+					User::deleteInstance();
+				}
 			}, [=]() {
 				setVisitorMode(false);
 			});
@@ -259,7 +261,7 @@ void YYXVisitor::loginVisitor()
 	else
 	{
 		setMemberId(memid);
-		User::getInstance()->setMemberId(-999);
+		User::deleteInstance();
 		loadLocationVisitorData();
 	}
 	//2.有,加载进去

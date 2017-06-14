@@ -323,85 +323,6 @@ void CrossPlatform::installInstallationPackage(string path)
 #endif
 }
 
-//最新的支付宝支付接口
-void CrossPlatform::pay(int memberId, int payObjectId,string card_or_recharge, string payPlatform,const CallBack_String & call1, const CallBack_String & call2)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	thread([=]() {
-		Toast::create(payPlatform.c_str());
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([]() {
-			auto layer = HttpWaiting::getInstance()->newWaitingLayer();
-			if (layer)
-			{
-				Director::getInstance()->getRunningScene()->addChild(layer, 1000);
-			}
-		});
-		auto cData = CrossPlatformData::create();
-		if (call1)
-		{
-			cData->setCall1Key(call1);
-		}
-		if (call2)
-		{
-			cData->setCall2Key(call2);
-		}
-		addTask(cData);
-		App::ccsleep(5000);
-		YYXLayer::sendNotify(TAG_REMOVEWAITING);
-		auto taskName = cData->getTaskName();
-		Director::getInstance()->getScheduler()->performFunctionInCocosThread([taskName]() {
-			auto laer2 = YYXLayer::MyMessageBox("pay", "yes", [taskName]() {
-				auto data = CrossPlatform::getInstance()->getTask(taskName);
-				if (data)
-				{
-					CallBack_String func = data->getCall1Key();
-					if (func)
-						func("");
-				}
-				CrossPlatform::getInstance()->delTask(taskName);
-			}, "no", [taskName]() {
-				auto data = CrossPlatform::getInstance()->getTask(taskName);
-				if (data)
-				{
-					CallBack_String func = data->getCall2Key();
-					if (func)
-						func("");
-				}
-				CrossPlatform::getInstance()->delTask(taskName);
-			});
-			if (laer2)
-				Director::getInstance()->getRunningScene()->addChild(laer2, 1000);
-		});
-	}).detach();
-#endif
-	if (payPlatform == "wxpay")
-	{
-		WeixinPay::getInstance()->newPay(memberId,  payObjectId,  card_or_recharge, call1, call2);
-	}
-	else if(payPlatform == "alipay"){
-		map<string, string> p;
-		p["memberid"] = Value(memberId).asString();
-		p["paytype"] = Value(payObjectId).asString();//购买对象的ID
-		p["contenttpye"] = card_or_recharge;
-		p["resource"] = "android";
-		p["version"] = App::GetInstance()->version;
-		auto cData = CrossPlatformData::create();
-		if (call1)
-		{
-			cData->setCall1Key(call1);
-		}
-		if (call2)
-		{
-			cData->setCall2Key(call2);
-		}
-		p["task"] = Value(cData->getTaskName()).asString();
-		auto strJson = YYXLayer::getStringFormMap(p);
-		addTask(cData);
-		string result = "";
-		CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "newMyAliPay", strJson, result);
-	}
-}
-
 //VIP
 void CrossPlatform::httpVIPPay(int memberId, int rechargeCount, int payMoney, string payType, string payinfo, string runKey, function<void(string)> runFunction, string errorKey, function<void(string)> errorRunFunction)
 {
@@ -824,7 +745,7 @@ void CrossPlatform::inviteRegister(int memberId, string url , string runKey, fun
 }
 
 string CrossPlatform::getPhoneModel(int um)
-{//0=机型 1=sdk版本 2=android版本
+{//0=机型 1=sdk版本 2=android版本 3=设备码
 	string str = "";
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	CocosAndroidJni::getPhoneInfo(um, str);
@@ -894,4 +815,207 @@ void CrossPlatformData::setCall2Key(const CallBack_String& val)
 {
 	m_call2Key = YYXTime::getInstance()->getIntNumber();
 	CrossPlatform::getInstance()->addFunc(m_call2Key, val);
+}
+
+//最新的支付宝支付接口
+void CrossPlatform::pay(int memberId, int payObjectId, string card_or_recharge, string payPlatform, const CallBack_String & call1, const CallBack_String & call2)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	thread([=]() {
+		Toast::create(payPlatform.c_str());
+		Director::getInstance()->getScheduler()->performFunctionInCocosThread([]() {
+			auto layer = HttpWaiting::getInstance()->newWaitingLayer();
+			if (layer)
+			{
+				Director::getInstance()->getRunningScene()->addChild(layer, 1000);
+			}
+		});
+		auto cData = CrossPlatformData::create();
+		if (call1)
+		{
+			cData->setCall1Key(call1);
+		}
+		if (call2)
+		{
+			cData->setCall2Key(call2);
+		}
+		addTask(cData);
+		App::ccsleep(5000);
+		YYXLayer::sendNotify(TAG_REMOVEWAITING);
+		auto taskName = cData->getTaskName();
+		Director::getInstance()->getScheduler()->performFunctionInCocosThread([taskName]() {
+			auto laer2 = YYXLayer::MyMessageBox("pay", "yes", [taskName]() {
+				auto data = CrossPlatform::getInstance()->getTask(taskName);
+				if (data)
+				{
+					CallBack_String func = data->getCall1Key();
+					if (func)
+						func("");
+				}
+				CrossPlatform::getInstance()->delTask(taskName);
+			}, "no", [taskName]() {
+				auto data = CrossPlatform::getInstance()->getTask(taskName);
+				if (data)
+				{
+					CallBack_String func = data->getCall2Key();
+					if (func)
+						func("");
+				}
+				CrossPlatform::getInstance()->delTask(taskName);
+			});
+			if (laer2)
+				Director::getInstance()->getRunningScene()->addChild(laer2, 1000);
+		});
+	}).detach();
+#endif
+	if (payPlatform == "wxpay")
+	{
+		WeixinPay::getInstance()->newPay(memberId, payObjectId, card_or_recharge, call1, call2);
+	}
+	else if (payPlatform == "alipay") {
+		map<string, string> p;
+		p["memberid"] = Value(memberId).asString();
+		p["paytype"] = Value(payObjectId).asString();//购买对象的ID
+		p["contenttpye"] = card_or_recharge;
+		p["resource"] = "android";
+		p["version"] = App::GetInstance()->version;
+		auto cData = CrossPlatformData::create();
+		if (call1)
+		{
+			cData->setCall1Key(call1);
+		}
+		if (call2)
+		{
+			cData->setCall2Key(call2);
+		}
+		p["task"] = Value(cData->getTaskName()).asString();
+		auto strJson = YYXLayer::getStringFormMap(p);
+		addTask(cData);
+		string result = "";
+		CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "newMyAliPay", strJson, result);
+	}
+}
+
+//新的找相册换头像
+void CrossPlatform::newAlbumChangeHead(int childId, string oldHead, string newHead, const CallBack_String & call1, const CallBack_String & call2)
+{
+	map<string, string> p;
+	p["childId"] = Value(childId).asString();
+	p["oldHead"] = oldHead;
+	p["newHead"] = newHead;
+	auto cData = CrossPlatformData::create();
+	if (call1)
+		cData->setCall1Key(call1);
+	if (call2)
+		cData->setCall2Key(call2);
+	p["task"] = Value(cData->getTaskName()).asString();
+	auto strJson = YYXLayer::getStringFormMap(p);
+	addTask(cData);
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "replaceavatarActivity", strJson, result);
+}
+
+//新的绑定手机
+void CrossPlatform::newBindPhone(string uid, string platform, const CallBack_String & call1, const CallBack_String & call2)
+{
+	App::log("newBindPhone-----------uid="+uid);
+	map<string, string> p;
+	p["uid"] = uid;
+	p["platform"] = platform;
+	auto cData = CrossPlatformData::create();
+	if (call1)
+		cData->setCall1Key(call1);
+	if (call2)
+		cData->setCall2Key(call2);
+	p["task"] = Value(cData->getTaskName()).asString();
+	auto strJson = YYXLayer::getStringFormMap(p);
+	addTask(cData);
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "bindPhoneActivity", strJson, result);
+}
+
+//新的绑定第三方
+void CrossPlatform::newBindThird(string phone, string uid, int memberId, string platform, const CallBack_String & call1, const CallBack_String & call2)
+{
+	map<string, string> p;
+	p["phone"] = phone;
+	p["uid"] = uid;
+	p["memberid"] = Value(memberId).asString();
+	p["platform"] = platform;
+	auto cData = CrossPlatformData::create();
+	if (call1)
+		cData->setCall1Key(call1);
+	if (call2)
+		cData->setCall2Key(call2);
+	p["task"] = Value(cData->getTaskName()).asString();
+	auto strJson = YYXLayer::getStringFormMap(p);
+	addTask(cData);
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "bindThirdActivity", strJson, result);
+}
+
+//注销
+void CrossPlatform::newAccountCancel(string memberAccount, int memberId,  const CallBack_String & call1, const CallBack_String & call2)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	map<string, string> p;
+	p["memberid"] = Value(memberId).asString();
+	p["account"] = memberAccount;
+	auto cData = CrossPlatformData::create();
+	if (call1)
+		cData->setCall1Key(call1);
+	if (call2)
+		cData->setCall2Key(call2);
+	p["task"] = Value(cData->getTaskName()).asString();
+	auto strJson = YYXLayer::getStringFormMap(p);
+	addTask(cData);
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "offLineActivity", strJson, result);
+#endif
+}
+
+//新的解绑第三方
+void CrossPlatform::newUnBindThird(int memberId, const CallBack_String & call1, const CallBack_String & call2)
+{
+	map<string, string> p;
+	p["memberid"] = Value(memberId).asString();
+	auto cData = CrossPlatformData::create();
+	if (call1)
+		cData->setCall1Key(call1);
+	if (call2)
+		cData->setCall2Key(call2);
+	p["task"] = Value(cData->getTaskName()).asString();
+	auto strJson = YYXLayer::getStringFormMap(p);
+	addTask(cData);
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "bindThirdActivity", strJson, result);
+}
+
+//新的修改密码
+void CrossPlatform::newChangePassword(const CallBack_String & call1, const CallBack_String & call2)
+{
+	map<string, string> p;
+	auto cData = CrossPlatformData::create();
+	if (call1)
+		cData->setCall1Key(call1);
+	if (call2)
+		cData->setCall2Key(call2);
+	p["task"] = Value(cData->getTaskName()).asString();
+	auto strJson = YYXLayer::getStringFormMap(p);
+	addTask(cData);
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "ChangePasswordActivity", strJson, result);
+}
+
+//新的踢下线
+void CrossPlatform::newOffLine()
+{
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "OffLineMessageActivity", "", result);
+}
+
+void CrossPlatform::newSetMemberId(string memberid)
+{
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "setUser4MemberId", memberid, result);
 }

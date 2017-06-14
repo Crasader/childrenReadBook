@@ -6,6 +6,7 @@
 #include "BuyVip.h"
 #include "WeixinPay.h"
 #include "AppHttp.h"
+#include "LoginControl.h"
 using namespace std;
 
 VipNotify* VipNotify::instance = nullptr;
@@ -61,8 +62,12 @@ Layer* VipNotify::VipNotifyLayer()
 			pLayer->removeFromParentAndCleanup(true);
 			if (YYXVisitor::getInstance()->getVisitorMode())
 			{
-				auto con = ControlScene::getInstance();
-				con->replaceScene(con->getCurrentScene(), con->getSceneInfo(LoginScene));
+				//auto con = ControlScene::getInstance();
+				//con->replaceScene(con->getCurrentScene(), con->getSceneInfo(LoginScene));
+				ControlScene::getInstance()->setDangqianScene(IndexScene);
+				LoginControl::getInstance()->Login([](string json) {
+					LoginControl::getInstance()->LoginCallback(json);
+				}, nullptr);
 				m_break_VipNotifyLayer = true;
 			}
 			else

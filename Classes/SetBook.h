@@ -44,6 +44,7 @@ public:
 	}
 	bool getIsHttp() const { return isHttp; }
 	void setIsHttp(bool val) { isHttp = val; }
+
 private:
 	int readBookId;
 	int readMemberId;
@@ -81,6 +82,10 @@ public:
 		childrenId = val;
 		return this;
 	}
+
+	long long getOpacityTime() const { return opacityTime; }
+	void setOpacityTime(int val) { opacityTime = val; }
+
 private:
 	static SetBook* instance;
 	int bookId = -999;
@@ -88,8 +93,13 @@ private:
 	int childrenId = -999;
 	bool isView = false;//是否试读
 	ReadBookRecord* m_CurrentReadBook=nullptr;//当前正在阅读的书籍记录
+	long long opacityTime = 0;
 
 	void readBook();
+	//设置书内按钮
+	void readButton();
+	//定时 点击常亮 10秒后恢复半透明
+	void setButtonOpacity(int time = 11);
 	//阅读记录
 	void saveReadRecordStart();
 	void saveReadRecording( );

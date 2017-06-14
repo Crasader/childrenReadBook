@@ -94,6 +94,17 @@ public:
 	void initDir();
 	std::string getDir() const { return dir; }
 	vector<int> getAllChildId();
+
+
+	std::string getQqBind();
+	void setQqBind(std::string val);
+
+	std::string getWeixinBind();
+	void setWeixinBind(std::string val);
+
+	std::string getSinaBind();
+	void setSinaBind(std::string val);
+
 	//std::unordered_map<int, ChildInfo *> getChildren() const { return children; }
 private:
 	static User* instance;
@@ -109,6 +120,9 @@ private:
 	string endTime = "";
 	int vipTime = -999;
 	string dir = FileUtils::getInstance()->getWritablePath() + "Data";//本地存储的文件夹路径
+	string qqBind = "";
+	string weixinBind = "";
+	string sinaBind = "";
 
 	std::unordered_map<int, ChildInfo*> children;
 	mutex m_Mchildren;

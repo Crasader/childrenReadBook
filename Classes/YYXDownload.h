@@ -44,6 +44,7 @@ private:
 	std::atomic_bool m_threadRuning;
 	int m_pausePint = 0;//暂停的百分比
 	Value m_useData = Value(-999);
+	double m_Size = -999;
 public:
 	DownLoadFileData();
 	~DownLoadFileData();
@@ -53,19 +54,19 @@ public:
 
 	std::string getUrl() const { return m_Url; }
 	DownLoadFileData* setUrl(std::string val) {
-		m_Url = val;
+		m_Url.assign(val);
 		return this;
 	}
 
 	std::string getDir() const { return m_Dir; }
 	DownLoadFileData* setDir(std::string val) {
-		m_Dir = val;
+		m_Dir.assign(val);
 		return this;
 	}
 
 	std::string getFileName() const { return m_fileName; }
 	DownLoadFileData* setFileName(std::string val) {
-		m_fileName = val;
+		m_fileName.assign(val);
 		return this;
 	}
 
@@ -94,6 +95,8 @@ public:
 	void setPausePint(int val) { m_pausePint = val; }
 	cocos2d::Value getUseData() const { return m_useData; }
 	void setUseData(cocos2d::Value val) { m_useData = val; }
+	double getSize() const { return m_Size; }
+	void setSize(double val) { m_Size = val; }
 };
 
 class YYXDownload:public Ref

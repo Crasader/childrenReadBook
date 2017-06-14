@@ -4,6 +4,9 @@
 #include "YYXBookOver.h"
 #include "FKBookParser.h"
 #include "YYXSound.h"
+#include "ControlScene.h"
+#include "YYXVisitor.h"
+#include "AppHttp.h"
 
 USING_NS_FK;
 USING_NS_CC;
@@ -107,10 +110,54 @@ void AppDelegate::applicationWillEnterForeground() {
 		FK::AudioPlayer::getInstance()->stopAllEffect();
 		App::log("=====>>> AppDelegate::applicationWillEnterForeground()  ++  BookParser::getInstance()->pausePlay();");
 	}
-    Director::getInstance()->startAnimation();
-	FK::AudioPlayer::getInstance()->resumeAllEffect();
+    Director::getInstance()->startAnimation();	
 
     // if you use SimpleAudioEngine, it must resume here
-	if (FK::BookParser::getInstance()->getIsReading())		
+	if (FK::BookParser::getInstance()->getIsReading())	
+		FK::AudioPlayer::getInstance()->resumeAllEffect();
+	else
 		YYXSound::getInstance()->playBackGroundMusic();
+	//执行原生代码的回调
+	ActivityOnCallback(CocosAndroidJni::getInstance()->getRuningKey());
+	//处理下线通知
+	if (!YYXVisitor::getInstance()->getVisitorMode() && User::getInstance()->getMemberId() > 0);
+		AppHttp::getInstance()->httpUserIsOffLine();
+}
+
+void AppDelegate::ActivityOnCallback(int param1)
+{
+	string json = CocosAndroidJni::getInstance()->getfunc(param1);
+	CocosAndroidJni::getInstance()->clearRuningKey();
+	App::log("-------------------------------AppDelegate::ActivityOnCallback " + json, param1);
+	ControlScene* control = ControlScene::getInstance();
+	switch (param1)
+	{
+	case 1://跳转场景
+		control->replaceScene(control->getCurrentScene(), control->getSceneInfo((MySceneName)jiexicanshu(json)));
+		break;
+	case 2://跳转场景并且处理展示红包列表
+		control->replaceScene(control->getCurrentScene(), control->getSceneInfo((MySceneName)jiexicanshu(json))->setData("show",Value(1)));
+		break;
+	case 3://跳转当前场景
+		if(control->getDangqianScene() != MySceneName::BOOK)
+			control->replaceScene(control->getCurrentScene(), control->getSceneInfo(control->getDangqianScene()));
+		break;
+	default:
+		break;
+	}
+}
+
+int AppDelegate::jiexicanshu(string json)
+{
+	if (!json.empty())
+	{
+		rapidjson::Document doc;
+		auto result = YYXLayer::getJsonObject4Json(doc, json);
+		if (result)
+		{
+			string scene = YYXLayer::getStringForJson("", doc, "scene");
+			return Value(scene).asInt();
+		}
+	}
+	return -999;
 }

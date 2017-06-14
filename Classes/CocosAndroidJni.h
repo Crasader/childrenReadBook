@@ -26,7 +26,18 @@ public:
     CocosAndroidJni();
     virtual ~CocosAndroidJni();
 
-	
+	static CocosAndroidJni *m_pInstance;
+	std::unordered_map<int, string > m_func;
+	int m_runkey = -999;
+public:
+	static CocosAndroidJni* getInstance();
+
+	void addfunc(int key, string val);
+	string getfunc(int key);
+	void delfunc(int key);
+	int getRuningKey();
+	void clearRuningKey();
+
 	static void callJavaFunction(string className, string functionName, string jsonParamter, string & result);
 	// JNI 打开数据库
 	//static bool openDataBase();
