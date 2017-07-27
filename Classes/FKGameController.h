@@ -16,7 +16,8 @@ public:
     GameController();
     ~GameController();
     
-    void                            setCurrentPage(int iCurrentPage);
+	static	GameController* create();
+	void                            setCurrentPage(int iCurrentPage);
     
     int                             getBookPages();
     

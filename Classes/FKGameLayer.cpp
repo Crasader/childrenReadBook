@@ -9,7 +9,7 @@ bool GameLayer::init()
     {
         return false;
     }
-    _gameController = new GameController();
+	_gameController = GameController::create();
     
     //通过currentPage获取pageData
     BookParser* bookParser = BookParser::getInstance();
@@ -36,7 +36,6 @@ bool GameLayer::init()
 void GameLayer::onExit()
 {
     Layer::onExit();
-    delete _gameController;
 }
 
 void GameLayer::onExitTransitionDidStart()

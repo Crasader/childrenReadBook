@@ -12,6 +12,7 @@
 #include "MyBook.h"
 #include "ReadBook.h"
 #include "DownloadBook.h"
+#include "BorrowBook.h"
 
 LoginControl* LoginControl::instance = nullptr;
 
@@ -94,6 +95,10 @@ void LoginControl::LoginCallback(string json)
 			else
 				user->setSinaBind("0");
 			App::loginCallback();
+			thread([]() {
+				App::ccsleep(1000);
+				YYXLayer::sendNotify("referBookOver");
+			}).detach();
 		}
 	}
 }
@@ -127,6 +132,7 @@ void LoginControl::Logout()
 	BuyVip::destoryInstance();
 	VipNotify::destoryInstance();
 	AppHttp::getInstance()->clearAllReadyTask();
+	BorrowBook::destoryInstance();
 	//创建temp目录
 	Load::initDir();
 	YYXLayer::setFileValue("musicClose", musicClose);

@@ -376,6 +376,9 @@ void BookInfo::initEvent()
 		AppHttp::getInstance()->httpComments(m_bookId, []() {
 			YYXLayer::sendNotify("showCommentListView", "", -1);
 		});
+		YYXLayer::controlTouchTime(3, "shareBookTime", [=]() {
+			CrossPlatform::getInstance()->ShareWeb(App::getMemberId(), m_bookId);
+		});
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener7, node);
 
@@ -828,7 +831,7 @@ void BookInfo::hintHongbao()
 		return;
 	hongbaodikou->setVisible(false);
 	Tex->setVisible(false);
-	if (m_relation->BookId() < 0)
+	if (m_relation->BookId() < 0 || m_relation->IsBorrow())
 		return;
 	if (!m_relation->IsBookBuy())//未购买
 	{
@@ -837,7 +840,7 @@ void BookInfo::hintHongbao()
 			hongbaodikou->setVisible(true);
 			Tex->setVisible(true);
 			if (Tex)
-				Tex->setText(StringUtils::format("%s%.00f%s", App::getString("HONGBAODIKOU"), showred, App::getString("YUAN")));
+				Tex->setText(StringUtils::format("%s%.01f%s", App::getString("HONGBAODIKOU"), showred, App::getString("YUAN")));
 		}
 	}
 }
@@ -939,6 +942,10 @@ void BookInfo::ButtonControl()
 		showBuyButtons(2);
 		return;
 	}
+	if (m_relation->IsBorrow()) {//已免费借到了
+		showBuyButtons(4);
+		return;
+	}
 	if (m_relation->IsBookRent())
 	{
 		//租过
@@ -997,6 +1004,9 @@ void BookInfo::showBuyButtons(int val)
 		break;
 	case 3:// vip用户 
 		visitorRent();
+		break;
+	case 4://借阅
+		borrowBook();
 		break;
 	}
 }
@@ -1106,6 +1116,38 @@ void BookInfo::visitorRent()
 		yuedu->setVisible(false);
 	}
 
+	duliyuedu->setVisible(false);
+}
+
+void BookInfo::borrowBook()
+{
+	//免费试读 购买 购买年卡
+	auto mianfeishidu = (Button*)node->getChildByName("mianfeishidu");
+	auto goumaihong = (Button*)node->getChildByName("goumaihong");
+	auto goumainianka = (Button*)node->getChildByName("goumainianka");
+
+	//购买 免费阅读 阅读
+	auto goumai = (Button*)node->getChildByName("goumai");
+	auto mianfeiyuedu = (Button*)node->getChildByName("mianfeiyuedu");
+	auto yuedu = (Button*)node->getChildByName("yuedu");
+
+	//阅读
+	auto duliyuedu = (Button*)node->getChildByName("duliyuedu");
+
+	mianfeishidu->setTitleText(App::getString("MIANFEISHIDU"));
+	yuedu->setTitleText(App::getString("STR_READ"));
+	mianfeiyuedu->setTitleText(App::getString("MIANFEIYUEDU"));
+	duliyuedu->setTitleText(App::getString("STR_READ"));
+
+	mianfeishidu->setVisible(false);
+	goumaihong->setVisible(false);
+	if (m_relation->IsMemberVIP())
+		goumainianka->setVisible(false);
+	else
+		goumainianka->setVisible(true);
+	goumai->setVisible(true);
+	yuedu->setVisible(true);
+	mianfeiyuedu->setVisible(false);
 	duliyuedu->setVisible(false);
 }
 
@@ -1248,23 +1290,14 @@ void BookInfo::onClickLister()
 	yuedu->addClickEventListener([=](Ref*) {
 		YYXLayer::controlTouchTime(1, "yueduTime", [=]() {
 			YYXSound::getInstance()->playButtonSound();
-			if (m_relation->IsMemberVIP())
-			{
-				YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
-					Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-						readbook_download_pause_tryreadbook(yuedu);
-					});
-				});
-			}
-			else
-				readbook_download_pause_tryreadbook(yuedu);
+			readbook_download_pause_tryreadbook(yuedu);
 		});
 	});
 
 	duliyuedu->addClickEventListener([=](Ref*) {
 		YYXLayer::controlTouchTime(1, "duliyueduTime", [=]() {
 			YYXSound::getInstance()->playButtonSound();
-			if (m_relation->IsBookBuy())
+			if (m_relation->IsBookBuy() || m_relation->IsBorrow())
 			{
 				readbook_download_pause_tryreadbook(duliyuedu);
 				return;
@@ -1297,7 +1330,7 @@ void BookInfo::onClickLister()
 void BookInfo::readBook()
 {
 	ControlScene::getInstance()->pushCurrentScene(ControlScene::getInstance()->getSceneInfo(BookInfoScene)->setData("bookId", Value(m_bookId)));
-	if (m_relation->IsBookBuy() || m_relation->IsMemberVIP())
+	if (m_relation->IsBookBuy() || m_relation->IsMemberVIP() || m_relation->IsBorrow())
 	{
 		//完整
 		//打开书本

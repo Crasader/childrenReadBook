@@ -35,9 +35,9 @@ void GameSpriteData::clear()
     _fEndScale = 0.0f;
     _fTimer = 0.0f;
     _sIsFilling.clear();
-    _fColorR = 0.0f;
-    _fColorG = 0.0f;
-    _fColorB = 0.0f;
+    _fColorR = -1.0f;
+    _fColorG = -1.0f;
+    _fColorB = -1.0f;
     _sRelation.clear();
     _sType.clear();
     _sRole.clear();

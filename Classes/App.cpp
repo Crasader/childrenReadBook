@@ -22,6 +22,7 @@
 #include "BuyVip.h"
 #include "vipNotifyLayer.h"
 #include "LoadScene.h"
+#include "BorrowBook.h"
 
 using namespace std;
 USING_NS_FK;
@@ -883,6 +884,9 @@ void App::preLoad()
 //登录后的网络信息获取
 void App::loginCallback(bool hint ,function<void ()>  runable)
 {
+	//载入借书状态
+	BorrowBook::getInstance()->clearBook();
+	BorrowBook::getInstance()->loadCache();
 	//载入购买书籍时间
 	MyBook::getInstance()->clearBook();
 	MyBook::getInstance()->loadCache();
@@ -932,12 +936,12 @@ void App::cancelData()
 	App::GetInstance()->myBookURLMap.clear();
 	App::GetInstance()->myBuyBook.clear();
 	App::GetInstance()->VIPbook.clear();
-	//App::GetInstance()->bookCollect.clear();
 	BookCache::getInstance()->clear();
 	//清空书房
 	DownloadBook::getInstance()->clearBook();
 	ReadBook::getInstance()->clearBook();
 	MyBook::getInstance()->clearBook();
+	BorrowBook::getInstance()->clearBook();
 	//内存
 	BuyVip::destoryInstance();
 	VipNotify::destoryInstance();
@@ -976,6 +980,22 @@ void App::loadBuyBookCache()
 			App::GetInstance()->myBuyBook[bookid] = orderid;
 	}
 }
+
+void App::loadBorrowBookCache()
+{
+	//载入借书信息
+	string bookjsonPath = FileUtils::getInstance()->getWritablePath() + "borrowBook/borrowbook_" + App::getMemberID() + ".json";
+	map<string, string> data;
+	App::getMapFromFile(bookjsonPath, data);
+	for (auto it : data)
+	{
+		int bookid = atoi(it.first.c_str());
+		int orderid = atoi(it.second.c_str());
+		if (bookid > 0)
+			App::GetInstance()->myBuyBook[bookid] = orderid;
+	}
+}
+
 void App::addTime(string key, long long data)
 {
 	if (!&key)

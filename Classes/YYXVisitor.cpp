@@ -9,6 +9,7 @@
 #include "User.h"
 #include "AppHttp.h"
 #include "YYXTime.h"
+#include "BorrowBook.h"
 
 YYXVisitor* YYXVisitor::instance = nullptr;
 
@@ -287,7 +288,7 @@ void YYXVisitor::logoutVisitor()
 	DownloadBook::getInstance()->clearBook();
 	ReadBook::getInstance()->clearBook();
 	MyBook::getInstance()->clearBook();
-
+	BorrowBook::getInstance()->clearBook();
 	YYXLayer::setFileValue("musicClose", musicClose);
 }
 

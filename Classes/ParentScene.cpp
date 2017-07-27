@@ -1277,7 +1277,7 @@ void Parent::loadRedPacketData(Node* node, int index)
 		//红包价值
 		auto text_coupon_amount = (Text*)node->getChildByName(FIND_TEXT_BY_NAME_EVERYREDPACKET_PRICE);
 		if (text_coupon_amount)
-			text_coupon_amount->setText(StringUtils::format("%d", (int)(coupon_amount / 100)) + App::getString("YUAN"));
+			text_coupon_amount->setText(StringUtils::format("%.01f", coupon_amount / 100.0) + App::getString("YUAN"));
 		//打钩
 		auto img_couponSelect = (ImageView*)node->getChildByName(FIND_IMAGEVIE_BY_NAME_EVERYREDPACKET_SELECT);
 		img_couponSelect->setVisible(false);

@@ -140,6 +140,7 @@ private:
 	void visitorNoBuyNoRent();
 	void userNoBuyNoRent();
 	void visitorRent();
+	void borrowBook();
 	void userBuy();
 	void onClickLister();
 	void readBook();

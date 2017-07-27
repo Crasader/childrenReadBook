@@ -45,6 +45,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
+	Size frameSize = glview->getFrameSize();
+	float h = frameSize.height;
+	float w = frameSize.width;
+	log("setFrameSize w =%f ", w);
+	log("setFrameSize h = %f ", h);
+	if (w > h)
+		glview->setFrameSize(w, h);
+	else
+		glview->setFrameSize(h, w);
+	log("getFrameSize w =%f  ", glview->getFrameSize().width);
+	log("getFrameSize h = %f ", glview->getFrameSize().height);
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         glview = GLViewImpl::createWithRect("ellabook_W2736H1536", Rect(0, 0, 1094, 614));
@@ -66,7 +77,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	FileUtils::getInstance()->addSearchPath("res");
     // Set the design resolution
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::FIXED_HEIGHT);
-    Size frameSize = glview->getFrameSize();
+    //Size frameSize = glview->getFrameSize();
     // if the frame's height is larger than the height of medium size.
     //if (frameSize.height > mediumResolutionSize.height)
     //{        
@@ -81,7 +92,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     //else
     //{        
     //    director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
-    //}
+    //}	
 	director->setContentScaleFactor(1);
     register_all_packages();
 
@@ -120,7 +131,7 @@ void AppDelegate::applicationWillEnterForeground() {
 	//执行原生代码的回调
 	ActivityOnCallback(CocosAndroidJni::getInstance()->getRuningKey());
 	//处理下线通知
-	if (!YYXVisitor::getInstance()->getVisitorMode() && User::getInstance()->getMemberId() > 0);
+	if (!YYXVisitor::getInstance()->getVisitorMode() && User::getInstance()->getMemberId() > 0)
 		AppHttp::getInstance()->httpUserIsOffLine();
 }
 

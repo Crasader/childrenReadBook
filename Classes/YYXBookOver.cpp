@@ -194,7 +194,7 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 							YYXRentBook::getInstance()->backgroundThreadRentBook(m_bookId, App::GetInstance()->getMemberId(), [=]() {
 								m_isUserVip = true;
 								buySuccessMessageBox(goumaichenggong);
-							});							
+							});
 						});
 						if (blayer)
 							Director::getInstance()->getRunningScene()->addChild(blayer);
@@ -226,6 +226,10 @@ Layer* YYXBookOver::tryReadBookOverLayer()
 	}
 
 	auto changeListener = EventListenerCustom::create("referBookOver", [=](EventCustom* e) {
+		if (!YYXVisitor::getInstance()->getVisitorMode() && User::getInstance()->getVip()) {
+			m_isUserVip = true;
+			log("send m_isUserVip = true; %d",1);
+		}
 		if (m_isUserBuy || m_isUserVip)
 		{
 			jixuyuedu->setVisible(true);

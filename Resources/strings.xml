@@ -200,7 +200,7 @@
     <key>COMMENT_CONTENT_ERROR</key>
     <string>评论最少10个字</string>
     <key>COMMENT_TIP_BUY</key>
-    <string>请先购买再评论</string>
+    <string>购买此书才能进行评论</string>
     <key>COMMENT_SUCCESS</key>
     <string>评论成功</string>
     <key>COMMENT_ALREADY</key>
@@ -254,7 +254,7 @@
     <key>QQKEFU</key>
     <string>QQ客服:2952377844</string>
     <key>BANBENHEZUO</key>
-    <string>版权合作QQ：379160279</string>
+    <string>版权合作QQ：31439942</string>
     <key>SHAGNWUHEZUO</key>
     <string>商务合作QQ：379160279</string>
     <key>HONGBAOHUOQUSHIBAI</key>
@@ -449,6 +449,8 @@
     <string>您的VIP已经到期, 请重新续费</string>
     <key>QUXUFEI</key>
     <string>去续费</string>
+  <key>SHUJIDAOQIQINGGOUMAISHUJI</key>
+  <string>书籍过期，请购买</string>
     <key>QUXIANGXIANG</key>
     <string>再想想</string>
     <key>NINDEVIPGUOQISHIFOUXUGEFI</key>

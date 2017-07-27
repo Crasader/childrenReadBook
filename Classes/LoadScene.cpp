@@ -15,6 +15,7 @@
 #include "User.h"
 #include "AppHttp.h"
 #include "BookStoreCache.h"
+#include "BorrowBook.h"
 USING_NS_CC;
 
 using namespace cocostudio::timeline;
@@ -171,9 +172,10 @@ void Load::initDir()
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "collectBook"))
 		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "collectBook");
 	if (!FileUtils::getInstance()->isDirectoryExist(FileUtils::getInstance()->getWritablePath() + "bookCity"))
-		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "bookCity");
+		FileUtils::getInstance()->createDirectory(FileUtils::getInstance()->getWritablePath() + "bookCity"); 
 	DownloadBook::getInstance()->initDir();
 	ReadBook::getInstance()->initDir();
+	BorrowBook::getInstance()->initDir();
 	MyBook::getInstance()->initDir();
 	BookCache::getInstance()->initDir();
 	YYXVisitor::getInstance()->initDir();

@@ -1019,3 +1019,19 @@ void CrossPlatform::newSetMemberId(string memberid)
 	string result = "";
 	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "setUser4MemberId", memberid, result);
 }
+
+void CrossPlatform::ShareWeb(int memberid, int bookid)
+{
+	string result = "";
+	map<string, string> p;
+	p["memberid"] = Value(memberid).asString();
+	p["bookid"] = Value(bookid).asString();
+	auto strJson = YYXLayer::getStringFormMap(p);
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "ShareWeb", strJson, result);
+}
+
+void CrossPlatform::deletequdao()
+{
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "deletequdao", "", result);
+}

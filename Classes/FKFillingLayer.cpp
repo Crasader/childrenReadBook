@@ -42,29 +42,25 @@ void FillingLayer::onEnter()
 
 bool FillingLayer::onTouchBegan(Touch* touch, Event* event)
 {
-    map<Sprite* ,GameSpriteData>mTmp = _gameController->getGameSpriteAndDataMap();
-    GameSpriteData gsData;
     auto parent = (GameLayer*)this->getParent();
     map<int,GameSpriteData> mTouchCollision = parent->touchCollision(touch->getLocation());
     
     if (mTouchCollision.size()>0) {
-        gsData = parent->getDataFromZOrder(mTouchCollision);
-        _iTag = gsData.getTag();
+        _gsData = parent->getDataFromZOrder(mTouchCollision);
+        _iTag = _gsData.getTag();
     }else
     {
         _iTag = Node::INVALID_TAG;
     }
     
     log("FillingLayer onTouchbegan _iTag = %d",_iTag);
-    //获取填充游戏的颜料的RGB和初始位置
-    _vColor = gsData.getColor();
-    _vOriginalPosition = gsData.getPosition();
+    
     return true;
 }
 void FillingLayer::onTouchMoved(Touch* touch, Event* event)
 {
     //检测点击的精灵是否是颜料
-    if(_vColor.x != 0 || _vColor.y != 0 || _vColor.z != 0 )
+    if(_gsData.getColor().operator!=(Vec3(-1.0f, -1.0f, -1.0f)))
     {
         //位置拖动
         if(_iTag != Node::INVALID_TAG)
@@ -81,36 +77,36 @@ void FillingLayer::onTouchEnded(Touch* touch, Event* event)
     log("FillingLayer onTouchEnd");
     //颜料回归原位
     auto parent = (GameLayer*)this->getParent();
-    if(_vColor.x != 0 || _vColor.y != 0 || _vColor.z != 0 )
+    if(_gsData.getColor().operator!=(Vec3(-1.0f, -1.0f, -1.0f)))
     {
-        auto sp = parent->getChildByTag(_iTag);
-        sp->setPosition(_vOriginalPosition);
+        if(_iTag != Node::INVALID_TAG)
+        {
+            auto sp = parent->getChildByTag(_iTag);
+            sp->setPosition(_gsData.getPosition());
+        }
     }
     //获取点击终点位置所对应精灵的Data值
-    map<Sprite* ,GameSpriteData>mTmp = _gameController->getGameSpriteAndDataMap();
     GameSpriteData gsData;
-    //填色
-    if(_vColor.x != 0 || _vColor.y != 0 || _vColor.z != 0 )
+    
+    map<int,GameSpriteData> mTouchCollision = parent->touchCollision(touch->getLocation());
+    int isFillingTag;
+    if (mTouchCollision.size()>0) {
+        gsData = parent->getDataFromZOrder(mTouchCollision);
+        isFillingTag = gsData.getTag();
+    }else
     {
-        map<int,GameSpriteData> mTouchCollision = parent->touchCollision(touch->getLocation());
-        int isFillingTag;
-        if (mTouchCollision.size()>0) {
-            gsData = parent->getDataFromZOrder(mTouchCollision);
-            isFillingTag = gsData.getTag();
-        }else
-        {
-            isFillingTag = Node::INVALID_TAG;
-        }
-        log("FillingLayer isFillingTag = %d", isFillingTag);
-        //根据Tag值判断是否是可被填充对象
-        string isFilling = gsData.getIsFilling();
-        if (isFilling == "yes")
-        {
-            //进行填充
-            auto spFilling = parent->getChildByTag(isFillingTag);
-            spFilling->setColor(Color3B(_vColor.x,_vColor.y,_vColor.z));
-        }
+        isFillingTag = Node::INVALID_TAG;
     }
+    log("FillingLayer isFillingTag = %d", isFillingTag);
+    //根据Tag值判断是否是可被填充对象
+    string isFilling = gsData.getIsFilling();
+    if (isFilling == "yes" && isFillingTag != Node::INVALID_TAG)
+    {
+        //进行填充
+        auto spFilling = parent->getChildByTag(isFillingTag);
+        spFilling->setColor(Color3B(_gsData.getColor().x,_gsData.getColor().y,_gsData.getColor().z));
+    }
+
 }
 void FillingLayer::onTouchCancelled(Touch* touch, Event* event)
 {

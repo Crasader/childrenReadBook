@@ -95,8 +95,8 @@ private:
 	ReadBookRecord* m_CurrentReadBook=nullptr;//当前正在阅读的书籍记录
 	long long opacityTime = 0;
 
-	void readBook();
-	//设置书内按钮
+	void zushunet(int bookid);//租书流程
+	void readBook();//设置书内按钮
 	void readButton();
 	//定时 点击常亮 10秒后恢复半透明
 	void setButtonOpacity(int time = 11);

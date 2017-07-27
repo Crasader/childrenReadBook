@@ -872,12 +872,14 @@ int JsonParser::setJsonToAnimationData(const rapidjson::Value &animationData, st
                 if (event == "send") {
                     if (gsData.getTag() == _animationGroupMemberDataKey.getSpriteTag()) {
                         _animationData.setImageId(gsData.getImageId());
+                        _animationData.setSoundId(gsData.getSoundId());
                     }
                 }else if (event == "receive")
                 {
                     if (gsData.getTag() == _animationGroupMemberDataValue.getSpriteTag())
                     {
                         _animationData.setImageId(gsData.getImageId());
+                        _animationData.setSoundId(gsData.getSoundId());
                     }
                 }
             }
@@ -889,11 +891,13 @@ int JsonParser::setJsonToAnimationData(const rapidjson::Value &animationData, st
                 if (event == "send") {
                     if (it->first == _animationGroupMemberDataKey.getSpriteTag()) {
                         _animationData.setImageId(it->second.getImageId());
+                        _animationData.setSoundId(it->second.getSoundId());
                     }
                 }else if (event == "receive")
                 {
                     if (it->first == _animationGroupMemberDataValue.getSpriteTag()) {
                         _animationData.setImageId(it->second.getImageId());
+                        _animationData.setSoundId(it->second.getSoundId());
                     }
                 }
             }
@@ -903,11 +907,19 @@ int JsonParser::setJsonToAnimationData(const rapidjson::Value &animationData, st
         //移动
         if (0 == strcmp(styleId.GetString(), "move") || 0 == strcmp(styleId.GetString(), "moveby"))
         {
+            bool isRelative = false;
+            if (0 == strcmp(styleId.GetString(), "move")) {
+                isRelative = false;
+            }else
+            {
+                isRelative = true;
+            }
+
             const rapidjson::Value &property = animation["property"];
             const rapidjson::Value &endposition  = property["endposition"];
             const rapidjson::Value &endpositionX = endposition["x"];
             const rapidjson::Value &endpositionY = endposition["y"];
-            _animationData.setEndPosition(endpositionX.GetString(),endpositionY.GetString(),_bookData.getCoordinateScale(),_bookData.getWinSizeOffset());
+            _animationData.setEndPosition(endpositionX.GetString(),endpositionY.GetString(),_bookData.getCoordinateScale(),_bookData.getWinSizeOffset(),isRelative);
             _animationData.setDuration(property["duration"].GetString());
             
         }
@@ -930,11 +942,19 @@ int JsonParser::setJsonToAnimationData(const rapidjson::Value &animationData, st
         //跳跃
         else if (0 == strcmp(styleId.GetString(), "jump") || 0 == strcmp(styleId.GetString(), "jumpby"))
         {
+            bool isRelative = false;
+            if (0 == strcmp(styleId.GetString(), "jump")) {
+                isRelative = false;
+            }else
+            {
+                isRelative = true;
+            }
+
             const rapidjson::Value &property = animation["property"];
             const rapidjson::Value &endposition  = property["endposition"];
             const rapidjson::Value &endpositionX = endposition["x"];
             const rapidjson::Value &endpositionY = endposition["y"];
-            _animationData.setEndPosition(endpositionX.GetString(),endpositionY.GetString(),_bookData.getCoordinateScale(),_bookData.getWinSizeOffset());
+            _animationData.setEndPosition(endpositionX.GetString(),endpositionY.GetString(),_bookData.getCoordinateScale(),_bookData.getWinSizeOffset(),isRelative);
             _animationData.setHeight(property["height"].GetString(),_bookData.getCoordinateScale());
             _animationData.setJumps(property["jumps"].GetString());
             _animationData.setDuration(property["duration"].GetString());
@@ -975,6 +995,14 @@ int JsonParser::setJsonToAnimationData(const rapidjson::Value &animationData, st
         //贝塞尔曲线
         else if (0 == strcmp(styleId.GetString(), "bezier") || 0 == strcmp(styleId.GetString(), "bezierby"))
         {
+            bool isRelative = false;
+            if (0 == strcmp(styleId.GetString(), "bezier")) {
+                isRelative = false;
+            }else
+            {
+                isRelative = true;
+            }
+
             const rapidjson::Value &property = animation["property"];
             const rapidjson::Value &controlPoint_1  = property["controlPoint_1"];
             const rapidjson::Value &controlPoint_1X = controlPoint_1["x"];
@@ -985,7 +1013,7 @@ int JsonParser::setJsonToAnimationData(const rapidjson::Value &animationData, st
             const rapidjson::Value &endposition  = property["endposition"];
             const rapidjson::Value &endpositionX = endposition["x"];
             const rapidjson::Value &endpositionY = endposition["y"];
-            _animationData.setEndPosition(endpositionX.GetString(),endpositionY.GetString(),_bookData.getCoordinateScale(),_bookData.getWinSizeOffset());
+            _animationData.setEndPosition(endpositionX.GetString(),endpositionY.GetString(),_bookData.getCoordinateScale(),_bookData.getWinSizeOffset(),isRelative);
             _animationData.setBezierPoint(controlPoint_1X.GetString(),controlPoint_1Y.GetString(),controlPoint_2X.GetString(),controlPoint_2Y.GetString(),_bookData.getCoordinateScale(),_bookData.getWinSizeOffset());
             _animationData.setDuration(property["duration"].GetString());
         }

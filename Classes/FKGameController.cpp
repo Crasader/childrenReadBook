@@ -10,6 +10,17 @@ GameController::~GameController()
 {
     
 }
+GameController* GameController::create()
+{
+	GameController* gameControl = new GameController();
+	if (gameControl)
+	{
+		gameControl->autorelease();
+		return gameControl;
+	}
+	CC_SAFE_DELETE(gameControl);
+	return nullptr;
+}
 
 void GameController::setCurrentPage(int iCurrentPage)
 {

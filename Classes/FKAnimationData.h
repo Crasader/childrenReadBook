@@ -22,7 +22,7 @@ public:
     void                        setStyleId(string sStyleId);
     void                        setCategoryId(string sCategoryId);
     void                        setDuration(string sDuration);
-    void                        setEndPosition(string sX, string sY ,float coordinateScale,Vec2 winSizeOffset);
+    void                        setEndPosition(string sX, string sY ,float coordinateScale,Vec2 winSizeOffset, bool isRelative);
     void                        setAngle(string sAngle);
     void                        setScale(string sScale,float resourcesScale);
     void                        setHeight(string sHeight,float coordinateScale);

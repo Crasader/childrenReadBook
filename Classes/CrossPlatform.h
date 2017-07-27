@@ -117,6 +117,10 @@ public:
 	void newOffLine();
 	//设置memberid
 	void newSetMemberId(string memberid);
+	//分享借阅
+	void ShareWeb(int memberid, int bookid);
+	//删除渠道标记
+	void deletequdao();
 };
 
 #endif // __NETINTFACE_SCENE_H__

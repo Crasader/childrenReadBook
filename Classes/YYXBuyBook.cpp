@@ -251,12 +251,7 @@ Layer* YYXBuyBook::buyBookFirst()
 	}
 	if (bookprice)
 		bookprice->setText(StringUtils::format("%.02f", m_bookPrice / 100.0) + App::getString("YUAN"));
-	if (balance)
-		balance->setText(StringUtils::format("%.02f", m_myMoney / 100.0) + App::getString("YUAN"));
-	auto balanceChangeListener = EventListenerCustom::create(TAG1, [=](EventCustom* e) {
-		balance->setText(StringUtils::format("%.02f", m_myMoney / 100.0) + App::getString("YUAN"));
-	});
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(balanceChangeListener, balance);
+	
 	if (close)
 	{
 		close->addClickEventListener([=](Ref* sender) {
@@ -351,6 +346,31 @@ Layer* YYXBuyBook::buyBookFirst()
 	payLayer->setPosition(visibleSize / 2);
 	Director::getInstance()->getRunningScene()->addChild(payLayer);
 	m_show = false;
+	if (balance)
+		balance->setText(StringUtils::format("%.02f", m_myMoney / 100.0) + App::getString("YUAN"));
+	auto balanceChangeListener = EventListenerCustom::create(TAG1, [=](EventCustom* e) {
+		balance->setText(StringUtils::format("%.02f", m_myMoney / 100.0) + App::getString("YUAN"));
+		if (m_myMoney >= (m_bookPrice - getOptimalRedPacket()))
+		{
+			if (gotoPay)
+			{
+				gotoPay->setTitleText(App::getString("GOUMAI"));
+				if (withRedPacket)
+					gotoPay->setTag(0);
+				else
+					gotoPay->setTag(1);
+			}
+		}
+		else
+		{
+			if (gotoPay)
+			{
+				gotoPay->setTitleText(App::getString("CHONGZHI"));
+				gotoPay->setTag(2);
+			}
+		}
+	});
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(balanceChangeListener, balance);
 	return payLayer;
 }
 
@@ -477,7 +497,7 @@ void YYXBuyBook::loadRedPacketData(Node* node, int index)
 		//红包价值
 		auto text_coupon_amount = (Text*)node->getChildByName(FIND_TEXT_BY_NAME_EVERYREDPACKET_PRICE);
 		if (text_coupon_amount)
-			text_coupon_amount->setText(StringUtils::format("%d", (int)(coupon_amount / 100)) + App::getString("YUAN"));
+			text_coupon_amount->setText(StringUtils::format("%.01f", coupon_amount / 100.0) + App::getString("YUAN"));
 		//打钩
 		auto img_couponSelect = (ImageView*)node->getChildByName(FIND_IMAGEVIE_BY_NAME_EVERYREDPACKET_SELECT);
 		img_couponSelect->setTag(coupon_id);

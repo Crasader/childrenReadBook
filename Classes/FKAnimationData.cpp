@@ -204,10 +204,16 @@ void AnimationData::setDuration(string sDuration)
 {
     _sDuration = sDuration;
 }
-void AnimationData::setEndPosition(string sX, string sY, float coordinateScale,Vec2 winSizeOffset)
+void AnimationData::setEndPosition(string sX, string sY, float coordinateScale,Vec2 winSizeOffset, bool isRelative)
 {
-    _stEndPosition.x = stringTo<float>(sX)*coordinateScale - winSizeOffset.x;
-    _stEndPosition.y = stringTo<float>(sY)*coordinateScale - winSizeOffset.y;
+    if (isRelative) {
+        _stEndPosition.x = stringTo<float>(sX)*coordinateScale;
+        _stEndPosition.y = stringTo<float>(sY)*coordinateScale;
+    }else
+    {
+        _stEndPosition.x = stringTo<float>(sX)*coordinateScale - winSizeOffset.x;
+        _stEndPosition.y = stringTo<float>(sY)*coordinateScale - winSizeOffset.y;
+    }
 }
 void AnimationData::setAngle(string sAngle)
 {

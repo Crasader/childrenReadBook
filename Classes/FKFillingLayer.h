@@ -29,8 +29,7 @@ private:
     EventListenerTouchOneByOne*    _oneTouch;
     int                            _iTag;
     GameController*                _gameController;
-    Vec2                           _vOriginalPosition;
-    Vec3                           _vColor;
+    GameSpriteData                 _gsData;
     
 };
 

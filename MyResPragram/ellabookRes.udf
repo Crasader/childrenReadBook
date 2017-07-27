@@ -31,11 +31,9 @@
     <Item Key="TabsParamsKey">
       <Value ctype="TabsInfo">
         <OpenedDocuments>
-          <FilePathData Path="Book/csb/readbook.csd" />
-          <FilePathData Path="BookInfo/csb/bookInfo.csd" />
-          <FilePathData Path="IndexScene/csb/background.csi" />
+          <FilePathData Path="MessageBox/csb/fxz_box.csd" />
         </OpenedDocuments>
-        <ActiveDocument Path="IndexScene/csb/background.csi" />
+        <ActiveDocument Path="MessageBox/csb/fxz_box.csd" />
       </Value>
     </Item>
   </Properties>

@@ -26,6 +26,7 @@
 #include "vipNotifyLayer.h"
 #include "XZLayer.h"
 #include "Charger.h"
+#include "BorrowBook.h"
 
 USING_NS_CC;
 using namespace std;
@@ -182,8 +183,7 @@ int AppHttp::getHttpListSize()
 void AppHttp::httpListControl()
 {
 	vector<int> outTimeData;
-
-	if (httpList.size() > 0)
+	if (getHttpListSize() > 0)
 	{
 		for (auto it : httpList)
 		{
@@ -198,10 +198,11 @@ void AppHttp::httpListControl()
 		}
 		for (auto it : outTimeData)
 		{
-			httpList.erase(it);
+			//httpList.erase(it);
+			delHttpList(it);
 		}
 	}
-	if (httpList.size() < m_concurrence)
+	if (getHttpListSize() < m_concurrence)
 	{
 		bool full = pushDownloadListFromHighList();
 		if (!full)
@@ -223,7 +224,7 @@ void AppHttp::httpListControl()
 	if (taskSize > 0)
 	{
 		App::log("\nAppHttp::httpListControl() =========================>>> m_Tasks.size() =", taskSize);
-		App::log("\nAppHttp::httpListControl() =========================>>> httpList.size() =", httpList.size());
+		App::log("\nAppHttp::httpListControl() =========================>>> httpList.size() =", getHttpListSize());
 		App::log("\nAppHttp::httpListControl() =========================>>> outTime =", outTime);
 		App::log("\nAppHttp::httpListControl() =========================>>>  m_concurrence(bingfa)=", m_concurrence);
 	}
@@ -599,10 +600,11 @@ void AppHttp::newHttp(HttpData* data)
 		switch (data->getPriority())
 		{
 		case _high:
-			if (httpList.size() <= m_MaxThread)
+			if (getHttpListSize() <= m_MaxThread)
 			{
 				http(data);
-				httpList[data->getTaskId()] = YYXTime::getInstance()->getNowTime4S();
+				//httpList[data->getTaskId()] = YYXTime::getInstance()->getNowTime4S();
+				addHttpList(data->getTaskId());
 			}
 			else
 				pushHighList(httpId);
@@ -2126,7 +2128,10 @@ void AppHttp::httpRentBook(int bookid, YYXCallBack callback1)
 {
 	string url = string(IP).append(NET_RENT);
 	map<string, string> par;
-	par["memberId"] = StringUtils::format("%d", User::getInstance()->getMemberId());
+	int id = User::getInstance()->getMemberId();
+	if (id <= 0)
+		return;
+	par["memberId"] = StringUtils::format("%d", id);
 	par["bookId"] = StringUtils::format("%d", bookid);
 	par["resource"] = App::m_resource;
 	par["payType"] = "2";
@@ -2373,5 +2378,90 @@ void AppHttp::httpUserIsOffLine()
 		}		
 	});
 	httpData->setCallbackerror([](HttpData* data) {	});
+	newHttp(httpData);
+}
+
+//新的用户已拥有的书籍接口
+void AppHttp::httpUserHaveBooks()
+{
+	map<string, string> p;
+	p["memberId"] = App::getMemberID();
+	p["resource"] = "android";
+	p["page"] = "0";
+	p["pageSize"] = "10000";
+	auto parameter = signPostData("ellabook.member.getMyStudy", p, "1.0");
+	string url = string(IP).append("/ellabook-server/rest/api/service");
+	HttpData* httpData = HttpData::create();
+	httpData->setUrl(url);
+	httpData->setParamter(parameter);
+	httpData->setPriority(HttpPriority::_high);
+	httpData->setHttpType(HttpRequest::Type::POST);
+	httpData->setCallback([](HttpData* data) {
+		string json = data->getJson();
+		rapidjson::Document doc;
+		auto result = YYXLayer::getJsonObject4Json(doc, json);
+		if (result)
+		{
+			App::GetInstance()->myBookURLMap.clear();
+			App::GetInstance()->VIPbook.clear();
+			App::GetInstance()->myBuyBook.clear();
+			MyBook::getInstance()->clearBook();
+			BorrowBook::getInstance()->clearBook();
+
+			int count = YYXLayer::getInt4Json(0, doc, "data","count");
+			rapidjson::Value array;
+			YYXLayer::getJsonArray4Json(array, doc, "data","data");
+			YYXLayer::getDataForJsonArray(array, [](rapidjson::Value& item, int idx) {
+				auto bookId = String(YYXLayer::getString4Json("0", item, "bookId")).intValue();
+				auto bookName = YYXLayer::getString4Json("", item, "bookName");
+				auto bookPlayUrl = YYXLayer::getString4Json("", item, "bookPlayUrl");
+				auto bookCoverUrl = YYXLayer::getString4Json("", item, "bookCoverUrl");
+				auto bookRelationState = String(YYXLayer::getString4Json("1", item, "bookRelationState")).intValue();//1代表买书 2代表租书 3代表借书
+				auto borrowState = YYXLayer::getString4Json("0", item, "borrowState");//是否  0可阅读
+				auto shareProfit = YYXLayer::getString4Json("", item, "shareProfit");//是否可分享				
+				auto isNewEllaBook = String(YYXLayer::getString4Json("0", item, "isNewEllaBook")).intValue();//是否新书 0不是 1是
+				auto orderId = String(YYXLayer::getString4Json("0", item, "orderId")).intValue();
+				auto time = String(YYXLayer::getString4Json("0", item, "time")).intValue();
+
+				MyBook::getInstance()->addBook(bookId, time, false);
+				App::GetInstance()->myBookURLMap[bookId] = bookPlayUrl;
+				if (bookRelationState == 1){
+					App::GetInstance()->myBuyBook[bookId] = time;
+				}
+				else if (bookRelationState == 2){
+					App::GetInstance()->VIPbook[bookId] = time;
+				}else if (bookRelationState == 3){
+					BorrowBook::getInstance()->addBook(bookId, Value(borrowState).asInt(),false);
+				}
+				BookCache::getInstance()->addBook(Book::create()->setCoverURL(bookCoverUrl)->setBookId(bookId));
+			});
+			thread mythread([]() {
+				BorrowBook::getInstance()->writeDownXml();
+				MyBook::getInstance()->writeDownXml();
+				map<string, string> buybooks;
+				for (auto it : App::GetInstance()->myBuyBook)
+				{
+					string key = Value(it.first).asString();
+					buybooks[key] = Value(it.second).asString();
+				}
+				string json_buybooks = YYXLayer::getStringFormMap(buybooks);
+				string filename_buybooks = StringUtils::format("buyBook/buybook_%d.json", App::GetInstance()->getMemberId());
+				YYXLayer::writeFile(json_buybooks, FileUtils::getInstance()->getWritablePath() + filename_buybooks);
+
+				map<string, string> VIPbooks;
+				for (auto it : App::GetInstance()->VIPbook)
+				{
+					string key = Value(it.first).asString();
+					VIPbooks[key] = Value(it.second).asString();
+				}
+				string json_VIPbooks = YYXLayer::getStringFormMap(VIPbooks);
+				string filename_VIPbooks = StringUtils::format("vipBook/vipbook_%d.json", App::GetInstance()->getMemberId());
+				YYXLayer::writeFile(json_VIPbooks, FileUtils::getInstance()->getWritablePath() + filename_VIPbooks);
+			});
+			mythread.detach();
+			YYXLayer::sendNotify(TAG_BOOKROOMBOOKISEXIT);
+		}
+	});
+	httpData->setCallbackerror([](HttpData* data) {});
 	newHttp(httpData);
 }

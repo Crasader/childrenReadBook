@@ -40,6 +40,8 @@ public:
 	//判断用户是否是vip
 	bool userIsVip();
 	bool bookIsMyBuyBooks(int bookid);
+	int bookIsBorrowBooks(int bookid);
+	bool IsRead4BorrowBooks(int bookid);
 	bool bookIsSuo(int bookid);
 	//刷新当前页书籍
 	void refershPage(int status);

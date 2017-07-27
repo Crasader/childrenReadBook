@@ -1035,10 +1035,9 @@ enum MyEnum
 
 #define NET_UPLOGFILE "/ellabook-server/Error/uploadError.do"//上传日志文件
 
-#define NET_BOOKBETWEENUSER "/ellabook-server/member/whatIsTheRelationshipBetweenUserAndBook"//用户和书籍关系
+#define NET_BOOKBETWEENUSER "/ellabook-server/member/newWhatIsTheRelationshipBetweenUserAndBook"//用户和书籍关系
 
 #define NET_USERBUYANDRENTBOOKS "/ellabook-server/Study/newStudyBuyOrRent"//购买的书和租的书 按时间倒序返回
-
 
 //-----------------------------------------网络请求-------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------

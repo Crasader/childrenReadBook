@@ -14,6 +14,7 @@ BookController::~BookController()
 PageData BookController::getPageTypeFromCurrentPage(int iCurrentPage)
 {
     PageData pageData;
+    pageData.clear();
     BookParser* bookParser = BookParser::getInstance();
     BookData bookData = bookParser->getBookData();
     map<int, PageData> mTmp = bookData.getPageData();

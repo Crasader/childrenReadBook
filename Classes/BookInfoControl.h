@@ -26,6 +26,8 @@ public:
 	void IsBookBuy(bool val) { isBookBuy = val; }
 	bool IsMemberVIP() const { return isMemberVIP; }
 	void IsMemberVIP(bool val) { isMemberVIP = val; }
+	bool IsBorrow() const { return isBorrow; }
+	void IsBorrow(bool val) { isBorrow = val; }
 private:
 	int bookId;
 	int memberId;
@@ -36,5 +38,6 @@ private:
 	bool isBookRent;
 	bool isBookBuy;
 	bool isMemberVIP;
+	bool isBorrow;
 };
 #endif //  

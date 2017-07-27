@@ -105,9 +105,9 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.9.0";//应用版本
+	string version = "1.9.3";//应用版本
 
-	long long versioncode = 182;
+	long long versioncode = 185;
 
 	static string m_photsName;//照片路径
 
@@ -243,6 +243,10 @@ public:
 	//购书列表
 	map<int, int> myBuyBook;//已购列表
 	static void loadBuyBookCache();//本地缓存文件读入内存
+
+	//借书列表
+	map<int, int> myBorrowBook;//借书列表
+	static void loadBorrowBookCache();//本地缓存文件读入内存
 
 	map<int, string> myBookURLMap;//我的书籍下载地址(购书+包年)
 

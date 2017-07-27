@@ -65,6 +65,7 @@ bool Index::init(SceneInfo* data)
 	{
 		return false;
 	}
+	CrossPlatform::getInstance()->deletequdao();
 	//App::m_RunningScene = MySceneName::IndexScene;
 	//安卓返回键
 	auto androidListener = EventListenerKeyboard::create();

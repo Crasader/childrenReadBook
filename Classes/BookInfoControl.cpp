@@ -17,6 +17,7 @@ BookInfoControl::BookInfoControl()
 	isBookRent = false;
 	isBookBuy = false;
 	isMemberVIP = false;
+	IsBorrow(false);
 }
 
 BookInfoControl::~BookInfoControl()
@@ -61,6 +62,15 @@ void BookInfoControl::BookStauts(int val)
 		6.判断书籍是否免费
 		A.免费	 1 << 5
 		B.不免费  0 << 5
+		7.判断用户对当前书籍有没有分享收益的资格
+		A.有收益分析资格  1<<6
+		B.没有收益分享资格  0<<6
+		8.判断书籍是否借阅过
+		A.借阅过 1<<7
+		B.没借阅过 0<<7
+		9.判断用户借阅书是否需要加锁
+		A.加锁不可以阅读 1<<8
+		B.不加锁可以阅读  0<<8
 		*/
 	bookStauts = val;
 	auto code = val & (1 << 0);
@@ -98,6 +108,13 @@ void BookInfoControl::BookStauts(int val)
 		IsBookFree(true);
 	else
 		IsBookFree(false);
+
+	auto code1 = val&(1 << 7);
+	auto code2 = val&(1 << 8);
+	if (code2 == 0 && code1 > 0)
+		IsBorrow(true);
+	else
+		IsBorrow(false);
 }
 
 bool BookInfoControl::IsBookExit()

@@ -15,6 +15,8 @@
 #include "YYXTime.h"
 #include "HttpWaiting.h"
 #include "LoginControl.h"
+#include "BorrowBook.h"
+#include "YYXRentBook.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -98,12 +100,10 @@ bool BookRoom::init(SceneInfo* sceneInfo)
 	bookMode = sceneInfo->getData("bookMode", Value(3)).asInt();
 	setCurrentPageNumber(sceneInfo->getData("currentPageNumber", Value(0)).asInt());
 
-	if (bookMode == 0 || bookMode == 3 || bookMode == 5)
-	{
+	if (bookMode == 0 || bookMode == 3 || bookMode == 5){
 		App::log("                             bookmode= " , bookMode);
 	}
-	else
-	{
+	else{
 		bookMode = 0;
 	}
 	if (getCurrentPageNumber() < 0 || getCurrentPageNumber() >1000)
@@ -379,7 +379,8 @@ void BookRoom::initEvent()
 void BookRoom::initHttp()
 {
 	//zz(initHttp)
-	AppHttp::getInstance()->httpVipAndBuyBooks();
+	//AppHttp::getInstance()->httpVipAndBuyBooks();
+	AppHttp::getInstance()->httpUserHaveBooks();
 	//zzz(initHttp)
 }
 
@@ -404,6 +405,7 @@ void BookRoom::refershPage(int status)
 
 	if (bookRoomSelectPage)
 	{
+		BorrowBook::getInstance()->initData();
 		bookRoomSelectPage->initData();
 		bookRoomSelectPage->filtrate();
 		bookRoomSelectPage->sort();
@@ -617,45 +619,57 @@ void BookRoom::bookClick(Node* book, int bookid)
 		YYXLayer::controlTouchTime(0.5, "BookRoomSceneClickCoverTime", [=]() {
 			if (bookIsSuo(bookid))
 			{
-				//Toast::create(App::getString("QINGNINKAITONGNIANKAFUWU"), false);
-				addChild(YYXLayer::MyMessageBox(App::getString("NINDEVIPGUOQISHIFOUXUGEFI"), App::getString("QUXUFEI"), [=]() {
-					YYXVisitor::getInstance()->hintLogin([=](){
-						//youke
-						//ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
-							//setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
-						ControlScene::getInstance()->setDangqianScene(BookRoomScene);
-						LoginControl::getInstance()->Login([](string json) {
-							LoginControl::getInstance()->LoginCallback(json);
-						}, nullptr);
-					}, [=]() {
-						//qudenglu
-						//ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
-							//setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
-						ControlScene::getInstance()->setDangqianScene(BookRoomScene);
-						LoginControl::getInstance()->Login([](string json) {
-							LoginControl::getInstance()->LoginCallback(json);
-						}, nullptr);
-					}, [=]() {
-						auto layer = BuyVip::getInstance()->show();
-						if (layer)
-							addChild(layer);
-						BuyVip::getInstance()->setCallback([](string josn) {
-							AppHttp::getInstance()->httpCheckVIP([]() {
-								YYXLayer::sendNotify(TAG_REMOVEWAITING, "", 1101);
+				if (bookIsBorrowBooks(bookid))
+				{
+					addChild(YYXLayer::MyMessageBox(App::getString("SHUJIDAOQIQINGGOUMAISHUJI"), App::getString("STR_BUY"), [=]() {
+						string bookmode = StringUtils::format("%d", bookMode);
+						ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
+							setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(BookInfoScene)->setData("bookId", Value(bookid)));					
+					}, App::getString("QUXIANGXIANG"), nullptr));
+					
+				}
+				else {
+					//Toast::create(App::getString("QINGNINKAITONGNIANKAFUWU"), false);
+					addChild(YYXLayer::MyMessageBox(App::getString("NINDEVIPGUOQISHIFOUXUGEFI"), App::getString("QUXUFEI"), [=]() {
+						YYXVisitor::getInstance()->hintLogin([=]() {
+							//youke
+							//ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
+								//setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+							ControlScene::getInstance()->setDangqianScene(BookRoomScene);
+							LoginControl::getInstance()->Login([](string json) {
+								LoginControl::getInstance()->LoginCallback(json);
+							}, nullptr);
+						}, [=]() {
+							//qudenglu
+							//ControlScene::getInstance()->replaceScene(ControlScene::getInstance()->getSceneInfo(BookRoomScene)->setData("bookMode", Value(bookMode))->
+								//setData("currentPageNumber", Value(m_currentPageNumber)), ControlScene::getInstance()->getSceneInfo(LoginScene));
+							ControlScene::getInstance()->setDangqianScene(BookRoomScene);
+							LoginControl::getInstance()->Login([](string json) {
+								LoginControl::getInstance()->LoginCallback(json);
+							}, nullptr);
+						}, [=]() {
+							auto layer = BuyVip::getInstance()->show();
+							if (layer)
+								addChild(layer);
+							BuyVip::getInstance()->setCallback([](string josn) {
+								AppHttp::getInstance()->httpCheckVIP([]() {
+									YYXLayer::sendNotify(TAG_REMOVEWAITING, "", 1101);
+								});
+								auto lawait = HttpWaiting::getInstance()->newWaitingLayer(1101, []() {
+									YYXLayer::sendNotify("httpCallBackRefersh");
+								});
+								if (lawait)
+									Director::getInstance()->getRunningScene()->addChild(lawait);
 							});
-							auto lawait = HttpWaiting::getInstance()->newWaitingLayer(1101, []() {
-								YYXLayer::sendNotify("httpCallBackRefersh");
-							});
-							if (lawait)
-								Director::getInstance()->getRunningScene()->addChild(lawait);
-						});
-					},"  ");
-				}, App::getString("QUXIANGXIANG"), nullptr));
+						}, "  ");
+					}, App::getString("QUXIANGXIANG"), nullptr));
+				}
 				return;
 			}
 			if (!m_click || m_compile)
 				return;
-			if (bookIsMyBuyBooks(bookid) || bookIsMyVipBooks(bookid))
+
+			if (userIsVip() || bookIsMyBuyBooks(bookid) || bookIsMyVipBooks(bookid) || IsRead4BorrowBooks(bookid))
 			{
 				if (FileUtils::getInstance()->isFileExist(App::getBookRead4Json_txtPath(bookid)))
 				{
@@ -797,13 +811,11 @@ void BookRoom::downloadBook(string url, string dir, string filename, int bookid)
 		YYXLayer::sendNotify(ddata->getTag() + "_BookProgressing", "", progressing);
 	});
 	data->setEndFunc([](DownLoadFileData* ddata) {
-		if (ddata->getStatus() == _pause)
-		{
+		if (ddata->getStatus() == _pause){
 			YYXLayer::sendNotify(ddata->getTag() + "_BookProgressing", "", 8000);
 			return;
 		}
-		else if (ddata->getStatus() == _null)
-		{
+		else if (ddata->getStatus() == _null){
 			Toast::create(App::getString("XIAZAICUOWUCHANGXINXIAZAI"));
 			return;
 		}
@@ -1104,24 +1116,50 @@ bool BookRoom::bookIsMyBuyBooks(int bookid)
 	return result;
 }
 
+int BookRoom::bookIsBorrowBooks(int bookid)
+{
+	int code = 0;//0不是借 不可读  1 借来可读 2 借来不可读 
+	auto it = BorrowBook::getInstance()->m_borrowbooks.find(bookid);
+	if ( it!= BorrowBook::getInstance()->m_borrowbooks.end()) {
+		auto able = it->second;
+		if (able != 0)
+			code = 2;
+		else
+			code = 1;
+	}
+	return code;
+}
+
+bool BookRoom::IsRead4BorrowBooks(int bookid)
+{
+	bool result = false;
+	auto it = BorrowBook::getInstance()->m_borrowbooks.find(bookid);
+	if (it != BorrowBook::getInstance()->m_borrowbooks.end()) {
+		auto able = it->second;
+		if (able == 0)
+			result = true;
+	}
+	return result;
+}
+
 //是否要上锁
 bool BookRoom::bookIsSuo(int bookid)
 {
-	////zz(bookIsSuo)
-	bool result = false;
 	auto uservip = userIsVip();
 	auto buy = bookIsMyBuyBooks(bookid);
 	auto rent = bookIsMyVipBooks(bookid);
-	if (!uservip)
-	{
-		if (rent)
-		{
-			if (!buy)
-				result = true;
-		}
-	}
-	////zzz(bookIsSuo)
-	return result;
+	bool result = false;
+	if (!uservip && rent && !buy)
+		result = true;
+	else
+		result = false;
+	auto result2 = bookIsBorrowBooks(bookid);//借阅才能上锁
+	if (result2 == 0)
+		return result;
+	if (result2 == 2 && result)
+		return true;
+	else
+		return false;
 }
 
 vector<int> BookRoom::getPageData(vector<int> vecdata)
