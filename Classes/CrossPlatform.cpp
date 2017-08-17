@@ -1035,3 +1035,16 @@ void CrossPlatform::deletequdao()
 	string result = "";
 	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "deletequdao", "", result);
 }
+
+void CrossPlatform::gotoQQ(string  qq)
+{
+	string url = "mqqwpa://im/chat?chat_type=wpa&uin=" + qq + "&version=1";
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "gotoQQ", url, result);
+}
+
+void CrossPlatform::CtrlC(string  qq)
+{
+	string result = "";
+	CocosAndroidJni::callJavaFunction("org/cocos2dx/cpp/AppActivity", "CtrlC", qq, result);
+}

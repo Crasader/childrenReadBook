@@ -121,6 +121,10 @@ public:
 	void ShareWeb(int memberid, int bookid);
 	//删除渠道标记
 	void deletequdao();
+	//跳转QQ
+	void gotoQQ(string qq);
+	//复制字符串
+	void CtrlC(string qq);
 };
 
 #endif // __NETINTFACE_SCENE_H__

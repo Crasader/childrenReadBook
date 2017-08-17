@@ -416,6 +416,8 @@ void BuyVip::initNode(Node* node, VipTypeData* data)
 	auto time = (Text*)node->getChildByName("Text_2");
 	auto price = (Text*)node->getChildByName("Text_3");
 	auto xiangou = (Text*)node->getChildByName("Text_4");
+	auto yuanjia = (Text*)node->getChildByName("yuanjia");
+	auto hengxian = (Text*)node->getChildByName("hengxian");
 	if (bg)
 		bg->setVisible(false);
 	if (kuang) {
@@ -455,7 +457,12 @@ void BuyVip::initNode(Node* node, VipTypeData* data)
 	}
 	name->setText(data->getName());
 	time->setText(data->getTimeName());	
-	price->setText(StringUtils::format("%s%.02f", App::getString("RENMINGBI"), data->getPrice() / 100.0));
+	if (data->getPrice() != 2900)
+	{
+		yuanjia->setText(StringUtils::format("%s%.02f", App::getString("RENMINGBI"), data->getPrice() / 100.0));
+		price->setVisible(false);
+		hengxian->setVisible(false);
+	}
 	if (xiangou)
 	{
 		if (data->getBuycount() == 1)

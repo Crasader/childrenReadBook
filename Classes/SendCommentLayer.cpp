@@ -164,46 +164,70 @@ bool SendComment::init(int bookId) {
 	{
 		yuying->setTouchEnabled(true);
 		yuying->addClickEventListener([=](Ref* sender) {
-			YYXLayer::controlTouchTime(1, "sendCommentyuyingTime", [=]() {
-				YYXLayer::setFileValue("temp_bookid", Value(m_bookId).asString());
-				YYXLayer::setFileValue("temp_star_score", Value(star_score).asString());
-				AppHttp::getInstance()->httpBookOrderId(m_bookId, [=](string orderid, int types) {
-					if (orderid.empty())
-					{
-						Toast::create(App::getString("FAXIANNINWEICHENGYUEDU"));
-						return;
-					}
-					int temp_bookid = Value(YYXLayer::getFileValue("temp_bookid", "-1")).asInt();
-					int temp_star_score = Value(YYXLayer::getFileValue("temp_star_score", "-1")).asInt();
-					YYXLayer::deleteFileValue("temp_bookid");
-					YYXLayer::deleteFileValue("temp_star_score");
-					YYXLayer::deleteFileValue("temp_content");
-					YYXSound::getInstance()->stopAll();
-					YYXSound::getInstance()->pauseBackGroundMusic();
-					string account = "";
-					if (YYXVisitor::getInstance()->getVisitorMode())
-						account = YYXVisitor::getInstance()->getVisitorName();
-					else
-						account = User::getInstance()->getUserAccount();
-					//打开语音界面
-					CrossPlatform::goToSendRecording(temp_bookid, App::getMemberId(), types, account, orderid, "goToSendRecordingSuccess", [](string json) {
-						//语音成功的回调 - 
-						Toast::create(App::getString("COMMENT_SUCCESS"));
-						YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
-						YYXLayer::sendNotify("DeleteSendComment");
-						YYXSound::getInstance()->playBackGroundMusic();
-					}, "goToSendRecordingFail", [=](string str) {
-						//语音失败的回调
-						Toast::create(App::getString("COMMENT_FAILED"));
-						YYXSound::getInstance()->playBackGroundMusic();
-					}, "goToSendRecordingCloseButton", [=](string str) {
-						//关闭按钮的回调
-						YYXSound::getInstance()->playBackGroundMusic();
-					});
+			YYXLayer::controlTouchTime(2, "sendCommentyuyingTime", [=]() {
+				YYXSound::getInstance()->stopAll();
+				YYXSound::getInstance()->pauseBackGroundMusic();
+				YYXLayer::sendNotify("DeleteSendComment");
+				string account = "";
+				if (YYXVisitor::getInstance()->getVisitorMode())
+					account = YYXVisitor::getInstance()->getVisitorName();
+				else
+					account = User::getInstance()->getUserAccount();
+				//打开语音界面
+				CrossPlatform::goToSendRecording(m_bookId, App::getMemberId(), 1, account, "", "goToSendRecordingSuccess", [](string json) {
+					//语音成功的回调 - 
+					Toast::create(App::getString("COMMENT_SUCCESS"));
+					YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
 					YYXLayer::sendNotify("DeleteSendComment");
-				}, []() {
+					YYXSound::getInstance()->playBackGroundMusic();
+				}, "goToSendRecordingFail", [=](string str) {
+					//语音失败的回调
+					Toast::create(App::getString("COMMENT_FAILED"));
+					//YYXSound::getInstance()->playBackGroundMusic();
+				}, "goToSendRecordingCloseButton", [=](string str) {
+					//关闭按钮的回调
 					YYXSound::getInstance()->playBackGroundMusic();
 				});
+
+				//YYXLayer::setFileValue("temp_bookid", Value(m_bookId).asString());
+				//YYXLayer::setFileValue("temp_star_score", Value(star_score).asString());
+				//AppHttp::getInstance()->httpBookOrderId(m_bookId, [=](string orderid, int types) {
+				//	if (orderid.empty())
+				//	{
+				//		Toast::create(App::getString("FAXIANNINWEICHENGYUEDU"));
+				//		return;
+				//	}
+				//	int temp_bookid = Value(YYXLayer::getFileValue("temp_bookid", "-1")).asInt();
+				//	int temp_star_score = Value(YYXLayer::getFileValue("temp_star_score", "-1")).asInt();
+				//	YYXLayer::deleteFileValue("temp_bookid");
+				//	YYXLayer::deleteFileValue("temp_star_score");
+				//	YYXLayer::deleteFileValue("temp_content");
+				//	YYXSound::getInstance()->stopAll();
+				//	YYXSound::getInstance()->pauseBackGroundMusic();
+				//	string account = "";
+				//	if (YYXVisitor::getInstance()->getVisitorMode())
+				//		account = YYXVisitor::getInstance()->getVisitorName();
+				//	else
+				//		account = User::getInstance()->getUserAccount();
+				//	//打开语音界面
+				//	CrossPlatform::goToSendRecording(temp_bookid, App::getMemberId(), types, account, orderid, "goToSendRecordingSuccess", [](string json) {
+				//		//语音成功的回调 - 
+				//		Toast::create(App::getString("COMMENT_SUCCESS"));
+				//		YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
+				//		YYXLayer::sendNotify("DeleteSendComment");
+				//		YYXSound::getInstance()->playBackGroundMusic();
+				//	}, "goToSendRecordingFail", [=](string str) {
+				//		//语音失败的回调
+				//		Toast::create(App::getString("COMMENT_FAILED"));
+				//		YYXSound::getInstance()->playBackGroundMusic();
+				//	}, "goToSendRecordingCloseButton", [=](string str) {
+				//		//关闭按钮的回调
+				//		YYXSound::getInstance()->playBackGroundMusic();
+				//	});
+				//	YYXLayer::sendNotify("DeleteSendComment");
+				//}, []() {
+				//	YYXSound::getInstance()->playBackGroundMusic();
+				//});
 			});
 		});
 	}
@@ -212,10 +236,12 @@ bool SendComment::init(int bookId) {
 	comment_send->addClickEventListener([=](Ref* sender) {
 		string strContent = textContent->getString();
 		//内容少于10个字
+		strContent = App::check_input_str(strContent);
+		textContent->setString(strContent);
 		if (strContent.length() < 30) {
 			Toast::create(App::getString("COMMENT_CONTENT_ERROR"));
 			return;
-		}
+		}		
 		sendComment("      ", strContent);
 		comment_send->setTouchEnabled(false);
 		this->removeFromParentAndCleanup(true);
@@ -258,7 +284,8 @@ bool SendComment::init(int bookId) {
 
 //文字评论
 void SendComment::sendComment(string title, string content) {
-	YYXLayer::setFileValue("temp_bookid", Value(m_bookId).asString());
+	AppHttp::getInstance()->httpSendComment(m_bookId, star_score, content);
+	/*YYXLayer::setFileValue("temp_bookid", Value(m_bookId).asString());
 	YYXLayer::setFileValue("temp_star_score", Value(star_score).asString());
 	YYXLayer::setFileValue("temp_content", content);
 	AppHttp::getInstance()->httpBookOrderId(m_bookId, [](string orderid, int types) {
@@ -274,7 +301,7 @@ void SendComment::sendComment(string title, string content) {
 		YYXLayer::deleteFileValue("temp_star_score");
 		YYXLayer::deleteFileValue("temp_content");
 		AppHttp::getInstance()->httpSendComment(types, temp_bookid, temp_star_score, orderid, content);
-	});
+	});*/
 }
 
 void SendComment::sendOver(int tag) {

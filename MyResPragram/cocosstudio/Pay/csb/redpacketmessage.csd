@@ -58,7 +58,7 @@
             <PreSize X="0.0567" Y="0.1107" />
             <FileData Type="MarkedSubImage" Path="Pay/res/HBSRedpacket_JT_736h.png" Plist="Pay/csb/paypng.plist" />
           </AbstractNodeData>
-          <AbstractNodeData Name="ScrollView_1" ActionTag="-1707837711" Tag="576" IconVisible="False" LeftMargin="310.7473" RightMargin="313.2527" TopMargin="183.7301" BottomMargin="130.2699" TouchEnable="True" ClipAble="True" BackColorAlpha="0" ComboBoxIndex="1" ColorAngle="90.0000" IsBounceEnabled="True" ScrollDirectionType="Vertical" ctype="ScrollViewObjectData">
+          <AbstractNodeData Name="ScrollView_1" ActionTag="-1707837711" Tag="576" IconVisible="False" LeftMargin="310.7473" RightMargin="313.2527" TopMargin="183.7301" BottomMargin="130.2699" TouchEnable="True" ClipAble="True" BackColorAlpha="0" ComboBoxIndex="1" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" IsBounceEnabled="True" ScrollDirectionType="Vertical" ctype="ScrollViewObjectData">
             <Size X="470.0000" Y="300.0000" />
             <Children>
               <AbstractNodeData Name="Text_1" ActionTag="522864543" Tag="577" IconVisible="False" LeftMargin="-97.8335" RightMargin="55.8335" TopMargin="-9.6011" BottomMargin="660.6011" FontSize="50" LabelText="Q：如何获取咿啦红包？" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
@@ -68,19 +68,19 @@
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="239" G="124" B="74" />
                 <PrePosition X="0.3365" Y="0.9720" />
-                <PreSize X="1.0894" Y="0.0952" />
+                <PreSize X="1.0894" Y="0.0831" />
                 <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
               </AbstractNodeData>
-              <AbstractNodeData Name="Text_2" ActionTag="1272075977" Tag="578" IconVisible="False" LeftMargin="-173.5835" RightMargin="-171.4165" TopMargin="-95.0267" BottomMargin="211.0267" FontSize="46" LabelText="A：1）目前用户在咿啦看书App内注册、&#xA;充值、分享和邀请注册均有相应的红&#xA;包奖励&#xA;     2）通过咿啦看书App内各类营销活动&#xA;获得红包&#xA;     3）关注咿啦看书微信公众号（ella&#xA;book），公众号内不定期开放赠送咿啦&#xA;红包活动&#xA;     4）添加咿啦粉丝官微信好友（yila&#xA;kanshu），加入咿啦看书微信群，由&#xA;群内举行的活动获得红包" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+              <AbstractNodeData Name="Text_2" ActionTag="1272075977" Tag="578" IconVisible="False" LeftMargin="-173.5835" RightMargin="-171.4165" TopMargin="-95.0267" BottomMargin="211.0267" FontSize="46" LabelText="A：1）目前用户在咿啦看书App内注册、&#xA;充值、分享和邀请注册均有相应的红&#xA;包奖励&#xA;     2）通过咿啦看书App内各类营销活动&#xA;获得红包&#xA;     3）关注咿啦看书微信公众号（ella&#xA;book），公众号内不定期开放赠送咿啦&#xA;红包活动&#xA;     4）添加咿啦粉丝官微信好友（yila&#xA;kanshu4），加入咿啦看书微信群，由&#xA;群内举行的活动获得红包" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
                 <Size X="815.0000" Y="594.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="233.9165" Y="508.0267" />
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="113" G="113" B="113" />
                 <PrePosition X="0.4977" Y="0.7155" />
-                <PreSize X="1.7340" Y="0.9581" />
+                <PreSize X="1.7340" Y="0.8366" />
                 <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
@@ -92,7 +92,7 @@
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="239" G="124" B="74" />
                 <PrePosition X="0.3365" Y="0.4591" />
-                <PreSize X="1.0894" Y="0.0952" />
+                <PreSize X="1.0894" Y="0.0831" />
                 <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
@@ -104,7 +104,7 @@
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="113" G="113" B="113" />
                 <PrePosition X="0.4950" Y="0.3548" />
-                <PreSize X="1.7234" Y="0.2613" />
+                <PreSize X="1.7234" Y="0.2282" />
                 <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
@@ -116,7 +116,7 @@
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="239" G="124" B="74" />
                 <PrePosition X="0.4163" Y="0.2504" />
-                <PreSize X="1.4085" Y="0.0952" />
+                <PreSize X="1.4085" Y="0.0831" />
                 <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
@@ -128,7 +128,7 @@
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="113" G="113" B="113" />
                 <PrePosition X="0.4950" Y="0.1081" />
-                <PreSize X="1.7234" Y="0.4355" />
+                <PreSize X="1.7234" Y="0.3803" />
                 <FontResource Type="Normal" Path="FZHLJW.TTF" Plist="" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />

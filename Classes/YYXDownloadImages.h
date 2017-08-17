@@ -128,13 +128,14 @@ private:
 	map<string, YYXDownloadImagesData*> m_Tasks;
 	//map<string, string> m_Tag;//任务标示存储 <path, taskname>
 	//3条准备队列
+	mutex m_highlist;
 	vector<string> highList;
 	vector<string> normalList;
 	vector<string> lowList;
 	//1条正在下载队列
 	map<string, YYXDownloadImagesData*> downloadList;
 	float outTime =60;//超时时间
-	int m_concurrence = 3;//并发数
+	int m_concurrence = 10000;//并发数
 
 	bool addDownloadListFormHighList();
 	bool addDownloadListFormNormalList();
@@ -149,6 +150,7 @@ private:
 	void decreaseMaxTask();//减少并发
 	void addOutTime();//增加超时时间
 	void decreaseOutTime();//减少超时时间
+	void addHighList(string );
 
 	void change4OutTime();//超时一次
 	void change4GoodTime();//快速下载一次

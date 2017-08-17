@@ -74,7 +74,7 @@ void AudioPlayer::playEffect(string filePath, string interrupt)
             }
             else
             {
-				AudioEngine::pause(_iMusicId);
+				AudioEngine::stop(_iMusicId);
             }
         }
 		_iSoundId = AudioEngine::play2d(filePath);

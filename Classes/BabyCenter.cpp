@@ -179,6 +179,7 @@ void BabyCenter::initBabyCenter() {
 	auto changChild = (Button*)babyinfo->getChildByName(FIND_BUTTON_BYNAME_BABYCENTER_BABYCENTE_CHANGECHILD);
 	if (changChild)
 		changChild->addClickEventListener([=](Ref* sender) {
+		YYXLayer::sendNotify(TAG_BABYCENTERSCENEAMENDBABYINFO);
 		YYXSound::getInstance()->playButtonSound();
 		initChangeChild();
 	});
@@ -209,20 +210,24 @@ void BabyCenter::initBabyCenter() {
 	commitButton->addClickEventListener([=](Ref* sender) 
 	{
 		YYXLayer::controlTouchTime(1, "BabyCentercommitButtonTime", [=]() {
+			tempName = text_name->getString();
 			App::log("BabyCentercommitButtonTime");
 			YYXSound::getInstance()->playButtonSound();
+			auto name = input_name->getString();
+			name = App::check_input_str(name);
+			input_name->setString(name);
+			text_name->setString(name);
 			//判断名字是否为空
-			if (input_name->getString().length() == 0) {
+			if (name.length() == 0) {
 				Toast::create(App::getString("MESAAGEBOX_ADDCHILD_NAME_ERROR"));
 				return;
-			}
+			}		
 			int sexNum = 1;
 			if (select_girl->getTag() == 0) {
 				sexNum = 2;
 			}
 			int id = User::getInstance()->getChildId();
 			//网络请求修改孩子信息
-			auto name = input_name->getString();
 			auto birthday = drop_birth->getDateText();
 			AppHttp::getInstance()->httpAmendBabyInfo(id, ChildInfo::create()->setChildrenName(name)->setChildrenBirth(birthday)->setChildrenSex(sexNum));
 			auto layer = HttpWaiting::getInstance()->newWaitingLayer();
@@ -235,9 +240,9 @@ void BabyCenter::initBabyCenter() {
 	//男孩选择-触发事件
 	select_boy->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
-		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_TWO_PNG);
+		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_TWO_PNG, TextureResType::PLIST);
 		select_boy->setTouchEnabled(false);
-		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_ONE_PNG);
+		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_ONE_PNG, TextureResType::PLIST);
 		select_girl->setTouchEnabled(true);
 		select_boy->setTag(SELECT);
 		select_girl->setTag(UNSELECT);
@@ -246,9 +251,9 @@ void BabyCenter::initBabyCenter() {
 	//女孩选择-触发事件
 	select_girl->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
-		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_TWO_PNG);
+		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_TWO_PNG, TextureResType::PLIST);
 		select_boy->setTouchEnabled(true);
-		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_ONE_PNG);
+		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_ONE_PNG, TextureResType::PLIST);
 		select_girl->setTouchEnabled(false);
 		select_boy->setTag(UNSELECT);
 		select_girl->setTag(SELECT);
@@ -315,7 +320,13 @@ void BabyCenter::initBabyCenter() {
 		App::log("MODIFY_BABY_INFO_SUCCESS---END");
 	});
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenModifySuccess, babyinfo);
-
+	//修改失败
+	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners(TAG_BABYCENTERSCENEAMENDBABYINFOFAIL);
+	auto listenModifyFail = EventListenerCustom::create(TAG_BABYCENTERSCENEAMENDBABYINFOFAIL, [=](EventCustom* event) {
+		App::log("MODIFY_BABY_INFO_SUCCESS");
+		text_name->setString(tempName);
+	});
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenModifyFail, babyinfo);
 	//------------------------获取本地数据并初始化孩子信息----------------------
 	//先根据mydata数据初始化孩子信息
 	auto _child = User::getInstance()->getChild(User::getInstance()->getChildId());
@@ -629,16 +640,21 @@ Layer* BabyCenter::initAddChild()
 	woman->setTouchEnabled(true);
 	Pic_man->setTouchEnabled(true);
 	Pic_woman->setTouchEnabled(true);
-	auto lister_man = [=](Ref* sender) {
-		YYXSound::getInstance()->playButtonSound();
-		woman->setSelectedState(false);
-		man->setSelectedState(true);
+	auto lister_man = [woman, man](Ref* sender) {
+		YYXLayer::controlTouchTime(1, "selectChildSex", [woman, man]() {
+			YYXSound::getInstance()->playButtonSound();
+			woman->setSelectedState(false);
+			man->setSelectedState(true);
+		});
 	};
 	man->addClickEventListener(lister_man);
 	Pic_man->addClickEventListener(lister_man);
-	auto lister_woman = [=](Ref* sender) {
-		woman->setSelectedState(true);
-		man->setSelectedState(false);
+	auto lister_woman = [woman, man](Ref* sender) {
+		YYXLayer::controlTouchTime(1, "selectChildSex", [woman, man]() {
+			YYXSound::getInstance()->playButtonSound();
+			woman->setSelectedState(true);
+			man->setSelectedState(false);
+		});
 	};
 	woman->addClickEventListener(lister_woman);
 	Pic_woman->addClickEventListener(lister_woman);
@@ -650,6 +666,8 @@ Layer* BabyCenter::initAddChild()
 			if (man->getSelectedState())
 				IsMan = true;
 			auto name = ttf_name->getString();
+			name = App::check_input_str(name);
+			ttf_name->setString(name);
 			if (name.length() <= 0)
 			{
 				Toast::create(App::getString("MESAAGEBOX_ADDCHILD_NAME_ERROR"));

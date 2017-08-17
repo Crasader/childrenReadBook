@@ -200,7 +200,7 @@
     <key>COMMENT_CONTENT_ERROR</key>
     <string>评论最少10个字</string>
     <key>COMMENT_TIP_BUY</key>
-    <string>购买此书才能进行评论</string>
+    <string>您尚无评论权限</string>
     <key>COMMENT_SUCCESS</key>
     <string>评论成功</string>
     <key>COMMENT_ALREADY</key>
@@ -485,4 +485,12 @@
   <string>绑定</string>
   <key>YIBANGDING</key>
   <string>已绑定</string>
+  <key>BUKEHANYOUTESHUZIFU</key>
+  <string>不可含有特殊字符</string>
+  <key>TIAOZHUANQQ</key>
+  <string>跳转QQ</string>
+  <key>FUZHI</key>
+  <string>复制</string>
+  <key>TUICHUYILAKANSHU</key>
+  <string>退出咿啦看书</string>
 </dict> 

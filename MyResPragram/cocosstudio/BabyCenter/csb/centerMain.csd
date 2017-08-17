@@ -260,7 +260,7 @@
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition />
                 <PreSize X="0.0000" Y="0.0000" />
-                <FileData Type="Normal" Path="BabyCenter/res/UserInfo_Selected_2.png" Plist="" />
+                <FileData Type="MarkedSubImage" Path="BabyCenter/res/UserInfo_Selected_2.png" Plist="BabyCenter/csb/babyCenter.plist" />
               </AbstractNodeData>
               <AbstractNodeData Name="girl" ActionTag="887111023" Tag="253" IconVisible="False" LeftMargin="560.0000" RightMargin="-710.0000" TopMargin="-474.0000" BottomMargin="426.0000" LeftEage="82" RightEage="82" TopEage="26" BottomEage="26" Scale9OriginX="68" Scale9OriginY="22" Scale9Width="14" Scale9Height="4" ctype="ImageViewObjectData">
                 <Size X="150.0000" Y="48.0000" />
@@ -270,7 +270,7 @@
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition />
                 <PreSize X="0.0000" Y="0.0000" />
-                <FileData Type="Normal" Path="BabyCenter/res/UserInfo_Not-selected_1.png" Plist="" />
+                <FileData Type="MarkedSubImage" Path="BabyCenter/res/UserInfo_Not-selected_1.png" Plist="BabyCenter/csb/babyCenter.plist" />
               </AbstractNodeData>
               <AbstractNodeData Name="birthKuang" ActionTag="1758415471" Tag="105" IconVisible="False" LeftMargin="409.0000" RightMargin="-781.0000" TopMargin="-429.0000" BottomMargin="381.0000" ctype="SpriteObjectData">
                 <Size X="372.0000" Y="48.0000" />

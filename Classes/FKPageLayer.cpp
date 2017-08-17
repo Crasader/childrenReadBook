@@ -256,7 +256,7 @@ void PageLayer::pageUp(Ref* pSender)
 		if (_bookParser->getPageUpCallBack() != nullptr)
 		{
 			_bookParser->runPageUpCallBack();
-			_isButtonEnable = true;
+			//_isButtonEnable = true;
 		}
 		else
 		{
@@ -274,7 +274,7 @@ void PageLayer::pageDown(Ref* pSender)
 		if (_bookParser->getPageDownCallBack() != nullptr)
 		{
 			_bookParser->runPageDownCallBack();
-			_isButtonEnable = true;
+			//_isButtonEnable = true;
 		}
 		else
 		{

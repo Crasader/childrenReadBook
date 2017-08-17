@@ -26,6 +26,7 @@ void YYXDownloadImages::newDownloadImage(string url, string dir, string filename
 	auto data = YYXDownloadImagesData::create();
 	string path = dir + "/" + filename;
 	string taskTag = getTaskTag(path);
+	priority = high;
 	data->setUrl(url)->setPath(path)->Priority(priority)->setDir(dir)->setFileName(filename)->Task(taskTag)->setCallback(callback)->setCallbackerror(callbackerror);
 	auto it = m_Tasks.find(taskTag);
 	if (it != m_Tasks.end())
@@ -39,7 +40,7 @@ void YYXDownloadImages::newDownloadImage(string url, string dir, string filename
 	switch (priority)
 	{
 	case high:
-		highList.push_back(taskTag);
+		addHighList(taskTag);
 		break;
 	case normal:
 		normalList.push_back(taskTag);
@@ -183,6 +184,7 @@ YYXDownloadImagesData * YYXDownloadImages::getData(string taskTag)
 bool YYXDownloadImages::addDownloadListFormHighList()
 {
 	int count = m_concurrence - downloadList.size();
+	m_highlist.lock();
 	for (int i = 0; i < count; i++)
 	{
 		if (!highList.empty())
@@ -196,6 +198,7 @@ bool YYXDownloadImages::addDownloadListFormHighList()
 			App::log("YYXDownloadImages::addDownloadListFormHighList() ==>>"+ deat);
 		}
 	}
+	m_highlist.unlock();
 	if (downloadList.size() < m_concurrence)
 		return false;
 	else
@@ -415,6 +418,12 @@ void YYXDownloadImages::addOutTime()
 	{
 		outTime = 40;
 	}
+}
+
+void YYXDownloadImages::addHighList(string taskTag) {
+	m_highlist.lock();
+	highList.push_back(taskTag);
+	m_highlist.unlock();
 }
 
 void YYXDownloadImages::decreaseOutTime()

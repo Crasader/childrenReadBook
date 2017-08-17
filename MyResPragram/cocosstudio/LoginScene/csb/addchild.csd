@@ -6,6 +6,16 @@
       <ObjectData Name="Layer" Tag="64" ctype="GameLayerObjectData">
         <Size X="1094.0000" Y="614.0000" />
         <Children>
+          <AbstractNodeData Name="bg" ActionTag="440947224" Tag="15" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" PercentWidthEnable="True" PercentHeightEnable="True" PercentWidthEnabled="True" PercentHeightEnabled="True" TouchEnable="True" LeftEage="35" RightEage="35" TopEage="19" BottomEage="19" Scale9OriginX="35" Scale9OriginY="19" Scale9Width="39" Scale9Height="22" ctype="ImageViewObjectData">
+            <Size X="1094.0000" Y="614.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="547.0000" Y="307.0000" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.5000" Y="0.5000" />
+            <PreSize X="1.0000" Y="1.0000" />
+            <FileData Type="Normal" Path="other/block.png" Plist="" />
+          </AbstractNodeData>
           <AbstractNodeData Name="AddChild_Background_736h_1" ActionTag="-956173863" Tag="18" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="327.0000" RightMargin="327.0000" TopMargin="87.0000" BottomMargin="87.0000" ctype="SpriteObjectData">
             <Size X="440.0000" Y="440.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />

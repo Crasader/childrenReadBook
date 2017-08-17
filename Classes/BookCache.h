@@ -41,7 +41,11 @@ public:
 	void setBookAuthor(std::string val) { m_bookAuthor = val; }
 	std::string getBookPress() const { return m_bookPress; }
 	void setBookPress(std::string val) { m_bookPress = val; }
-	int getBookPage() const { return m_bookPage; }
+	int getBookPage() const {
+		if (m_bookPage < 0)
+			return 16;
+		return m_bookPage;
+	}
 	void setBookPage(int val) { m_bookPage = val; }
 	int getScore() const { return m_score; }
 	void setScore(int val) { m_score = val; }

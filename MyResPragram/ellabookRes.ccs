@@ -590,6 +590,7 @@
           <Folder Name="csb">
             <Project Name="activity.csd" Type="Layer" />
             <Project Name="huiyuantype.csd" Type="Node" />
+            <Project Name="huiyuantype_yueka.csd" Type="Node" />
             <Project Name="kaitonghuiyuan.csd" Type="Layer" />
             <Project Name="kaitonghuiyuan7day.csd" Type="Layer" />
             <Project Name="pay.csd" Type="Layer" />

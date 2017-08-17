@@ -340,13 +340,12 @@ void BookStore::onEnterTransitionDidFinish()
 bool BookStore::changPageNumber()
 {
 	zz(changPageNumber);
-		//总页数
-		//string totalCountKey = StringUtils::format("totalCount+bookStoreID=%d", m_bookStoreId);
-		//auto totalCount = YYXStruct::getMapInt64(App::GetInstance()->myData, totalCountKey, 0);
+	//总页数
+	//string totalCountKey = StringUtils::format("totalCount+bookStoreID=%d", m_bookStoreId);
+	//auto totalCount = YYXStruct::getMapInt64(App::GetInstance()->myData, totalCountKey, 0);
 	auto totalCount = BookStoreCache::getInstance()->getTotal();
 	int count = ceil(totalCount / 8.0);
-	if (count < 2)
-		return false;
+
 	int left = m_selectPageIndex[0];
 	int min = m_selectPageIndex[1];
 	int right = m_selectPageIndex[2];
@@ -368,7 +367,12 @@ bool BookStore::changPageNumber()
 	CCLOG("[min] = %d", m_selectPageIndex[1]);
 	CCLOG("[right] = %d", m_selectPageIndex[2]);
 	zzz(changPageNumber)
-	return true;
+		if (count < 2) {
+			log("gundong ye shu = %d", count);
+			return false;
+		}
+		else
+			return true;
 }
 
 //展示第1/5页
@@ -477,8 +481,7 @@ void BookStore::refreshBook(Node* node, int bookId, string path, int price, int 
 			cover->loadTexture("other/Book_cover.png");
 		cover->addClickEventListener([=](Ref* sender) {
 			YYXLayer::controlTouchTime(1, "bookStoreSceneClickBookTime", [=]() {
-				if (bookId > 0 && m_click)
-				{
+				if (bookId > 0 && m_click){
 					gotoBookInfo(bookId);
 				}
 			});

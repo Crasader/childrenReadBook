@@ -37,8 +37,12 @@ map<AnimationGroupMemberDataKey, vector<AnimationGroupMemberDataValue>> Animatio
             vAnimationDataTmp = keyTmp.getAnimationData();
             vValueTmp = it->second;
             if (iSpriteTag == keyTmp.getSpriteTag() && !vAnimationDataTmp.empty()) {
-                mRet[it->first] = it->second;
-                break;
+                for (unsigned int i = 0; i < vAnimationDataTmp.size();i++) {
+                    if (vAnimationDataTmp[i].getCategoryId() != "auto"){
+                        mRet[keyTmp] = vValueTmp;
+                        break;
+                    }
+                }
             }
         }
     }

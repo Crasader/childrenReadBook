@@ -732,52 +732,52 @@ string App::getOnlyKey()
 
 void App::addErrorLog(string error, string filename, int type)
 {/*type 1=网络错误  2=文件错误  3= 日志文件上传, 4=支付错误*/
-	map<string, string> parater;
-	parater["logInfo"] = error;
-	parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
-	parater["models"] = App::GetInstance()->phoneModel;
-	parater["memberid"] = App::getMemberID();
-	parater["resource"] = App::m_resource;
-	parater["systemInfo"] = App::GetInstance()->systemVersion;
-	parater["logType"] = StringUtils::format("%d", type);
-	string josn = YYXLayer::getStringFormMap(parater);
-	//writeLog(josn+"\r\n", FileUtils::getInstance()->getWritablePath() + "errorLog", "ErrorLogKey");
-	string path = FileUtils::getInstance()->getWritablePath() + "errorLog/" + StringUtils::format("%d.dat", YYXTime::getInstance()->getRandomL());
-	YYXLayer::writeFile(josn, path);
+	//map<string, string> parater;
+	//parater["logInfo"] = error;
+	//parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
+	//parater["models"] = App::GetInstance()->phoneModel;
+	//parater["memberid"] = App::getMemberID();
+	//parater["resource"] = App::m_resource;
+	//parater["systemInfo"] = App::GetInstance()->systemVersion;
+	//parater["logType"] = StringUtils::format("%d", type);
+	//string josn = YYXLayer::getStringFormMap(parater);
+	////writeLog(josn+"\r\n", FileUtils::getInstance()->getWritablePath() + "errorLog", "ErrorLogKey");
+	//string path = FileUtils::getInstance()->getWritablePath() + "errorLog/" + StringUtils::format("%d.dat", YYXTime::getInstance()->getRandomL());
+	//YYXLayer::writeFile(josn, path);
 }
 
 void App::upLogFiles()
 {
-	CrossPlatform::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "temp/Log", [=](string filePath, string name) {
-		App::log("upLoadingErrorLog  " + filePath);
-		auto cocaltionfile = YYXLayer::getFileValue("LogFileName", "");
-		if (cocaltionfile == filePath)
-			return;
-		string url = "";
-		//if (App::m_debug == 0)
-		//	url = string("http://192.168.10.10:8089").append(NET_UPLOGFILE);
-		//else
-			url = string(IP).append(NET_UPLOGFILE);
-		map<string, string> parater;
-		parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
-		parater["models"] = App::GetInstance()->phoneModel;
-		parater["memberid"] = App::getMemberID();
-		parater["resource"] = App::m_resource;
-		parater["systemInfo"] = App::GetInstance()->systemVersion;
-		parater["logType"] = "3";
-		CrossPlatform::httpUpFile(url, YYXLayer::getStringFormMap(parater), filePath, [=](string json) {
-			rapidjson::Document doc;
-			bool result = YYXLayer::getJsonObject4Json(doc, json);
-			if (result)
-			{
-				auto sres = YYXLayer::getBoolForJson(false, doc, "result");
-				if (sres)
-					App::GetInstance()->unDeleteFile[filePath] = "";
-			}
-		}, [](string error) {
-		});
-	}, [](string dirPath, string name) {//遍历到文件夹
-	});
+	//CrossPlatform::TraversingFiles(FileUtils::getInstance()->getWritablePath() + "temp/Log", [=](string filePath, string name) {
+	//	App::log("upLoadingErrorLog  " + filePath);
+	//	auto cocaltionfile = YYXLayer::getFileValue("LogFileName", "");
+	//	if (cocaltionfile == filePath)
+	//		return;
+	//	string url = "";
+	//	//if (App::m_debug == 0)
+	//	//	url = string("http://192.168.10.10:8089").append(NET_UPLOGFILE);
+	//	//else
+	//		url = string(IP).append(NET_UPLOGFILE);
+	//	map<string, string> parater;
+	//	parater["createTime"] = StringUtils::format("%lld", YYXLayer::getCurrentTime4Second());
+	//	parater["models"] = App::GetInstance()->phoneModel;
+	//	parater["memberid"] = App::getMemberID();
+	//	parater["resource"] = App::m_resource;
+	//	parater["systemInfo"] = App::GetInstance()->systemVersion;
+	//	parater["logType"] = "3";
+	//	CrossPlatform::httpUpFile(url, YYXLayer::getStringFormMap(parater), filePath, [=](string json) {
+	//		rapidjson::Document doc;
+	//		bool result = YYXLayer::getJsonObject4Json(doc, json);
+	//		if (result)
+	//		{
+	//			auto sres = YYXLayer::getBoolForJson(false, doc, "result");
+	//			if (sres)
+	//				App::GetInstance()->unDeleteFile[filePath] = "";
+	//		}
+	//	}, [](string error) {
+	//	});
+	//}, [](string dirPath, string name) {//遍历到文件夹
+	//});
 }
 
 void App::upLoadingErrorLog()
@@ -1055,4 +1055,55 @@ string App::replaceChar(string str, string oldChar,string newChar)
 		result = result + n;
 	}
 	return result;
+}
+
+// 过滤特殊字符
+string App::check_input_str(const string& str)
+{
+	if (!str.compare(""))
+	{
+		return "";
+	}
+	unsigned unicode;
+	string ret;
+	for (int i = 0; i < str.size(); i++)
+	{
+		char codePoint = str[i];
+		if (codePoint & 0x80)
+		{
+			switch ((unsigned)(codePoint & 0xf0))
+			{
+			case 0xf0:
+				//0x9f -> emoji
+				if ((unsigned)(str[i + 1] & 0x9f) != 0x9f)
+				{
+					for (int j = 0; j < 4; ++j)
+					{
+						ret.push_back(str[i + j]);
+						char a = str[i + j];
+					}
+					i += 3;
+				}
+				break;
+			case 0xe0:
+				for (int j = 0; j < 3; ++j)
+				{
+					ret.push_back(str[i + j]);
+				}
+				i += 2;
+				break;
+			case 0xc0:
+				for (int j = 0; j < 2; ++j)
+				{
+					ret.push_back(str[i + j]);
+				}
+				i += 1;
+				break;
+			default:
+				CCAssert(0, "");
+				break;
+			}
+		}
+	}
+	return ret;
 }

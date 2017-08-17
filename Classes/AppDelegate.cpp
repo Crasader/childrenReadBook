@@ -45,17 +45,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
-	Size frameSize = glview->getFrameSize();
-	float h = frameSize.height;
-	float w = frameSize.width;
-	log("setFrameSize w =%f ", w);
-	log("setFrameSize h = %f ", h);
-	if (w > h)
-		glview->setFrameSize(w, h);
-	else
-		glview->setFrameSize(h, w);
-	log("getFrameSize w =%f  ", glview->getFrameSize().width);
-	log("getFrameSize h = %f ", glview->getFrameSize().height);
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         glview = GLViewImpl::createWithRect("ellabook_W2736H1536", Rect(0, 0, 1094, 614));
@@ -63,7 +52,21 @@ bool AppDelegate::applicationDidFinishLaunching() {
         glview = GLViewImpl::create("ellabook_W2736H1536");
 #endif
         director->setOpenGLView(glview);
-    }
+	}
+	else
+	{
+		Size frameSize = glview->getFrameSize();
+		float h = frameSize.height;
+		float w = frameSize.width;
+		log("setFrameSize w =%f ", w);
+		log("setFrameSize h = %f ", h);
+		if (w > h)
+			glview->setFrameSize(w, h);
+		else
+			glview->setFrameSize(h, w);
+		log("getFrameSize w =%f  ", glview->getFrameSize().width);
+		log("getFrameSize h = %f ", glview->getFrameSize().height);
+	}
 //#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 //	director->setProjection(Director::Projection::_2D);
 //#endif
@@ -109,30 +112,34 @@ bool AppDelegate::applicationDidFinishLaunching() {
 void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 	FK::AudioPlayer::getInstance()->pauseAllEffect();
-    // if you use SimpleAudioEngine, it must be pause
 	YYXSound::getInstance()->stopBackGroundMusic();
 	YYXSound::getInstance()->stopAll();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
-	if (YYXBookOver::getInstance()->getBookCoverRuning())
-	{
+	if (YYXBookOver::getInstance()->getBookCoverRuning()){
 		FK::AudioPlayer::getInstance()->stopAllEffect();
-		App::log("=====>>> AppDelegate::applicationWillEnterForeground()  ++  BookParser::getInstance()->pausePlay();");
 	}
     Director::getInstance()->startAnimation();	
 
     // if you use SimpleAudioEngine, it must resume here
-	if (FK::BookParser::getInstance()->getIsReading())	
+	YYXSound::getInstance()->init();
+	if (FK::BookParser::getInstance()->getIsReading()) {
 		FK::AudioPlayer::getInstance()->resumeAllEffect();
+	}
 	else
+	{
 		YYXSound::getInstance()->playBackGroundMusic();
+	}
 	//执行原生代码的回调
 	ActivityOnCallback(CocosAndroidJni::getInstance()->getRuningKey());
 	//处理下线通知
-	if (!YYXVisitor::getInstance()->getVisitorMode() && User::getInstance()->getMemberId() > 0)
-		AppHttp::getInstance()->httpUserIsOffLine();
+	thread([]() {
+		App::ccsleep(1000);
+		if (!YYXVisitor::getInstance()->getVisitorMode() && User::getInstance()->getMemberId() > 0) 
+			AppHttp::getInstance()->httpUserIsOffLine();
+	}).detach();	
 }
 
 void AppDelegate::ActivityOnCallback(int param1)

@@ -1,4 +1,4 @@
-﻿#include "YYXTableView.h"
+﻿#include "YYXTableViewBookInfoComment.h"
 #include "YYXImageView.h"
 #include "CrossPlatform.h"
 #include "YYXSound.h"
@@ -10,9 +10,9 @@ USING_NS_CC_EXT;
 #define LAYOUTTAG 1024
 #define ACTION 1025
 
-bool YYXTableView::init()
+bool YYXTableViewBookInfoComment::init()
 {
-	m_tv = TableView::create(this, Size(600, 350));
+	m_tv = TableView::create(this, Size(320, 270));
 	m_tv->setAnchorPoint(Vec2(0, 0));
 	m_tv->setPosition(Vec2(0, 0));
 	m_tv->setDelegate(this);
@@ -22,7 +22,7 @@ bool YYXTableView::init()
 	return true;
 }
 
-vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid, int memberID)
+vector<map<string, YYXStruct>> YYXTableViewBookInfoComment::loadData(int bookid, int memberID)
 {
 	m_bookid = bookid;
 	m_memberID = memberID;
@@ -94,7 +94,7 @@ vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid, int memberID)
 	return m_data;
 }
 
-vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid)
+vector<map<string, YYXStruct>> YYXTableViewBookInfoComment::loadData(int bookid)
 {
 	m_bookid = bookid;
 	m_data.clear();
@@ -162,7 +162,7 @@ vector<map<string, YYXStruct>> YYXTableView::loadData(int bookid)
 	return m_data;
 }
 
-void YYXTableView::tableCellTouched(TableView* table, TableViewCell* cell)
+void YYXTableViewBookInfoComment::tableCellTouched(TableView* table, TableViewCell* cell)
 {
 	auto index = cell->getIdx();
 	auto data = m_data[index];
@@ -177,7 +177,7 @@ void YYXTableView::tableCellTouched(TableView* table, TableViewCell* cell)
 	}
 }
 
-TableViewCell* YYXTableView::tableCellAtIndex(TableView *table, ssize_t idx)
+TableViewCell* YYXTableViewBookInfoComment::tableCellAtIndex(TableView *table, ssize_t idx)
 {
 	auto cell = table->dequeueCell();
 	auto data = m_data[idx];
@@ -193,7 +193,7 @@ TableViewCell* YYXTableView::tableCellAtIndex(TableView *table, ssize_t idx)
 	return cell;
 }
 
-Size YYXTableView::tableCellSizeForIndex(TableView *table, ssize_t idx)
+Size YYXTableViewBookInfoComment::tableCellSizeForIndex(TableView *table, ssize_t idx)
 {
 	auto data = m_data[idx];
 	auto types = YYXStruct::getMapInt64(data, "type", 1);
@@ -201,24 +201,24 @@ Size YYXTableView::tableCellSizeForIndex(TableView *table, ssize_t idx)
 	{
 		auto context = YYXStruct::getMapString(data, "context", "");
 		auto teext = Label::create(context, "FZHLJW.TTF", 24 * 2);
-		teext->setMaxLineWidth(450 * 2);
-		return Size(600, teext->getContentSize().height/2+100);
+		teext->setMaxLineWidth(310 * 2);
+		return Size(360, teext->getContentSize().height/2+60);
 	}
 	else
-		return Size(600, 130);
+		return Size(360, 100);
 }
 
-ssize_t YYXTableView::numberOfCellsInTableView(TableView *table)
+ssize_t YYXTableViewBookInfoComment::numberOfCellsInTableView(TableView *table)
 {
 	return m_data.size();
 }
 
-void YYXTableView::loadData(map<string, YYXStruct> dat)
+void YYXTableViewBookInfoComment::loadData(map<string, YYXStruct> dat)
 {
 	m_data.push_back(dat);
 }
 
-Layout* YYXTableView::createItem(map<string, YYXStruct>  data, int idx)
+Layout* YYXTableViewBookInfoComment::createItem(map<string, YYXStruct>  data, int idx)
 {
 	auto layout = Layout::create();
 	layout->setLayoutType(cocos2d::ui::Layout::Type::RELATIVE);
@@ -227,47 +227,35 @@ Layout* YYXTableView::createItem(map<string, YYXStruct>  data, int idx)
 	layout->setTag(LAYOUTTAG);
 
 	//头像
-	auto AvatarUrl = YYXStruct::getMapString(data, "headportait", "");
-	auto memberId = YYXStruct::getMapInt64(data, "headportait", -999);
-	auto headView = YYXImageView::create(AvatarUrl, memberId, "other/User_bg_ipad@2x.png");
-	headView->setTag(1);
-	headView->ignoreContentAdaptWithSize(false);
-	headView->setSize(Size(70*2,70*2));
+	//auto AvatarUrl = YYXStruct::getMapString(data, "headportait", "");
+	//auto memberId = YYXStruct::getMapInt64(data, "headportait", -999);
+	//auto headView = YYXImageView::create(AvatarUrl, memberId, "other/User_bg_ipad@2x.png");
+	//headView->setTag(1);
+	//headView->ignoreContentAdaptWithSize(false);
+	//headView->setSize(Size(70*2,70*2));
 	//if (FileUtils::getInstance()->isFileExist(headportait))
 	//	headView->loadTexture(headportait);
 	//else
 	//	headView->loadTexture("other/User_bg_ipad@2x.png");
-	auto headViewParameter = RelativeLayoutParameter::create();
-	headViewParameter->setRelativeName("headView");
-	headViewParameter->setAlign(RelativeLayoutParameter::RelativeAlign::PARENT_TOP_LEFT);
-	headViewParameter->setMargin(Margin(20*2, 15*2, 0, 0));
-	headView->setLayoutParameter(headViewParameter);
-	layout->addChild(headView);
+	//auto headViewParameter = RelativeLayoutParameter::create();
+	//headViewParameter->setRelativeName("headView");
+	//headViewParameter->setAlign(RelativeLayoutParameter::RelativeAlign::PARENT_TOP_LEFT);
+	//headViewParameter->setMargin(Margin(20*2, 15*2, 0, 0));
+	//headView->setLayoutParameter(headViewParameter);
+	//layout->addChild(headView);
 
 	//分界线
 	auto xian = ImageView::create("other/block.png");
 	xian->ignoreContentAdaptWithSize(false);
-	xian->setContentSize(Size(600 * 2, 4));
+	xian->setContentSize(Size(360 * 2, 4));
 	auto xianParameter = RelativeLayoutParameter::create();
 	xianParameter->setRelativeName("text");
 	xianParameter->setAlign(RelativeLayoutParameter::RelativeAlign::PARENT_LEFT_BOTTOM);
-	xianParameter->setMargin(Margin(0, 0, 0, 0));
+	xianParameter->setMargin(Margin(0, 20, 0, 20));
 	xian->setLayoutParameter(xianParameter);
 	layout->addChild(xian);
 
-	//用户名
-	auto userName = YYXStruct::getMapString(data, "userName", "132****3254");
-	auto name = Text::create("131****1245", "wryh.TTF", 16*2);
-	name->setTag(2);
-	name->setColor(Color3B(90, 160, 141));
-	auto nameParameter = RelativeLayoutParameter::create();
-	nameParameter->setRelativeName("name");
-	nameParameter->setAlign(RelativeLayoutParameter::RelativeAlign::LOCATION_BELOW_CENTER);
-	nameParameter->setMargin(Margin(0, 2*2, 0, 0));
-	nameParameter->setRelativeToWidgetName("headView");
-	name->setLayoutParameter(nameParameter);
-	name->setText(userName);
-	layout->addChild(name);
+	
 
 	//星级
 	int startCount = YYXStruct::getMapInt64(data, "startCount", 5);
@@ -298,21 +286,48 @@ Layout* YYXTableView::createItem(map<string, YYXStruct>  data, int idx)
 		xingji->loadTexture(path);
 	auto xingjiParameter = RelativeLayoutParameter::create();
 	xingjiParameter->setRelativeName("xingji");
-	xingjiParameter->setAlign(RelativeLayoutParameter::RelativeAlign::LOCATION_RIGHT_OF_TOPALIGN);
-	xingjiParameter->setRelativeToWidgetName("headView");
-	xingjiParameter->setMargin(Margin(40*2, 0*2, 0, 0));
+	xingjiParameter->setAlign(RelativeLayoutParameter::RelativeAlign::PARENT_TOP_LEFT);
+	xingjiParameter->setMargin(Margin(10*2,2, 0, 0));
 	xingji->setLayoutParameter(xingjiParameter);
 	layout->addChild(xingji);
+	//用户名
+	auto userName = YYXStruct::getMapString(data, "userName", "132****3254");
+	auto name = Text::create("131****1245", "wryh.TTF", 16 * 2);
+	name->setTag(2);
+	name->setColor(Color3B(90, 160, 141));
+	auto nameParameter = RelativeLayoutParameter::create();
+	nameParameter->setRelativeName("name");
+	nameParameter->setAlign(RelativeLayoutParameter::RelativeAlign::LOCATION_RIGHT_OF_TOPALIGN);
+	nameParameter->setMargin(Margin(20, 2, 0, 0));
+	nameParameter->setRelativeToWidgetName("xingji");
+	name->setLayoutParameter(nameParameter);
+	name->setText(userName);
+	layout->addChild(name);
+
+	//日期
+	auto time = YYXStruct::getMapInt64(data, "time", 0);
+	auto day = Text::create("2016-12-12", "wryh.TTF", 14 * 2);
+	day->setTag(8);
+	day->setColor(Color3B(151, 151, 151));
+	auto dayParameter = RelativeLayoutParameter::create();
+	dayParameter->setRelativeName("day");
+	dayParameter->setAlign(RelativeLayoutParameter::RelativeAlign::LOCATION_RIGHT_OF_TOPALIGN);
+	dayParameter->setMargin(Margin(20, 2, 0, 0));
+	dayParameter->setRelativeToWidgetName("name");
+	day->setLayoutParameter(dayParameter);
+	string timestr = App::getFormatTime(time);
+	day->setText(timestr);
+	layout->addChild(day);
 
 	//文字
 	auto context = YYXStruct::getMapString(data, "context", "");
 	auto teext = Label::create("", "FZHLJW.TTF", 24*2);
 	teext->setTag(4);
 	teext->setColor(Color3B(69, 69, 69));
-	teext->setMaxLineWidth(450*2);
+	teext->setMaxLineWidth(310*2);
 	teext->setAnchorPoint(Vec2(0, 0));
 	teext->setString(context);
-	teext->setPosition(Vec2(130 * 2, 40 * 2));
+	teext->setPosition(Vec2(20, 44));
 	layout->addChild(teext);
 
 	//语音
@@ -350,19 +365,7 @@ Layout* YYXTableView::createItem(map<string, YYXStruct>  data, int idx)
 	voicelength->setString(StringUtils::format("%d \"", voicelen));
 	yuying->addChild(voicelength);
 	
-	//日期
-	auto time = YYXStruct::getMapInt64(data, "time", 0);
-	auto day = Text::create("2016-12-12", "wryh.TTF", 14 * 2);
-	day->setTag(8);
-	day->setColor(Color3B(151, 151, 151));
-	auto dayParameter = RelativeLayoutParameter::create();
-	dayParameter->setRelativeName("day");
-	dayParameter->setAlign(RelativeLayoutParameter::RelativeAlign::PARENT_RIGHT_BOTTOM);
-	dayParameter->setMargin(Margin(0, 0, 30*2, 10*2));
-	day->setLayoutParameter(dayParameter);
-	string timestr = App::getFormatTime(time);
-	day->setText(timestr);
-	layout->addChild(day);
+	
 
 	int typ = YYXStruct::getMapInt64(data, "type", 1);
 	if (typ == 0)
@@ -378,15 +381,15 @@ Layout* YYXTableView::createItem(map<string, YYXStruct>  data, int idx)
 	return layout;
 }
 
-void YYXTableView::reuseItem(TableViewCell*item, map<string, YYXStruct>  data, int idx)
+void YYXTableViewBookInfoComment::reuseItem(TableViewCell*item, map<string, YYXStruct>  data, int idx)
 {
 	auto layout = (Layout*)item->getChildByTag(LAYOUTTAG);
 	//头像
-	auto AvatarUrl = YYXStruct::getMapString(data, "headportait", "");
-	auto memberId = YYXStruct::getMapInt64(data, "headportait", -999);
-	auto headView = (YYXImageView*)layout->getChildByTag(1);
-	headView->setTag(1);
-	headView->reloadUrl(AvatarUrl, memberId);
+	//auto AvatarUrl = YYXStruct::getMapString(data, "headportait", "");
+	//auto memberId = YYXStruct::getMapInt64(data, "headportait", -999);
+	//auto headView = (YYXImageView*)layout->getChildByTag(1);
+	//headView->setTag(1);
+	//headView->reloadUrl(AvatarUrl, memberId);
 	//if (FileUtils::getInstance()->isFileExist(headportait))
 	//	headView->loadTexture(headportait);	
 	//else
@@ -471,7 +474,7 @@ void YYXTableView::reuseItem(TableViewCell*item, map<string, YYXStruct>  data, i
 	layout->setScale(0.5);
 }
 
-void YYXTableView::playVoiceFrameAnimation(Sprite* vsp)
+void YYXTableViewBookInfoComment::playVoiceFrameAnimation(Sprite* vsp)
 {
 	auto actin = vsp->getActionByTag(ACTION);
 	if (actin == nullptr || actin->isDone())
@@ -493,7 +496,7 @@ void YYXTableView::playVoiceFrameAnimation(Sprite* vsp)
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, vsp);
 }
 
-void YYXTableView::showAnimationEnd(Sprite* sp)
+void YYXTableViewBookInfoComment::showAnimationEnd(Sprite* sp)
 {
 	auto frameSP = SpriteFrameCache::getInstance()->getSpriteFrameByName("other/Backcover_voice_donghua2_736h.png");
 	if (!frameSP)
@@ -505,7 +508,7 @@ void YYXTableView::showAnimationEnd(Sprite* sp)
 }
 
 //处理自己发布的评论
-void YYXTableView::handleYourOwnComments(TableView* table, TableViewCell* cell)
+void YYXTableViewBookInfoComment::handleYourOwnComments(TableView* table, TableViewCell* cell)
 {
 	int index = cell->getIdx();
 	auto data = m_data[index];
@@ -532,7 +535,7 @@ void YYXTableView::handleYourOwnComments(TableView* table, TableViewCell* cell)
 }
 
 //声音播放完毕或者终止时 需要处理的事件
-void YYXTableView::soundPlayCompletes()
+void YYXTableViewBookInfoComment::soundPlayCompletes()
 {
 	m_playingVoiceIdx = -999;
 	YYXLayer::sendNotify(TAG_STOPCOMMENT_SOUND_ANIMATION);
@@ -541,7 +544,7 @@ void YYXTableView::soundPlayCompletes()
 }
 
 //处理别人发布的评论
-void YYXTableView::handleOtherComments(TableView* table, TableViewCell* cell)
+void YYXTableViewBookInfoComment::handleOtherComments(TableView* table, TableViewCell* cell)
 {
 	auto index = cell->getIdx();
 	auto data = m_data[index];
@@ -582,7 +585,7 @@ void YYXTableView::handleOtherComments(TableView* table, TableViewCell* cell)
 	}
 }
 
-void YYXTableView::stopAllAnimation()//提供给外部的函数
+void YYXTableViewBookInfoComment::stopAllAnimation()//提供给外部的函数
 {
 	YYXLayer::sendNotify(TAG_STOPCOMMENT_SOUND_ANIMATION);
 }

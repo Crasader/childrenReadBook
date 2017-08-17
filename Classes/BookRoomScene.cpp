@@ -192,6 +192,7 @@ bool BookRoom::init(SceneInfo* sceneInfo)
 			m_click = false;
 			unschedule("longAnEditMode");
 			unschedule("UNEditModeTime");
+			YYXLayer::sendNotify("bookRoomScenemengban", "", -1);
 		}
 		//zzz(EventListenerTouchOneByOne  onTouchMoved  touchmove)
 	};
@@ -360,6 +361,7 @@ void BookRoom::initEvent()
 		DownloadBook::getInstance()->setIsSorted(true);
 		MyBook::getInstance()->setIsSorted(true);
 		refershPage(bookMode);
+		showBookPageNumber();
 	});
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener1, layer);
 	//蒙板 长按书籍常亮效果
@@ -806,9 +808,11 @@ void BookRoom::downloadBook(string url, string dir, string filename, int bookid)
 	data->setFileName(filename);
 	data->setUseData(Value(bookid));
 	data->setDownloadingFunc([](DownLoadFileData* ddata) {
-		int progressing = ddata->getPausePint();
-		if (progressing <= 99)
-		YYXLayer::sendNotify(ddata->getTag() + "_BookProgressing", "", progressing);
+		if (ControlScene::getInstance()->getCurrentScene()->getName() != BOOK) {
+			int progressing = ddata->getPausePint();
+			if (progressing <= 99)
+				YYXLayer::sendNotify(ddata->getTag() + "_BookProgressing", "", progressing);
+		}
 	});
 	data->setEndFunc([](DownLoadFileData* ddata) {
 		if (ddata->getStatus() == _pause){

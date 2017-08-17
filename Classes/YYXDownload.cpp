@@ -643,7 +643,6 @@ void DownLoadFileData::setDownloadingFunc(const function<void(DownLoadFileData*)
 	YYXDownload::getInstance()->addFunc(m_downloadingKey, val);
 }
 
-
 function<void(DownLoadFileData*)> DownLoadFileData::getEndFunc()
 {
 	if (m_endKey > 0)

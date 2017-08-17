@@ -31,9 +31,12 @@
     <Item Key="TabsParamsKey">
       <Value ctype="TabsInfo">
         <OpenedDocuments>
-          <FilePathData Path="MessageBox/csb/fxz_box.csd" />
+          <FilePathData Path="BookInfo/csb/comment.csd" />
+          <FilePathData Path="BookInfo/csb/pinglun.csd" />
+          <FilePathData Path="ParentScene/csb/Parent.csd" />
+          <FilePathData Path="ParentScene/csb/loginButton.csd" />
         </OpenedDocuments>
-        <ActiveDocument Path="MessageBox/csb/fxz_box.csd" />
+        <ActiveDocument Path="ParentScene/csb/loginButton.csd" />
       </Value>
     </Item>
   </Properties>

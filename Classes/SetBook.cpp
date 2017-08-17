@@ -69,7 +69,6 @@ void SetBook::readBook(int bookId, bool isview)
 
 void SetBook::readBook()
 {	
-	YYXBookOver::getInstance()->init(getBookId(), App::GetInstance()->getMemberId(), isView);
 	string bookPath, drawPath;
 	string bookIdstr = StringUtils::format("%d", getBookId());
 	bookPath = FileUtils::getInstance()->getWritablePath() + "bookUNZip/" + bookIdstr + "/Iphone1334";
@@ -123,17 +122,17 @@ void SetBook::readBook()
 	});
 	//向前按钮
 	BookParser::getInstance()->setPageUpCallBack([=]() {
-		YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
+		//YYXLayer::controlTouchTime(3, "ReadTime", [=]() {
 			SetBook::getInstance()->setButtonOpacity();
 			BookParser::getInstance()->pageUp();
 			saveReadRecording();
-		});
+		//});
 	});
 	//向后按钮
 	BookParser::getInstance()->setPageDownCallBack([=]() {
-		YYXLayer::controlTouchTime(1, "ReadTime", [=]() {
+		//YYXLayer::controlTouchTime(3, "ReadTime", [=]() {
 			SetBook::getInstance()->setButtonOpacity();
-			Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+			//Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
 				saveReadRecording();
 				if (BookParser::getInstance()->getCurrentPage() == 5)
 				{
@@ -163,8 +162,8 @@ void SetBook::readBook()
 						Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, scene, false));
 					}
 				}
-			});
-		});
+			//});
+		//});
 	});
 	//BookParser::getInstance()->setPageMenuChangeCallBack([](Menu* m) {
 		//auto down =(MenuItemImage*) m->getChildByTag(BUTTON_TAG_PAGE_DOWN);
@@ -198,6 +197,7 @@ void SetBook::readBook()
 	}
 	else
 	{//阅读成功			
+		YYXBookOver::getInstance()->init(getBookId(), App::GetInstance()->getMemberId(), isView);
 		saveReadRecordStart();
 		YYXSound::getInstance()->stopAll();
 		YYXSound::getInstance()->pauseBackGroundMusic();

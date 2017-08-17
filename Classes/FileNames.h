@@ -968,7 +968,7 @@ enum MyEnum
 
 #define NET_BOOKINFO "/ellabook-server/store/book/"//获取书籍详情
 
-#define NET_BOOKCOMMENT "/ellabook-server/evaluate/newgetGoodsEvaluateList.do"//获取书籍评论
+#define NET_BOOKCOMMENT "/ellabook-server/memberEvaluate/getEvaluate"//获取书籍评论
 
 #define NET_BOOKSID "/ellabook-server/castle/"//获取本店的书籍ID GET
 
@@ -994,7 +994,7 @@ enum MyEnum
 
 #define  NET_MODIFY_CHILD_INFO "/ellabook-server/children/updateChildren.do" //修改宝贝信息POST
 
-#define  NET_SEND_COMMENT "/ellabook-server/children/addEvaluate" //发表评论win32
+#define  NET_SEND_COMMENT "/ellabook-server/memberEvaluate/addEvaluate" //发表评论win32
 
 //#define  NET_SEND_COMMENT_ANDROID  "/ellabook-server/evaluate/evaluate_android" //发表评论android
 
@@ -1024,7 +1024,7 @@ enum MyEnum
 
 #define NET_RENT "/ellabook-server/annualcard/pay"  //租书接口
 
-#define NET_DELETECOMMENT "/ellabook-server/evaluate/delectGoodsEvaluate"//删除评论
+#define NET_DELETECOMMENT "/ellabook-server/memberEvaluate/delEvaluate"//删除评论
 
 #define NET_BOOK_COLLECT  "/ellabook-server/Study/Collection"
 //书房 收藏/取消收藏
@@ -1171,6 +1171,7 @@ enum MyEnum
 #define TAG_BABYCENTERSCENESHOWDELETEBUTTON "BabyCenterSceneShowDeleteButton"
 #define TAG_BABYCENTERSCENESHOWCHILD "BabyCenterSceneShowChild"
 #define TAG_BABYCENTERSCENEAMENDBABYINFO "BabyCenterSceneAmendBabyInfo"
+#define TAG_BABYCENTERSCENEAMENDBABYINFOFAIL "BabyCenterSceneAmendBabyInfoFail"
 #define TAG_BABYCENTERSCENEREFERHEAD "BaByCenterSceneChildInfoReferHeadPortrait"
 
 #define TAG_CITYSCENEERFERVIEW "CitySceneReferView"

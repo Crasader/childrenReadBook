@@ -31,6 +31,10 @@
       <FilePathData Path="BabyCenter/res/Parents_button_Edit.png" />
       <FilePathData Path="BabyCenter/res/Parents_button_Edit_Selected.png" />
       <FilePathData Path="BabyCenter/res/UserInfo_switchChild_ipad.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Not-selected_1.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Not-selected_2.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Selected_1.png" />
+      <FilePathData Path="BabyCenter/res/UserInfo_Selected_2.png" />
     </ImageFiles>
     <MaxSize Width="2048" Height="1024" />
   </Content>

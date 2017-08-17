@@ -518,7 +518,7 @@ AppHttp * AppHttp::getInstance()
 {
 	if (Instance == nullptr)
 	{
-		Instance = new AppHttp();
+		Instance = new AppHttp();	
 	}
 	cocos2d::network::HttpClient::getInstance()->setTimeoutForConnect(60);
 	return Instance;
@@ -832,6 +832,7 @@ void AppHttp::httpChildren()
 			YYXLayer::sendNotify(TAG_BABYCENTERSCENEREFERHEAD);
 			YYXLayer::sendNotify(TAG_INDEXSCENEDOWNLOADCHILDHEAD);
 			YYXLayer::sendNotify(TAG_REMOVEWAITING);
+			YYXLayer::sendNotify(TAG_BABYCENTERSCENECHANGECHILDREN);
 		}
 	});
 	newHttp(httpData);
@@ -961,6 +962,7 @@ void AppHttp::httpAmendBabyInfo(int id, ChildInfo* child)
 				Toast::create(App::getString("XIUGAIXINXICHENGGONG"));
 			}
 			else {
+				YYXLayer::sendNotify(TAG_BABYCENTERSCENEAMENDBABYINFOFAIL);
 				YYXLayer::sendNotify(TAG_REMOVEWAITING);
 				Toast::create(App::getString("MODIFY_INFO_FAILED"));
 				ChildInfo::del(child);
@@ -1031,9 +1033,9 @@ void AppHttp::httpComments(int bookid, const function<void()>& runFunction)
 	auto strUrl = std::string(IP).append(NET_BOOKCOMMENT);
 	map<string, string > p;
 	p["bookId"] = StringUtils::format("%d", bookid);
-	p["memberId"] = App::getMemberID();
+	//p["memberId"] = App::getMemberID();
 	p["resource"] = App::m_resource;
-	p["page"] = "1";
+	p["page"] = "0";
 	p["pageSize"] = "20";
 	HttpData* httpData = HttpData::create();
 	httpData->setUrl(strUrl);
@@ -1051,32 +1053,33 @@ void AppHttp::httpComments(int bookid, const function<void()>& runFunction)
 		auto result = YYXLayer::getJsonObject4Json(doc, json);
 		if (result)
 		{
-			int code = YYXLayer::getIntForJson(-999, doc, "code");
-			if (code == 0)
+			int status = YYXLayer::getIntForJson(-999, doc, "status");
+			if (status == 1)
 			{
 				rapidjson::Value arrayData;
-				YYXLayer::getJsonArray4Json(arrayData, doc, "data");
+				YYXLayer::getJsonArray4Json(arrayData, doc, "data", "data");
 				YYXLayer::getDataForJsonArray(arrayData, [=](rapidjson::Value & item, int index)
 				{
 					int bookid = data->getUserValue().asInt();
-					string gevalId = YYXLayer::getString4Json("", item, "gevalId");//评论ID
-					string gevalType = YYXLayer::getString4Json("", item, "gevalType");//评论类型 0=文字 1=语音
-					string score = YYXLayer::getString4Json("", item, "score");//评星
+					int id = YYXLayer::getInt4Json(0, item, "gevalId");//评论ID
+					int gevalType = YYXLayer::getInt4Json(0, item, "gevalType");//评论类型 0=文字 1=语音
+					int xingji = YYXLayer::getInt4Json(5, item, "gevalScores");//评星
 					string memberName = YYXLayer::getString4Json("", item, "memberName");//用户名
-					string gevalState = YYXLayer::getString4Json("", item, "gevalState");//0=只评论文字 1=只打分 2=评论文字并打分
-					string memberId = YYXLayer::getString4Json("", item, "memberId");
-					string AvatarUrl = YYXLayer::getString4Json("", item, "AvatarUrl");//头像
-					string commentTime = YYXLayer::getString4Json("", item, "commentTime");//评论时间
-					string title = YYXLayer::getString4Json("", item, "title");//标题
-					string content = YYXLayer::getString4Json("", item, "content");//内容
-					string url = YYXLayer::getString4Json("", item, "url");//语音下载
-					string gevalTime = YYXLayer::getString4Json("", item, "gevalTime");//语音时间
-					int id = atoi(gevalId.c_str());//评论ID
-					int xingji = atoi(score.c_str());//评星
+					//string gevalState = YYXLayer::getString4Json("", item, "gevalState");//0=只评论文字 1=只打分 2=评论文字并打分
+					int memnerid = YYXLayer::getInt4Json(0, item, "memberId");
+					string AvatarUrl = YYXLayer::getString4Json("", item, "avatarUrl");//头像
+					string commentTime = YYXLayer::getString4Json("", item, "gevalAddtime");//评论时间
+					string title = YYXLayer::getString4Json("", item, "gevalTitle");//标题
+					string content = YYXLayer::getString4Json("", item, "gevalContent");//内容
+					string url = YYXLayer::getString4Json("", item, "gevalVoiceUrl");//语音下载
+					string gevalTime = YYXLayer::getString4Json("", item, "voiceDuration");//语音时间
 					time_t icommentTime = atoi(commentTime.c_str());//评论时间
-					int memnerid = atoi(memberId.c_str());//用户ID
 					int voiceLength = atoi(gevalTime.c_str());//声音时长
-					if (!content.empty())
+					if (voiceLength == 0){
+						voiceLength = 2;
+						gevalTime = "2";
+					}
+					if (gevalType == 0)
 					{//文字评论
 						string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);//bookid + 下标顺序
 						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, idKey, id, "TEXT");//评论id + 类型
@@ -1092,7 +1095,7 @@ void AppHttp::httpComments(int bookid, const function<void()>& runFunction)
 					else if (!url.empty())
 					{//语音评论
 						string dir = FileUtils::getInstance()->getWritablePath() + "voiceComment";
-						string filename = gevalId + ".mp3";
+						string filename = Value(id).asString() + ".mp3";
 						string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);//bookid + 下标顺序
 						YYXStruct::initMapYYXStruct(App::GetInstance()->myData, idKey, id, "VOICE");//评论id + 类型
 						string voiceKey = StringUtils::format("comment_gevalId=%d+score+url+gevalTime", id);
@@ -1107,7 +1110,7 @@ void AppHttp::httpComments(int bookid, const function<void()>& runFunction)
 						}
 					}
 				});
-				int count = YYXLayer::getIntForJson(-999, doc, "count");
+				int count = YYXLayer::getIntForJson(-999, doc, "data", "count");
 				string commentCountKey = StringUtils::format("comment_bookid=%d", bookid);//book评论的数量
 				YYXStruct::initMapYYXStruct(App::GetInstance()->myData, commentCountKey, count);
 				auto runFunction = data->getCallbackerror();
@@ -1219,7 +1222,7 @@ void AppHttp::httpBookStoreSceneCurrentlyPageBookListInfo(int BookStoreId, int p
 								temp = 1;
 							YYXStruct::initMapYYXStruct(App::GetInstance()->myData, "BookStoreNeedRefresh", temp);
 						}, [](string str) {
-							Toast::create(App::getString("FENGMIANXIAZAISHIBAI"), false);
+							//Toast::create(App::getString("FENGMIANXIAZAISHIBAI"), false);
 						});
 					}
 				});
@@ -1708,24 +1711,21 @@ void AppHttp::httpBuyBookWithOutRedPacket(int bookId, const function<void(int)>&
 	newHttp(httpData);
 }
 
-void AppHttp::httpSendComment(int types, int bookId, int score, string orderId, string comment)
+void AppHttp::httpSendComment( int bookId, int score,  string comment)
 {
+	string name = "170****5246";
 	string url = string(IP).append(NET_SEND_COMMENT);
 	map<string, string> paramter;
 	paramter["memberId"] = App::getMemberID();
-	string name = "170****5246";
-	if (YYXVisitor::getInstance()->getVisitorMode())
-		name = YYXVisitor::getInstance()->getVisitorName();
-	else
-		name = User::getInstance()->getUserAccount();
-	paramter["memberName"] = name;
-	paramter["orderId"] = orderId;
 	paramter["bookId"] = StringUtils::format("%d", bookId);
-	paramter["type"] = StringUtils::format("%d", types);
+	paramter["type"] = "0";
 	paramter["comment"] = comment;
+	paramter["gevalIsAnonymous"] = "1";
 	paramter["title"] = "*****";
 	paramter["score"] = StringUtils::format("%d", score);
 	paramter["resource"] = "iphone6";
+	paramter["voiceDuration"] = "0";
+	paramter["file"] = "";
 	HttpData* httpData = HttpData::create();
 	httpData->setUrl(url);
 	httpData->setParamter(paramter);
@@ -1736,7 +1736,7 @@ void AppHttp::httpSendComment(int types, int bookId, int score, string orderId, 
 		if (YYXLayer::getJsonObject4Json(doc, json))
 		{
 			string desc = App::getString("COMMENT_SUCCESS");
-			if (YYXLayer::getBoolForJson(false, doc, "result"))
+			if (YYXLayer::getInt4Json(0, doc, "status") == 1)
 				YYXLayer::sendNotify(TAG_SENDCOMMENTSUCCESS);
 			else
 				desc = YYXLayer::getStringForJson(App::getString("COMMENT_FAILED"), doc, "errorMessage");
@@ -1861,9 +1861,8 @@ void AppHttp::httpDeleteComment(int id, YYXCallBack callback1)
 		rapidjson::Document doc;
 		if (YYXLayer::getJsonObject4Json(doc, json))
 		{
-			auto result = YYXLayer::getIntForJson(0, doc, "result");
-			auto success = YYXLayer::getStringForJson("", doc, "success");
-			if (result == 1)
+			auto status = YYXLayer::getIntForJson(0, doc, "status");
+			if (status == 1)
 			{
 				if (callback1)
 					callback1();
@@ -2154,11 +2153,14 @@ void AppHttp::httpRentBook(int bookid, YYXCallBack callback1)
 			if (callback1)
 				callback1();
 		}
-		else
-			Toast::create(App::getString("ZUSHUSHIBAI"), false);
+		//else {
+			//if(ControlScene::getInstance()->getCurrentScene()->getName() == BookInfoScene)
+				//Toast::create(App::getString("ZUSHUSHIBAI"), false);
+		//}
 	});
 	httpData->setCallbackerror([](HttpData* data) {
-		Toast::create(App::getString("ZUSHUSHIBAI"), false);
+		//if (ControlScene::getInstance()->getCurrentScene()->getName() == BookInfoScene)
+			//Toast::create(App::getString("ZUSHUSHIBAI"), false);
 	});
 	newHttp(httpData);
 }

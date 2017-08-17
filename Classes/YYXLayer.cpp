@@ -1753,6 +1753,27 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 		auto fifth = (ImageView*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_FIFTH);//第5个星
 		auto menbername = (Text*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_MEMBERNAME);//手机号码
 		auto time = (Text*)scorelayer->getChildByName(BOOKINFO_FIND_LISTVIEWITEM_BYNAME_TIME);//日期
+		switch (score)
+		{
+		case 1:
+			second->setVisible(false);
+			three->setVisible(false);
+			fourth->setVisible(false);
+			fifth->setVisible(false);
+			break;
+		case 2:
+			three->setVisible(false);
+			fourth->setVisible(false);
+			fifth->setVisible(false);
+			break;
+		case 3:
+			fourth->setVisible(false);
+			fifth->setVisible(false);
+			break;
+		case 4:
+			fifth->setVisible(false);
+			break;
+		}
 		menbername->setString(memberName);
 		time->setString(App::getFormatTime(commentTime));
 		item2->addChild(scorelayer);

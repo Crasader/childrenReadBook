@@ -26,8 +26,14 @@ YYXSound::~YYXSound()
 
 void YYXSound::init()
 {
-	auto _sound = YYXLayer::getFileValue("sound", "true", FileUtils::getInstance()->getWritablePath() + "temp/" + App::GetInstance()->getMemberID());
-	auto _music = YYXLayer::getFileValue("music", "true", FileUtils::getInstance()->getWritablePath() + "temp/" + App::GetInstance()->getMemberID());
+	string path = FileUtils::getInstance()->getWritablePath() + "sound";
+	if (!FileUtils::getInstance()->isDirectoryExist(path))
+		FileUtils::getInstance()->createDirectory(path);
+	path = FileUtils::getInstance()->getWritablePath() + "music";
+	if (!FileUtils::getInstance()->isDirectoryExist(path))
+		FileUtils::getInstance()->createDirectory(path);
+	auto _sound = YYXLayer::getFileValue("sound", "true", FileUtils::getInstance()->getWritablePath() + "sound/" + App::GetInstance()->getMemberID());
+	auto _music = YYXLayer::getFileValue("music", "true", FileUtils::getInstance()->getWritablePath() + "music/" + App::GetInstance()->getMemberID());
 	if (_sound == "true")
 		sound = true;
 	else
@@ -173,7 +179,7 @@ bool YYXSound::getSound()
 void YYXSound::setSound(bool val)
 {
 	sound = val;
-	YYXLayer::setFileValue("sound", sound ? "true" : "false", FileUtils::getInstance()->getWritablePath() + "temp/" + App::GetInstance()->getMemberID());
+	YYXLayer::setFileValue("sound", sound ? "true" : "false", FileUtils::getInstance()->getWritablePath() + "sound/" + App::GetInstance()->getMemberID());
 }
 
 bool YYXSound::getMusic()
@@ -184,7 +190,7 @@ bool YYXSound::getMusic()
 void YYXSound::setMusic(bool val)
 {
 	music = val;
-	YYXLayer::setFileValue("music", music ? "true" : "false", FileUtils::getInstance()->getWritablePath() + "temp/" + App::GetInstance()->getMemberID());
+	YYXLayer::setFileValue("music", music ? "true" : "false", FileUtils::getInstance()->getWritablePath() + "music/" + App::GetInstance()->getMemberID());
 }
 
 

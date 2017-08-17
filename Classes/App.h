@@ -84,7 +84,6 @@ private:
 
 	static __Dictionary* m_strings;//字符串表
 
-	//static sqlite3* m_db;//数据库指针
 	static atomic_int message;
 	static atomic_bool threadRuning;
 
@@ -105,9 +104,9 @@ public:
 
 	string systemVersion = "";
 
-	string version = "1.9.3";//应用版本
+	string version = "1.9.5";//应用版本
 
-	long long versioncode = 185;
+	long long versioncode = 187;
 
 	static string m_photsName;//照片路径
 
@@ -262,6 +261,7 @@ public:
 	
 	static string replaceChar(string str, string oldChar, string newChar);	//修改字符串, 全部替换
 
+	static string check_input_str(const string& str);
 	//static void whetherForVipDownloadJudgeInCharge(int memberId, int bookId, function<void(int str)> runable, function<void(string error)> errorable);//判断包年用户能否进行vip下载
 
 	void addTime(string key, long long data); //添加时刻
@@ -347,5 +347,4 @@ public:
 
 	static void backWating();//安卓返回键计时
 };
-
 #endif // __App_SCENE_H__

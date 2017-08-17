@@ -42,14 +42,14 @@
                 <FileData Type="MarkedSubImage" Path="ParentScene/res/Parents_us_border_ipad@2x.png" Plist="ParentScene/csb/parent.plist" />
                 <BlendFunc Src="1" Dst="771" />
               </AbstractNodeData>
-              <AbstractNodeData Name="Text_1" ActionTag="-618909795" Tag="65" IconVisible="False" LeftMargin="-164.7422" RightMargin="-155.2578" TopMargin="10.4981" BottomMargin="404.5019" IsCustomSize="True" FontSize="35" LabelText="    咿啦看书致力于打造领先的儿童数字阅读平台，为儿童提供趣&#xA;味性多媒体电子书阅读体验，为出版机构提供快捷简单的多媒体电子&#xA;书制作工具以及强大的数字发行平台。&#xA;我们严格挑选正版资源，使用印刷级高清图像素材和专业级高品质音频，&#xA;精心动画化制作，在增加趣味性的同时又保留了纸质阅读的想象空间，&#xA;只为给孩子提供更有趣的动画书和更健康的数字阅读体验。&#xA;" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
-                <Size X="1120.0000" Y="245.0000" />
+              <AbstractNodeData Name="Text_1" ActionTag="-618909795" Tag="65" IconVisible="False" LeftMargin="-181.8798" RightMargin="-218.1202" TopMargin="5.0871" BottomMargin="374.9129" IsCustomSize="True" FontSize="32" LabelText="    咿啦看书致力于打造领先的儿童数字阅读平台，为儿童提供趣&#xA;味性多媒体电子书阅读体验，为出版机构提供快捷简单的多媒体电子&#xA;书制作工具以及强大的数字发行平台。&#xA;我们严格挑选正版资源，使用印刷级高清图像素材和专业级高品质音频，&#xA;精心动画化制作，在增加趣味性的同时又保留了纸质阅读的想象空间，&#xA;只为给孩子提供更有趣的动画书和更健康的数字阅读体验。" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+                <Size X="1200.0000" Y="280.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-                <Position X="395.2578" Y="527.0019" />
+                <Position X="418.1202" Y="514.9129" />
                 <Scale ScaleX="0.5000" ScaleY="0.5000" />
                 <CColor A="255" R="110" G="110" B="114" />
-                <PrePosition X="0.4941" Y="0.7985" />
-                <PreSize X="1.4000" Y="0.3712" />
+                <PrePosition X="0.5227" Y="0.7802" />
+                <PreSize X="1.5000" Y="0.4242" />
                 <OutlineColor A="255" R="255" G="0" B="0" />
                 <ShadowColor A="255" R="110" G="110" B="110" />
               </AbstractNodeData>

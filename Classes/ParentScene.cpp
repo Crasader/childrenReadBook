@@ -695,21 +695,39 @@ Layer* Parent::initNode_Contact()
 	qq->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
 		//弹框
-		MessageBox(App::getString("QQKEFU"), "");
+		//MessageBox(App::getString("QQKEFU"), "");
+		auto message = YYXLayer::MyMessageBox(App::getString("QQKEFU"), App::getString("TIAOZHUANQQ"), []() {
+			CrossPlatform::getInstance()->gotoQQ("2952377844");
+		}, App::getString("FUZHI"), []() {
+			CrossPlatform::getInstance()->CtrlC("2952377844");
+		});
+		Director::getInstance()->getRunningScene()->addChild(message);
 	});
 
 	//qq版权合作
 	auto qq2 = (Button*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_BUTTON_BY_NAME_QQ3);
 	qq2->addClickEventListener([=](Ref* sender) {
 		//弹框
-		MessageBox(App::getString("BANBENHEZUO"), "");
+		//MessageBox(App::getString("BANBENHEZUO"), "");
+		auto message = YYXLayer::MyMessageBox(App::getString("BANBENHEZUO"), App::getString("TIAOZHUANQQ"), []() {
+			CrossPlatform::getInstance()->gotoQQ("31439942");
+		}, App::getString("FUZHI"), []() {
+			CrossPlatform::getInstance()->CtrlC("31439942");
+		});
+		Director::getInstance()->getRunningScene()->addChild(message);
 	});
 
 	//qq商务合作
 	auto qq3 = (Button*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_BUTTON_BY_NAME_QQ);
 	qq3->addClickEventListener([=](Ref* sender) {
 		//弹框
-		MessageBox(App::getString("SHAGNWUHEZUO"), "");
+		//MessageBox(App::getString("SHAGNWUHEZUO"), "");
+		auto message = YYXLayer::MyMessageBox(App::getString("SHAGNWUHEZUO"), App::getString("TIAOZHUANQQ"), []() {
+			CrossPlatform::getInstance()->gotoQQ("379160279");
+		}, App::getString("FUZHI"), []() {
+			CrossPlatform::getInstance()->CtrlC("379160279");
+		});
+		Director::getInstance()->getRunningScene()->addChild(message);
 	});
 	return (Layer *)layer;
 }
@@ -812,53 +830,53 @@ Layer* Parent::initNode_Set()
 	time40->addClickEventListener(listen4Time);
 	time60->addClickEventListener(listen4Time);
 	//下载设置
-	auto wifi_img = (ImageView*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_IMAGEVIEW_BY_NAME_WIFI);
-	auto wifi_text = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_BY_NAME_WIFI);
-	wifi_img->setTouchEnabled(true);
-	//根据本地保存设置初始化选择
-	if (App::GetInstance()->isOnlyWifi) {
-		wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_SEL, TextureResType::PLIST);
-		wifi_text->setString(App::getString("JINWIFIXIAZAI"));
-		wifi_img->setTag(SELECT);
-	}
-	else
-	{
-		wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_UNSEL, TextureResType::PLIST);
-		wifi_text->setString(App::getString("4GHEWIFIXIAZAI"));
-		wifi_img->setTag(UNSELECT);
-	}
-	//下载设置点击事件
-	wifi_img->addClickEventListener([=](Ref *sender) {
-		YYXSound::getInstance()->playButtonSound();
-		if (wifi_img->getTag() == SELECT)
-		{
-			//4G和wifi
-			wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_UNSEL, TextureResType::PLIST);
-			wifi_text->setString(App::getString("4GHEWIFIXIAZAI"));
-			wifi_img->setTag(UNSELECT);
-			//UserDefault::getInstance()->setIntegerForKey("IS_ONLY_WIFI", 1);
-			YYXLayer::setFileValue("IS_ONLY_WIFI", "1");
-			App::GetInstance()->isOnlyWifi = false;
-		}
-		else
-		{
-			//仅wifi
-			wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_SEL, TextureResType::PLIST);
-			wifi_text->setString(App::getString("JINWIFIXIAZAI"));
-			wifi_img->setTag(SELECT);
-			//UserDefault::getInstance()->setIntegerForKey("IS_ONLY_WIFI", 0);
-			YYXLayer::setFileValue("IS_ONLY_WIFI", "0");
-			App::GetInstance()->isOnlyWifi = true;
-		}
-		if (App::GetInstance()->isOnlyWifi)
-		{
-			App::log("---------------isOnlyWifi");
-		}
-		else
-		{
-			App::log("---------------3G/4G/Wifi");
-		}
-	});
+	//auto wifi_img = (ImageView*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_IMAGEVIEW_BY_NAME_WIFI);
+	//auto wifi_text = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_BY_NAME_WIFI);
+	//wifi_img->setTouchEnabled(true);
+	////根据本地保存设置初始化选择
+	//if (App::GetInstance()->isOnlyWifi) {
+	//	wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_SEL, TextureResType::PLIST);
+	//	wifi_text->setString(App::getString("JINWIFIXIAZAI"));
+	//	wifi_img->setTag(SELECT);
+	//}
+	//else
+	//{
+	//	wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_UNSEL, TextureResType::PLIST);
+	//	wifi_text->setString(App::getString("4GHEWIFIXIAZAI"));
+	//	wifi_img->setTag(UNSELECT);
+	//}
+	////下载设置点击事件
+	//wifi_img->addClickEventListener([=](Ref *sender) {
+	//	YYXSound::getInstance()->playButtonSound();
+	//	if (wifi_img->getTag() == SELECT)
+	//	{
+	//		//4G和wifi
+	//		wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_UNSEL, TextureResType::PLIST);
+	//		wifi_text->setString(App::getString("4GHEWIFIXIAZAI"));
+	//		wifi_img->setTag(UNSELECT);
+	//		//UserDefault::getInstance()->setIntegerForKey("IS_ONLY_WIFI", 1);
+	//		YYXLayer::setFileValue("IS_ONLY_WIFI", "1");
+	//		App::GetInstance()->isOnlyWifi = false;
+	//	}
+	//	else
+	//	{
+	//		//仅wifi
+	//		wifi_img->loadTexture(PICTURE_PARENT_IMAGEVIEW_WIFI_SEL, TextureResType::PLIST);
+	//		wifi_text->setString(App::getString("JINWIFIXIAZAI"));
+	//		wifi_img->setTag(SELECT);
+	//		//UserDefault::getInstance()->setIntegerForKey("IS_ONLY_WIFI", 0);
+	//		YYXLayer::setFileValue("IS_ONLY_WIFI", "0");
+	//		App::GetInstance()->isOnlyWifi = true;
+	//	}
+	//	if (App::GetInstance()->isOnlyWifi)
+	//	{
+	//		App::log("---------------isOnlyWifi");
+	//	}
+	//	else
+	//	{
+	//		App::log("---------------3G/4G/Wifi");
+	//	}
+	//});
 	//清除缓存
 	auto wipecache_text = (Text*)cocos2d::ui::Helper::seekWidgetByName(sv, FIND_TEXT_BY_NAME_WIPECACHE);
 	int count = (int)YYXStruct::getMapInt64(App::GetInstance()->myData, "LocalCacheSize", 0);

@@ -75,7 +75,9 @@ bool Index::init(SceneInfo* data)
 		switch (keyCode)
 		{
 		case EventKeyboard::KeyCode::KEY_ESCAPE:
-			CocosAndroidJni::AppExit();
+			Director::getInstance()->getRunningScene()->addChild(YYXLayer::MyMessageBox(App::getString("TUICHUYILAKANSHU"), "", []() {
+				Director::getInstance()->end();
+			}, "",[]() {}));
 			break;
 		}
 	};

@@ -23,6 +23,7 @@
 #include "BuyVip.h"
 #include "YYXTime.h"
 #include "LoginControl.h"
+#include "YYXTableViewBookInfoComment.h"
 
 using namespace experimental;
 USING_NS_CC;
@@ -264,7 +265,6 @@ bool BookInfo::init(SceneInfo* sceneInfo)
 
 			introYellow2->setTouchEnabled(true);
 			commonGray2->setTouchEnabled(true);
-
 			switch ((( ImageView*)sender)->getTag())
 			{
 			case 1:
@@ -282,29 +282,46 @@ bool BookInfo::init(SceneInfo* sceneInfo)
 				m_View_Info->setVisible(false);
 				m_View_Comment->setVisible(true);
 				pinglunshuliang->setTextColor(Color4B(255, 246, 6, 255));
-				auto ve = m_listview->getItems();
-				if (ve.size() > 0)
-					break;
-				YYXLayer::showCommentListView(m_listview, m_bookId);
-				string commentCountKey = StringUtils::format("comment_bookid=%d", m_bookId);//book评论的数量
-				auto count = YYXStruct::getMapInt64(App::GetInstance()->myData, commentCountKey, 0);
-				showCommentCount(count);
-				//刷新列表
-				Director::getInstance()->getEventDispatcher()->removeCustomEventListeners("showCommentListView");
-				auto listener2 =EventListenerCustom::create("showCommentListView", [=](EventCustom* e) {
-					if (!isComment)
-						return;
-					int memberid = (int)e->getUserData();
-					App::log(" --------------     run showCommentListView()   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^memberid = ", memberid);
-					YYXSound::getInstance()->stopAll();
-					YYXSound::getInstance()->resumeBackGroundMusic();
-					YYXLayer::showCommentListView(m_listview, m_bookId);
-					string commentCountKey = StringUtils::format("comment_bookid=%d", m_bookId);//book评论的数量
-					auto count = YYXStruct::getMapInt64(App::GetInstance()->myData, commentCountKey, 0);
-					showCommentCount(count);
-				});
-				Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, m_listview);
-				m_listview->jumpToTop();
+				m_listview->setVisible(false);
+				m_listview->setScrollBarEnabled(false);
+				//if (tbview == nullptr)
+				//{
+				//	tbview = YYXTableViewBookInfoComment::create();
+				//	tbview->setTag(159);
+				//	tbview->setAnchorPoint(Vec2(0, 1));
+				//	tbview->setPosition(m_listview->getPosition());
+				//	cocos2d::log("Atbview = %f,%f",tbview->getPosition().x, tbview->getPosition().y);
+				//	pinglun->addChild(tbview);
+				//}
+				auto tbview = (YYXTableViewBookInfoComment*)m_View_Comment->getChildByTag(159);
+
+				if (tbview) {
+					tbview->setVisible(true);
+					tbview->loadData(m_bookId);
+				}
+				//auto ve = m_listview->getItems();
+				//if (ve.size() > 0)
+				//	break;
+				//YYXLayer::showCommentListView(m_listview, m_bookId);
+				//string commentCountKey = StringUtils::format("comment_bookid=%d", m_bookId);//book评论的数量
+				//auto count = YYXStruct::getMapInt64(App::GetInstance()->myData, commentCountKey, 0);
+				//showCommentCount(count);
+				////刷新列表
+				//Director::getInstance()->getEventDispatcher()->removeCustomEventListeners("showCommentListView");
+				//auto listener2 =EventListenerCustom::create("showCommentListView", [=](EventCustom* e) {
+				//	if (!isComment)
+				//		return;
+				//	int memberid = (int)e->getUserData();
+				//	App::log(" --------------     run showCommentListView()   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^memberid = ", memberid);
+				//	YYXSound::getInstance()->stopAll();
+				//	YYXSound::getInstance()->resumeBackGroundMusic();
+				//	YYXLayer::showCommentListView(m_listview, m_bookId);
+				//	string commentCountKey = StringUtils::format("comment_bookid=%d", m_bookId);//book评论的数量
+				//	auto count = YYXStruct::getMapInt64(App::GetInstance()->myData, commentCountKey, 0);
+				//	showCommentCount(count);
+				//});
+				//Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, m_listview);
+				//m_listview->jumpToTop();
 				break;
 			};
 			(( ImageView*)sender)->setTouchEnabled(false);
@@ -612,39 +629,39 @@ Layout* BookInfo::creatItem_Introduction()
 	string content = "";	
 	if (m_bookData)
 		content = m_bookData->getContent();
-	auto m_text_bookIntroduction = Label::create("    " + content, "FZHLJW.TTF", 36, Size::ZERO, TextHAlignment::LEFT, TextVAlignment::TOP);
+	auto m_text_bookIntroduction = Label::create(content, "FZHLJW.TTF", 48, Size::ZERO, TextHAlignment::LEFT, TextVAlignment::TOP);
 	m_text_bookIntroduction->setMaxLineWidth(640);
 	m_text_bookIntroduction->setTextColor(Color4B::BLACK);
 	m_text_bookIntroduction->setAnchorPoint(Vec2(0, 0));
 	if (content.length() <= 40 * 3)
 	{
 		m_text_bookIntroduction->setAdditionalKerning(25);//字体间距
-		m_text_bookIntroduction->setLineHeight(76);//行间距
+		m_text_bookIntroduction->setLineHeight(86);//行间距
 	}
 	else if (content.length() <= 55 * 3)
 	{
 		m_text_bookIntroduction->setAdditionalKerning(20);//字体间距
-		m_text_bookIntroduction->setLineHeight(66);//行间距
+		m_text_bookIntroduction->setLineHeight(80);//行间距
 	}
 	else if (content.length() <= 70*3)
 	{
 		m_text_bookIntroduction->setAdditionalKerning(15);//字体间距
-		m_text_bookIntroduction->setLineHeight(54);//行间距
+		m_text_bookIntroduction->setLineHeight(72);//行间距
 	}
 	else if (content.length() <= 85 * 3)
 	{
-		m_text_bookIntroduction->setAdditionalKerning(13);//字体间距
-		m_text_bookIntroduction->setLineHeight(52);//行间距
+		m_text_bookIntroduction->setAdditionalKerning(12);//字体间距
+		m_text_bookIntroduction->setLineHeight(66);//行间距
 	}
 	else if (content.length() <= 102 * 3)
 	{
-		m_text_bookIntroduction->setAdditionalKerning(10);//字体间距
-		m_text_bookIntroduction->setLineHeight(48);//行间距
+		m_text_bookIntroduction->setAdditionalKerning(8);//字体间距
+		m_text_bookIntroduction->setLineHeight(60);//行间距
 	}
 	else
 	{
-		m_text_bookIntroduction->setAdditionalKerning(8);//字体间距
-		m_text_bookIntroduction->setLineHeight(44);//行间距
+		m_text_bookIntroduction->setAdditionalKerning(4);//字体间距
+		m_text_bookIntroduction->setLineHeight(56);//行间距
 	}
 	m_text_bookIntroduction->setScale(0.5);
 	layout->setContentSize(Size(320, m_text_bookIntroduction->getContentSize().height/2));
@@ -744,6 +761,8 @@ Layer* BookInfo::initCommonView()
 		pinglun = (Layer*)CSLoader::createNode(BOOKINFO_PINGLUN_CSB);
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	if (pinglun == nullptr)
+		return nullptr;
 	//评论按钮
 	auto commentMe = ( Button*)pinglun->getChildByName(BOOKINFO_BUTTON_PINGLUN);
 	commentMe->setTouchEnabled(true);
@@ -751,7 +770,7 @@ Layer* BookInfo::initCommonView()
 		YYXLayer::controlTouchTime(1, "BookInfoScenecommentMe", [=]() {
 			YYXSound::getInstance()->playButtonSound();
 			//未购买
-			if (m_relation->IsBookBuy() == false && m_relation->IsMemberVIP() == false) {
+			if (m_relation->IsBookBuy() == false && m_relation->IsMemberVIP() == false && m_relation->IsBorrow() == false) {
 				Toast::create(App::getString("COMMENT_TIP_BUY"));
 				return;
 			}
@@ -760,8 +779,38 @@ Layer* BookInfo::initCommonView()
 		});
 	});
 	m_listview = (ListView*)pinglun->getChildByName(BOOKINFO_FIND_LISTVIEW_BYNAME_COMMENT);
+	//m_listview->setScrollBarEnabled(false);
+	//m_listview->setSize(Size(320, 270));
+	m_listview->setVisible(false);
 	m_listview->setScrollBarEnabled(false);
-	m_listview->setSize(Size(320, 270));
+	auto tbview = YYXTableViewBookInfoComment::create();
+	tbview->setAnchorPoint(Vec2(0, 0));
+	tbview->setPosition(m_listview->getPosition().x , m_listview->getPosition().y-270);
+	tbview->setTag(159);
+	pinglun->addChild(tbview);
+
+	cocos2d::log("Btbview = %f,%f", tbview->getPosition().x, tbview->getPosition().y);
+	//刷新列表
+	Director::getInstance()->getEventDispatcher()->removeCustomEventListeners("showCommentListView");
+	auto listener2 = EventListenerCustom::create("showCommentListView", [=](EventCustom* e) {
+		long memberid = (long)e->getUserData();
+		App::log(" --------------     run showCommentListView()   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^memberid = ", memberid);
+		YYXSound::getInstance()->stopAll();
+		YYXTableViewBookInfoComment::stopAllAnimation();
+		auto tbview = (YYXTableViewBookInfoComment*)m_View_Comment->getChildByTag(159);
+		//if (tbview == nullptr)
+		//{
+		//	tbview = YYXTableViewBookInfoComment::create();
+		//	tbview->setTag(159);
+		//	tbview->setAnchorPoint(Vec2(0, 1));
+		//	tbview->setPosition(m_listview->getPosition());
+		//	cocos2d::log("Btbview = %f,%f", tbview->getPosition().x, tbview->getPosition().y);
+		//	node->addChild(tbview);
+		//}
+		if (tbview && tbview->isVisible())
+			tbview->loadData(m_bookId);
+	});
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, tbview);
 	App::log("BookInfo::initCommonView---END");
 	return pinglun;
 }

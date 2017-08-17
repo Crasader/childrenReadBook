@@ -91,7 +91,7 @@ public:
 	void httpBookInfo(int bookId, const function<void(string)>& callback1= nullptr);//获取书籍详情
 	void httpBuyBookWithRedPacket(int couponId, int bookId, const function<void(int)>& callback = nullptr);//使用红包购书
 	void httpBuyBookWithOutRedPacket(int bookId, const function<void(int)>& callback1 = nullptr, YYXCallBack callback2 = nullptr);//不使用红包购书
-	void httpSendComment(int types, int bookId, int score, string orderId, string comment);//发表评论
+	void httpSendComment(int bookId, int score,  string comment);//发表评论
 	void httpBookOrderId(int bookId, const function<void(string, int)>& callback1, YYXCallBack callback2 = nullptr);//获取当前书籍的订单情况
 	void httpUploadReadBookRecord(ReadBookRecord* record, const function<void(ReadBookRecord*)>& callback1 = nullptr, const function<void(ReadBookRecord*)>& callback2 = nullptr);//上传阅读记录
 	void httpDeleteComment(int id, YYXCallBack callback1);//删除评论

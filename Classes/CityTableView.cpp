@@ -66,7 +66,7 @@ ssize_t CityTableView::numberOfCellsInTableView(TableView *table)
 
 void CityTableView::loadData()
 {
-	if (BookCityCache::getInstance()->getSequence().size() < 2);
+	if (BookCityCache::getInstance()->getSequence().size() < 2)
 		BookCityCache::getInstance()->loadData();
 	m_data.clear();
 	m_typeList.clear();

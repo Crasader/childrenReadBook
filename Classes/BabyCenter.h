@@ -23,6 +23,7 @@ class BabyCenter : public cocos2d::Layer
 private:
 	static int m_readBooks;
 	static long m_readTimes;
+	string tempName = "";
 	
 public:
 	ImageView* m_BigPhoto;//大头像控件
