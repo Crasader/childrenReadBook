@@ -194,12 +194,33 @@ void BabyCenter::initBabyCenter() {
 	editNode->addChild(input_name);
 	//男孩选择
 	auto select_boy = (ImageView*)editNode->getChildByTag(252);
-	select_boy->setTouchEnabled(false);
+	select_boy->setTouchEnabled(true);
 	select_boy->setTag(SELECT);
 	//女孩选择
 	auto select_girl = (ImageView*)editNode->getChildByTag(253);
 	select_girl->setTouchEnabled(true);
 	select_girl->setTag(UNSELECT);
+	auto c_child = User::getInstance()->getChild(User::getInstance()->getChildId());
+	if (c_child) {
+		int sex = c_child->getChildrenSex();
+		if (sex == 1) {
+			select_boy->setTag(SELECT);
+			select_girl->setTag(UNSELECT);
+			select_boy->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_TWO_PNG, TextureResType::PLIST);
+			select_boy->setTouchEnabled(true);
+			select_girl->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_ONE_PNG, TextureResType::PLIST);
+			select_girl->setTouchEnabled(true);
+		}
+		else
+		{
+			select_boy->setTag(UNSELECT);
+			select_girl->setTag(SELECT);
+			select_boy->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_TWO_PNG, TextureResType::PLIST);
+			select_boy->setTouchEnabled(true);
+			select_girl->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_ONE_PNG, TextureResType::PLIST);
+			select_girl->setTouchEnabled(true);
+		}
+	}
 	//选择框-生日
 	auto drop_birth = DropBox::create(Vec2(479, 390), Size(235, 20), "wryh.TTF", TextHAlignment::CENTER);
 	editNode->addChild(drop_birth);
@@ -241,7 +262,7 @@ void BabyCenter::initBabyCenter() {
 	select_boy->addClickEventListener([=](Ref* sender) {
 		YYXSound::getInstance()->playButtonSound();
 		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_TWO_PNG, TextureResType::PLIST);
-		select_boy->setTouchEnabled(false);
+		select_boy->setTouchEnabled(true);
 		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_ONE_PNG, TextureResType::PLIST);
 		select_girl->setTouchEnabled(true);
 		select_boy->setTag(SELECT);
@@ -254,7 +275,7 @@ void BabyCenter::initBabyCenter() {
 		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_TWO_PNG, TextureResType::PLIST);
 		select_boy->setTouchEnabled(true);
 		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_ONE_PNG, TextureResType::PLIST);
-		select_girl->setTouchEnabled(false);
+		select_girl->setTouchEnabled(true);
 		select_boy->setTag(UNSELECT);
 		select_girl->setTag(SELECT);
 		//text_sex->setString(App::getString("LITTLE_PRINCESS"));
@@ -356,7 +377,7 @@ void BabyCenter::initBabyCenter() {
 		select_boy->loadTexture(BABYCENTE_FIND_USERINFO_NOT_SELECTED_TWO_PNG);
 		select_boy->setTouchEnabled(true);
 		select_girl->loadTexture(BABYCENTE_FIND_USERINFO_SELECTED_ONE_PNG);
-		select_girl->setTouchEnabled(false);
+		select_girl->setTouchEnabled(true);
 		select_boy->setTag(UNSELECT);
 		select_girl->setTag(SELECT);
 	}
