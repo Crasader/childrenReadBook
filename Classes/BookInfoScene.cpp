@@ -769,13 +769,15 @@ Layer* BookInfo::initCommonView()
 	commentMe->addClickEventListener([=](Ref* sender) {
 		YYXLayer::controlTouchTime(1, "BookInfoScenecommentMe", [=]() {
 			YYXSound::getInstance()->playButtonSound();
-			//未购买
-			if (m_relation->IsBookBuy() == false && m_relation->IsMemberVIP() == false && m_relation->IsBorrow() == false) {
-				Toast::create(App::getString("COMMENT_TIP_BUY"));
-				return;
+			if (m_relation->IsBookBuy() || m_relation->IsBorrow() || (m_relation->IsBookVIP() && m_relation->IsBookRent()))
+			{
+				auto pScene = Director::getInstance()->getRunningScene();
+				pScene->addChild(SendComment::create(m_bookId));
 			}
-			auto pScene = Director::getInstance()->getRunningScene();
-			pScene->addChild(SendComment::create(m_bookId));
+			else
+			{
+				Toast::create(App::getString("COMMENT_TIP_BUY"));
+			}
 		});
 	});
 	m_listview = (ListView*)pinglun->getChildByName(BOOKINFO_FIND_LISTVIEW_BYNAME_COMMENT);
@@ -985,8 +987,7 @@ void BookInfo::ButtonControl()
 	m_relation->BookStauts(m_bookStatus);
 	//提示是购买过的 还是租过的
 	hintIsBuyIsRent();
-	if (m_relation->IsBookBuy())
-	{
+	if (m_relation->IsBookBuy()) {
 		//已购
 		showBuyButtons(2);
 		return;
@@ -1456,15 +1457,13 @@ void BookInfo::hintIsBuyIsRent()
 
 	auto ygou = (ImageView*)node->getChildByName("Image_4");
 	ygou->setAnchorPoint(Vec2(1, 1));
-	if (ygou->getPosition().x > org.x + win.width)
-	{
+	if (ygou->getPosition().x > org.x + win.width){
 		ygou->setPosition(Vec2(Director::getInstance()->getWinSize().width / 2 + 1094 / 2, ygou->getPosition().y));
 	}
 	ygou->setVisible(true);
 	if (m_relation->IsBookBuy())
 		ygou->loadTexture("other/pager_yigou_736h.png");
-	else
-	{
+	else{
 		if (m_relation->IsMemberVIP() && m_relation->IsBookRent())			//显示VIP已购
 			ygou->loadTexture("BookInfo/res/yjgou.png");
 		else
@@ -1490,16 +1489,14 @@ void BookInfo::addDownloadListener(Button* button)
 	//进度
 	auto listenerButton = EventListenerCustom::create(bookTag + "_BookProgressing", [=](EventCustom* e) {
 		auto data = YYXDownload::getInstance()->getTask(bookTag);
-		if (data)
-		{
+		if (data){
 			if (data->getStatus() == _pause)
 				return;
 		}
 		auto progressing = (long)e->getUserData();
 		if (progressing < 100 && progressing > 0)
 			button->setTitleText(StringUtils::format("%d%%", progressing));
-		else
-		{
+		else{
 			if (progressing == 999 || progressing == 100)
 				ButtonControl();
 		}
