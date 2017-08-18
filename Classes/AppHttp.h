@@ -94,7 +94,7 @@ public:
 	void httpSendComment(int bookId, int score,  string comment);//发表评论
 	void httpBookOrderId(int bookId, const function<void(string, int)>& callback1, YYXCallBack callback2 = nullptr);//获取当前书籍的订单情况
 	void httpUploadReadBookRecord(ReadBookRecord* record, const function<void(ReadBookRecord*)>& callback1 = nullptr, const function<void(ReadBookRecord*)>& callback2 = nullptr);//上传阅读记录
-	void httpDeleteComment(int id, YYXCallBack callback1);//删除评论
+	void httpDeleteComment(int id, YYXCallBack callback1, YYXCallBack callback2);//删除评论
 	void httpCheckVIP(YYXCallBack callback1 = nullptr);//获取用户的vip信息
 	void httpThe_relationship_between_human_and_books(int bookId, const function<void(int)>& runable = nullptr);//人与书是什么关系
 	void httpBookCityInfo(YYXCallBack callback1 = nullptr);//获取书城信息

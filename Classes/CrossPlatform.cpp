@@ -563,8 +563,8 @@ void CrossPlatform::WIN32_DownLoad(string url, string dir, string fileName, stri
 		return;
 	}
 	string str = "\n( download ) fileName = < " + fileName + " >   @@@@@@@@@@ " + "\n";
-	App::log(str);
-	YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath() + "temp/log.txt");
+	//App::log(str);
+	//YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath() + "temp/log.txt");
 	HttpRequest* pRequest = new HttpRequest();
 	pRequest->setUrl(url.c_str());
 	pRequest->setRequestType(HttpRequest::Type::GET);
@@ -589,6 +589,8 @@ void CrossPlatform::WIN32_DownLoad(string url, string dir, string fileName, stri
 			FileUtils::getInstance()->createDirectory(dir);
 		}
 		auto path = dir + "/" + fileName;
+		if (FileUtils::getInstance()->isFileExist(path))
+			FileUtils::getInstance()->removeFile(path);
 		std::vector<char> *buffer = response->getResponseData();
 		if (buffer == nullptr)
 		{
@@ -607,8 +609,8 @@ void CrossPlatform::WIN32_DownLoad(string url, string dir, string fileName, stri
 		App::log(fileName + " error : DownLoad = > 406");
 		fclose(fp);
 		string str = "\n( download OK ) fileName = < " + fileName + " >   Size = < "+Value((int)buffer->size() ).asString()+" > @@@@@@@@@@ " + "\n";
-		App::log(str);
-		YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath() + "temp/log.txt");
+		//App::log(str);
+		//YYXLayer::writeFilepp(str, FileUtils::getInstance()->getWritablePath() + "temp/log.txt");
 		if (buf)
 			delete[] buf;
 		if (runable)

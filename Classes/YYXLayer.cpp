@@ -1851,7 +1851,7 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 								string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);
 								YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, idKey);
 								YYXLayer::sendNotify("showCommentListView", "111111111111111111111", memberid);
-							});
+							}, []() {});
 						}, "", []() {});
 						Director::getInstance()->getRunningScene()->addChild(message);
 					}
@@ -1989,7 +1989,7 @@ void YYXLayer::showCommentListView(ListView * listview, int bookid,	int memberid
 									string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);
 									YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, idKey);
 									YYXLayer::sendNotify("showCommentListView", "222222222222222", memberid);
-								});
+								}, []() {});
 							}, "", []() {});
 							Director::getInstance()->getRunningScene()->addChild(message);
 						}

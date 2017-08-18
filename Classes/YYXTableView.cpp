@@ -518,11 +518,26 @@ void YYXTableView::handleYourOwnComments(TableView* table, TableViewCell* cell)
 	{//删除
 		auto message = YYXLayer::MyMessageBox(App::getString("SHANCHUPINGLUN"), App::getString("SHANCHU"), [=]() {
 			int commentID = YYXStruct::getMapInt64(data, "voicepath", -999);
+			int bookid = YYXStruct::getMapInt64(data, "userName", -999);
+			string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);
+			YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, idKey);
+			string path = FileUtils::getInstance()->getWritablePath() + "voiceComment/" + Value(commentID).asString() + ".mp3";
+			if (FileUtils::getInstance()->isFileExist(path))
+			{
+				FileUtils::getInstance()->removeFile(path);
+			}
 			AppHttp::getInstance()->httpDeleteComment(commentID, [=]() {
 				int bookid = YYXStruct::getMapInt64(data, "userName", -999);
 				string idKey = StringUtils::format("comment_bookid=%d+index=%d", bookid, index);
 				YYXStruct::deleteMapYYXStruct(App::GetInstance()->myData, idKey);
 				YYXLayer::sendNotify("showCommentListView", "", m_memberID);
+				AppHttp::getInstance()->httpComments(m_bookid, [=]() {
+					YYXLayer::sendNotify("showCommentListView", "", m_memberID);
+				});
+			}, [=]() {
+				AppHttp::getInstance()->httpComments(m_bookid, [=]() {
+					YYXLayer::sendNotify("showCommentListView", "", m_memberID);
+				});
 			});
 		}, "", []() {});
 		Director::getInstance()->getRunningScene()->addChild(message);

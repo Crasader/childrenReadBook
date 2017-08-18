@@ -1843,7 +1843,7 @@ void AppHttp::httpUploadReadBookRecord(ReadBookRecord* record, const function<vo
 }
 
 //删除评论
-void AppHttp::httpDeleteComment(int id, YYXCallBack callback1)
+void AppHttp::httpDeleteComment(int id, YYXCallBack callback1, YYXCallBack callback2)
 {
 	string url = string(IP).append(NET_DELETECOMMENT);
 	map<string, string> parameter;
@@ -1867,12 +1867,17 @@ void AppHttp::httpDeleteComment(int id, YYXCallBack callback1)
 				if (callback1)
 					callback1();
 			}
-			else
+			else {
 				Toast::create(App::getString("SHANCHUPINGLUNSHIBAI"));
+				if (callback2)
+					callback2();
+			}
 		}
 	});
-	httpData->setCallbackerror([](HttpData* data) {
+	httpData->setCallbackerror([=](HttpData* data) {
 		Toast::create(App::getString("SHANCHUPINGLUNSHIBAI"));
+		if (callback2)
+			callback2();
 	});
 	newHttp(httpData);
 }
